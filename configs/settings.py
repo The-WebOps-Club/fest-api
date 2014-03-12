@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import global_settings
 from global_settings import *
 
@@ -14,10 +16,7 @@ ADMINS = (
     ('Mary', 'mary@example.com')
 )
 
-MANAGERS = (
-    ('John', 'john@example.com'),
-    ('Mary', 'mary@example.com')
-)
+MANAGERS = ADMINS
 
 # Database settings, machine specific
 DATABASES = {
