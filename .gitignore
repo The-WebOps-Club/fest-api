@@ -3,4 +3,4 @@
 *.pyc
 local_settings.py
 files/media/*
-files/secret/*
+files/secret/key.txt
