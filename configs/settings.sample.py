@@ -7,6 +7,7 @@ from global_settings import *
 # Debug settings, machine specific
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+DAJAXICE_DEBUG = DEBUG
 
 # Emails to which admin mails are sent
 ADMINS = (
@@ -31,9 +32,12 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = [
-    '*', # Allow domain and subdomains
+ALLOWED_HOSTS = [ # Allowed domain and subdomains
+    '*', 
 ]
+
+#Absolute URL where the site has been hosted. Don't forget the trailing slash.
+SITE_URL = 'http://localhost:8000/'
 
 # Email configurations
 SEND_EMAIL = True

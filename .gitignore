@@ -28,7 +28,7 @@ deps
 
 # User specific files
 files/media/*
-files/static-files/*
+files/static-collected/*
 
 # General configs
 config/settings.py

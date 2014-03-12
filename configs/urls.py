@@ -18,7 +18,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # FEST-API APPS
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', 'apps.home.views.home', name='home'),
     
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
