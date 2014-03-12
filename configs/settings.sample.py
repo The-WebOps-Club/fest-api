@@ -2,8 +2,7 @@ import global_settings
 from global_settings import *
 
 # Add the Secret Key (Large Random String) to files/secret/key.txt
-with open(os.path.join(BASE_DIR, "files", "secret") + 'key.txt') as f:
-    SECRET_KEY = f.read().strip()
+# SECRET_KEY = 'hz3@sbz0q+wb&irbyn0h)cu9+9t7ofh@1tn3s!^)xia8_u$2+4' # Keep a specific key for production
     
 # Debug settings, machine specific
 DEBUG = True
@@ -33,7 +32,7 @@ DATABASES = {
 }
 
 ALLOWED_HOSTS = [
-    '.example.com', # Allow domain and subdomains
+    '*', # Allow domain and subdomains
 ]
 
 # Email configurations

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html lang="en">
+<head>
+    <meta name="application-name" content="NSSIITM">
+    <meta name="author" content="NSSIITM WebOps Team">
+    <meta name="description" content="{% block descriptionmeta %} {% endblock %}">
+    <meta name="keywords" content="national, service, scheme ">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>{% block title %} NSS IITM {% endblock %}</title>
+    
+    <!-- Include stylesheets here -->
+    {% if DEBUG %} <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" media="screen"> 
+    {% else %} <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet"> {% endif %}
+
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    {% block extra_css %}{% endblock %}
+
+    {% if not DEBUG %}
+        <script type="text/javascript">
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            
+              ga('create', 'UA-45741569-1', 'iitm.ac.in');
+              ga('send', 'pageview');
+        </script>
+    {% endif %}
+</head>
+<body>
+    
+    {% block navbar %}
+    <nav class="navbar navbar-fixed-top nss-nav" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand navbar-logo nss" href="{{ SITE_URL }}"><img src="{% static 'img/nss_logo_small.png' %}" /></a>
+                <a class="navbar-brand nss" href="{{ SITE_URL }}">NSS IITM</a>
+            </div>
+    
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <li {% if eventspage %}  class="active"{% endif %}><a href="{% url 'events' %}">Events</a></li>
+                    <li {% if projectspage %}class="active"{% endif %}><a href="{% url 'projects' %}">Projects</a></li>
+                    <li {% if winternpage %} class="active"{% endif %}><a href="{% url 'winterns' %}">Winterns</a></li>
+                    <li {% if aboutuspage %} class="active"{% endif %}><a href="{% url 'aboutus' %}">About Us</a></li>
+                    
+                </ul>
+                <ul class="nav navbar-nav navbar-right nss">
+                    {% if user.is_authenticated %}
+                        <li {% if profilepage %}class="active"{% endif %}>
+                            <a href="{% url 'profile' %}">{{ user.get_full_name }}</a>
+                        </li>
+                        <li {% if logoutpage %}class="active"{% endif %}>
+                            <a href="{% url 'logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li {% if loginpage %}class="active"{% endif %}>
+                            <a href="{% url 'apps.accounts.views.login' %}">Login</a>
+                        </li>
+                    {% endif %}
+                    
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container -->
+    </nav>
+    {% endblock %}
+    
+    {% block messages %}
+        <div class="container" id="container_messages">
+            {% for message in messages %}
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <div class="alert {{ message.tags }} alert-dismissable center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            {{ message|safe }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
+    
+    {% block content %}
+    {% endblock %}
+    
+    {% if DEBUG %} <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script> 
+    {% else %} <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> {% endif %}
+    {% if DEBUG %} <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script> 
+    {% else %} <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script> {% endif %}
+    <script type="text/javascript" src="{% static 'dajax/jquery.dajax.core.js' %}"></script> 
+    {% load dajaxice_templatetags %} {% dajaxice_js_import %}
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
