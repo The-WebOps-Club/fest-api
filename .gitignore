@@ -32,3 +32,6 @@ files/static-collected/*
 
 # General configs
 config/settings.py
+
+#Documentation build files
+doc/build
