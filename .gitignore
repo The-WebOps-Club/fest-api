@@ -34,4 +34,5 @@ files/static-collected/*
 config/settings.py
 
 #Documentation build files
-doc/build
+doc/*
+
