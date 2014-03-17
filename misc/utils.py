@@ -37,6 +37,7 @@ def global_context(request):
         'STATIC_URL':settings.STATIC_URL,
         'DEBUG':settings.DEBUG,
         'SETTINGS':settings,
+        'FEST_NAME':settings.FEST_NAME,
     }
     try:
         userprofile = request.user.profile_set.first()

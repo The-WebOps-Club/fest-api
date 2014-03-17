@@ -3,13 +3,13 @@
 
 <html lang="en">
 <head>
-    <meta name="application-name" content="NSSIITM">
-    <meta name="author" content="NSSIITM WebOps Team">
+    <meta name="application-name" content="{{FEST_NAME}} Website">
+    <meta name="author" content="{{FEST_NAME}} WebOps Team">
     <meta name="description" content="{% block descriptionmeta %} {% endblock %}">
     <meta name="keywords" content="national, service, scheme ">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>{% block title %} NSS IITM {% endblock %}</title>
+    <title>{% block title %} {{ FEST_NAME }} {% endblock %}</title>
     
     <!-- Include stylesheets here -->
     {% if DEBUG %} <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" media="screen"> 
@@ -34,7 +34,7 @@
 <body>
     
     {% block navbar %}
-    <nav class="navbar navbar-fixed-top nss-nav" role="navigation">
+    <nav class="navbar navbar-fixed-top" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -43,30 +43,30 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand navbar-logo nss" href="{{ SITE_URL }}"><img src="{% static 'img/nss_logo_small.png' %}" /></a>
-                <a class="navbar-brand nss" href="{{ SITE_URL }}">NSS IITM</a>
+                <a class="navbar-brand navbar-logo" href="{{ SITE_URL }}"><img src="{% static 'img/fest_logo_small.png' %}" /></a>
+                <a class="navbar-brand" href="{{ SITE_URL }}">{{FEST_NAME}}</a>
             </div>
     
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav">
-                    <li {% if eventspage %}  class="active"{% endif %}><a href="{% url 'events' %}">Events</a></li>
-                    <li {% if projectspage %}class="active"{% endif %}><a href="{% url 'projects' %}">Projects</a></li>
-                    <li {% if winternpage %} class="active"{% endif %}><a href="{% url 'winterns' %}">Winterns</a></li>
-                    <li {% if aboutuspage %} class="active"{% endif %}><a href="{% url 'aboutus' %}">About Us</a></li>
+                    <li {% if eventspage %}  class="active"{% endif %}><a href="">Events</a></li>
+                    <li {% if projectspage %}class="active"{% endif %}><a href="">Projects</a></li>
+                    <li {% if winternpage %} class="active"{% endif %}><a href="">Winterns</a></li>
+                    <li {% if aboutuspage %} class="active"{% endif %}><a href="">About Us</a></li>
                     
                 </ul>
                 <ul class="nav navbar-nav navbar-right nss">
                     {% if user.is_authenticated %}
                         <li {% if profilepage %}class="active"{% endif %}>
-                            <a href="{% url 'profile' %}">{{ user.get_full_name }}</a>
+                            <a href="">{{ user.get_full_name }}</a>
                         </li>
                         <li {% if logoutpage %}class="active"{% endif %}>
                             <a href="{% url 'logout' %}">Logout</a>
                         </li>
                     {% else %}
                         <li {% if loginpage %}class="active"{% endif %}>
-                            <a href="{% url 'apps.accounts.views.login' %}">Login</a>
+                            <a href="">Login</a>
                         </li>
                     {% endif %}
                     
@@ -99,7 +99,7 @@
     {% if DEBUG %} <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script> 
     {% else %} <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script> {% endif %}
     <script type="text/javascript" src="{% static 'dajax/jquery.dajax.core.js' %}"></script> 
-    {% load dajaxice_templatetags %} {% dajaxice_js_import %}
+    {# {% load dajaxice_templatetags %} {% dajaxice_js_import %} #}
     
     {% block extra_js %}{% endblock %}
 </body>

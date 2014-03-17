@@ -4,6 +4,8 @@ from global_settings import *
 # Add the Secret Key (Large Random String) to files/secret/key.txt
 # SECRET_KEY = 'hz3@sbz0q+wb&irbyn0h)cu9+9t7ofh@1tn3s!^)xia8_u$2+4' # Keep a specific key for production
     
+FEST_NAME = "Fest"
+
 # Debug settings, machine specific
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -11,13 +13,11 @@ DAJAXICE_DEBUG = DEBUG
 
 # Emails to which admin mails are sent
 ADMINS = (
-    ('John', 'john@example.com'),
-    ('Mary', 'mary@example.com')
+#    ('John', 'john@example.com'),
 )
 
 MANAGERS = (
-    ('John', 'john@example.com'),
-    ('Mary', 'mary@example.com')
+#    ('John', 'john@example.com'),
 )
 
 # Database settings, machine specific

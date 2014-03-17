@@ -1,10 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import global_settings
 from global_settings import *
 
 # Add the Secret Key (Large Random String) to files/secret/key.txt
 # SECRET_KEY = 'hz3@sbz0q+wb&irbyn0h)cu9+9t7ofh@1tn3s!^)xia8_u$2+4' # Keep a specific key for production
+    
+FEST_NAME = "Shaastra"
     
 # Debug settings, machine specific
 DEBUG = True
@@ -12,8 +15,6 @@ TEMPLATE_DEBUG = DEBUG
 
 # Emails to which admin mails are sent
 ADMINS = (
-    ('John', 'john@example.com'),
-    ('Mary', 'mary@example.com')
 )
 
 MANAGERS = ADMINS
@@ -22,7 +23,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
-        'NAME': 'fest-test',
+        'NAME': 'fest_test',
         'USER': 'root',
         'PASSWORD': '1',
         'HOST': '',
