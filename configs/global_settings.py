@@ -30,9 +30,14 @@ DJANGO_APPS = (
 )
 THIRD_PARTY_APPS = (
     'south',
+    'debug_toolbar',
 )
 API_APPS =(
+    'misc',
     'apps.home', 
+    'apps.users',
+    'apps.walls',
+    'apps.events',
     
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS

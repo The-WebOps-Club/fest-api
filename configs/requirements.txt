@@ -1,5 +1,12 @@
 Django==1.6.2
 MySQL-python==1.2.5
+Pillow==2.3.1
 South==0.8.4
 argparse==1.2.1
+django-debug-toolbar==1.0.1
+django-model-utils==2.0.2
+django-notifications-hq==0.6.0
+django-post-office==0.7.2
+jsonfield==0.9.20
+sqlparse==0.1.11
 wsgiref==0.1.2
