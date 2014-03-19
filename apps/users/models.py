@@ -27,7 +27,10 @@ import datetime
 
 
 # Department Models
-class Dept(models.Model):    
+class Dept(models.Model):
+    """ 
+        A model having data about specific Departments @ the fest 
+    """
     # Relations with other models
     wall            = models.OneToOneField(Wall, related_name='dept')
     
@@ -36,12 +39,15 @@ class Dept(models.Model):
     description     = models.TextField(max_length=500, null=True, blank=True)
     
     def __unicode__(self):
-        return self.name	
+        return self.name
 
 class Subdept(models.Model):
-    """ Every subdept is linked to an event """
+    """ 
+        A model having data about specific SubDepartments @ the fest 
+        Every subdept is linked to an event 
+    """
     # Relations with other models
-    dept            = models.ForeignKey(Dept, related_name="parent_dept")
+    dept            = models.ForeignKey(Dept, related_name='subdepts')
     wall            = models.OneToOneField(Wall, related_name='subdept')
     event           = models.ForeignKey(Event, null=True, blank=True)
     

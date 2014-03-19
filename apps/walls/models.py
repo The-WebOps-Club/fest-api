@@ -19,12 +19,12 @@ from misc.utils import *
 
 # Model for Department forum
 class Wall(models.Model):
-    '''
+    """
         Defines a Wall - a wall can be of a person, department or subdepartment
         It is linked using a OneToOne field on the side of the Person, Department or SubDepartment
         
         @todo : Add analytics to be able to see when each person saw the wall last
-    '''
+    """
     
     # Basic information
     name            = models.CharField(max_length=60, unique=True)
@@ -51,11 +51,11 @@ class Wall(models.Model):
         return self.name
     
 class Post(models.Model):
-    '''
+    """
         Defines the Post class. The model which has some kind of data about a message.
         
         @todo : Add options to upload a file to any message
-    '''
+    """
     # Basic data
     description = models.TextField(blank=True, default='') # The matter of post
     

@@ -29,8 +29,14 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
 )
 THIRD_PARTY_APPS = (
+    # For development ease of use
     'south',
     'debug_toolbar',
+    'django_extensions',
+    'django_pdb',
+    
+    # For programming ease
+    'post_office',
 )
 API_APPS =(
     'misc',
@@ -154,3 +160,7 @@ LOGGING = {
         },
     }
 }
+
+# Settings for specific Apps
+# Post Office
+EMAIL_BACKEND = 'post_office.EmailBackend'

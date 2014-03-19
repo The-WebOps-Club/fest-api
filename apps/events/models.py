@@ -1,6 +1,7 @@
 """
     Handles all models related to events :
-        - Event : Information abotu an event in shaastra
+        - Event : Information about an event in shaastra
+        - Tab : Information about an event tab in shaastra
 
 """
 # Django
@@ -71,7 +72,7 @@ class Event(models.Model):
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
     
-    # Some propertoes to make some conditions easier
+    # Some properties to make some conditions easier
     @property
     def is_team_event(self):        
         return team_size_max == 1
@@ -84,24 +85,22 @@ class Event(models.Model):
         return self.name
 
 class Tab(models.Model):
-    '''
+    """
         A model containing data for a tab that is displayed for the events on the mainsite
-    '''
+    """
     # Relation to various other models
     event           = models.OneToOneField(Event, blank=True, null=True)
     
     # Baisc information
     head            = models.CharField(max_length=100)
-    content         = models.TextField()
+    content         = models.TextField(blank = True)
     
     # Extra information about how the tab is shown on mainsite
-    ordering        = models.IntegerField(max_length=2, default=0, blank=False) # Tells which tab should come first in the list
+    order           = models.IntegerField(default=0, blank=False) # Tells which tab should come first in the list
     is_visible      = models.BooleanField(default=True) # On the mainsite
+    
     def __unicode__(self):
         return self.title
 
-    def delete(self):
-        super(Tab, self).delete()
-
     class Meta:
-        ordering = ['pref']
+        ordering = ['order']
