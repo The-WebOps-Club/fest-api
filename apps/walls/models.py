@@ -37,15 +37,12 @@ class Wall(models.Model):
     @property
     def parent(self):
         temp = None
-        try : 
-            temp = self.person()
-        except:
-            try : 
-                temp = self.dept()
-            except : 
-                try : 
-                    temp = self.subdept()
-                except:
+        try : temp = self.person()
+        except AttributeError as ae2: 
+            try : temp = self.dept()
+            except AttributeError as ae2: 
+                try : temp = self.subdept()
+                except AttributeError as ae3: 
                     temp = None
             
         return temp

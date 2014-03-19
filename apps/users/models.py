@@ -16,6 +16,7 @@ from django.utils import timezone
 # Models
 from misc.models import College
 from apps.walls.models import Wall, Post
+from apps.events.models import Event
 # Forms
 # View functions
 # Misc
@@ -64,7 +65,7 @@ class UserProfile(models.Model): # The corresponding auth user
     age                = models.IntegerField(default=18)
     #dob                = models.DateField(null=True, blank=True)
     mobile_number      = models.CharField(max_length=15, blank=True, null=True, help_text='Please enter your current mobile number')
-    avatar             = models.ImageField("Profile Pic", upload_to="avatars/", blank=True, null=True)
+    avatar             = models.ImageField("Profile Pic", upload_to="avatars/users", blank=True, null=True)
     
     # College info
     branch             = models.CharField(max_length=50, choices=BRANCH_CHOICES, help_text='Your branch of study')
