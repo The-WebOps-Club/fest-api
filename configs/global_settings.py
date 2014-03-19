@@ -35,6 +35,10 @@ THIRD_PARTY_APPS = (
     'django_extensions',
     'django_pdb',
     
+    # ajax functionality
+    'dajaxice',
+    'dajax',
+    
     # For programming ease
     'post_office',
 )
@@ -80,7 +84,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # default
-    'misc.backends.RootBackend', # custom default password
+    'apps.users.backends.RootBackend', # custom default password
 )
 
 ROOT_URLCONF = 'configs.urls'
@@ -90,6 +94,7 @@ WSGI_APPLICATION = 'configs.wsgi.application'
 # http://django-debug-toolbar.readthedocs.org/en/1.0/installation.html#explicit-setup
 # DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
+# AUTH_PROFILE_MODULE = 'apps.users.models.ERPUser'
 # Database
 #DATABASES = {
 #    'default': {
