@@ -1,3 +1,5 @@
+{% load staticfiles %}
+
 <div class='topbar'>
     <div class='topbar-inner'>
         <div class='container-fluid'>
@@ -16,9 +18,12 @@
                 </ul>
                 <div class='span1 pull-right'></div>
                 <ul class='nav links pull-right'>
-                    <li><a href='#'>Profile Page of user </a></li>
-                    <li><a href='{{ SITE_URL }}' class='bold'>Home</a></li>
-                    <li><a class='settingsButton'>&nbsp;</a></li>
+                    <li class='topbar_profile'><a href='#'>
+                        <img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+                        <span class='profile_name'>Profile Page of user </span>
+                    </a></li>
+                    <li><a href='{{ SITE_URL }}' class='bold'><span>Home</span></a></li>
+                    <li><a class='settingsButton'><span>&nbsp;</span></a></li>
                 </ul>
             </div>
         </div>

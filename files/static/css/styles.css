@@ -68,6 +68,15 @@
     padding : 0px;
     width: 12px;
 }
+
+/* Generic styles */
+.bold {
+    font-weight : 800;
+}
+
+
+/* Specific Template styles */
+
 .topbar div > ul.nav.links a.settingsButton,
 .nav.links a.settingsButton {
     background-image: url(../img/fb_icons.png);
@@ -78,14 +87,101 @@
     padding: 5px 10px 10px;
     margin: 5px 0 0 0px;
 }
-
-/* Generic styles */
-.bold {
-    font-weight : 800;
+.topbar div > ul.nav.links li.topbar_profile a, .nav.links li.topbar_profile a {
+    padding: 0px 0px 0px 0px;
+    margin: 5px 0 0 0px;
+}
+.topbar div > ul.nav.links li.topbar_profile a .profile_name, 
+.nav.links li.topbar_profile a .profile_name {
+    padding: 0px 0px 0px 0px;
+    margin: 5px 5px 0px 0px;
+    max-width: 175px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: top;
+}
+.topbar .profile_dp {
+    height : 23px;
+    width : 23px;
+    margin: 3px 5px 3px 3px;
+}
+.main-body {
+    border-left-color: rgb(204, 204, 204);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: rgb(204, 204, 204);
+    border-right-style: solid;
+    border-right-width: 1px;
+    padding: 10px 10px;
+    padding-top: 40px;
 }
 
+.sidebar {
+    padding: 10px 10px;
+    padding-top: 40px;
+}
+.sidebar #profile_tab {
+    padding : 10px;
+    font-size: 11px;
+}
+.sidebar #profile_tab .profile_dp {
+    height : auto;
+    width : 37px;
+    margin: 3px 5px 3px 3px;
+    display: inline-block;
+    width : 30%;
+}
+.sidebar #profile_tab .profile_name {
+    width : 50%;
+    padding: 0px 0px 0px 0px;
+    margin: 5px 5px 0px 0px;
+    display: inline-block;
+    word-wrap: break-word;
+    vertical-align: top;
+    white-space: nowrap;
 
-/* Specific Template styles */
-.searchbar {
-    
+}
+.sidebar .group_link_head {
+    color: #999;
+    font-size: 9px;
+    font-weight: bold;
+    padding-top : 10px;
+}
+ul.group_link.vertical {
+    list-style-type: none;
+    margin : 0px;
+}
+ul.group_link.vertical > li {
+    width: 100%;
+    padding : 3px;
+}
+ul.group_link.vertical > li a {
+    color : black;
+    width : 100%;
+    display : block;
+    font-size : 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    text-decoration : none;
+    color : #333333;
+}
+ul.group_link.vertical > li:hover ,
+ul.group_link.vertical > li a:hover {
+    color : black;
+    text-decoration : none;
+    background-color : rgb(239, 242, 247);
+}
+
+.sidebar ul.group_link.vertical > li.active {
+    font-weight : bold;
+    background-color: rgb(216, 223, 234);
+}
+.sidebar ul.group_link.vertical > li.active a:hover,
+.sidebar ul.group_link.vertical > li.active:hover {
+    font-weight : bold;
+    background-color: rgb(216, 223, 234);
 }
