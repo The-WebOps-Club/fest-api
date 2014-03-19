@@ -86,6 +86,9 @@ AUTHENTICATION_BACKENDS = (
 ROOT_URLCONF = 'configs.urls'
 WSGI_APPLICATION = 'configs.wsgi.application'
 
+# Explicit settings patch for debug_toolbar for Django 1.6
+# http://django-debug-toolbar.readthedocs.org/en/1.0/installation.html#explicit-setup
+# DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 # Database
 #DATABASES = {

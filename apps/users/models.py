@@ -49,7 +49,7 @@ class Subdept(models.Model):
     # Relations with other models
     dept            = models.ForeignKey(Dept, related_name='subdepts')
     wall            = models.OneToOneField(Wall, related_name='subdept')
-    event           = models.ForeignKey(Event, null=True, blank=True)
+    # event           = models.ForeignKey(Event, null=True, blank=True)
     
     # Basic information
     name            = models.CharField(max_length=30)

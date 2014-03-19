@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # FEST-API APPS
     url(r'^$', 'apps.home.views.home', name='home'),
-    
+    url(r'^users/', include('apps.users.urls')),
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
     
@@ -45,3 +45,9 @@ handler500 = 'misc.views.err500'
 # REMEMBER : Should be commented out on server !
 if settings.DEBUG or ( ( settings.SITE_URL.find("localhost") != -1 or settings.SITE_URL.find("127.0.") != -1 ) and not settings.DEBUG ):
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # Explicit settings patch for debug_toolbar for Django 1.6
+    # http://django-debug-toolbar.readthedocs.org/en/1.0/installation.html#explicit-setup
+    import debug_toolbar
+    urlpatterns += patterns('',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )
