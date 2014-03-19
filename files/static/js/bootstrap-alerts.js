@@ -37,16 +37,16 @@
      })()
 
      // set CSS transition event type
-     if ( $.support.transition ) {
-       transitionEnd = "TransitionEnd"
-       if ( $.browser.webkit ) {
-        transitionEnd = "webkitTransitionEnd"
-       } else if ( $.browser.mozilla ) {
+    if ( $.support.transition ) {
+      transitionEnd = "TransitionEnd"
+      if ( navigator.userAgent.indexOf('Firefox') > -1 ) {
         transitionEnd = "transitionend"
-       } else if ( $.browser.opera ) {
+      } else if ( window.opera ) {
         transitionEnd = "oTransitionEnd"
-       }
-     }
+      } else {
+        transitionEnd = "webkitTransitionEnd"
+      }
+    }
 
    })
 
