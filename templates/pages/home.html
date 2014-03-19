@@ -1,11 +1,10 @@
 
-{% extends 'pages/base.html' %}
+{% extends 'base/base.html' %}
 {% load staticfiles %}
 
 {% block title %} {{ FEST_NAME }} {% endblock %}
 
 {% block content %}
-  <div class="container-fluid">
     
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
@@ -53,19 +52,6 @@
         </div>
       </div>
      
- </div> <!-- /container -->
-
-    <div class='container'>
-        <div class='row centered'>
-            <div class="col-md-6">
-                
-            </div>
-            <div class="col-md-6">
-                
-            </div>
-        </div>
-    </div>
-
 {% endblock %}
 
 {% block extra_css %}

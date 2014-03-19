@@ -39,51 +39,20 @@
 <body id='bootstrap-js'>
     
     {% block navbar %}
-        <div class='topbar'>
-            <div class='topbar-inner'>
-                <div class='container-fluid'>
-                    <div class='row-fluid'>
-                        <a class='brand offset1 bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
-                        <ul class='nav jewels'>
-                            <li><a href='#' class='userButton'>&nbsp;</a></li>
-                            <li><a href='#' class='messageButton'>&nbsp;</a></li>
-                            <li><a href='#' class='notifButton'>&nbsp;</a></li>
-                        </ul>
-                        <ul class='nav searchbar'>
-                            <li>
-                                <input class='input-xxlarge' id='' name='' type='text' placeholder='Search for people, events and pages'>
-                                <button type='submit'></button>
-                            </li>
-                        </ul>
-                        <div class='span1 pull-right'></div>
-                        <ul class='nav links pull-right'>
-                            <li><a href='#'>Profile Page of user </a></li>
-                            <li><a href='{{ SITE_URL }}' class='bold'>Home</a></li>
-                            <li><a class='settingsButton'>&nbsp;</a></li>
-                        </ul>
-                    </div>
-                </div>
+        {% include "base/topbar.html" %}
+    {% endblock %}
+    
+    <div class='container-fluid'>
+        <div class='row-fluid'>
+            <div class='offset1 span2 sidebar'>
+                {% include "base/sidebar.html" %}
+            </div>
+            <div class='span9 main-body'>
+                {% block content %}
+                {% endblock %}
             </div>
         </div>
-    {% endblock %}
-    
-    {% block messages %}
-        <div class='container' id='container_messages'>
-            {% for message in messages %}
-                <div class='row'>
-                    <div class='col-md-8 col-md-offset-2'>
-                        <div class='alert {{ message.tags }} alert-dismissable center'>
-                            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
-                            {{ message|safe }}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% endblock %}
-    
-    {% block content %}
-    {% endblock %}
+    </div>
     
     <script type='text/javascript' src='{% static "js/jquery-1.11.0.js" %}'></script> 
     <script type='text/javascript' src='{% static "js/bootstrap-twipsy.js" %}'></script> 
