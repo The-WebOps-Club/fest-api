@@ -99,8 +99,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: inline-block;
-    vertical-align: top;
     white-space: nowrap;
+    vertical-align: top;
 }
 .topbar .profile_dp {
     height : 23px;
@@ -162,6 +162,10 @@ ul.group_link.vertical > li a {
     width : 100%;
     display : block;
     font-size : 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
     text-decoration : none;
     color : #333333;
 }
