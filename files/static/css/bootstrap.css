@@ -1940,7 +1940,7 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   margin: 5px 0 0 -20px;
   color: #ffffff;
   font-size: 20px;
-  font-weight: 200;
+  font-weight: bold;
   line-height: 1;
 }
 .topbar p {
@@ -2016,10 +2016,16 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   display: block;
   float: left;
 }
+.topbar div > ul.nav.links a:hover, .nav.links a:hover {
+    color : #FFFFFF;
+}
 .topbar div > ul.nav.links a, .nav.links a {
-
-padding: 5px 10px 7px;
-margin: 5px 0 0 0px;
+  font-size : 11px;
+  font-weight : bold;
+  color : #CCCCCC;
+  color : rgba(255, 255, 255, 0.8);
+  padding: 5px 10px 7px;
+  margin: 5px 0 0 0px;
 }
 .topbar div > ul a, .nav a {
   display: block;

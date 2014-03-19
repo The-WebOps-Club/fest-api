@@ -1,0 +1,91 @@
+/* FB Buttons */
+.jewels a {
+  height : 15px;
+  padding: 5px 20px 1px;
+  margin: 5px 0 0 0px;
+}
+.jewels a.userButton.open {
+    background-image: url(../img/fb_icons.png)!important;
+    background-repeat: no-repeat!important;
+    background-size: auto!important;
+    background-position: 0 -354px!important;
+}
+.jewels a.userButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: -25px -255px;
+}
+.jewels a.messageButton.open {
+    background-image: url(../img/fb_icons.png)!important;
+    background-repeat: no-repeat!important;
+    background-size: auto!important;
+    background-position: -27px -322px!important;
+}
+.jewels a.messageButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: -73px -102px;
+}
+.jewels a.notifButton.open {
+    background-image: url(../img/fb_icons.png)!important;
+    background-repeat: no-repeat!important;
+    background-size: auto!important;
+    background-position: -77px -322px;
+}
+.jewels a.notifButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: -75px -185px;
+}
+
+.searchbar button {
+    background-image: url(../img/fb_icons_2.png);
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: -62px -3px;
+    background-color: #fff;
+    border: 0;
+    cursor: pointer;
+    display: block;
+    height: 23px;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 22px;
+}
+
+.nav a.privacyButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: -37px -407px;
+    height: 9px;
+    margin-top: 11px;
+    padding : 0px;
+    width: 12px;
+}
+.topbar div > ul.nav.links a.settingsButton,
+.nav.links a.settingsButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat!important;
+    background-size: auto!important;
+    background-position: -80px 0!important;
+    height : 15px;
+    padding: 5px 10px 10px;
+    margin: 5px 0 0 0px;
+}
+
+/* Generic styles */
+.bold {
+    font-weight : 800;
+}
+
+
+/* Specific Template styles */
+.searchbar {
+    
+}
