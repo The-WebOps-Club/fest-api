@@ -1,39 +1,46 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 import global_settings
 from global_settings import *
-
+from django.core.urlresolvers import reverse
 # Add the Secret Key (Large Random String) to files/secret/key.txt
 # SECRET_KEY = 'hz3@sbz0q+wb&irbyn0h)cu9+9t7ofh@1tn3s!^)xia8_u$2+4' # Keep a specific key for production
     
-FEST_NAME = "Shaastra"
-    
+FEST_NAME = "Fest"
+
 # Debug settings, machine specific
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+DAJAXICE_DEBUG = DEBUG
 
 # Emails to which admin mails are sent
 ADMINS = (
+#    ('John', 'john@example.com'),
 )
 
-MANAGERS = ADMINS
+MANAGERS = (
+#    ('John', 'john@example.com'),
+)
 
 # Database settings, machine specific
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
-        'NAME': 'fest_test',
+        'NAME': 'fest-api',
         'USER': 'root',
-        'PASSWORD': '1',
+        'PASSWORD': 'omega',
         'HOST': '',
         'PORT': '',
     }
 }
 
-ALLOWED_HOSTS = [
-    '*', # Allow domain and subdomains
+ALLOWED_HOSTS = [ # Allowed domain and subdomains
+    '*', 
 ]
+
+#Absolute URL where the site has been hosted. Don't forget the trailing slash.
+SITE_URL = 'http://localhost:8000/'
+
+# Default Login URL
+# LOGIN_URL = reverse('apps.users.views.login')
 
 # Email configurations
 SEND_EMAIL = True
