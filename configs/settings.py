@@ -24,9 +24,9 @@ MANAGERS = (
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
-        'NAME': 'fest-api',
+        'NAME': 'fest_test',
         'USER': 'root',
-        'PASSWORD': 'omega',
+        'PASSWORD': '1',
         'HOST': '',
         'PORT': '',
     }
