@@ -1,6 +1,7 @@
 import os, sys, django
 gettext = lambda s: s
 
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'hz3@sbz0q+wb&irbyn0h)cu9+9t7ofh@1tn3s!^)xia8_u$2+4' # Good practice to have one more in local settings
 
@@ -15,8 +16,11 @@ DJANGO_VERSION = django.get_version()
 
 ALLOWED_HOSTS = ['*']
 
+
 #Absolute URL where the site has been hosted. Don't forget the trailing slash.
 SITE_URL = 'http://localhost:8000/'
+
+LOGIN_URL = 'login'
 
 # -------------------------------------------------------------------
 # Apps
