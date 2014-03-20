@@ -1203,14 +1203,14 @@ textarea {
   line-height: 14px;
 }
 label {
-  padding-top: 6px;
+  /*padding-top: 6px;
   font-size: 11px;
   font-weight: bold;
   line-height: 14px;
   float: left;
   width: 130px;
   text-align: right;
-  color: #666666;
+  color: #666666;*/
 }
 form .input {
   margin-left: 150px;

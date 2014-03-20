@@ -74,6 +74,12 @@
 .bold {
     font-weight : 800;
 }
+.black {
+    color : black;
+}
+.white {
+    color : white;
+}
 
 
 /* Specific Template styles */
@@ -220,3 +226,6 @@ ul.group_link.vertical > li a:hover {
     }
 }
 
+label {
+
+}

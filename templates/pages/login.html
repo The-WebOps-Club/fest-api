@@ -3,57 +3,88 @@
 
 {% block title %} {{ FEST_NAME }} {% endblock %}
 
-{% block navbar%}
-<style>
-table td{
-  border-top: 0;
-  padding-top: 0;
-  vertical-align: center;
-}
-table th, table td{
-  padding: 0;
-}
-</style>
-<div class='topbar' >
-  <div class='topbar-inner' style="height: 82px;">
-    <div class='container-fluid'>
-      <div class='row-fluid' style="padding-top:20px">
-        <a class='brand offset1 bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
-        <div class="pull-right" style="padding-right:40px;">
-          <form action="" method="POST">
-            {% csrf_token %}
-            {{ loginform }}
-            <input type="submit" value="Log In" name="submit" class="btn btn-primary" />
-          </form>
+{% block topbar%}
+    <div class='topbar' id='login_topbar' >
+        <div class='topbar-inner' id='login_topbar_inner'>
+            <div class='container-fluid'>
+                <div class='row-fluid' id='login_row'>
+                    <div class='span4 offset1'>
+                            <a class='brand bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
+                    </div>
+                    <div class='span6' id='login_box'>
+                        <form class='span9 pull-right' action='' method='POST' id='form_login'>
+                            {% csrf_token %}
+                            {{ zloginform }}
+                            <div class='span5 input_box'>
+                                <label for='username'>Email ID</label><br />
+                                <input type='text' name='username' id='id_username' required='true' autofocus class='input-large'><br />
+                            </div>
+                            <div class='span5 input_box'>
+                                <label for='password'>Password</label><br />
+                                <input type='password' name='password' id='id_password' placeholder='Password' required='true' class='input-large'><br />
+                                <a id='forgot_passwd'>Forgotten Password</a>
+                            </div>
+                            <div class='span2 submit_box'>
+                                <label></label><br />
+                                <a href='' class='btn primary small'>Log in</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-          <!--
-          <table class="table table-condensed pull-right">
-            <tr>
-              <td>Username</td>
-              <td>Password</td>
-              <td rowspan=2><button class="btn" type="submit">Sign in</button></td>
-            </tr>
-            <tr>
-              <td><input type="Username" required autofocus></td>
-              <td><input type="password" class="form-control" placeholder="Password" required></td>
-            </tr>
-
-            <table>
--->
-
-          </form>
-        </div>
-      </div>
     </div>
-  </div>
-
-  {% endblock %}
+{% endblock %}
 
 
-{% block main_content %}
+{% block full_content %}
+{% endblock %}
 
-{% for message in messages %}
-  <div class="alert-message {{ message.tags }}"><p>{{ message|safe }}</p><a class="close" data-dismiss="alert" href="#">&times;</a></div>
-{% endfor %}
+{% block extra_css %}
+<style>
+    #login_topbar_inner {
+        height: 82px;
+    }
+    #login_row {
+        padding-top: 10px;
+        color : white;
+    }
+    #login_box { 
+        padding-top: 0px;
+        font-size : 11px;
+    }
+    #form_login {
+        float : right;
+    }
+    #form_login .input_box {
+        padding : 0px 5px;
+    }
+    #form_login .submit_box {
+        padding : 0px 5px;
+    }
+    #form_login .submit_box .btn {
+        margin : 5px;
+        background-color: rgb(111, 126, 188);
+        white-space: nowrap;
+        font-size : 12px;
+    }
+    #form_login .input_box input{
+        margin-top : 5px;
+        margin-bottom : 5px;
+        margin-left : 0px;
+        margin-right : 5px;
+    }
+    #form_login a#forgot_passwd {
+        color: rgb(152, 169, 202);
+        text-decoration :none;
+        cursor : pointer;
+    }
+    #form_login a#forgot_passwd:hover {
+        color: white;
+        text-decoration :none;
+    }
+</style>
 
 {% endblock %}
+
+
