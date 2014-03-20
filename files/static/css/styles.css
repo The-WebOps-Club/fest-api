@@ -108,7 +108,7 @@
     width : 23px;
     margin: 3px 5px 3px 3px;
 }
-.main-body {
+.main_body {
     border-left-color: rgb(204, 204, 204);
     border-left-style: solid;
     border-left-width: 1px;
@@ -188,12 +188,35 @@ ul.group_link.vertical > li a:hover {
 }
 .counter {
     opacity : 1;
-    background-color: #6666ff;
+    background-color: #d8dfea;
+    color: #3b5998;
+}
+.counter.loading {
+    opacity : 1;
+    background-color: transparent;
 }
 .topbar .counter {
     background-color: #dd3333;
     line-height : 11px;
     float : right;
     margin-top : -5px;
+    color: #ffffff;
     position : absolute;
 }
+.icon-loading {
+    background-image: url(../img/loading.png);
+    height: 12px;
+    width: 12px;
+    z-index : 99;
+    background-color: transparent;
+    -webkit-animation: rotateSpinner 1.2s linear infinite;
+}
+@-webkit-keyframes rotateSpinner{
+    0%  {
+        -webkit-transform:rotate(0deg)
+    }
+    100%    {
+        -webkit-transform:rotate(360deg)
+    }
+}
+

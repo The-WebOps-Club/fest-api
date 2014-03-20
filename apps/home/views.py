@@ -16,7 +16,6 @@ from django.templatetags.static import static
 # Python
 import os
 
-@login_required
 def home (request, *args, **kwargs):
     homepage = True
     return render_to_response('pages/home.html', locals(), context_instance= global_context(request))

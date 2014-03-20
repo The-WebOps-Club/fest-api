@@ -38,25 +38,23 @@
 </head>
 <body id='bootstrap-js'>
     
-    {% block navbar %}
+    {% block topbar %}
         {% include "base/topbar.html" %}
     {% endblock %}
     
     <div class='container-fluid'>
-        {% block main_content %}
-        <div class='row-fluid'>
-            <div class='span2 sidebar'>
-                {% include "base/sidebar.html" %}
+        {% block full_content %}
+            <div class='row-fluid'>
+                <div class='span2 sidebar'>
+                    {% include "base/sidebar.html" %}
+                </div>
+                <div class='span10 main_body'>
+                    {% block content %}
+                        
+                    {% endblock %}
+                </div>
             </div>
-            <div class='span10 main-body'>
-                {% for message in messages %}
-                    <div class="alert-message {{ message.tags }}"><a class="close" href="#">&times;</a><p>{{ message|safe }}</p></div>
-                {% endfor %}
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
-        {% endblock main_content %}
+        {% endblock %}
     </div>
     
     <script type='text/javascript' src='{% static "js/jquery-1.11.0.js" %}'></script> 
