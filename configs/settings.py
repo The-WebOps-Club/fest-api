@@ -27,9 +27,9 @@ ROOT_PASSWORD = "password"
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
-        'NAME': 'fest-api-db-name',
-        'USER': 'user',
-        'PASSWORD': 'password',
+        'NAME': 'fest-api',
+        'USER': 'root',
+        'PASSWORD': 'omega',
         'HOST': '',
         'PORT': '',
     }

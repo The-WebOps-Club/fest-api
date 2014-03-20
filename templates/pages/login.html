@@ -20,10 +20,11 @@ table th, table td{
       <div class='row-fluid' style="padding-top:20px">
         <a class='brand offset1 bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
         <div class="pull-right" style="padding-right:40px;">
-        <form action="" method="POST">
-          {% csrf_token %}
-          {{ loginform }}
-          <input type="submit" value="Log In" name="submit" class="btn btn-primary" />
+          <form action="" method="POST">
+            {% csrf_token %}
+            {{ loginform }}
+            <input type="submit" value="Log In" name="submit" class="btn btn-primary" />
+          </form>
         </div>
           <!--
           <table class="table table-condensed pull-right">
@@ -48,8 +49,11 @@ table th, table td{
 
   {% endblock %}
 
-  {% block content %}
 
+{% block main_content %}
 
+{% for message in messages %}
+  <div class="alert-message {{ message.tags }}"><p>{{ message|safe }}</p><a class="close" data-dismiss="alert" href="#">&times;</a></div>
+{% endfor %}
 
-  {% endblock %}
+{% endblock %}

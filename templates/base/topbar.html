@@ -18,9 +18,9 @@
                 </ul>
                 <div class='span1 pull-right'></div>
                 <ul class='nav links pull-right'>
-                    <li class='topbar_profile'><a href='#'>
+                    <li class='topbar_profile'><a href="{% url 'apps.users.views.profile' %}">
                         <img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
-                        <span class='profile_name'>Profile Page of user </span>
+                        <span class='profile_name'>{{ user.get_full_name }}</span>
                     </a></li>
                     <li><a href='{{ SITE_URL }}' class='bold'><span>Home</span></a></li>
                     <li><a class='settingsButton'><span>&nbsp;</span></a></li>
