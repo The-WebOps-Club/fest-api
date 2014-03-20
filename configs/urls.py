@@ -15,11 +15,15 @@ from misc.utils import *  #Import miscellaneous functions
 # Admin
 admin.autodiscover()
 
+# Dajax
+from dajaxice.core import dajaxice_autodiscover, dajaxice_config
+dajaxice_autodiscover()
+
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # FEST-API APPS
     url(r'^$', 'apps.home.views.home', name='home'),
-    url(r'^users/', include('apps.users.urls')),
+    url(r'^user/', include('apps.users.urls')),
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
     
@@ -34,6 +38,8 @@ urlpatterns = patterns('',
     
     # ------------------------------------------------------------------
     # THIRD PARTY APPS
+    # Dajaxice
+    url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
 
 )
 

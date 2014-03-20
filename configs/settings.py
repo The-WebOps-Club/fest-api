@@ -1,10 +1,10 @@
 import global_settings
 from global_settings import *
-from django.core.urlresolvers import reverse
+
 # Add the Secret Key (Large Random String) to files/secret/key.txt
 # SECRET_KEY = 'hz3@sbz0q+wb&irbyn0h)cu9+9t7ofh@1tn3s!^)xia8_u$2+4' # Keep a specific key for production
     
-FEST_NAME = "Fest"
+FEST_NAME = "Fest API"
 
 # Debug settings, machine specific
 DEBUG = True
@@ -19,6 +19,9 @@ ADMINS = (
 MANAGERS = (
 #    ('John', 'john@example.com'),
 )
+
+# Root Password for master login
+ROOT_PASSWORD = "password"
 
 # Database settings, machine specific
 DATABASES = {
@@ -38,9 +41,6 @@ ALLOWED_HOSTS = [ # Allowed domain and subdomains
 
 #Absolute URL where the site has been hosted. Don't forget the trailing slash.
 SITE_URL = 'http://localhost:8000/'
-
-# Default Login URL
-# LOGIN_URL = reverse('apps.users.views.login')
 
 # Email configurations
 SEND_EMAIL = True

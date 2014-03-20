@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+{% block title %} {{ FEST_NAME }} {% endblock %}
+
+{% block content %}
+<div class="row-fluid" style="padding-top:20px;">
+<h2>About</h2><hr/>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ profile_form.as_p }}
+    <input type="submit" value="Save" class="btn btn-primary" />
+</form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style type='text/css'>
+</style>
+{% endblock %}
+
+
+{% block extra_js %}
+{{ block.super }}
+<script type='text/javascript'>
+</script>
+{% endblock %}

@@ -1,80 +1,59 @@
-{% extends 'pages/base.html' %}
+{% extends 'base/base.html' %}
 {% load staticfiles %}
 
+{% block title %} {{ FEST_NAME }} {% endblock %}
+
 {% block navbar%}
-{% endblock %}
-
-{% block content %}
-<style type="text/css">
-.profile-img
-{
-  width: 128px;
-  height: 128px;
-  margin: 0 auto 10px;
-  display: block;
-  -moz-border-radius: 50%;
-  -webkit-border-radius: 50%;
-  border-radius: 50%;
+<style>
+table td{
+  border-top: 0;
+  padding-top: 0;
+  vertical-align: center;
 }
-body {
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: #eee;
-}
-
-.form-signin {
-  max-width: 330px;
-  padding: 15px;
-  margin: 0 auto;
-}
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
-  margin-bottom: 10px;
-}
-.form-signin .checkbox {
-  font-weight: normal;
-}
-.form-signin .form-control {
-  position: relative;
-  height: auto;
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-  padding: 10px;
-  font-size: 16px;
-}
-.form-signin .form-control:focus {
-  z-index: 2;
-}
-.form-signin input[type="email"] {
-  margin-bottom: -1px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-}
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+table th, table td{
+  padding: 0;
 }
 </style>
-<div class="container well">
-      <img class="profile-img" src="{% static 'img/fest_logo_medium_300.png' %}"/>
-      <form class="form-signin" role="form">
-        <center>
-        <h2 class="form-signin-heading">{{FEST_NAME}}</h2>
-          Please sign in
-        <input type="email" class="form-control" placeholder="Email address" required autofocus>
-        <input type="password" class="form-control" placeholder="Password" required>
-      </center>
-        
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
+<div class='topbar' >
+  <div class='topbar-inner' style="height: 82px;">
+    <div class='container-fluid'>
+      <div class='row-fluid' style="padding-top:20px">
+        <a class='brand offset1 bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
+        <div class="pull-right" style="padding-right:40px;">
+          <form action="" method="POST">
+            {% csrf_token %}
+            {{ loginform }}
+            <input type="submit" value="Log In" name="submit" class="btn btn-primary" />
+          </form>
+        </div>
+          <!--
+          <table class="table table-condensed pull-right">
+            <tr>
+              <td>Username</td>
+              <td>Password</td>
+              <td rowspan=2><button class="btn" type="submit">Sign in</button></td>
+            </tr>
+            <tr>
+              <td><input type="Username" required autofocus></td>
+              <td><input type="password" class="form-control" placeholder="Password" required></td>
+            </tr>
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
+            <table>
+-->
 
-    </div> <!-- /container -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<p class="text-center text-muted">© Copyright {{FEST_NAME}} WebOps Team</p>
+  {% endblock %}
+
+
+{% block main_content %}
+
+{% for message in messages %}
+  <div class="alert-message {{ message.tags }}"><p>{{ message|safe }}</p><a class="close" data-dismiss="alert" href="#">&times;</a></div>
+{% endfor %}
+
 {% endblock %}

@@ -131,7 +131,7 @@ class ERPUser(models.Model):
     room_no         = models.IntegerField(default=0, blank=True, null=True )
     hostel          = models.CharField(max_length=15, choices = HOSTEL_CHOICES, blank=True, null=True)
     dob             = models.DateField(null=True, blank=True)
-    #chennai_number  = models.CharField(max_length=10, blank=True, null=True)
+    # mobile_number  = models.CharField(max_length=10, blank=True, null=True)
     summer_number   = models.CharField(max_length=10, blank=True, null=True)
     
     # Holiday stay

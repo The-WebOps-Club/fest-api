@@ -6,7 +6,7 @@
     <meta name='application-name' content='{{FEST_NAME}} Website'>
     <meta name='author' content='{{FEST_NAME}} WebOps Team'>
     <meta name='description' content='{% block descriptionmeta %} {% endblock %}'>
-    <meta name='keywords' content='national, service, scheme '>
+    <meta name='keywords' content=''>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     
     <title>{% block title %} {{ FEST_NAME }} {% endblock %}</title>
@@ -43,15 +43,20 @@
     {% endblock %}
     
     <div class='container-fluid'>
+        {% block main_content %}
         <div class='row-fluid'>
             <div class='span2 sidebar'>
                 {% include "base/sidebar.html" %}
             </div>
             <div class='span10 main-body'>
+                {% for message in messages %}
+                    <div class="alert-message {{ message.tags }}"><a class="close" href="#">&times;</a><p>{{ message|safe }}</p></div>
+                {% endfor %}
                 {% block content %}
                 {% endblock %}
             </div>
         </div>
+        {% endblock main_content %}
     </div>
     
     <script type='text/javascript' src='{% static "js/jquery-1.11.0.js" %}'></script> 
@@ -62,8 +67,8 @@
     <script type='text/javascript' src='{% static "js/bootstrap-popover.js" %}'></script> 
     <script type='text/javascript' src='{% static "js/bootstrap-modal.js" %}'></script> 
     <script type='text/javascript' src='{% static "js/bootstrap-scrollspy.js" %}'></script> 
-    <!--<script type='text/javascript' src='{% static 'dajax/jquery.dajax.core.js' %}'></script> -->
-    {# {% load dajaxice_templatetags %} {% dajaxice_js_import %} #}
+    <script type='text/javascript' src="{% static 'dajax/jquery.dajax.core.js' %}"></script>
+    {% load dajaxice_templatetags %} {% dajaxice_js_import %}
     
     {% block extra_js %}{% endblock %}
 </body>
