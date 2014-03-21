@@ -150,7 +150,8 @@
     white-space: nowrap;
 
 }
-.sidebar .group_link_head {
+.sidebar .group_link_head,
+.group_head {
     color: #999;
     font-size: 9px;
     font-weight: bold;
@@ -228,4 +229,9 @@ ul.group_link.vertical > li a:hover {
 
 label {
 
+}
+
+hr {
+    border-color : #DDD;    
+    margin : 20px 0px;
 }

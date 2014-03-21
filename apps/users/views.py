@@ -24,25 +24,25 @@ def login_user(request):
     """ Renders login view process POST logs into home page """
     loginform = LoginForm()
     if request.method == "POST":
-        print 'post'
+        print "post"
         loginform = LoginForm(request.POST)
         if loginform.is_valid():
             # Checks for username and password
-            username = loginform.cleaned_data['username']
-            password = loginform.cleaned_data['password']
+            username = loginform.cleaned_data["username"]
+            password = loginform.cleaned_data["password"]
             # Authenticates user against database
             user = authenticate(username=username, password=password)
             if user is not None:
                 if user.is_active:
                     login(request, user) # Logs in the User
-                    return redirect('apps.home.views.home') # Redirect to home page
+                    return redirect("apps.home.views.home") # Redirect to home page
                 else:
                     messages.error(request, strings.LOGIN_ERROR_INACTIVE)
             else:
                 messages.error(request, strings.LOGIN_ERROR_WRONG_CRED)
         else:
             messages.error(request, strings.LOGIN_ERROR_INVALID)
-    return render_to_response('pages/login.html', locals(), context_instance= global_context(request))
+    return render_to_response("pages/login.html", locals(), context_instance= global_context(request))
 
 @login_required
 def profile(request):
@@ -72,6 +72,7 @@ def profile(request):
                 messages.error(request, strings.INVALID_FORM)
         else:
             messages.error(request, strings.INVALID_FORM)
-    return render_to_response('pages/profile.html', locals(), context_instance= global_context(request))
+    return render_to_response("pages/profile.html", locals(), context_instance= global_context(request))
 
-
+def newsfeed(request):
+    return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))

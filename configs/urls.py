@@ -23,7 +23,15 @@ urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # FEST-API APPS
     url(r'^$', 'apps.home.views.home', name='home'),
-    url(r'^user/', include('apps.users.urls')),
+
+    # User pages
+    url(r'^user/login/$', 'apps.users.views.login_user', name='login'),
+    url(r'^user/profile/$', 'apps.users.views.profile', name='profile'),
+
+    # Gen testing urls
+    url(r'^newsfeed/$', 'apps.users.views.newsfeed', name='newsfeed'),
+
+
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
     

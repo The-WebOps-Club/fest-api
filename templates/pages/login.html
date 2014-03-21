@@ -9,7 +9,7 @@
             <div class='container-fluid'>
                 <div class='row-fluid' id='login_row'>
                     <div class='span4 offset1'>
-                            <a class='brand bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
+                        <a class='brand big_brand bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
                     </div>
                     <div class='span6' id='login_box'>
                         <form class='span9 pull-right' action='' method='POST' id='form_login'>
@@ -38,6 +38,11 @@
 
 
 {% block full_content %}
+    <div class='span6'>
+    </div>
+    <div class='span6'>
+        <span class='big'>Sign Up</span>
+    </div>
 {% endblock %}
 
 {% block extra_css %}
@@ -82,6 +87,9 @@
     #form_login a#forgot_passwd:hover {
         color: white;
         text-decoration :none;
+    }
+    .topbar .big_brand {
+        font-size : 40px;
     }
 </style>
 
