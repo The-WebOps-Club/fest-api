@@ -24,12 +24,14 @@ urlpatterns = patterns('',
     # FEST-API APPS
     url(r'^$', 'apps.home.views.home', name='home'),
 
-    # User pages
-    url(r'^user/login/$', 'apps.users.views.login_user', name='login'),
-    url(r'^user/profile/$', 'apps.users.views.profile', name='profile'),
+    # Users
+    url(r'^login/$', 'apps.users.views.login_user', name='login'),
+    url(r'^profile/(?P<id>\d+)$', 'apps.users.views.profile', name='profile'),
 
-    # Gen testing urls
+    # Home
     url(r'^newsfeed/$', 'apps.users.views.newsfeed', name='newsfeed'),
+
+    # Walls
     url(r'^wall/$', 'apps.walls.views.wall', name='wall'),
 
 

@@ -44,13 +44,14 @@ def login_user(request):
             messages.error(request, strings.LOGIN_ERROR_INVALID)
     return render_to_response("pages/login.html", locals(), context_instance= global_context(request))
 
-@login_required
-def profile(request):
+def profile(request, id=None):
     """ 
         Lets the user view and edit profile
         Creates an new profile if one does not exist
     """
-    user = get_object_or_404(User, pk=request.user.pk)
+    if not id:
+        id = request.user.id
+    user = get_object_or_404(User, pk=id)
     profile = ERPUser.objects.get(user=user)
     try:
         profile = ERPUser.objects.get(user=user)
