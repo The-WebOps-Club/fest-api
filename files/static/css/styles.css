@@ -1,27 +1,27 @@
 /* FB Buttons */
-.jewels a {
-  height : 15px;
-  width : 5px;
-  padding: 5px 20px 5px;
-  margin: 5px 0 0 0px;
+ .jewels a {
+    height : 15px;
+    width : 5px;
+    padding: 5px 20px 5px;
+    margin: 5px 0 0 0px;
 }
 .jewels a.userButton.open {
     background-image: url(../img/fb_icons.png)!important;
-    background-repeat: no-repeat!important;
+    background-repeat: no- repeat!important;
     background-size: auto!important;
-    background-position: 0 -354px!important;
+    background- position: 0 -354px!important;
 }
 .jewels a.userButton {
     background-image: url(../img/fb_icons.png);
     background-repeat: no-repeat;
-    background-size: auto;
+    background- size: auto;
     background-position: -25px -255px;
 }
 .jewels a.messageButton.open {
     background-image: url(../img/fb_icons.png)!important;
-    background-repeat: no-repeat!important;
+    background-repeat: no- repeat!important;
     background-size: auto!important;
-    background-position: -27px -322px!important;
+    background- position: -27px -322px!important;
 }
 .jewels a.messageButton {
     background-image: url(../img/fb_icons.png);
@@ -41,7 +41,6 @@
     background-size: auto;
     background-position: -75px -185px;
 }
-
 .searchbar button {
     background-image: url(../img/fb_icons_2.png);
     background-repeat: no-repeat;
@@ -58,7 +57,6 @@
     top: 0;
     width: 22px;
 }
-
 .nav a.privacyButton {
     background-image: url(../img/fb_icons.png);
     background-repeat: no-repeat;
@@ -69,9 +67,8 @@
     padding : 0px;
     width: 12px;
 }
-
 /* Generic styles */
-.bold {
+ .bold {
     font-weight : 800;
 }
 .black {
@@ -80,12 +77,8 @@
 .white {
     color : white;
 }
-
-
 /* Specific Template styles */
-
-.topbar div > ul.nav.links a.settingsButton,
-.nav.links a.settingsButton {
+.topbar div > ul.nav.links a.settingsButton, .nav.links a.settingsButton {
     background-image: url(../img/fb_icons.png);
     background-repeat: no-repeat!important;
     background-size: auto!important;
@@ -98,8 +91,7 @@
     padding: 0px 0px 0px 0px;
     margin: 5px 0 0 0px;
 }
-.topbar div > ul.nav.links li.topbar_profile a .profile_name, 
-.nav.links li.topbar_profile a .profile_name {
+.topbar div > ul.nav.links li.topbar_profile a .profile_name, .nav.links li.topbar_profile a .profile_name {
     padding: 0px 0px 0px 0px;
     margin: 5px 5px 0px 0px;
     max-width: 175px;
@@ -114,6 +106,9 @@
     width : 23px;
     margin: 3px 5px 3px 3px;
 }
+.below_topbar {
+	margin-top : 40px;
+}
 .main_body {
     border-left-color: rgb(204, 204, 204);
     border-left-style: solid;
@@ -122,12 +117,9 @@
     border-right-style: solid;
     border-right-width: 1px;
     padding: 10px 10px;
-    padding-top: 40px;
 }
-
 .sidebar {
     padding: 10px 10px;
-    padding-top: 40px;
 }
 .sidebar #profile_tab {
     padding : 10px;
@@ -148,10 +140,8 @@
     word-wrap: break-word;
     vertical-align: top;
     white-space: nowrap;
-
 }
-.sidebar .group_link_head,
-.group_head {
+.sidebar .group_link_head, .group_head {
     color: #999;
     font-size: 9px;
     font-weight: bold;
@@ -177,19 +167,16 @@ ul.group_link.vertical > li a {
     text-decoration : none;
     color : #333333;
 }
-ul.group_link.vertical > li:hover ,
-ul.group_link.vertical > li a:hover {
+ul.group_link.vertical > li:hover, ul.group_link.vertical > li a:hover {
     color : black;
     text-decoration : none;
     background-color : rgb(239, 242, 247);
 }
-
 .sidebar ul.group_link.vertical > li.active {
     font-weight : bold;
     background-color: rgb(216, 223, 234);
 }
-.sidebar ul.group_link.vertical > li.active a:hover,
-.sidebar ul.group_link.vertical > li.active:hover {
+.sidebar ul.group_link.vertical > li.active a:hover, .sidebar ul.group_link.vertical > li.active:hover {
     font-weight : bold;
     background-color: rgb(216, 223, 234);
 }
@@ -218,20 +205,17 @@ ul.group_link.vertical > li a:hover {
     background-color: transparent;
     -webkit-animation: rotateSpinner 1.2s linear infinite;
 }
-@-webkit-keyframes rotateSpinner{
-    0%  {
+@-webkit-keyframes rotateSpinner {
+    0% {
         -webkit-transform:rotate(0deg)
     }
-    100%    {
+    100% {
         -webkit-transform:rotate(360deg)
     }
 }
-
 label {
-
 }
-
 hr {
-    border-color : #DDD;    
+    border-color : #DDD;
     margin : 20px 0px;
 }

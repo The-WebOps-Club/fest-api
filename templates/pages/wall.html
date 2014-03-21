@@ -1,9 +1,33 @@
 {% extends "base/base.html" %} {% load staticfiles %} {% block title %} {{ FEST_NAME }} {% endblock %} {% block content %}
-background-color: #E9EAED;<div class="row-fluid" style="">
+<div class="row-fluid" id="banner" style="">
+    <div class="span12" id="banner_wrapper">
+
+        <div class="span12" id="banner_pic">
+            <div id="banner_profile">
+                <a href="">
+                    <img src="{% static 'img/temp/profile_big.jpg' %}" />
+                </a>
+            </div>
+
+        </div>
+        <div class="span12" id="banner_bar">
+            <div class="banner_item"><a href="" class="banner_link active">Timeline</a><i class="selection_caret"></i>
+            </div>
+            <div class="banner_item"><a href="" class="banner_link">About</a><i class="selection_caret"></i>
+            </div>
+            <div class="banner_item"><a href="" class="banner_link">Media</a><i class="selection_caret"></i>
+            </div>
+            <div class="banner_item"><a href="" class="banner_link">Portal</a><i class="selection_caret"></i>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<div class="row-fluid" style="">
     <div class="span12" id="status_media">
         <div class="menu_item">
             <i class="icon-search"></i>
-            <a class="menu_link active" href="">Comment on a wall</a>
+            <a class="menu_link active" href="">Comment on the wall</a>
             <i class="selection_caret"></i>
         </div>
         <div class="menu_item">
@@ -61,6 +85,59 @@ background-color: #E9EAED;<div class="row-fluid" style="">
 </div>
 {% endblock %} {% block extra_css %} {{ block.super }}
 <style type="text/css">
+#banner {
+    background-color: white;
+    min-height : 200px;
+    max-height: 500px;
+}
+#banner_profile {
+    background: rgba(250, 250, 250, 1);
+    -webkit-border-radius: 3px;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.07);
+    border : 1px solid #aaa;
+    height : 150px;
+    width: 150px;
+    margin : 20px;
+    padding : 4px;
+}
+#banner_profile img {
+    height : 150px;
+    width: 150px;
+}
+#banner_pic {
+    background: -webkit-linear-gradient(top, white, #ccc);
+    min-height : 200px;
+    max-height: 500px;
+}
+#banner_bar {
+    height : 40px;
+    border : 1px solid #ddd;
+}
+#banner_bar .banner_item {
+    display : inline-block;
+    border-right: 1px solid #ddd;
+    width : auto;
+    height : 16px;
+    line-height: 16px;
+    font-size : 14px;
+    font-weight : bold;
+    padding : 10px 30px;
+    margin : 0px;
+    vertical-align: middle;
+}
+#banner_bar .banner_item.active .banner_link, #banner_bar .banner_item .banner_link.active {
+    color : black;
+    text-decoration : none;
+}
+#banner_bar .banner_item.active .banner_link + .selection_caret, #banner_bar .banner_item .banner_link.active + .selection_caret {
+    visibility : visible;
+}
+#banner_bar .banner_item > .selection_caret {
+    position : relative;
+    margin : auto;
+    top : 7px;
+    visibility : hidden;
+}
 #status_wrapper {
     border: 1px solid #B4BBCD;
     ;
@@ -129,9 +206,10 @@ background-color: #E9EAED;<div class="row-fluid" style="">
     top: 10px;
     visibility : hidden;
 }
-#status_media .menu_item .menu_link.active + .selection_caret,
-#status_media .menu_item.active .menu_link + .selection_caret {
+#status_media .menu_item .menu_link.active + .selection_caret, #status_media .menu_item.active .menu_link + .selection_caret {
     visibility : visible;
+}
+div.news_post {
 }
 div.news_post hr {
 }
