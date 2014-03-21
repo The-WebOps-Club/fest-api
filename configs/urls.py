@@ -30,6 +30,7 @@ urlpatterns = patterns('',
 
     # Gen testing urls
     url(r'^newsfeed/$', 'apps.users.views.newsfeed', name='newsfeed'),
+    url(r'^wall/$', 'apps.walls.views.wall', name='wall'),
 
 
     # ------------------------------------------------------------------

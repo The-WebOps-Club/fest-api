@@ -16,7 +16,7 @@ from django.templatetags.static import static
 # Python
 import os
 
-@login_required
+
 def wall (request, *args, **kwargs):
     wallpage = True
-    return render_to_response('pages/home.html', locals(), context_instance= global_context(request))
+    return render_to_response('pages/wall.html', locals(), context_instance= global_context(request))
