@@ -61,7 +61,7 @@ class Post(models.Model):
     
     # Relations with various other models
     wall            = models.ForeignKey(Wall, related_name='posts', blank = True, null = True)
-    child           = models.OneToOneField('self', related_name='parent', blank = True, null = True)
+    childs          = models.ManyToManyField('self', related_name='parent', blank = True, null = True)
     by              = models.ForeignKey(User, related_name='posts_created')
     
     # Analytics

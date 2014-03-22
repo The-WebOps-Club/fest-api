@@ -28,6 +28,11 @@ urlpatterns = patterns('',
     url(r'^user/login/$', 'apps.users.views.login_user', name='login'),
     url(r'^user/profile/$', 'apps.users.views.profile', name='profile'),
 
+    # Wall, Post, Comment
+    url(r'^create_post/(?P<wall_id>\d+)/$', 'apps.walls.views.create_post',  name='create_post'),
+    url(r'^create_comment/(?P<post_id>\d+)/$', 'apps.walls.views.create_comment',  name='create_comment'),
+
+
     # Gen testing urls
     url(r'^newsfeed/$', 'apps.users.views.newsfeed', name='newsfeed'),
     url(r'^wall/$', 'apps.walls.views.wall', name='wall'),

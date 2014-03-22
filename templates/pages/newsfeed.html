@@ -1,5 +1,5 @@
-{% extends "base/base.html" %} {% load staticfiles %} {% block title %} {{ FEST_NAME }} {% endblock %} {% block content %}
-background-color: #E9EAED;<div class="row-fluid" style="">
+{% extends "base/base.html" %} {% load staticfiles %} {% load humanize %} {% block title %} {{ FEST_NAME }} {% endblock %} {% block content %}
+<div class="row-fluid" style="">
     <div class="span12" id="status_media">
         <div class="menu_item">
             <i class="icon-search"></i>
@@ -23,6 +23,48 @@ background-color: #E9EAED;<div class="row-fluid" style="">
             </div>
         </div>
     </div>
+    {% for post in posts %}
+    <div id="id_post_{{ post.pk }}" class="news_post span12">
+        <hr />
+        <div class="news_left">
+            <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
+        </div>
+        <div class="news_main">
+            <div class="news_head">
+                <a class="news_profile_name">{{ post.by.get_full_name }}</a> posted on <a href="#">{{ post.wall }}</a> {{ post.time_created|naturaltime }}
+            </div>
+            <div class="news_body">
+                {{ post.description }}
+            </div>
+            <div class="news_extra"></div>
+            {% for comment in post.childs.all %}
+            <div id="id_comment_{{ comment.pk }}" class="news_comment">
+                <div class="news_comment_left">
+                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
+                </div>
+                <div class="news_comment_body">
+                    {{ comment.description }}
+                    <div class="news_comment_info">
+                        {{ comment.time_created|naturaltime }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="news_comment">
+                <div class="news_comment_left">
+                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
+                </div>
+                <div class="news_comment_body">
+                    <form action="{% url 'create_comment' post.pk %}" method="POST">
+                        {% csrf_token %}
+                        <textarea class="span12 status_textarea" name="status" id="id_status" cols="30" rows="1" placeholder="Post your comment here"></textarea>
+                        <input class="submit_comment" type="submit" value="Comment" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
     <div class="news_post span12">
         <hr />
         <div class="news_left">

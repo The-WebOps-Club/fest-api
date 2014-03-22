@@ -10,7 +10,7 @@ from misc.utils import *  #Import miscellaneous functions
 # Models
 from django.contrib.auth.models import User
 from models import ERPUser
-from apps.walls.models import Wall
+from apps.walls.models import Wall, Post
 # Forms
 from forms import LoginForm, ProfileForm, UserForm
 # View functions
@@ -71,4 +71,5 @@ def profile(request):
 
 def newsfeed(request):
     newsfeed = True
+    posts = Post.objects.exclude(wall__isnull=True).order_by('-time_updated')
     return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
