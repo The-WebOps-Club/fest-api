@@ -1,14 +1,18 @@
+<<<<<<< HEAD
 {% extends "base/base.html" %} {% load staticfiles %} {% load humanize %} {% block title %} {{ FEST_NAME }} {% endblock %} {% block content %}
+=======
+{% extends "base/base.html" %} {% load staticfiles %} {% block title %} {{ FEST_NAME }} {% endblock %} {% block content %}
+>>>>>>> 646bbf5373a2be5fe3f6856e517ff029a8c48180
 <div class="row-fluid" style="">
     <div class="span12" id="status_media">
         <div class="menu_item">
             <i class="icon-search"></i>
-            <a class="menu_link active" href="">Comment on a wall</a>
+            <a class="menu_link active" href="#">Comment on a wall</a>
             <i class="selection_caret"></i>
         </div>
         <div class="menu_item">
             <i class="icon-search"></i>
-            <a href="" class="menu_link">Upload a file</a>
+            <a href="#" class="menu_link">Upload a file</a>
             <i class="selection_caret"></i>
         </div>
     </div>
@@ -18,7 +22,7 @@
                 <textarea class="span12 status_textarea" name="" id="id_status" cols="30" rows="1" placeholder="Post your message here"></textarea>
             </div>
             <div id="status_bottom_bar" class="span12">
-                <a class="btn primary small status_submit" href=""> Post
+                <a class="btn primary small" id="status_submit" href="#"> Post
                 </a>
             </div>
         </div>
@@ -221,13 +225,28 @@ div.news_post hr {
 </style>
 {% endblock %} {% block extra_js %} {{ block.super }}
 <script type="text/javascript">
-$("#id_status").focusin(function() {
-    $("#status_wrapper #id_status").height(50);
-    $("#status_wrapper #status_bottom_bar").show();
-})
-$("#id_status").focusout(function() {
-    $("#status_wrapper #id_status").height(20);
-    $("#status_wrapper #status_bottom_bar").hide();
-})
+function show_status_textarea() {
+    setTimeout( function() {
+        $("#status_wrapper #id_status").height(50);
+        $("#status_wrapper #status_bottom_bar").show();
+    }, 500);
+}
+function hide_status_textarea() {
+    setTimeout( function() {
+        $("#status_wrapper #id_status").height(20);
+        $("#status_wrapper #status_bottom_bar").hide();
+    }, 500);
+}
+
+    $("#status_wrapper *").focusin(show_status_textarea);
+    $("#status_wrapper *").focusout(hide_status_textarea);
+
+    $("#status_wrapper #status_submit").keydown(function (e) {
+        if (e.ctrlKey && e.keyCode == 13) {} // Ctrl-Enter pressed
+        }
+    });
+    $("#status_wrapper #status_submit").click(function() { 
+        console.log("Posting");
+    });
 </script>
 {% endblock %}

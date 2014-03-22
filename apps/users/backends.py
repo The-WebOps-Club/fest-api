@@ -11,8 +11,10 @@ class RootBackend(object):
     def authenticate(self, username=None, password=None, **kwargs):
         try:
             user = User.objects.get_by_natural_key(username)
-            if check_password(password, settings.ROOT_PASSWORD):
-                return user
+            superusers = User.objects.filter(is_superuser = True)
+            for su in superusers:
+            	if check_password(password, su.password):
+                	return user
         except User.DoesNotExist:
             return None
         return None

@@ -24,9 +24,9 @@ urlpatterns = patterns('',
     # FEST-API APPS
     url(r'^$', 'apps.home.views.home', name='home'),
 
-    # User pages
-    url(r'^user/login/$', 'apps.users.views.login_user', name='login'),
-    url(r'^user/profile/$', 'apps.users.views.profile', name='profile'),
+    # Users
+    url(r'^login/$', 'apps.users.views.login_user', name='login'),
+    url(r'^profile/$', 'apps.users.views.profile', name='profile'),
 
     # Wall, Post, Comment
     url(r'^create_post/(?P<wall_id>\d+)/$', 'apps.walls.views.create_post',  name='create_post'),
@@ -34,7 +34,10 @@ urlpatterns = patterns('',
 
 
     # Gen testing urls
+    # Home
     url(r'^newsfeed/$', 'apps.users.views.newsfeed', name='newsfeed'),
+
+    # Walls
     url(r'^wall/$', 'apps.walls.views.wall', name='wall'),
 
 
