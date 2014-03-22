@@ -19,9 +19,31 @@ from misc import strings
 import os
 
 
-def wall (request, *args, **kwargs):
+def wall (request, wall_id=None):
+    """
+        Renders a Wall. It can be of User, Department, subdepartment etc.
+
+        Args:
+            request     :The HTTP Request:
+            wall_id     :ID of the wall that has to be shown
+
+        Kwargs:
+            None
+
+        Returns:
+            If id found in database : renders 'pages/wall.html'
+            > Context variables in the `pages/wall.html` :-
+                - global_context_variables : misc.utils.global_context()
+                - wall      :  The current wall objects
+                - posts     : Posts related to the wall
+        Raises:
+            None
+    """
     wallpage = True
-    wall = request.user.erp_profile.wall
+    if wall_id:
+        wall = get_object_or_404(Wall, pk=int(wall_id))
+    else:
+        wall = request.user.erp_profile.wall
     posts = Post.objects.filter(wall=wall).order_by('-time_updated')
     return render_to_response('pages/wall.html', locals(), context_instance= global_context(request))
 
@@ -32,7 +54,7 @@ def create_post(request, wall_id):
     wallpage = True
     data = request.POST.copy()
     try:
-        wall = get_object_or_404(Wall, pk=wall_id)
+        wall = get_object_or_404(Wall, pk=int(wall_id))
         Post.objects.create(description=data['status'], 
             wall=wall, by=request.user)
     except Exception, e:
@@ -55,5 +77,3 @@ def create_comment(request, post_id):
     # except Exception, e:
     messages.error(request, strings.STD_ERROR )
     return redirect('wall')
-
-# def return_posts(request, wall_id)

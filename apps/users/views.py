@@ -69,7 +69,7 @@ def login_user(request):
     local_context = {
         "login_form" : login_form,
     }
-    return render_to_response("pages/login.html", locat_context, context_instance= global_context(request))
+    return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
 
 def profile(request, id=None):
     """ 

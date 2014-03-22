@@ -38,7 +38,7 @@ urlpatterns = patterns('',
     url(r'^newsfeed/$', 'apps.users.views.newsfeed', name='newsfeed'),
 
     # Walls
-    url(r'^wall/$', 'apps.walls.views.wall', name='wall'),
+    url(r'^wall/(?P<wall_id>\d+)/$', 'apps.walls.views.wall', name='wall'),
 
 
     # ------------------------------------------------------------------
