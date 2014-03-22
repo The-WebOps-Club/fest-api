@@ -163,4 +163,14 @@ class ERPUser(models.Model):
     #    if self.subdept:
     #        dept_str += " (" + self.subdept.name + ")"
     #    return dept_str
+
+    def save(self, *args, **kwargs):
+    	"""
+    		An extended save method to handle 	
+    			- M2M associated with the model
+    			- O2O associated with the model
+    	"""
+    	self.wall = Wall.objects.create(name=self.user.username)
+    	temp = super(ERPUser, self).save(*args, **kwargs)
+    	return 
     

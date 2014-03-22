@@ -21,15 +21,39 @@ from misc import strings
 import os
 
 def login_user(request):
-    """ Renders login view process POST logs into home page """
-    loginform = LoginForm()
+    """ 
+        A view is to handle the baisc login methods in ERP
+
+        Args:
+            request:   The HTTP Request
+
+        Kwargs:
+            kwargs**:  None
+
+        Returns:
+            IF login was successful : redirects to `home.views.home()`
+            
+            ELSE : renders the `pages/login.html`
+            > Context variables in the `pages/login.html` :-
+                - global_context_variables : misc.utils.global_context()
+                - login_form : `users.forms.LoginForm`
+    
+        Raises:
+            None
+
+        Daemon Tasks:
+            - Sets various django.contrib.messages depending on actions takes in the view
+            - Authenticates and logs in a django.contrib.auth.User
+
+    """
+    login_form = LoginForm()
     if request.method == "POST":
         print "post"
-        loginform = LoginForm(request.POST)
-        if loginform.is_valid():
+        login_form = LoginForm(request.POST)
+        if login_form.is_valid():
             # Checks for username and password
-            username = loginform.cleaned_data["username"]
-            password = loginform.cleaned_data["password"]
+            username = login_form.cleaned_data["username"]
+            password = login_form.cleaned_data["password"]
             # Authenticates user against database
             user = authenticate(username=username, password=password)
             if user is not None:
@@ -42,12 +66,35 @@ def login_user(request):
                 messages.error(request, strings.LOGIN_ERROR_WRONG_CRED)
         else:
             messages.error(request, strings.LOGIN_ERROR_INVALID)
-    return render_to_response("pages/login.html", locals(), context_instance= global_context(request))
+    local_context = {
+        "login_form" : login_form,
+    }
+    return render_to_response("pages/login.html", locat_context, context_instance= global_context(request))
 
 def profile(request, id=None):
     """ 
-        Lets the user view and edit profile
-        Creates an new profile if one does not exist
+        A view to handle the profile page about a user showing various information about the user.
+        It can also be for a department or subdepartment
+
+        Args:
+            request:   The HTTP Request
+            id:        The id who's profile should be shown
+
+        Kwargs:
+            kwargs**:  None
+
+        Returns:
+            IF id found in database : renders `pages/profile.html`
+            > Context variables in the `pages/profile.html` :-
+                - global_context_variables : misc.utils.global_context()
+                - profile_form : `users.forms.ProfileForm`
+    
+        Raises:
+            None
+
+        Daemon Tasks:
+            - Sets various django.contrib.messages depending on actions takes in the view
+            - Saves edited Profile information             
     """
     if not id:
         id = request.user.id
@@ -56,8 +103,7 @@ def profile(request, id=None):
     try:
         profile = ERPUser.objects.get(user=user)
     except ERPUser.DoesNotExist:
-        new_wall = Wall.objects.create(name=user.username)
-        new_user = ERPUser.objects.create(user=user, wall=new_wall)
+        profile = ERPUser.objects.create(user=user)
     form = UserForm(instance = user)
     profile_form = ProfileForm(instance=profile)
     if request.method == "POST":
@@ -73,7 +119,10 @@ def profile(request, id=None):
                 messages.error(request, strings.INVALID_FORM)
         else:
             messages.error(request, strings.INVALID_FORM)
+    local_context = {
+        "profile_form" : profile_form,
+    }
     return render_to_response("pages/profile.html", locals(), context_instance= global_context(request))
 
 def newsfeed(request):
-    return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
+        return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))

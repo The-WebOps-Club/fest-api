@@ -26,7 +26,7 @@ urlpatterns = patterns('',
 
     # Users
     url(r'^login/$', 'apps.users.views.login_user', name='login'),
-    url(r'^profile/(?P<id>\d+)$', 'apps.users.views.profile', name='profile'),
+    url(r'^profile/$', 'apps.users.views.profile', name='profile'),
 
     # Home
     url(r'^newsfeed/$', 'apps.users.views.newsfeed', name='newsfeed'),

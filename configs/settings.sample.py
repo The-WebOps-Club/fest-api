@@ -20,9 +20,6 @@ MANAGERS = (
 #    ('John', 'john@example.com'),
 )
 
-# Root Password for master login
-ROOT_PASSWORD = "password"
-
 # Database settings, machine specific
 DATABASES = {
     'default': {
