@@ -125,10 +125,6 @@ def profile(request, id=None):
     return render_to_response("pages/profile.html", locals(), context_instance= global_context(request))
 
 def newsfeed(request):
-<<<<<<< HEAD
     newsfeed = True
     posts = Post.objects.exclude(wall__isnull=True).order_by('-time_updated')
     return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
-=======
-        return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
->>>>>>> 646bbf5373a2be5fe3f6856e517ff029a8c48180
