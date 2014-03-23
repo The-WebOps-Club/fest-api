@@ -10,7 +10,7 @@ from misc.utils import *  #Import miscellaneous functions
 # Models
 from django.contrib.auth.models import User
 from models import ERPUser
-from apps.walls.models import Wall
+from apps.walls.models import Wall, Post
 # Forms
 from forms import LoginForm, ProfileForm, UserForm
 # View functions
@@ -63,13 +63,13 @@ def login_user(request):
                 else:
                     messages.error(request, strings.LOGIN_ERROR_INACTIVE)
             else:
-                messages.error(request, strings.LOGIN_ERROR_WRONG_CRED)
+                messages.error(request, strings.LOGIN_ERROR_INACTIVE)
         else:
             messages.error(request, strings.LOGIN_ERROR_INVALID)
     local_context = {
         "login_form" : login_form,
     }
-    return render_to_response("pages/login.html", locat_context, context_instance= global_context(request))
+    return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
 
 def profile(request, id=None):
     """ 

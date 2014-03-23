@@ -12,3 +12,6 @@ LOGIN_ERROR_INVALID         = "Error during login. Please enter valid username a
 # Form
 INVALID_FORM                = "Form did not validate. Please make sure all the fields are correct."
 UPDATE_SUCCESS              = "%s Updated successfully!"
+
+# Gen
+STD_ERROR                   = "Some error occured. %s. Please try again later"

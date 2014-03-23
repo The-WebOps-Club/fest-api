@@ -42,14 +42,14 @@ class Dept(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-    	"""
-    		An extended save method to handle 	
-    			- M2M associated with the model
-    			- O2O associated with the model
-    	"""
-    	self.wall = Wall.objects.create(name=self.user.username)
-    	temp = super(ERPUser, self).save(*args, **kwargs)
-    	return 
+        """
+            An extended save method to handle   
+                - M2M associated with the model
+                - O2O associated with the model
+        """
+        self.wall = Wall.objects.create(name=self.name)
+        temp = super(Dept, self).save(*args, **kwargs)
+        return
 
 class Subdept(models.Model):
     """ 
@@ -68,15 +68,15 @@ class Subdept(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-    	"""
-    		An extended save method to handle 	
-    			- M2M associated with the model
-    			- O2O associated with the model
-    	"""
-    	self.wall = Wall.objects.create(name=self.user.username)
-    	temp = super(ERPUser, self).save(*args, **kwargs)
-    	return 
-    	
+        """
+            An extended save method to handle   
+                - M2M associated with the model
+                - O2O associated with the model
+        """
+        self.wall = Wall.objects.create(name=self.name)
+        temp = super(Subdept, self).save(*args, **kwargs)
+        return
+
 class UserProfile(models.Model): # The corresponding auth user
     """
         The model is a basic model for any user who will come into Shaastra.
@@ -185,12 +185,15 @@ class ERPUser(models.Model):
     #    return dept_str
 
     def save(self, *args, **kwargs):
-    	"""
-    		An extended save method to handle 	
-    			- M2M associated with the model
-    			- O2O associated with the model
-    	"""
-    	self.wall = Wall.objects.create(name=self.user.username)
-    	temp = super(ERPUser, self).save(*args, **kwargs)
-    	return 
+        """
+            An extended save method to handle   
+                - M2M associated with the model
+                - O2O associated with the model
+        """
+        try:
+            wall = Wall.objects.get(name=self.user.get_full_name())
+        except Wall.DoesNotExist:
+            self.wall = Wall.objects.create(name=self.user.get_full_name())
+        temp = super(ERPUser, self).save(*args, **kwargs)
+        return 
     
