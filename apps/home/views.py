@@ -19,3 +19,7 @@ import os
 def home (request, *args, **kwargs):
     homepage = True
     return render_to_response('pages/home.html', locals(), context_instance= global_context(request))
+
+def newsfeed(request):
+        return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
+        

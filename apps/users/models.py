@@ -41,6 +41,16 @@ class Dept(models.Model):
     def __unicode__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+    	"""
+    		An extended save method to handle 	
+    			- M2M associated with the model
+    			- O2O associated with the model
+    	"""
+    	self.wall = Wall.objects.create(name=self.user.username)
+    	temp = super(ERPUser, self).save(*args, **kwargs)
+    	return 
+
 class Subdept(models.Model):
     """ 
         A model having data about specific SubDepartments @ the fest 
@@ -57,6 +67,16 @@ class Subdept(models.Model):
     def __unicode__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+    	"""
+    		An extended save method to handle 	
+    			- M2M associated with the model
+    			- O2O associated with the model
+    	"""
+    	self.wall = Wall.objects.create(name=self.user.username)
+    	temp = super(ERPUser, self).save(*args, **kwargs)
+    	return 
+    	
 class UserProfile(models.Model): # The corresponding auth user
     """
         The model is a basic model for any user who will come into Shaastra.
