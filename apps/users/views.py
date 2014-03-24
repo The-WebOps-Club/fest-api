@@ -22,7 +22,7 @@ import os
 
 def login_user(request):
     """ 
-        A view is to handle the baisc login methods in ERP
+        A view to handle the baisc login methods in ERP
 
         Args:
             request:   The HTTP Request
@@ -67,7 +67,9 @@ def login_user(request):
         else:
             messages.error(request, strings.LOGIN_ERROR_INVALID)
     local_context = {
-        "login_form" : login_form,
+        "profile_form": profile_form,
+        "erp_profile_form": erp_profile_form,
+        "user_form": user_form,
     }
     return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
 
@@ -124,11 +126,20 @@ def profile(request, id=None):
     }
     return render_to_response("pages/profile.html", local_context, context_instance= global_context(request))
 
-def temp_profile(request):
+def show_profile(request):
     erp_profile_form = ProfileForm()
     user_form = UserForm()
     profile_form = UserForm()
     local_context = {
-        "profile_form" : profile_form,
+        "profile_form": profile_form,
+        "erp_profile_form": erp_profile_form,
+        "user_form": user_form,
     }
     return render_to_response("pages/profile.html", locals(), context_instance= global_context(request))
+
+def show_login_user(request):
+    login_form = LoginForm()
+    local_context = {
+        "login_form" : login_form,
+    }
+    return render_to_response('pages/wall.html', locals(), context_instance= global_context(request))

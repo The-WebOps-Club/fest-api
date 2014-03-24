@@ -96,7 +96,7 @@ class Post(models.Model):
 
 @receiver(post_save, sender=Post, dispatch_uid="post.made.signal")
 def notify_post(sender, **kwargs):
-    print "recieved"	
+    print "recieved"
     #notify.send(
     #    sender.by, recipient=follow_instance.follow_object,
     #    verb=u'has posted on', action_object=sender,

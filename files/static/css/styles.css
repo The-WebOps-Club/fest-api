@@ -224,3 +224,16 @@ hr {
     border-color : #DDD;
     margin : 20px 0px;
 }
+.popover {
+    z-index : 99999;
+}
+.popover .inner{
+    opacity : 1;
+    background-color : #fff;
+}
+.popover .title{
+    opacity : 1;
+    background-color : #fff;
+}.hidden {
+    display : none;
+}

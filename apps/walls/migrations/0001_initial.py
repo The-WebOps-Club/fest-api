@@ -29,12 +29,20 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('description', self.gf('django.db.models.fields.TextField')(default='', blank=True)),
             ('wall', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='posts', null=True, to=orm['walls.Wall'])),
-            ('child', self.gf('django.db.models.fields.related.OneToOneField')(blank=True, related_name='parent', unique=True, null=True, to=orm['walls.Post'])),
             ('by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='posts_created', to=orm['auth.User'])),
             ('time_created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('time_updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
         db.send_create_signal(u'walls', ['Post'])
+
+        # Adding M2M table for field childs on 'Post'
+        m2m_table_name = db.shorten_name(u'walls_post_childs')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('from_post', models.ForeignKey(orm[u'walls.post'], null=False)),
+            ('to_post', models.ForeignKey(orm[u'walls.post'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['from_post_id', 'to_post_id'])
 
 
     def backwards(self, orm):
@@ -46,6 +54,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Post'
         db.delete_table(u'walls_post')
+
+        # Removing M2M table for field childs on 'Post'
+        db.delete_table(db.shorten_name(u'walls_post_childs'))
 
 
     models = {
@@ -88,7 +99,7 @@ class Migration(SchemaMigration):
         u'walls.post': {
             'Meta': {'ordering': "['time_created']", 'object_name': 'Post'},
             'by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'posts_created'", 'to': u"orm['auth.User']"}),
-            'child': ('django.db.models.fields.related.OneToOneField', [], {'blank': 'True', 'related_name': "'parent'", 'unique': 'True', 'null': 'True', 'to': u"orm['walls.Post']"}),
+            'childs': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'childs_rel_+'", 'null': 'True', 'to': u"orm['walls.Post']"}),
             'description': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'time_created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),

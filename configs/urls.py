@@ -28,20 +28,19 @@ urlpatterns = patterns('',
     # Users
     url(r'^login/$', 'apps.users.views.login_user', name='login'),
     url(r'^profile/$', 'apps.users.views.profile', name='profile'),
-    url(r'^temp_profile/$', 'apps.users.views.temp_profile', name='profile'),
+    url(r'^show/login/$', 'apps.users.views.show_login_user'),
+    url(r'^show/profile/$', 'apps.users.views.show_profile'),
 
-    # Wall, Post, Comment
-    url(r'^create_post/(?P<wall_id>\d+)/$', 'apps.walls.views.create_post',  name='create_post'),
-    url(r'^create_comment/(?P<post_id>\d+)/$', 'apps.walls.views.create_comment',  name='create_comment'),
-
-
-    # Gen testing urls
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'),
+    url(r'^show/newsfeed/$', 'apps.home.views.show_newsfeed'),
 
     # Walls
     url(r'^wall/(?P<wall_id>\d+)/$', 'apps.walls.views.wall', name='wall'),
-
+    url(r'^show/wall/$', 'apps.walls.views.show_wall'),
+    url(r'^create_post/(?P<wall_id>\d+)/$', 'apps.walls.views.create_post',  name='create_post'),
+    url(r'^create_comment/(?P<post_id>\d+)/$', 'apps.walls.views.create_comment',  name='create_comment'),
+    
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
@@ -70,11 +69,11 @@ handler500 = 'misc.views.err500'
 
 # This is to test out DEBUG = False in localhost
 # REMEMBER : Should be commented out on server !
-if settings.DEBUG or ( ( settings.SITE_URL.find("localhost") != -1 or settings.SITE_URL.find("127.0.") != -1 ) and not settings.DEBUG ):
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    # Explicit settings patch for debug_toolbar for Django 1.6
-    # http://django-debug-toolbar.readthedocs.org/en/1.0/installation.html#explicit-setup
-    import debug_toolbar
-    urlpatterns += patterns('',
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    )
+# if settings.DEBUG or ( ( settings.SITE_URL.find("localhost") != -1 or settings.SITE_URL.find("127.0.") != -1 ) and not settings.DEBUG ):
+#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#     # Explicit settings patch for debug_toolbar for Django 1.6
+#     # http://django-debug-toolbar.readthedocs.org/en/1.0/installation.html#explicit-setup
+#     import debug_toolbar
+#     urlpatterns += patterns('',
+#         url(r'^__debug__/', include(debug_toolbar.urls)),
+#     )

@@ -80,3 +80,6 @@ def create_comment(request, post_id):
     return redirect('wall', wall_id=parent_post.wall.pk)
 
 
+# Gen testing views
+def show_wall (request, wall_id=None):
+    return render_to_response('pages/wall.html', locals(), context_instance= global_context(request))

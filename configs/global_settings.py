@@ -46,6 +46,7 @@ THIRD_PARTY_APPS = (
     
     # For programming ease
     'post_office',
+    'annoying',
 
     # Notification
     'notifications'
@@ -69,6 +70,7 @@ STATICFILES_FINDERS = (
     'dajaxice.finders.DajaxiceFinder',
 )
 MIDDLEWARE_CLASSES = (
+    'annoying.middlewares.StaticServe',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -133,7 +135,7 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_PATH, "files", "static"),
 )
 TEMPLATE_DIRS = (
-    os.path.join(PROJECT_PATH, "templates"),
+    os.path.join(PROJECT_PATH, "files", "templates"),
 )
 
 # -------------------------------------------------------------------

@@ -22,4 +22,8 @@ def home (request, *args, **kwargs):
 
 def newsfeed(request):
         return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
+
+# Gen for testing purposes        
+def show_newsfeed(request):
+    return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
         

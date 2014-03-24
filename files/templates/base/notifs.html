@@ -1,0 +1,46 @@
+<script>
+$( document ).ready(function() {
+	$(".notifButton").popover({
+		"animate": true,
+		"delayIn": 200,
+		"delayOut": 200,
+		"placement": "below",
+		"html": true,
+		"title": notifs_title,
+		"content": notifs_content,
+		"trigger": "manual",
+	})
+
+	function notifs_title() {
+		return $(".notifs_title").html()
+	}
+
+	function notifs_content() {
+		return $(".notifs_content").html()
+	}
+	$(".notifButton").click( function() {
+		$(".notifButton").popover("toggle")
+
+	})
+	$(".notifButton").popover("show")
+});
+</script>
+
+<div class="hidden notifs_title">
+	<div class="notifs_title_inner">
+		<span class="bold notif_title">Notifications</span>
+	</div>
+</div>
+<div class="hidden notifs_content">
+	<div class="notifs_contents_inner">
+		<h3>dddd</h3>
+	</div>
+</div>
+
+<style>
+	.notifs_title_inner {
+	}
+	.notifs_title_inner .notif_title {
+		font-size : 13px;
+	}
+</style>

@@ -35,7 +35,7 @@ class Dept(models.Model):
     wall            = models.OneToOneField(Wall, related_name='dept')
     
     # Basic information
-    name            = models.CharField(max_length=30)
+    name            = models.CharField(max_length=30, unique=True)
     description     = models.TextField(max_length=500, null=True, blank=True)
     
     def __unicode__(self):
@@ -47,7 +47,9 @@ class Dept(models.Model):
                 - M2M associated with the model
                 - O2O associated with the model
         """
-        self.wall = Wall.objects.create(name=self.name)
+        wall, created_it = Wall.objects.get_or_create(name=self.name)
+        if created_it:
+            self.wall = wall
         temp = super(Dept, self).save(*args, **kwargs)
         return
 
@@ -62,7 +64,7 @@ class Subdept(models.Model):
     # event           = models.ForeignKey(Event, null=True, blank=True)
     
     # Basic information
-    name            = models.CharField(max_length=30)
+    name            = models.CharField(max_length=30, unique=True)
     description     = models.TextField(max_length=500, null=True, blank=True)
     def __unicode__(self):
         return self.name
@@ -73,7 +75,9 @@ class Subdept(models.Model):
                 - M2M associated with the model
                 - O2O associated with the model
         """
-        self.wall = Wall.objects.create(name=self.name)
+        wall, created_it = Wall.objects.get_or_create(name=self.name)
+        if created_it:
+            self.wall = wall
         temp = super(Subdept, self).save(*args, **kwargs)
         return
 
@@ -88,7 +92,6 @@ class UserProfile(models.Model): # The corresponding auth user
     
     # Basic information
     gender             = models.CharField(max_length=1, choices=GENDER_CHOICES, default='F')
-    # age                = models.IntegerField(default=18)
     dob                = models.DateField(null=True, blank=True)
     mobile_number      = models.CharField(max_length=15, blank=True, null=True, help_text='Please enter your current mobile number')
     avatar             = models.ImageField("Profile Pic", upload_to="avatars/users", blank=True, null=True)
@@ -131,9 +134,9 @@ class UserProfile(models.Model): # The corresponding auth user
     class Admin:
         pass
 
-class ERPUser(UserProfile):
+class ERPUser(models.Model):
     # Relations to other models
-    # user            = models.OneToOneField(User, related_name='erp_profile') # uses name and email from here. username = email
+    user            = models.OneToOneField(User, related_name='erp_profile') # uses name and email from here. username = email
     wall            = models.OneToOneField(Wall, related_name='person')
     
     # Temporary role in the Fest after selecting which identity he is
@@ -150,8 +153,6 @@ class ERPUser(UserProfile):
     nickname        = models.CharField(max_length=100, blank=True, null=True)
     room_no         = models.IntegerField(default=0, blank=True, null=True )
     hostel          = models.CharField(max_length=15, choices = HOSTEL_CHOICES, blank=True, null=True)
-    # dob             = models.DateField(null=True, blank=True)
-    # mobile_number  = models.CharField(max_length=10, blank=True, null=True)
     summer_number   = models.CharField(max_length=10, blank=True, null=True)
     
     # Holiday stay
@@ -163,7 +164,7 @@ class ERPUser(UserProfile):
             return self.nickname
         else:
             return self.user.get_full_name()
-    
+        
     def __unicode__(self):
         return self.get_name()
     
@@ -195,10 +196,9 @@ class ERPUser(UserProfile):
                 - M2M associated with the model
                 - O2O associated with the model
         """
-        try:
-            wall = Wall.objects.get(name=self.user.get_full_name())
-        except Wall.DoesNotExist:
-            self.wall = Wall.objects.create(name=self.user.get_full_name())
+        user_profile, created_it = UserProfile.objects.get_or_create(user=self.user)
+        wall, created_it = Wall.objects.get_or_create(name=self.user.get_full_name())
+        if created_it:
+            self.wall = wall
         temp = super(ERPUser, self).save(*args, **kwargs)
         return 
-    

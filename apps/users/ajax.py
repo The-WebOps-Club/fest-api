@@ -1,5 +1,4 @@
 # For simple dajax(ice) functionalities
-from django.utils import simplejson
 from dajaxice.decorators import dajaxice_register
 from dajax.core import Dajax
 
@@ -9,7 +8,7 @@ from django.template.loader import render_to_string
 
 # Decorators
 from django.contrib.auth.decorators import login_required, user_passes_test
-
+import json
 
 @dajaxice_register
 def hello_world(request):
@@ -27,4 +26,4 @@ def hello(request):
         Used for testing Dajaxice
     """
     #html_content = render_to_string("dash/task_tables/coord_you.html", query_dictionary, RequestContext(request))
-    return simplejson.dumps({'message': 'hello'})
+    return json.dumps({'message': 'hello'})

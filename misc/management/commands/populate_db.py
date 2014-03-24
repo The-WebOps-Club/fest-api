@@ -3,14 +3,14 @@ from django.contrib.auth.models import User
 from apps.users.models import Dept, Subdept, ERPUser
 
 SAMPLE_DEPTS = [
-    'Events',
     'Design',
+    'Events',
     'Facilities',
     'Finance',
-    'Hospitality',
-    'Publicity',
     'QMS',
-    'Sponsorship'
+    'Hospitality',
+    'Sponsorship',
+    'WebOps'
 ]
 
 DESC_STR = "Description for %s"
@@ -27,19 +27,68 @@ class Command(BaseCommand):
     help = 'Automatically adds required entries into the database. esp Departments and Walls for them.'
 
     def handle(self, arg=None, **options):
-        for dept in SAMPLE_DEPTS:
-            try:
-                Dept.objects.get(name=dept)
-                self.stdout.write("Dept %s already exists. Not changing anything." %(dept))
-            except Dept.DoesNotExist:
-                self.stdout.write("Dept %s does not exist. Adding entries." %(dept))
-                new_dept = Dept.objects.create(name=dept, description=DESC_STR %(dept))
-                new_user = User.objects.create_user(username=dept.lower()+'_core', password='password', email=dept.lower()+'_core'+'@festapi.com')
-                profile = ERPUser.objects.create(user=new_user)
-                profile.core_relations.add(new_dept)
-                profile.save()
-                new_user = User.objects.create_user(username=dept.lower()+'_coord1', password='password', email=dept.lower()+'_coord1'+'@festapi.com')
-                profile = ERPUser.objects.create(user=new_user)
-                new_user = User.objects.create_user(username=dept.lower()+'_coord2', password='password', email=dept.lower()+'_coord2'+'@festapi.com')
-                profile = ERPUser.objects.create(user=new_user)
-                self.stdout.write("Dept %s entries completed." % (dept))
+        # Department specific users
+        for dept_name in SAMPLE_DEPTS:
+            dept, created_it = Dept.objects.get_or_create(name=dept_name)
+            if created_it:
+                dept.description=DESC_STR %(dept_name)
+                dept.save()
+                self.stdout.write("Dept %s did not exist. Added it." %(dept_name))
+                
+            user, created_it = User.objects.get_or_create(username=str(dept_name).lower()+'_core', 
+                                            email=str(dept_name).lower()+'_core'+'@festapi.com')
+            user.first_name = str(dept_name).lower()
+            user.last_name = "core"
+            user.set_password("password")
+            erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
+            erp_profile.core_relations.add(dept)
+            erp_profile.save()
+
+            subdept_name = str(dept_name) + '_subdept1'
+            subdept, created_it = Subdept.objects.get_or_create(name=subdept_name, dept=dept)
+            if created_it:
+                subdept.dept = dept
+                subdept.description = DESC_STR %(subdept_name)
+                subdept.save()
+                self.stdout.write("SubDept %s did not exist. Added it." %(subdept_name))
+            user, created_it = User.objects.get_or_create(username=str(dept_name).lower()+'_coord1', 
+                                            email=str(dept_name).lower()+'_coord1'+'@festapi.com')
+            user.set_password("password")
+            user.first_name = str(dept_name).lower()
+            user.last_name = "coord1"
+            erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
+            erp_profile.coord_relations.add(subdept)
+            erp_profile.save()
+
+            subdept_name = str(dept_name) + '_subdept2'
+            subdept, created_it = Subdept.objects.get_or_create(name=subdept_name, dept=dept)
+            if created_it:
+                subdept.dept = dept
+                subdept.description = DESC_STR %(subdept_name)
+                subdept.save()
+                self.stdout.write("SubDept %s did not exist. Added it." %(subdept_name))
+            user, created_it = User.objects.get_or_create(username=str(dept_name).lower()+'_coord2',
+                                            email=str(dept_name).lower()+'_coord2'+'@festapi.com')
+            user.set_password("password")
+            user.first_name = str(dept_name).lower()
+            user.last_name = "coord2"
+            erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
+            erp_profile.coord_relations.add(subdept)
+            erp_profile.save()
+                
+            self.stdout.write("Created users for Dept %s." % (dept))
+
+        user, created_it = User.objects.get_or_create(username='root', 
+                                        email='root@festapi.com')
+        user.set_password("password")
+        user.first_name = "root"
+        user.last_name = "root"
+        erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
+        for dept in Dept.objects.all():
+            erp_profile.core_relations.add(dept)
+            erp_profile.save()
+        for subdept in Subdept.objects.all():
+            erp_profile.coord_relations.add(subdept)
+            erp_profile.save()
+        
+        self.stdout.write("Created superuser for all Depts")
