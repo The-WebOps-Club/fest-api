@@ -77,7 +77,11 @@
 .white {
     color : white;
 }
-/* Specific Template styles */
+.center {
+    text-align : center;
+}
+
+    /* Specific Template styles */
 .topbar div > ul.nav.links a.settingsButton, .nav.links a.settingsButton {
     background-image: url(../img/fb_icons.png);
     background-repeat: no-repeat!important;
@@ -214,6 +218,7 @@ ul.group_link.vertical > li:hover, ul.group_link.vertical > li a:hover {
     }
 }
 label {
+    vertical-align: middle;
 }
 hr {
     border-color : #DDD;

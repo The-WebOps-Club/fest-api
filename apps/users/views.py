@@ -122,9 +122,13 @@ def profile(request, id=None):
     local_context = {
         "profile_form" : profile_form,
     }
-    return render_to_response("pages/profile.html", locals(), context_instance= global_context(request))
+    return render_to_response("pages/profile.html", local_context, context_instance= global_context(request))
 
-def newsfeed(request):
-    newsfeed = True
-    posts = Post.objects.exclude(wall__isnull=True).order_by('-time_updated')
-    return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
+def temp_profile(request):
+    erp_profile_form = ProfileForm()
+    user_form = UserForm()
+    profile_form = UserForm()
+    local_context = {
+        "profile_form" : profile_form,
+    }
+    return render_to_response("pages/profile.html", locals(), context_instance= global_context(request))
