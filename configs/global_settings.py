@@ -49,7 +49,10 @@ THIRD_PARTY_APPS = (
     'annoying',
 
     # Notification
-    'notifications'
+    'notifications',
+
+    # Login
+    'social.apps.django_app.default',
 )
 API_APPS =(
     'misc',
@@ -183,3 +186,94 @@ LOGGING = {
 # Settings for specific Apps
 # Post Office
 EMAIL_BACKEND = 'post_office.EmailBackend'
+
+# Python Social Auth
+AUTHENTICATION_BACKENDS = (
+    'social.backends.twitter.TwitterOAuth',
+    'social.backends.facebook.FacebookOAuth2',
+    # 'social.backends.google.GoogleOAuth',
+    'social.backends.google.GoogleOAuth2',
+    # 'social.backends.google.GooglePlusAuth',
+    # 'social.backends.google.GoogleBackend',
+    # 'social.backends.yahoo.YahooBackend',
+    # 'social.backends.browserid.BrowserIDBackend',
+    # 'social.backends.contrib.linkedin.LinkedinBackend',
+    # 'social.backends.contrib.disqus.DisqusBackend',
+    # 'social.backends.contrib.livejournal.LiveJournalBackend',
+    # 'social.backends.contrib.orkut.OrkutBackend',
+    # 'social.backends.contrib.foursquare.FoursquareBackend',
+    'social.backends.contrib.github.GithubBackend',
+    # 'social.backends.contrib.vkontakte.VKontakteBackend',
+    # 'social.backends.contrib.live.LiveBackend',
+    # 'social.backends.contrib.skyrock.SkyrockBackend',
+    # 'social.backends.contrib.yahoo.YahooOAuthBackend',
+    # 'social.backends.contrib.readability.ReadabilityBackend',
+    # 'social.backends.open_id.OpenIdAuth',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_STRATEGY            = 'social.strategies.django_strategy.DjangoStrategy'
+SOCIAL_AUTH_STORAGE             = 'social.apps.django_app.default.models.DjangoStorage'
+SOCIAL_AUTH_TWITTER_KEY         = ''
+SOCIAL_AUTH_TWITTER_SECRET      = ''
+SOCIAL_AUTH_FACEBOOK_KEY             = ''
+SOCIAL_AUTH_FACEBOOK_SECRET          = ''
+SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = ['email','publish_actions']
+SOCIAL_AUTH_LINKEDIN_CONSUMER_KEY        = ''
+SOCIAL_AUTH_LINKEDIN_CONSUMER_SECRET     = ''
+SOCIAL_AUTH_GOOGLE_CONSUMER_KEY          = ''
+SOCIAL_AUTH_GOOGLE_CONSUMER_SECRET       = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY            = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET         = ''
+SOCIAL_AUTH_YAHOO_CONSUMER_KEY           = ''
+SOCIAL_AUTH_YAHOO_CONSUMER_SECRET        = ''
+
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/profile/new'
+SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/new-assoc/'
+SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/account-disconnected/'
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+SOCIAL_AUTH_ASSOCIATE_BY_MAIL = True
+SOCIAL_AUTH_COMPLETE_URL_NAME  = 'socialauth_complete'
+SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['basic_info', 'email']
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.messages.context_processors.messages',
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.request',
+    # I added these.
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.csrf',
+    # Social Auth
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
+)
+SOCIAL_AUTH_DEFAULT_USERNAME = lambda: random.choice(['Darth-Vader', 'Obi-Wan-Kenobi', 'R2-D2', 'C-3PO', 'Yoda', 'Tony-Stark', 'Bruce-Wayne', 'Black-Widow', 'Eric-Lensher', 'Charles-Xavier', 'Logan'])
+SOCIAL_AUTH_UUID_LENGTH = 16
+SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['email',]
+SOCIAL_AUTH_USERNAME_IS_FULL_EMAIL = True
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'accounts.pipeline.require_email',
+    #Associate with the email
+    'social.pipeline.social_auth.associate_by_email',
+    'social.pipeline.user.get_username',
+    # To be added for email-validation mail to be sent. Docs: http://python-social-auth.readthedocs.org/en/latest/pipeline.html#email-validation
+    # 'social.pipeline.mail.mail_validation',
+    'social.pipeline.user.create_user',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+    'accounts.pipeline.send_welcome_mail',
+    'accounts.pipeline.create_user_profile',
+    'accounts.pipeline.social_story_on_join',
+)
+# SOCIAL_AUTH_PARTIAL_PIPELINE_KEY = 'partial_pipeline'
+SUPPORTED_PROVIDERS = [u'google', u'facebook', u'twitter']

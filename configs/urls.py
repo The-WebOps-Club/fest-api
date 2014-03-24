@@ -4,13 +4,14 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 # Apps
-import notifications
 # Decorators
 # Models
 # Forms
 # View functions
 # Misc
 from misc.utils import *  #Import miscellaneous functions
+import notifications
+import social
 # Python
 
 # Admin
@@ -59,7 +60,9 @@ urlpatterns = patterns('',
     # Dajaxice
     url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
     # Notifications
-    url('^inbox/notifications/', include(notifications.urls)),
+    url(r'^inbox/notifications/', include(notifications.urls)),
+    # Python social auth
+    url(r'', include('social.apps.django_app.urls', namespace='social'))
 
 )
 
