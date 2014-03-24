@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <script>
 $( document ).ready(function() {
 	$(".notifButton").popover({
@@ -19,21 +20,50 @@ $( document ).ready(function() {
 		return $(".notifs_content").html()
 	}
 	$(".notifButton").click( function() {
+		$(".userButton").popover("hide")
 		$(".notifButton").popover("toggle")
-
+		$(".messageButton").popover("hide")
 	})
-	$(".notifButton").popover("show")
+	// $(".notifButton").popover("show")
 });
 </script>
 
 <div class="hidden notifs_title">
 	<div class="notifs_title_inner">
 		<span class="bold notif_title">Notifications</span>
+		<span class="pull-right notifs_link" id="notifs_settings">
+			<a href="">Settings</a>
+		</span>
+		<span class="pull-right notifs_link"> | </span>
+		<span class="pull-right notifs_link" id="notifs_read">
+			<a href="">Mark as Read</a>
+		</span>
 	</div>
 </div>
 <div class="hidden notifs_content">
 	<div class="notifs_contents_inner">
-		<h3>dddd</h3>
+		<div class="notif">
+			<div class="profile_pic">
+				<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+			</div>
+			<div class="notif_body">
+				<span class="profile_name">Lorem ipsum</span> dolor sit amet, consectetur adipisicing elit. Sunt, facilis, reprehenderit perspiciatis provident repellat magnam non placeat veritatis 
+			</div>
+			<div class="notif_foot">
+				46 mins ago
+			</div>
+		</div>
+		<div class="notif">
+			<div class="profile_pic">
+				<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+			</div>
+			<div class="notif_body">
+				<span class="profile_name">Lorem ipsum</span> dolor sit amet, consectetur adipisicing elit. Sunt, facilis, reprehenderit perspiciatis provident repellat magnam non placeat veritatis 
+			</div>
+			<div class="notif_foot">
+				46 mins ago
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -43,4 +73,36 @@ $( document ).ready(function() {
 	.notifs_title_inner .notif_title {
 		font-size : 13px;
 	}
-</style>
+	.notifs_title_inner .notifs_link {
+		font-size : 11px;
+		margin: 2px 2px;
+		font-weight : 100;
+	}
+	.notifs_contents_inner {
+		
+	}
+	.notifs_contents_inner .notif {
+		border-bottom : 1px solid #ddd;
+		padding: 5px 10px;
+	}
+	.notifs_contents_inner .notif:last-child {
+		border-bottom : 0px;
+	}
+	.notifs_contents_inner .notif .profile_dp {
+		height : 50px;
+		width : 50px;
+		position : absolute;
+	}
+	.notifs_contents_inner .notif .notif_body {
+		margin-left : 60px;
+		height : 43px;
+		font-size : 11px;
+	}
+	.notifs_contents_inner .notif .notif_body .profile_name {
+		font-weight: bold;
+	}
+	.notifs_contents_inner .notif .notif_foot {
+		margin-left : 60px;
+		color : #aaa;
+	}
+</style>	

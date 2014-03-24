@@ -73,7 +73,17 @@
     <script type="text/javascript" src='{% static "dajax/jquery.dajax.core.js" %}'></script>
     {% load dajaxice_templatetags %} {% dajaxice_js_import %} 
     {% block extra_js %}{% endblock %}
+
     {% include "base/notifs.html" %}
+    {% include "base/messages.html" %}
+    {% include "base/users.html" %}
+    <script>
+    	$(".below_topbar").click(function(){
+    		$(".userButton").popover("hide")
+			$(".messageButton").popover("hide")
+			$(".notifButton").popover("hide")	
+    	})
+    </script>
 </body>
 
 </html>

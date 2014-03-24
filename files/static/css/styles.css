@@ -237,3 +237,11 @@ hr {
 }.hidden {
     display : none;
 }
+.popover .inner {
+    width : 400px;
+    max-height : 50%;
+}
+.popover .inner .content {
+    margin : 0px;
+    padding : 0px;
+}

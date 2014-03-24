@@ -1,0 +1,119 @@
+{% load staticfiles %}
+<script>
+$( document ).ready(function() {
+	$(".userButton").popover({
+		"animate": true,
+		"delayIn": 200,
+		"delayOut": 200,
+		"placement": "below",
+		"html": true,
+		"title": users_title,
+		"content": users_content,
+		"trigger": "manual",
+	})
+
+	function users_title() {
+		return $(".users_title").html()
+	}
+
+	function users_content() {
+		return $(".users_content").html()
+	}
+	$(".userButton").click( function() {
+		$(".userButton").popover("toggle")
+		$(".notifButton").popover("hide")
+		$(".messageButton").popover("hide")
+	})
+	
+});
+</script>
+
+<div class="hidden users_title">
+	<div class="users_title_inner">
+		<span class="users_link active">
+			<a href="">Inbox</a>
+		</span>
+		<span class="users_link"> | </span>
+		<span class="users_link" id="users_settings">
+			<a href="">Dept</a>
+		</span>
+		<span class="users_link"> | </span>
+		<span class="users_link" id="users_settings">
+			<a href="">SubDept</a>
+		</span>
+		
+		<span class="pull-right users_link" id="users_read">
+			<a href="">Send a new user</a>
+		</span>
+	</div>
+</div>
+<div class="hidden users_content">
+	<div class="users_contents_inner">
+		<div class="user">
+			<div class="profile_pic">
+				<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+			</div>
+			<div class="user_body">
+				<span class="profile_name">Lorem ipsum</span> dolor sit amet, consectetur adipisicing elit. Sunt, facilis, reprehenderit perspiciatis provident repellat magnam non placeat veritatis 
+			</div>
+			<div class="user_foot">
+				46 mins ago
+			</div>
+		</div>
+		<div class="user">
+			<div class="profile_pic">
+				<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+			</div>
+			<div class="user_body">
+				<span class="profile_name">Lorem ipsum</span> dolor sit amet, consectetur adipisicing elit. Sunt, facilis, reprehenderit perspiciatis provident repellat magnam non placeat veritatis 
+			</div>
+			<div class="user_foot">
+				46 mins ago
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.users_title_inner {
+	}
+	.users_title_inner .user_title {
+		font-size : 13px;
+	}
+	.users_title_inner .users_link {
+		font-size : 11px;
+		margin: 2px 2px;
+		font-weight : 100;
+	}
+	.users_title_inner .users_link.active a {
+		color : black;
+		text-decoration: none;
+	}
+	.users_contents_inner {
+		
+	}
+	.users_contents_inner .user {
+		border-bottom : 1px solid #ddd;
+		padding: 5px 10px;
+	}
+	.users_contents_inner .user:last-child {
+		border-bottom : 0px;
+	}
+	.users_contents_inner .user .profile_dp {
+		height : 50px;
+		width : 50px;
+		position : absolute;
+	}
+	.users_contents_inner .user .user_body {
+		margin-left : 60px;
+		height : 43px;
+		font-size : 11px;
+	}
+	.users_contents_inner .user .user_body .profile_name {
+		font-weight: bold;
+	}
+	.users_contents_inner .user .user_foot {
+		margin-left : 60px;
+		color : #aaa;
+	}
+</style>	
