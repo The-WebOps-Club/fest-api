@@ -43,4 +43,9 @@ class UserForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = ERPUser
-        exclude = ('user', 'wall','coord_relations', 'supercoord_relations', 'core_relations')
+        exclude = ('user', 
+            'wall',
+            'coord_relations', 
+            'supercoord_relations', 
+            'core_relations',
+        )

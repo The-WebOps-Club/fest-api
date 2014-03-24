@@ -125,8 +125,10 @@ def profile(request, id=None):
     return render_to_response("pages/profile.html", local_context, context_instance= global_context(request))
 
 def temp_profile(request):
-    profile_form = ProfileForm(instance=profile)
-    local_context = make_local_context(
+    erp_profile_form = ProfileForm()
+    user_form = UserForm()
+    profile_form = UserForm()
+    local_context = {
         "profile_form" : profile_form,
-    )
+    }
     return render_to_response("pages/profile.html", locals(), context_instance= global_context(request))

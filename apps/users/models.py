@@ -88,8 +88,8 @@ class UserProfile(models.Model): # The corresponding auth user
     
     # Basic information
     gender             = models.CharField(max_length=1, choices=GENDER_CHOICES, default='F')
-    age                = models.IntegerField(default=18)
-    #dob                = models.DateField(null=True, blank=True)
+    # age                = models.IntegerField(default=18)
+    dob                = models.DateField(null=True, blank=True)
     mobile_number      = models.CharField(max_length=15, blank=True, null=True, help_text='Please enter your current mobile number')
     avatar             = models.ImageField("Profile Pic", upload_to="avatars/users", blank=True, null=True)
     
@@ -107,8 +107,8 @@ class UserProfile(models.Model): # The corresponding auth user
     key_expires        = models.DateTimeField(default=timezone.now() + datetime.timedelta(2))
     
     # Fest organizational info
-    is_core            = models.BooleanField(default=False)
-    is_hospi           = models.BooleanField(default=False)
+    # is_core            = models.BooleanField(default=False)
+    # is_hospi           = models.BooleanField(default=False)
     
     # Analytics information
     date_created       = models.DateTimeField(auto_now_add=True)
@@ -131,9 +131,9 @@ class UserProfile(models.Model): # The corresponding auth user
     class Admin:
         pass
 
-class ERPUser(models.Model):
+class ERPUser(UserProfile):
     # Relations to other models
-    user            = models.OneToOneField(User, related_name='erp_profile') # uses name and email from here. username = email
+    # user            = models.OneToOneField(User, related_name='erp_profile') # uses name and email from here. username = email
     wall            = models.OneToOneField(Wall, related_name='person')
     
     # Temporary role in the Fest after selecting which identity he is
@@ -150,7 +150,7 @@ class ERPUser(models.Model):
     nickname        = models.CharField(max_length=100, blank=True, null=True)
     room_no         = models.IntegerField(default=0, blank=True, null=True )
     hostel          = models.CharField(max_length=15, choices = HOSTEL_CHOICES, blank=True, null=True)
-    dob             = models.DateField(null=True, blank=True)
+    # dob             = models.DateField(null=True, blank=True)
     # mobile_number  = models.CharField(max_length=10, blank=True, null=True)
     summer_number   = models.CharField(max_length=10, blank=True, null=True)
     
@@ -158,9 +158,14 @@ class ERPUser(models.Model):
     summer_stay     = models.CharField(max_length=30, blank=True, null=True)
     winter_stay     = models.CharField(max_length=30, blank=True, null=True)
     
+    def get_name(self):
+        if self.nickname:
+            return self.nickname
+        else:
+            return self.user.get_full_name()
     
     def __unicode__(self):
-        return self.user.first_name + ' ' + self.user.last_name
+        return self.get_name()
     
     # Methods to check for position/role
     #def is_coord(self):
