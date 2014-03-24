@@ -8,7 +8,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.core.signals import request_finished
 # Apps
+from notifications import notify
 # Decorators
 # Models
 # Forms
@@ -16,6 +20,7 @@ from django.conf import settings
 # Misc
 from misc.utils import *
 # Python
+import random
 
 # Model for Department forum
 class Wall(models.Model):
@@ -77,6 +82,11 @@ class Post(models.Model):
         tail = len(self.description) > LIMIT and '...' or ''
         return self.description[:LIMIT] + tail
 
+    def is_post(self):
+        if wall:
+            return True
+        return False 
+
     class Meta:
         ordering = ['time_created']
         get_latest_by = 'time_created'
@@ -84,4 +94,11 @@ class Post(models.Model):
     def __unicode__(self):
         return self.description
 
-
+@receiver(post_save, sender=Post, dispatch_uid="post.made.signal")
+def notify_post(sender, **kwargs):
+    print "recieved"	
+    #notify.send(
+    #    sender.by, recipient=follow_instance.follow_object,
+    #    verb=u'has posted on', action_object=sender,
+    #    description=u'', target=sender.wall
+    #)

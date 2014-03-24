@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 # Apps
 from misc.utils import *  #Import miscellaneous functions
 # Decorators
@@ -59,7 +61,7 @@ def create_post(request, wall_id):
             wall=wall, by=request.user)
     except Exception, e:
         messages.error(request, strings.STD_ERROR %(str(e.message)))
-    return redirect('wall') # Newsfeeed? Need to provode a proper redirect method
+    return redirect('wall', wall_id=wall.pk) # Newsfeeed? Need to provode a proper redirect method
 
 def create_comment(request, post_id):
     """
@@ -67,13 +69,14 @@ def create_comment(request, post_id):
     """
     wallpage = True
     data = request.POST.copy()
-    print data
     # try:
     parent_post = get_object_or_404(Post, pk=post_id)
     new_comment = Post.objects.create(description=data['status'], 
             by=request.user)
     parent_post.childs.add(new_comment)
-    parent_post.save()
+    # parent_post.save()
     # except Exception, e:
     messages.error(request, strings.STD_ERROR )
-    return redirect('wall')
+    return redirect('wall', wall_id=parent_post.wall.pk)
+
+

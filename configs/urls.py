@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 # Apps
+import notifications
 # Decorators
 # Models
 # Forms
@@ -57,6 +58,8 @@ urlpatterns = patterns('',
     # THIRD PARTY APPS
     # Dajaxice
     url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
+    # Notifications
+    url('^inbox/notifications/', include(notifications.urls)),
 
 )
 

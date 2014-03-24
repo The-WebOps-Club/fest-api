@@ -99,7 +99,7 @@
         </div>
         <div class="news_main">
             <div class="news_head">
-                <a class="news_profile_name">{{ post.by.get_full_name }}</a> posted on <a href="#">{{ post.wall }}</a> {{ post.time_created|naturaltime }}
+                <a class="news_profile_name">{{ post.by.get_full_name }}</a> posted on <a href="#">{{ post.wall }}</a> <span class="muted" style="font-size:10px;">{{ post.time_created|naturaltime }}</span>
             </div>
             <div class="news_body">
                 {{ post.description }}

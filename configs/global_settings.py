@@ -46,6 +46,9 @@ THIRD_PARTY_APPS = (
     
     # For programming ease
     'post_office',
+
+    # Notification
+    'notifications'
 )
 API_APPS =(
     'misc',
