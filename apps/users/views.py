@@ -47,6 +47,14 @@ def login_user(request):
 
     """
     login_form = LoginForm()
+
+    # Check if user is already logged in
+    if request.user.is_authenticated():
+        return redirect("apps.home.views.home")
+
+    print "INSIDE LOGIN"
+
+    # Check if POST data is there for the LoginForm
     if request.method == "POST":
         print "post"
         login_form = LoginForm(request.POST)
@@ -56,20 +64,24 @@ def login_user(request):
             password = login_form.cleaned_data["password"]
             # Authenticates user against database
             user = authenticate(username=username, password=password)
+            print "Got username and password"
+
             if user is not None:
                 if user.is_active:
                     login(request, user) # Logs in the User
+                    print "Logged the user in successfully"
                     return redirect("apps.home.views.home") # Redirect to home page
                 else:
+                    print "User is not active :("
                     messages.error(request, strings.LOGIN_ERROR_INACTIVE)
             else:
+                print "User not authenticated"
                 messages.error(request, strings.LOGIN_ERROR_INACTIVE)
         else:
+            print "for errors" , login_form.errors
             messages.error(request, strings.LOGIN_ERROR_INVALID)
     local_context = {
-        "profile_form": profile_form,
-        "erp_profile_form": erp_profile_form,
-        "user_form": user_form,
+        "login_form": login_form,
     }
     return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
 

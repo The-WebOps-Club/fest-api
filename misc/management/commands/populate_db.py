@@ -40,6 +40,7 @@ class Command(BaseCommand):
             user.first_name = str(dept_name).lower()
             user.last_name = "core"
             user.set_password("password")
+            user.save()
             erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
             erp_profile.core_relations.add(dept)
             erp_profile.save()
@@ -56,6 +57,7 @@ class Command(BaseCommand):
             user.set_password("password")
             user.first_name = str(dept_name).lower()
             user.last_name = "coord1"
+            user.save()
             erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
             erp_profile.coord_relations.add(subdept)
             erp_profile.save()
@@ -72,6 +74,7 @@ class Command(BaseCommand):
             user.set_password("password")
             user.first_name = str(dept_name).lower()
             user.last_name = "coord2"
+            user.save()
             erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
             erp_profile.coord_relations.add(subdept)
             erp_profile.save()
@@ -83,6 +86,7 @@ class Command(BaseCommand):
         user.set_password("password")
         user.first_name = "root"
         user.last_name = "root"
+        user.save()
         erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
         for dept in Dept.objects.all():
             erp_profile.core_relations.add(dept)

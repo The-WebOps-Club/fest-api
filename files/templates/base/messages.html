@@ -10,6 +10,7 @@ $( document ).ready(function() {
 		"title": messages_title,
 		"content": messages_content,
 		"trigger": "manual",
+		"myClass": "jewel_popover popover_messages"
 	})
 
 	function messages_title() {
@@ -23,6 +24,7 @@ $( document ).ready(function() {
 		$(".userButton").popover("hide")
 		$(".notifButton").popover("hide")
 		$(".messageButton").popover("toggle")
+		$(".settingsButton").popover("hide")
 	})
 	//$(".messageButton").popover("show")
 });
@@ -77,7 +79,7 @@ $( document ).ready(function() {
 <style>
 	.messages_title_inner {
 	}
-	.messages_title_inner .message_title {
+	.messages_title_inner .messages_title {
 		font-size : 13px;
 	}
 	.messages_title_inner .messages_link {

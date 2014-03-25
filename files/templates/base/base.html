@@ -24,22 +24,26 @@
     <![endif]-->
 
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
-    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">{% block extra_css %}{% endblock %} {% if not DEBUG %}
-    <script type="text/javascript">
-    (function(i, s, o, g, r, a, m) {
-        i["GoogleAnalyticsObject"] = r;
-        i[r] = i[r] || function() {
-            (i[r].q = i[r].q || []).push(arguments)
-        }, i[r].l = 1 * new Date();
-        a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m)
-    })(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
 
-    //ga("create", "", "");
-    //ga("send", "pageview");
+    {% block extra_css %}{% endblock %} 
+
+    {% if not DEBUG %}
+    <script type="text/javascript">
+        (function(i, s, o, g, r, a, m) {
+            i["GoogleAnalyticsObject"] = r;
+            i[r] = i[r] || function() {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+        //ga("create", "", "");
+        //ga("send", "pageview");
     </script>
     {% endif %}
 </head>
@@ -77,12 +81,16 @@
     {% include "base/notifs.html" %}
     {% include "base/messages.html" %}
     {% include "base/users.html" %}
+    {% include "base/settings.html" %}
     <script>
-    	$(".below_topbar").click(function(){
-    		$(".userButton").popover("hide")
-			$(".messageButton").popover("hide")
-			$(".notifButton").popover("hide")	
-    	})
+        function hide_popups() {
+            $(".userButton").popover("hide")
+            $(".messageButton").popover("hide")
+            $(".notifButton").popover("hide")   
+            $(".settingButton").popover("hide") 
+        }
+        $(".below_topbar").click(hide_popups)
+    	$(".searchbar").click(hide_popups)
     </script>
 </body>
 

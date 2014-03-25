@@ -82,7 +82,7 @@
 }
 
     /* Specific Template styles */
-.topbar div > ul.nav.links a.settingsButton, .nav.links a.settingsButton {
+.topbar div > ul.nav.links a.settingButton, .nav.links a.settingButton {
     background-image: url(../img/fb_icons.png);
     background-repeat: no-repeat!important;
     background-size: auto!important;
@@ -237,11 +237,11 @@ hr {
 }.hidden {
     display : none;
 }
-.popover .inner {
+.popover.jewel_popover .inner {
     width : 400px;
     max-height : 50%;
 }
-.popover .inner .content {
+.popover.jewel_popover .inner .content {
     margin : 0px;
     padding : 0px;
 }

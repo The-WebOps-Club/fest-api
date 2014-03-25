@@ -16,14 +16,22 @@ from django.templatetags.static import static
 # Python
 import os
 
+@login_required
 def home (request, *args, **kwargs):
-    homepage = True
-    return render_to_response('pages/home.html', locals(), context_instance= global_context(request))
+	"""
+		The home page that people will see when the login or go to the root URL
+		 - Redirects to newsfeed if logged in
+		 - Redirects to login page if not logged in
+	"""
+	return redirect("apps.home.views.newsfeed")
+    
 
+@login_required
 def newsfeed(request):
         return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
 
-# Gen for testing purposes        
+# Gen for testing purposes
+@login_required
 def show_newsfeed(request):
     return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
         

@@ -39,13 +39,7 @@ def global_context(request):
         'SETTINGS':settings,
         'FEST_NAME':settings.FEST_NAME,
     }
-    try:
-        userprofile = request.user.profile_set.first()
-        vals['userprofile'] = userprofile
-        # print "userprofile got"
-    except:
-        pass
-        
+
     context =  RequestContext (request, vals)
     return context
 

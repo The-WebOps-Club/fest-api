@@ -14,7 +14,6 @@
                     <div class='span6' id='login_box'>
                         <form class='span9 pull-right' action='' method='POST' id='form_login'>
                             {% csrf_token %}
-                            {{ zloginform }}
                             <div class='span5 input_box'>
                                 <label for='username'>Email ID</label><br />
                                 <input type='text' name='username' id='id_username' required='true' autofocus class='input-large'><br />
@@ -26,9 +25,7 @@
                             </div>
                             <div class='span2 submit_box'>
                                 <label></label><br />
-                                <!--
-                                <a href='' onclick="$('#form_login').submit()" class='btn primary small'>Log in</a>-->
-                                <input type="submit" value="Log In" class="btn primary small">
+                                <a href='#' id="login_submit" class='btn primary static small'>Log in</a>
                             </div>
                         </form>
                     </div>
@@ -71,7 +68,6 @@
     }
     #form_login .submit_box .btn {
         margin : 5px;
-        background-color: rgb(111, 126, 188);
         white-space: nowrap;
         font-size : 12px;
     }
@@ -93,8 +89,27 @@
     .topbar .big_brand {
         font-size : 40px;
     }
+    
 </style>
 
 {% endblock %}
 
 
+{% block extra_js %}
+    <script>
+
+        // Form submission 
+        function login_form_submit() {
+            $('form#form_login').submit();
+            console.log($('#form_login'))
+        }
+        $("#login_submit").click(login_form_submit);
+        $('form#form_login input').on('keyup', function(e) {
+            if (e.which == 13) {
+                login_form_submit();
+                e.preventDefault();
+            }
+        });
+
+    </script>
+{% endblock %}

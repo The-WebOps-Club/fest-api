@@ -39,6 +39,7 @@
       $tip.find('.title')[this.options.html ? 'html' : 'text'](this.getTitle())
       $tip.find('.content > *')[this.options.html ? 'html' : 'text'](this.getContent())
       $tip[0].className = 'popover'
+      $tip.addClass(this.options.myClass)
     }
 
   , hasContent: function () {
@@ -60,10 +61,13 @@
     }
 
   , tip: function() {
+    
       if (!this.$tip) {
         this.$tip = $('<div class="popover" />')
           .html(this.options.template)
+
       }
+      this.$tip.addClass(this.options.myClass)
       return this.$tip
     }
 
@@ -83,6 +87,7 @@
     placement: 'right'
   , content: 'data-content'
   , template: '<div class="arrow"></div><div class="inner"><h3 class="title"></h3><div class="content"><p></p></div></div>'
+  , myClass: ''
   })
 
   $.fn.twipsy.rejectAttrOptions.push( 'content' )

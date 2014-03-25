@@ -10,6 +10,7 @@ $( document ).ready(function() {
 		"title": notifs_title,
 		"content": notifs_content,
 		"trigger": "manual",
+		"myClass": "jewel_popover popover_notifs"
 	})
 
 	function notifs_title() {
@@ -23,6 +24,7 @@ $( document ).ready(function() {
 		$(".userButton").popover("hide")
 		$(".notifButton").popover("toggle")
 		$(".messageButton").popover("hide")
+		$(".settingsButton").popover("hide")
 	})
 	// $(".notifButton").popover("show")
 });
@@ -30,7 +32,7 @@ $( document ).ready(function() {
 
 <div class="hidden notifs_title">
 	<div class="notifs_title_inner">
-		<span class="bold notif_title">Notifications</span>
+		<span class="bold notifs_title">Notifications</span>
 		<span class="pull-right notifs_link" id="notifs_settings">
 			<a href="">Settings</a>
 		</span>
@@ -70,7 +72,7 @@ $( document ).ready(function() {
 <style>
 	.notifs_title_inner {
 	}
-	.notifs_title_inner .notif_title {
+	.notifs_title_inner .notifs_title {
 		font-size : 13px;
 	}
 	.notifs_title_inner .notifs_link {

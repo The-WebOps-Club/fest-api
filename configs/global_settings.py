@@ -1,4 +1,4 @@
-import os, sys, django
+import os, sys, django, random
 gettext = lambda s: s
 
 
@@ -202,7 +202,7 @@ AUTHENTICATION_BACKENDS = (
     # 'social.backends.contrib.livejournal.LiveJournalBackend',
     # 'social.backends.contrib.orkut.OrkutBackend',
     # 'social.backends.contrib.foursquare.FoursquareBackend',
-    'social.backends.contrib.github.GithubBackend',
+    # 'social.backends.contrib.github.GithubBackend',
     # 'social.backends.contrib.vkontakte.VKontakteBackend',
     # 'social.backends.contrib.live.LiveBackend',
     # 'social.backends.contrib.skyrock.SkyrockBackend',
@@ -261,7 +261,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_uid',
     'social.pipeline.social_auth.auth_allowed',
     'social.pipeline.social_auth.social_user',
-    'accounts.pipeline.require_email',
+    #'apps.home.pipeline.require_email',
     #Associate with the email
     'social.pipeline.social_auth.associate_by_email',
     'social.pipeline.user.get_username',
@@ -271,9 +271,9 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details',
-    'accounts.pipeline.send_welcome_mail',
-    'accounts.pipeline.create_user_profile',
-    'accounts.pipeline.social_story_on_join',
+    #'apps.home.pipeline.send_welcome_mail',
+    #'apps.home.pipeline.create_user_profile',
+    #'apps.home.pipeline.social_story_on_join',
 )
 # SOCIAL_AUTH_PARTIAL_PIPELINE_KEY = 'partial_pipeline'
 SUPPORTED_PROVIDERS = [u'google', u'facebook', u'twitter']

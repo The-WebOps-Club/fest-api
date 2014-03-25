@@ -1,0 +1,113 @@
+{% load staticfiles %}
+<script>
+$( document ).ready(function() {
+	$(".settingButton").popover({
+		"animate": true,
+		"delayIn": 200,
+		"delayOut": 200,
+		"placement": "below",
+		"html": true,
+		"title": settings_title,
+		"content": settings_content,
+		"trigger": "manual",
+		"myClass": "popover_settings"
+	})
+
+	function settings_title() {
+		return $(".settings_title").html()
+	}
+
+	function settings_content() {
+		return $(".settings_content").html()
+	}
+	$(".settingButton").click( function() {
+		$(".userButton").popover("hide")
+		$(".notifButton").popover("hide")
+		$(".messageButton").popover("hide")
+		$(".settingButton").popover("toggle")
+	})
+	// $(".settingButton").popover("show")
+});
+</script>
+
+<div class="hidden settings_title">
+	<div class="settings_title_inner">
+		<span class="bold settings_title">Settings</span>
+		<span class="pull-right settings_link"><a href="#">Edit Profile</a></span>
+	</div>
+</div>
+<div class="hidden settings_content">
+	<div class="settings_contents_inner">
+		<div class="setting breakpoint">
+			<a href="{% url 'logout' %}">Log Out</a>
+		</div>
+		<div class="breaktitle">
+			Use ERP as :
+		</div>
+		
+		{% for core in user.erp_profile.core_relations.all %}
+			<div class="setting">
+				<a href="">{{ core }} Core</a>
+			</div>
+		{% endfor %}
+		{% for supercoord in user.erp_profile.supercoord_relations.all %}
+			<div class="setting">
+				<a href="">{{ supercoord }} SuperCoord</a>
+			</div>
+		{% endfor %}
+		{% for coord in user.erp_profile.coord_relations.all %}
+			<div class="setting">
+				<a href="">{{ coord }} Coord</a>
+			</div>
+		{% endfor %}
+	</div>
+</div>
+
+<style>
+	.settings_title_inner {
+	}
+	.settings_title_inner .settings_title {
+		font-size : 12px;
+	}
+	.settings_title_inner .settings_link {
+		font-size : 11px;
+		margin: 2px 2px;
+		font-weight : 100;
+	}
+	.settings_contents_inner {
+		
+	}
+	.settings_contents_inner .setting {
+		padding: 0px;
+	}
+	.settings_contents_inner .setting.breakpoint {
+		border-bottom : 1px solid #ddd;
+	}
+	.settings_contents_inner .breaktitle {
+		color : #777;
+		padding: 3px 10px;
+		font-size : 10px;
+	}
+	.settings_contents_inner .setting a {
+		padding: 5px 10px;
+		width: 100%;
+		display : block;
+		color: #000;
+	}
+	.settings_contents_inner .setting a:hover {
+		background: #6D84B4;
+		border-bottom: 1px solid #3B5998;
+		border-top: 1px solid #3B5998;
+		color: #FFF;
+		padding: 4px 10px;
+		text-decoration: none;
+	}
+	.popover_settings.popover .inner {
+		width : 200px;
+		margin-left : -150px;
+	}
+	.popover_settings.popover .content {
+		margin: 0px;
+		padding: 0px;
+	}
+</style>	
