@@ -28,9 +28,10 @@ urlpatterns = patterns('',
 
     # Users
     url(r'^login/$', 'apps.users.views.login_user', name='login'),
-    url(r'^profile/$', 'apps.users.views.profile', name='profile'),
+    url(r'^profile/(?P<user_id>\d+)$', 'apps.users.views.profile', name='profile'),
     url(r'^show/login/$', 'apps.users.views.show_login_user'),
     url(r'^show/profile/$', 'apps.users.views.show_profile'),
+    url(r'^identity/(?P<role_type>\w+)/(?P<role_id>\d+)$', 'apps.users.views.identity', name='identity'),
 
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'),

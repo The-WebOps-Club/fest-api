@@ -4,19 +4,20 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.templatetags.static import static
 # Apps
 from misc.utils import *  #Import miscellaneous functions
+from misc import strings
 # Decorators
 # Models
 from django.contrib.auth.models import User
-from models import ERPUser
+from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
 from apps.walls.models import Wall, Post
 # Forms
 from forms import LoginForm, ProfileForm, UserForm
 # View functions
 # Misc
-from django.templatetags.static import static
-from misc import strings
+from annoying.functions import get_object_or_None
 # Python
 import os
 
@@ -46,46 +47,51 @@ def login_user(request):
             - Authenticates and logs in a django.contrib.auth.User
 
     """
-    login_form = LoginForm()
-
-    # Check if user is already logged in
-    if request.user.is_authenticated():
+    # Default argument setting and checking
+    if request.user.is_authenticated(): # Check if user is already logged in
         return redirect("apps.home.views.home")
 
-    print "INSIDE LOGIN"
-
-    # Check if POST data is there for the LoginForm
-    if request.method == "POST":
-        print "post"
+    # Logic
+    login_form = LoginForm()
+    if request.method == "POST": # Check if POST data is there for the LoginForm
+        # print "post"
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
             # Checks for username and password
             username = login_form.cleaned_data["username"]
             password = login_form.cleaned_data["password"]
+            
             # Authenticates user against database
             user = authenticate(username=username, password=password)
-            print "Got username and password"
-
+            
             if user is not None:
                 if user.is_active:
                     login(request, user) # Logs in the User
-                    print "Logged the user in successfully"
-                    return redirect("apps.home.views.home") # Redirect to home page
+                    #print "Logged the user in successfully"
+                    return redirect("apps.users.") # Redirect to home page
                 else:
-                    print "User is not active :("
+                    #print "User is not active :("
                     messages.error(request, strings.LOGIN_ERROR_INACTIVE)
+                
             else:
+                # errors appeared
                 print "User not authenticated"
+                login_form.errors
                 messages.error(request, strings.LOGIN_ERROR_INACTIVE)
         else:
             print "for errors" , login_form.errors
-            messages.error(request, strings.LOGIN_ERROR_INVALID)
+            print login_form.errors
+            messages.error(request, strings.LOGIN_ERROR_INVALI)
+
+    # Return
     local_context = {
         "login_form": login_form,
     }
     return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
 
-def profile(request, id=None):
+@login_required
+@has_erp_profile
+def profile(request, user_id=None):
     """ 
         A view to handle the profile page about a user showing various information about the user.
         It can also be for a department or subdepartment
@@ -104,20 +110,20 @@ def profile(request, id=None):
                 - profile_form : `users.forms.ProfileForm`
     
         Raises:
-            None
+            ERPProfile.DoesNotExist, 
 
         Daemon Tasks:
             - Sets various django.contrib.messages depending on actions takes in the view
             - Saves edited Profile information             
     """
-    if not id:
-        id = request.user.id
-    user = get_object_or_404(User, pk=id)
-    profile = ERPUser.objects.get(user=user)
-    try:
-        profile = ERPUser.objects.get(user=user)
-    except ERPUser.DoesNotExist:
-        profile = ERPUser.objects.create(user=user)
+    # Default argument setting and checking
+    if user_id == None or user_id == request.user.id:
+        user_id = request.user.id
+        user = request.user
+    else:
+        user = get_object_or_404(User, pk=user_id)
+
+    erp_profile = user.erp_profile
     form = UserForm(instance = user)
     profile_form = ProfileForm(instance=profile)
     if request.method == "POST":
@@ -133,10 +139,77 @@ def profile(request, id=None):
                 messages.error(request, strings.INVALID_FORM)
         else:
             messages.error(request, strings.INVALID_FORM)
+
+    # Return
     local_context = {
         "profile_form" : profile_form,
     }
     return render_to_response("pages/profile.html", local_context, context_instance= global_context(request))
+
+@login_required
+
+def identity(request, role_type=None, role_id=None):
+    """
+        Changes identity of the user based on the arguments
+
+        Args:
+            role_type: An element fromt he set ("coord", "supercoord", "core") defining the role in fest
+            rold_id: The ID of the relation to the corresponding subdept (in case of coord) or Dept (for supercoord/core)
+
+        Kwargs:
+            kwargs**:  None
+
+        Returns:
+            IF no args:
+                Finds highest position the person is eligible for and sets first department in that
+            ELSE:
+                Alots the corresponding position mentioned in the arguments. 
+                If the position does not exist. It raises an error
+        Raises:
+            Dept.DoesNotExist, Subdept.DoesNotExist
+
+        Daemon Tasks:
+            - Sets various request.sessions
+    """
+    # Default argument setting and checking
+    if role_type == None and role_id == None:
+        if request.user.erp_profile.core_relations.count():
+            role_type = "core"
+            request.user.erp_profile.core_relations.first()
+        elif request.user.erp_profile.supercoord_relations.count():
+            role_type = "supercoord"
+            request.user.erp_profile.supercoord_relations.first()
+        elif request.user.erp_profile.coord_relations.count():
+            role_type = "coord"
+            request.user.erp_profile.coord_relations.first()
+    else:
+        # Initial validations
+        if type(role_type) != str or type(role_id) != int:
+            raise InvalidArgumentTypeException
+        if ( role_type == "coord" and get_object_or_None(Subdept, id=role_id) == None ) or \
+            ( ( role_type == "supercoord" or role_type == "core" ) and get_object_or_None(Dept, id=role_id) == None ):
+            raise InvalidArgumentValueException
+
+
+    # Logic of the view
+    request.session["role"] = role_type
+    request.session["role_dept"] = int(role_id)
+
+    if role_type == "core":
+        request.session["is_core"] = True
+        request.session["is_supercoord"] = False
+        request.session["is_coord"] = False
+    elif role_type == "supercoord":
+        request.session["is_core"] = False
+        request.session["is_supercoord"] = True
+        request.session["is_coord"] = False
+    elif role_type == "coord":    
+        request.session["is_core"] = False
+        request.session["is_supercoord"] = False
+        request.session["is_coord"] = True
+
+    # Return
+    return redirect("apps.home.views.home")
 
 def show_profile(request):
     erp_profile_form = ProfileForm()

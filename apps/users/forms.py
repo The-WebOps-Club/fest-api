@@ -1,7 +1,7 @@
 from django import forms
 from django.forms.models import inlineformset_factory
 from django.contrib.auth.models import User
-from models import ERPUser
+from models import ERPProfile
 
 class LoginForm(forms.Form):
     """
@@ -42,7 +42,7 @@ class UserForm(forms.ModelForm):
 
 class ProfileForm(forms.ModelForm):
     class Meta:
-        model = ERPUser
+        model = ERPProfile
         exclude = ('user', 
             'wall',
             'coord_relations', 

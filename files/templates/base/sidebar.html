@@ -3,8 +3,8 @@
 <div id='profile_tab' class='span12'>
     <a href='#'><img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' /></a>
     <div class='profile_name'>
-        <a href='#' class='bold'>{{ user.get_full_name }}</a><br />
-        <a href="{% url 'apps.users.views.profile' %}" class=''>Edit your profile</a>
+        <a href="{% url 'wall' %}" class='bold'>{{ user.get_full_name }}</a><br />
+        <a href="{% url 'profile' %}" class=''>Edit your profile</a>
     </div>
 </div>
 

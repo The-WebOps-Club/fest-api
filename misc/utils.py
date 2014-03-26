@@ -9,7 +9,9 @@ from django.utils.timezone import utc
 from django.conf import settings
 # Decorators
 # Apps
-from misc.utils import *  #Import miscellaneous functions
+from misc.strings import *  #Import miscellaneous functions
+from misc.exceptions import *  #Import miscellaneous functions
+from misc.decorators import *  #Import miscellaneous functions
 # Models
 from django.db import models
 from django.contrib.auth.models import User, Group
@@ -30,6 +32,7 @@ def global_context(request):
     """
     vals = {
         'user':request.user,
+        'session':request.session,
         'SITE_URL':settings.SITE_URL,
         'MEDIA_URL':settings.MEDIA_URL,
         'MEDIA_ROOT':settings.MEDIA_ROOT,

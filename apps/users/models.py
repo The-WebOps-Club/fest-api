@@ -134,7 +134,7 @@ class UserProfile(models.Model): # The corresponding auth user
     class Admin:
         pass
 
-class ERPUser(models.Model):
+class ERPProfile(models.Model):
     # Relations to other models
     user            = models.OneToOneField(User, related_name='erp_profile') # uses name and email from here. username = email
     wall            = models.OneToOneField(Wall, related_name='person')
@@ -200,5 +200,5 @@ class ERPUser(models.Model):
         wall, created_it = Wall.objects.get_or_create(name=self.user.get_full_name())
         if created_it:
             self.wall = wall
-        temp = super(ERPUser, self).save(*args, **kwargs)
+        temp = super(ERPProfile, self).save(*args, **kwargs)
         return 

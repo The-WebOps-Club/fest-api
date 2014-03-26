@@ -17,6 +17,7 @@ from django.templatetags.static import static
 import os
 
 @login_required
+@has_erp_profile
 def home (request, *args, **kwargs):
 	"""
 		The home page that people will see when the login or go to the root URL
@@ -27,6 +28,7 @@ def home (request, *args, **kwargs):
     
 
 @login_required
+@has_erp_profile
 def newsfeed(request):
         return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
 

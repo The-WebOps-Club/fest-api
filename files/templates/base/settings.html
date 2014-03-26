@@ -27,6 +27,14 @@ $( document ).ready(function() {
 		$(".settingButton").popover("toggle")
 	})
 	// $(".settingButton").popover("show")
+	is_core = "{{session.is_core}}"
+	is_supercoord = "{{session.is_supercoord}}"
+	is_coord = "{{session.is_coord}}"
+	role_dept = "{{session.role_dept}}"
+	role = "{{session.role}}"
+	$(".setting a#" + role + "_" + role_dept ).addClass("selected")
+
+
 });
 </script>
 
@@ -47,17 +55,17 @@ $( document ).ready(function() {
 		
 		{% for core in user.erp_profile.core_relations.all %}
 			<div class="setting">
-				<a href="">{{ core }} Core</a>
+				<a href="{% url 'identity' 'core' core.pk %}" class="" id="core_{{core.pk}}">{{ core }} Core</a>
 			</div>
 		{% endfor %}
 		{% for supercoord in user.erp_profile.supercoord_relations.all %}
 			<div class="setting">
-				<a href="">{{ supercoord }} SuperCoord</a>
+				<a href="{% url 'identity' 'supercoord' supercoord.pk %}" class="" id="supercoord_{{supercoord.pk}}">{{ supercoord }} SuperCoord</a>
 			</div>
 		{% endfor %}
 		{% for coord in user.erp_profile.coord_relations.all %}
 			<div class="setting">
-				<a href="">{{ coord }} Coord</a>
+				<a href="{% url 'identity' 'coord' coord.pk %}" class="" id="coord_{{coord.pk}}">{{ coord.dept }} {{ coord }} Coord</a>
 			</div>
 		{% endfor %}
 	</div>
@@ -93,6 +101,14 @@ $( document ).ready(function() {
 		width: 100%;
 		display : block;
 		color: #000;
+	}
+	.settings_contents_inner .setting a.selected {
+		background: #ccc;
+		border-bottom: 1px solid #aaa;
+		border-top: 1px solid #ddd;
+		color: #000;
+		padding: 4px 10px;
+		text-decoration: none;
 	}
 	.settings_contents_inner .setting a:hover {
 		background: #6D84B4;
