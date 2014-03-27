@@ -29,20 +29,26 @@ urlpatterns = patterns('',
     # Users
     url(r'^login/$', 'apps.users.views.login_user', name='login'),
     url(r'^profile/(?P<user_id>\d+)$', 'apps.users.views.profile', name='profile'),
+    url(r'^profile$', 'apps.users.views.profile', name='profile'),
+    url(r'^identity/(?P<role_type>\w+)/(?P<role_id>\d+)$', 'apps.users.views.identity', name='identity'),
+    url(r'^identity$', 'apps.users.views.identity', name='identity'),
     url(r'^show/login/$', 'apps.users.views.show_login_user'),
     url(r'^show/profile/$', 'apps.users.views.show_profile'),
-    url(r'^identity/(?P<role_type>\w+)/(?P<role_id>\d+)$', 'apps.users.views.identity', name='identity'),
 
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'),
     url(r'^show/newsfeed/$', 'apps.home.views.show_newsfeed'),
 
     # Walls
-    url(r'^wall/(?P<wall_id>\d+)/$', 'apps.walls.views.wall', name='wall'),
+    url(r'^wall/(?P<wall_id>\d+)$', 'apps.walls.views.wall', name='wall'),
+    url(r'^wall$', 'apps.walls.views.wall', name='wall'),
     url(r'^show/wall/$', 'apps.walls.views.show_wall'),
     url(r'^create_post/(?P<wall_id>\d+)/$', 'apps.walls.views.create_post',  name='create_post'),
     url(r'^create_comment/(?P<post_id>\d+)/$', 'apps.walls.views.create_comment',  name='create_comment'),
     
+    # Misc
+    url(r'^show/404/$', 'misc.views.err404',  name='err404'),
+    url(r'^show/500/$', 'misc.views.err500',  name='err505'),
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE

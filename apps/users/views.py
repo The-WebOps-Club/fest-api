@@ -68,7 +68,7 @@ def login_user(request):
                 if user.is_active:
                     login(request, user) # Logs in the User
                     #print "Logged the user in successfully"
-                    return redirect("apps.users.") # Redirect to home page
+                    return HttpResponseRedirect(reverse("identity")) # Redirect to home page
                 else:
                     #print "User is not active :("
                     messages.error(request, strings.LOGIN_ERROR_INACTIVE)
@@ -90,7 +90,6 @@ def login_user(request):
     return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
 
 @login_required
-@has_erp_profile
 def profile(request, user_id=None):
     """ 
         A view to handle the profile page about a user showing various information about the user.

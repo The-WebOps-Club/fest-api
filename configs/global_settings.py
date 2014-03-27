@@ -108,7 +108,7 @@ WSGI_APPLICATION = 'configs.wsgi.application'
 # http://django-debug-toolbar.readthedocs.org/en/1.0/installation.html#explicit-setup
 # DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
-# AUTH_PROFILE_MODULE = 'apps.users.models.ERPUser'
+# AUTH_PROFILE_MODULE = 'apps.users.models.UserProfile'
 # Database
 #DATABASES = {
 #    'default': {

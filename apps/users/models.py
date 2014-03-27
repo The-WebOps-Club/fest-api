@@ -3,7 +3,7 @@
         - Dept : The department at the fest
         - SubDept : The sub-department at the fest
         - User Profile : Handles the basic information of people, their college, their fest related information
-        - ERPUser : Handles the information of a users organizational role
+        - ERPProfile : Handles the information of a users organizational role
 
 """
 # Django

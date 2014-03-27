@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError, NoArgsCommand
 from django.contrib.auth.models import User
-from apps.users.models import Dept, Subdept, ERPUser
+from apps.users.models import Dept, Subdept, ERPProfile
 
 SAMPLE_DEPTS = [
     'Design',
@@ -39,9 +39,9 @@ class Command(BaseCommand):
                                             email=str(dept_name).lower()+'_core'+'@festapi.com')
             user.first_name = str(dept_name).lower()
             user.last_name = "core"
-            user.set_password("password")
+            user.set_password("1")
             user.save()
-            erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
+            erp_profile, created_it = ERPProfile.objects.get_or_create(user=user)
             erp_profile.core_relations.add(dept)
             erp_profile.save()
 
@@ -54,11 +54,11 @@ class Command(BaseCommand):
                 self.stdout.write("SubDept %s did not exist. Added it." %(subdept_name))
             user, created_it = User.objects.get_or_create(username=str(dept_name).lower()+'_coord1', 
                                             email=str(dept_name).lower()+'_coord1'+'@festapi.com')
-            user.set_password("password")
+            user.set_password("1")
             user.first_name = str(dept_name).lower()
             user.last_name = "coord1"
             user.save()
-            erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
+            erp_profile, created_it = ERPProfile.objects.get_or_create(user=user)
             erp_profile.coord_relations.add(subdept)
             erp_profile.save()
 
@@ -71,11 +71,11 @@ class Command(BaseCommand):
                 self.stdout.write("SubDept %s did not exist. Added it." %(subdept_name))
             user, created_it = User.objects.get_or_create(username=str(dept_name).lower()+'_coord2',
                                             email=str(dept_name).lower()+'_coord2'+'@festapi.com')
-            user.set_password("password")
+            user.set_password("1")
             user.first_name = str(dept_name).lower()
             user.last_name = "coord2"
             user.save()
-            erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
+            erp_profile, created_it = ERPProfile.objects.get_or_create(user=user)
             erp_profile.coord_relations.add(subdept)
             erp_profile.save()
                 
@@ -83,11 +83,11 @@ class Command(BaseCommand):
 
         user, created_it = User.objects.get_or_create(username='root', 
                                         email='root@festapi.com')
-        user.set_password("password")
+        user.set_password("1")
         user.first_name = "root"
         user.last_name = "root"
         user.save()
-        erp_profile, created_it = ERPUser.objects.get_or_create(user=user)
+        erp_profile, created_it = ERPProfile.objects.get_or_create(user=user)
         for dept in Dept.objects.all():
             erp_profile.core_relations.add(dept)
             erp_profile.save()
