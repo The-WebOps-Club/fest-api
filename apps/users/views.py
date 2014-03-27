@@ -183,7 +183,14 @@ def identity(request, role_type=None, role_id=None):
             request.user.erp_profile.coord_relations.first()
     else:
         # Initial validations
-        if type(role_type) != str or type(role_id) != int:
+        try:
+            role_id = int(role_id)
+        except ValueError:
+            print role_id, "could not convert to int"
+            role_id = None
+        if not ( type(role_type) is str or type(role_type) is unicode ) or type(role_id) is not int:
+            print role_id, type(role_id)
+            print role_type, type(role_type)
             raise InvalidArgumentTypeException
         if ( role_type == "coord" and get_object_or_None(Subdept, id=role_id) == None ) or \
             ( ( role_type == "supercoord" or role_type == "core" ) and get_object_or_None(Dept, id=role_id) == None ):

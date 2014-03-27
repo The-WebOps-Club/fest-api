@@ -81,8 +81,8 @@ class Command(BaseCommand):
                 
             self.stdout.write("Created users for Dept %s." % (dept))
 
-        user, created_it = User.objects.get_or_create(username='root', 
-                                        email='root@festapi.com')
+        user, created_it = User.objects.get_or_create(username='root')
+        user.email = "root@festapi.com"
         user.set_password("1")
         user.first_name = "root"
         user.last_name = "root"
