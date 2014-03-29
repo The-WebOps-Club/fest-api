@@ -53,8 +53,9 @@ def login_user(request):
 
     # Logic
     login_form = LoginForm()
+    # POST Logic
+    print request.method
     if request.method == "POST": # Check if POST data is there for the LoginForm
-        # print "post"
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
             # Checks for username and password
@@ -70,19 +71,19 @@ def login_user(request):
                     #print "Logged the user in successfully"
                     return HttpResponseRedirect(reverse("identity")) # Redirect to home page
                 else:
-                    #print "User is not active :("
-                    messages.error(request, strings.LOGIN_ERROR_INACTIVE)
+                    login_form.errors.update( {
+                        "submit" : "The user has been deactivated.",
+                    } )
                 
-            else:
-                # errors appeared
-                print "User not authenticated"
-                login_form.errors
+            else: # errors appeared
+                login_form.errors.update( {
+                    "submit" : "The username or password is incorrect",
+                } )
                 messages.error(request, strings.LOGIN_ERROR_INACTIVE)
         else:
-            print "for errors" , login_form.errors
-            print login_form.errors
-            messages.error(request, strings.LOGIN_ERROR_INVALID)
-
+            print dict(login_form.errors)
+            pass
+    # import pdb; pdb.set_trace()
     # Return
     local_context = {
         "login_form": login_form,
@@ -122,6 +123,7 @@ def profile(request, user_id=None):
     else:
         user = get_object_or_404(User, pk=user_id)
 
+    # Lofic of the view
     erp_profile = user.erp_profile
     form = UserForm(instance = user)
     profile_form = ProfileForm(instance=profile)
@@ -138,7 +140,6 @@ def profile(request, user_id=None):
                 messages.error(request, strings.INVALID_FORM)
         else:
             messages.error(request, strings.INVALID_FORM)
-
     # Return
     local_context = {
         "profile_form" : profile_form,
@@ -174,13 +175,13 @@ def identity(request, role_type=None, role_id=None):
     if role_type == None and role_id == None:
         if request.user.erp_profile.core_relations.count():
             role_type = "core"
-            request.user.erp_profile.core_relations.first()
+            role_id = request.user.erp_profile.core_relations.first().id
         elif request.user.erp_profile.supercoord_relations.count():
             role_type = "supercoord"
-            request.user.erp_profile.supercoord_relations.first()
+            role_id = request.user.erp_profile.supercoord_relations.first().id
         elif request.user.erp_profile.coord_relations.count():
             role_type = "coord"
-            role_id = request.user.erp_profile.coord_relations.first().pk
+            role_id = request.user.erp_profile.coord_relations.first().id
     else:
         # Initial validations
         try:

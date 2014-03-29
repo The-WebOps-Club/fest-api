@@ -12,20 +12,20 @@
                         <a class='brand big_brand bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
                     </div>
                     <div class='span6' id='login_box'>
-                        <form class='span9 pull-right' action='' method='POST' id='form_login'>
+                        <form class='span9 pull-right' action='' method='POST' id='login_form'>
                             {% csrf_token %}
                             <div class='span5 input_box'>
-                                <label for='username'>Email ID</label><br />
-                                <input type='text' name='username' id='id_username' required='true' autofocus class='input-large'><br />
+                                <label for='id_username'>Email ID</label><br />
+                                <input type='text' name='username' id='id_username' required='true' autofocus class='input-large' value='{{ login_form.username.value|default_if_none:"" }}'><br />
                             </div>
                             <div class='span5 input_box'>
-                                <label for='password'>Password</label><br />
-                                <input type='password' name='password' id='id_password' placeholder='Password' required='true' class='input-large'><br />
+                                <label for='id_password'>Password</label><br />
+                                <input type='password' name='password' id='id_password' placeholder='Password' required='true' class='input-large' value='{{ login_form.password.value|default_if_none:"" }}'><br />
                                 <a id='forgot_passwd'>Forgotten Password</a>
                             </div>
                             <div class='span2 submit_box'>
-                                <label></label><br />
-                                <a href='#' id="login_submit" class='btn primary static small'>Log in</a>
+                                <label for="id_submit"></label><br />
+                                <a href='#' id="id_submit" class='btn primary static small'>Log in</a>
                             </div>
                         </form>
                     </div>
@@ -57,32 +57,32 @@
         padding-top: 0px;
         font-size : 11px;
     }
-    #form_login {
+    #login_form {
         float : right;
     }
-    #form_login .input_box {
+    #login_form .input_box {
         padding : 0px 5px;
     }
-    #form_login .submit_box {
+    #login_form .submit_box {
         padding : 0px 5px;
     }
-    #form_login .submit_box .btn {
+    #login_form .submit_box .btn {
         margin : 5px;
         white-space: nowrap;
         font-size : 12px;
     }
-    #form_login .input_box input{
+    #login_form .input_box input{
         margin-top : 5px;
         margin-bottom : 5px;
         margin-left : 0px;
         margin-right : 5px;
     }
-    #form_login a#forgot_passwd {
+    #login_form a#forgot_passwd {
         color: rgb(152, 169, 202);
         text-decoration :none;
         cursor : pointer;
     }
-    #form_login a#forgot_passwd:hover {
+    #login_form a#forgot_passwd:hover {
         color: white;
         text-decoration :none;
     }
@@ -97,19 +97,27 @@
 
 {% block extra_js %}
     <script>
-
+    $( document ).ready(function() {    
         // Form submission 
         function login_form_submit() {
-            $('form#form_login').submit();
-            console.log($('#form_login'))
+            $('form#login_form').submit();
+            console.log($('#login_form'))
         }
-        $("#login_submit").click(login_form_submit);
-        $('form#form_login input').on('keyup', function(e) {
+        $("#id_submit").click(login_form_submit);
+        $('form#login_form input').on('keyup', function(e) {
             if (e.which == 13) {
                 login_form_submit();
                 e.preventDefault();
             }
         });
-
+        {% for k, v in login_form.errors.items %}
+            $("form#login_form #id_{{ k }}").addClass("error")
+                                            .popover({
+                "title" : function() { return "Error" },
+                "content" : function() { return "{% for i in v %} {{i}} {% endfor %}" },
+                "placement" : "below",
+            })
+        {% endfor %}
+    });
     </script>
 {% endblock %}
