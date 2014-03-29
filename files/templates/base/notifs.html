@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load staticfiles %} {% load humanize %}
 <script>
 $( document ).ready(function() {
 	$(".notifButton").popover({
@@ -42,19 +42,22 @@ $( document ).ready(function() {
 		</span>
 	</div>
 </div>
+
 <div class="hidden notifs_content">
 	<div class="notifs_contents_inner">
+		{% for notification in notifications %}
 		<div class="notif">
 			<div class="profile_pic">
 				<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
 			</div>
 			<div class="notif_body">
-				<span class="profile_name">Lorem ipsum</span> dolor sit amet, consectetur adipisicing elit. Sunt, facilis, reprehenderit perspiciatis provident repellat magnam non placeat veritatis 
+				<span class="profile_name">{{ notification.actor.get_full_name|default:"" }} </span>{{ notification.verb|default:"" }} {{ notification.target|default:"" }} - <td>{{ notification.action_object.description|default:"" }}</td>
 			</div>
 			<div class="notif_foot">
-				46 mins ago
+				{{ notification.timestamp|naturaltime }}
 			</div>
 		</div>
+		{% endfor %}
 		<div class="notif">
 			<div class="profile_pic">
 				<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />

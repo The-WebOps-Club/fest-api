@@ -11,7 +11,7 @@ from misc.utils import *  #Import miscellaneous functions
 # Decorators
 # Models
 from django.contrib.auth.models import User
-from models import Wall, Post
+from models import Wall, Post, Comment
 # Forms
 # View functions
 # Misc
@@ -19,7 +19,7 @@ from django.templatetags.static import static
 from misc import strings
 # Python
 import os
-
+import notifications
 
 def wall (request, wall_id=None):
     """
@@ -46,7 +46,9 @@ def wall (request, wall_id=None):
         wall = get_object_or_404(Wall, pk=int(wall_id))
     else:
         wall = request.user.erp_profile.wall
+    # if request.user in wall.owners.all() or request.user in wall.visible_to.all():
     posts = Post.objects.filter(wall=wall).order_by('-time_updated')
+    notifications = request.user.notifications.unread()
     return render_to_response('pages/wall.html', locals(), context_instance= global_context(request))
 
 def create_post(request, wall_id):
@@ -57,6 +59,9 @@ def create_post(request, wall_id):
     data = request.POST.copy()
     try:
         wall = get_object_or_404(Wall, pk=int(wall_id))
+        if not request.user in wall.owners.all():
+            messages.error(request, strings.STD_ERROR %('You dont have permission to post here'))
+            return redirect('wall', wall_id=wall.pk)
         Post.objects.create(description=data['status'], 
             wall=wall, by=request.user)
     except Exception, e:
@@ -71,9 +76,10 @@ def create_comment(request, post_id):
     data = request.POST.copy()
     # try:
     parent_post = get_object_or_404(Post, pk=post_id)
-    new_comment = Post.objects.create(description=data['status'], 
-            by=request.user)
-    parent_post.childs.add(new_comment)
+    new_comment = Comment.objects.create(description=data['status'], by=request.user)
+    parent_post.comments.add(new_comment)
+    parent_post.comments_count += 1
+    parent_post.save()
     # parent_post.save()
     # except Exception, e:
     messages.error(request, strings.STD_ERROR )

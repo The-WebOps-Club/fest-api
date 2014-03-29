@@ -153,7 +153,7 @@ def identity(request, role_type=None, role_id=None):
         Changes identity of the user based on the arguments
 
         Args:
-            role_type: An element fromt he set ("coord", "supercoord", "core") defining the role in fest
+            role_type: An element from the set ("coord", "supercoord", "core") defining the role in fest
             rold_id: The ID of the relation to the corresponding subdept (in case of coord) or Dept (for supercoord/core)
 
         Kwargs:
