@@ -308,13 +308,27 @@ div.news_post hr {
 </style>
 {% endblock %} {% block extra_js %} {{ block.super }}
 <script type="text/javascript">
-$("#id_status").focusin(function() {
-    $("#status_wrapper #id_status").height(50);
-    $("#status_wrapper #status_bottom_bar").show();
-})
-$("#id_status").focusout(function() {
-    $("#status_wrapper #id_status").height(20);
-    $("#status_wrapper #status_bottom_bar").hide();
-})
+	function show_status_textarea() {
+	    $("#status_wrapper #id_status").height(50);
+	    $("#status_wrapper #status_bottom_bar").show();
+	}
+	function hide_status_textarea() {
+	    $("#status_wrapper #id_status").height(20);
+	       $("#status_wrapper #status_bottom_bar").hide();
+	}
+
+    $("#status_wrapper *").focusin(show_status_textarea);
+    //$("#status_wrapper *").focusout(hide_status_textarea);
+
+    $("#status_wrapper #status_submit").keydown(function (e) {
+        if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
+        	console.log("Posting");
+        }
+        
+    });
+    $("#status_wrapper #status_submit").click(function() { 
+        console.log("Posting");
+    });
+
 </script>
 {% endblock %}
