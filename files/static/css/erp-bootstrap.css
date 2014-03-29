@@ -1977,12 +1977,18 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   border : 0px;
   color: #000000;
   color: rgba(0, 0, 0, 0.75);
+  border: 1px solid #111;
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
   border-radius: 0px;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-  -moz-box-shadow: none;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.25);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 0px rgba(255, 255, 255, 0.25);
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 .topbar input::-moz-placeholder, .topbar input::-webkit-input-placeholder {
     color: #787878;

@@ -38,7 +38,6 @@ THIRD_PARTY_APPS = (
     'south',
     'debug_toolbar',
     'django_extensions',
-    'django_pdb',
     
     # ajax functionality
     'dajaxice',

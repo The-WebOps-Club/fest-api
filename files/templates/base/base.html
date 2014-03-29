@@ -11,10 +11,11 @@
 
     <title>{% block title %} {{ FEST_NAME }} {% endblock %}</title>
 
-    {% if not DEBUG %}
-    <script>
-    localStorage.clear(); /* kill cache */
-    </script>{% endif %}
+    {% if DEBUG %}
+        <script>
+            localStorage.clear(); /* kill cache */
+        </script>
+    {% endif %}
 
     <!-- Include stylesheets here -->
     <link href="{% static 'css/erp-bootstrap.css' %}" rel="stylesheet" media="screen">
@@ -64,6 +65,7 @@
         </div>
         {% endblock %}
     </div>
+
 
     <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-twipsy.js' %}"></script>

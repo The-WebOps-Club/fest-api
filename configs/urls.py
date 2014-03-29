@@ -42,9 +42,9 @@ urlpatterns = patterns('',
     # Walls
     url(r'^wall/(?P<wall_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall$', 'apps.walls.views.wall', name='wall'),
-    url(r'^show/wall/$', 'apps.walls.views.show_wall'),
     url(r'^create_post/(?P<wall_id>\d+)/$', 'apps.walls.views.create_post',  name='create_post'),
     url(r'^create_comment/(?P<post_id>\d+)/$', 'apps.walls.views.create_comment',  name='create_comment'),
+    url(r'^show/wall/$', 'apps.walls.views.show_wall'),
     
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),

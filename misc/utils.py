@@ -33,6 +33,7 @@ def global_context(request):
     vals = {
         'user':request.user,
         'session':request.session,
+        'current_path':request.get_full_path(),
         'SITE_URL':settings.SITE_URL,
         'MEDIA_URL':settings.MEDIA_URL,
         'MEDIA_ROOT':settings.MEDIA_ROOT,

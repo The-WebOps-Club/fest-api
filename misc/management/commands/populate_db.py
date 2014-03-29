@@ -28,6 +28,8 @@ class Command(BaseCommand):
 
     def handle(self, arg=None, **options):
         # Department specific users
+        pass_key = "1"
+        
         for dept_name in SAMPLE_DEPTS:
             dept, created_it = Dept.objects.get_or_create(name=dept_name)
             if created_it:
@@ -39,7 +41,7 @@ class Command(BaseCommand):
                                             email=str(dept_name).lower()+'_core'+'@festapi.com')
             user.first_name = str(dept_name).lower()
             user.last_name = "core"
-            user.set_password("1")
+            user.set_password(pass_key)
             user.save()
             erp_profile, created_it = ERPProfile.objects.get_or_create(user=user)
             erp_profile.core_relations.add(dept)
@@ -54,7 +56,7 @@ class Command(BaseCommand):
                 self.stdout.write("SubDept %s did not exist. Added it." %(subdept_name))
             user, created_it = User.objects.get_or_create(username=str(dept_name).lower()+'_coord1', 
                                             email=str(dept_name).lower()+'_coord1'+'@festapi.com')
-            user.set_password("1")
+            user.set_password(pass_key)
             user.first_name = str(dept_name).lower()
             user.last_name = "coord1"
             user.save()
@@ -71,7 +73,7 @@ class Command(BaseCommand):
                 self.stdout.write("SubDept %s did not exist. Added it." %(subdept_name))
             user, created_it = User.objects.get_or_create(username=str(dept_name).lower()+'_coord2',
                                             email=str(dept_name).lower()+'_coord2'+'@festapi.com')
-            user.set_password("1")
+            user.set_password(pass_key)
             user.first_name = str(dept_name).lower()
             user.last_name = "coord2"
             user.save()
@@ -83,7 +85,7 @@ class Command(BaseCommand):
 
         user, created_it = User.objects.get_or_create(username='root')
         user.email = "root@festapi.com"
-        user.set_password("1")
+        user.set_password(pass_key)
         user.first_name = "root"
         user.last_name = "root"
         user.save()
@@ -96,3 +98,5 @@ class Command(BaseCommand):
             erp_profile.save()
         
         self.stdout.write("Created superuser for all Depts")
+
+        self.stdout.write("All passwords have been set to " + str(pass_key))

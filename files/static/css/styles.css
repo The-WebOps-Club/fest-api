@@ -245,3 +245,62 @@ hr {
     margin : 0px;
     padding : 0px;
 }
+
+
+/* Extended bootstrap */
+form .error > label, 
+form .error .help-block, 
+form .error .help-inline {
+  color: #dd3c10;
+}
+form input.error, form textarea.error {
+  color: #dd3c10;
+  border-color: #dd3c10;
+}
+form input.error:focus, form textarea.error:focus {
+  border-color: #ad2f0d;
+  -webkit-box-shadow: 0 0 6px #f37f60;
+  -moz-box-shadow: 0 0 6px #f37f60;
+  box-shadow: 0 0 6px #f37f60;
+}
+form .error .input-prepend .add-on, form .error .input-append .add-on {
+  color: #dd3c10;
+  background-color: #ffebe8;
+  border-color: #ad2f0d;
+}
+form .warning > label, form .warning .help-block, form .warning .help-inline {
+  color: #e2c822;
+}
+form .warning input, form .warning textarea {
+  color: #e2c822;
+  border-color: #e2c822;
+}
+form .warning input:focus, form .warning textarea:focus {
+  border-color: #b9a318;
+  -webkit-box-shadow: 0 0 6px #eede7c;
+  -moz-box-shadow: 0 0 6px #eede7c;
+  box-shadow: 0 0 6px #eede7c;
+}
+form .clearfix.warning .input-prepend .add-on, form .clearfix.warning .input-append .add-on {
+  color: #e2c822;
+  background-color: #fff9d7;
+  border-color: #b9a318;
+}
+form .clearfix.success > label, form .clearfix.success .help-block, form .clearfix.success .help-inline {
+  color: #3b6e22;
+}
+form .clearfix.success input, form .clearfix.success textarea {
+  color: #3b6e22;
+  border-color: #3b6e22;
+}
+form .clearfix.success input:focus, form .clearfix.success textarea:focus {
+  border-color: #264716;
+  -webkit-box-shadow: 0 0 6px #65bc3a;
+  -moz-box-shadow: 0 0 6px #65bc3a;
+  box-shadow: 0 0 6px #65bc3a;
+}
+form .clearfix.success .input-prepend .add-on, form .clearfix.success .input-append .add-on {
+  color: #3b6e22;
+  background-color: #3b6e22;
+  border-color: #264716;
+}
