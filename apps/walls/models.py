@@ -49,7 +49,7 @@ class Wall(models.Model):
                 - Add all the owners to notification and visible_to 
         """
 
-        temp = super(Post, self).save(*args, **kwargs)
+        temp = super(Wall, self).save(*args, **kwargs)
         return
 
     @property
@@ -76,7 +76,7 @@ class PostInfo(models.Model):
     """
     # Basic data
     description     = models.TextField(blank=True, default='') # The matter of post
-    by              = models.ForeignKey(User, related_name='posts_created')
+    by              = models.ForeignKey(User, related_name='%(class)s_created')
 
     # Analytics
     time_created    = models.DateTimeField(auto_now_add=True)
@@ -131,8 +131,8 @@ def notify_post(sender, instance, **kwargs):
         Creates     : Notification to correspinding notification_users on wall.
     """
     # If comments = 0 It is a new post.
-    if not comments_count:
-        for recipient in instance.wall.notification_users:
+    if not instance.comments_count:
+        for recipient in instance.wall.notification_users.all():
             notify.send(
                 sender=instance.by, recipient=recipient,
                 verb='has posted on', action_object=instance, target=instance.wall
@@ -144,7 +144,7 @@ def notify_comment(sender, instance, **kwargs):
         Signal for  : A Comment got saved on a post
         Creates     : Notification to correspinding notification_users on Post.
     """
-    for recipient in instance.parent_post.notification_users:
+    for recipient in instance.parent_post.all():
         notify.send(
             sender=instance.by, recipient=recipient,
             verb='has commented on', action_object=instance, target=instance.parent_post

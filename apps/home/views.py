@@ -29,7 +29,7 @@ def home (request, *args, **kwargs):
 
 @login_required
 def newsfeed(request):
-    notifications = request.user.notifications.unread()
+    # notifications = request.user.notifications.unread()
     # print notifs
     return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
 
