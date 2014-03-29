@@ -24,33 +24,8 @@
 </div>
 <br/>
 <div class="row-fluid" style="">
-    <div class="span12" id="status_media">
-        <div class="menu_item">
-            <i class="icon-search"></i>
-            <a class="menu_link active" href="">Comment on the wall</a>
-            <i class="selection_caret"></i>
-        </div>
-        <div class="menu_item">
-            <i class="icon-search"></i>
-            <a href="" class="menu_link">Upload a file</a>
-            <i class="selection_caret"></i>
-        </div>
-    </div>
-    <div id="status_wrapper" class="span12">
-        <div id="status_box">
-            <div id="status_text" class="span12">
-                <form id="id_form_status" name="form_status" action="{% url 'create_post' wall.pk %}" method="POST">
-                    {% csrf_token %}
-                    <textarea class="span12 status_textarea" name="status" id="id_status" cols="30" rows="1" placeholder="Post your message here"></textarea>
-                </form>
-            </div>
-            <div id="status_bottom_bar" class="span12">
-                <a class="btn primary small status_submit" href="#" onclick="$('#id_form_status').submit();"> Post
-                </a>
-            </div>
-        </div>
-    </div>
-
+    
+    {% include "base/create_post.html" %}
     <div class="news_post span12">
         <hr />
         <div class="news_left">
@@ -105,7 +80,7 @@
                 {{ post.description }}
             </div>
             <div class="news_extra"></div>
-            {% for comment in post.childs.all %}
+            {% for comment in post.comments.all %}
             <div id="id_comment_{{ comment.pk }}" class="news_comment">
                 <div class="news_comment_left">
                     <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">

@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.templatetags.static import static
 # Python
 import os
+import notifications 
 
 @login_required
 def home (request, *args, **kwargs):
@@ -28,7 +29,9 @@ def home (request, *args, **kwargs):
 
 @login_required
 def newsfeed(request):
-        return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
+    notifications = request.user.notifications.unread()
+    # print notifs
+    return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
 
 # Gen for testing purposes
 @login_required

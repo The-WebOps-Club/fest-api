@@ -81,7 +81,7 @@ def login_user(request):
         else:
             print "for errors" , login_form.errors
             print login_form.errors
-            messages.error(request, strings.LOGIN_ERROR_INVALI)
+            messages.error(request, strings.LOGIN_ERROR_INVALID)
 
     # Return
     local_context = {
@@ -152,7 +152,7 @@ def identity(request, role_type=None, role_id=None):
         Changes identity of the user based on the arguments
 
         Args:
-            role_type: An element fromt he set ("coord", "supercoord", "core") defining the role in fest
+            role_type: An element from the set ("coord", "supercoord", "core") defining the role in fest
             rold_id: The ID of the relation to the corresponding subdept (in case of coord) or Dept (for supercoord/core)
 
         Kwargs:
@@ -180,7 +180,7 @@ def identity(request, role_type=None, role_id=None):
             request.user.erp_profile.supercoord_relations.first()
         elif request.user.erp_profile.coord_relations.count():
             role_type = "coord"
-            request.user.erp_profile.coord_relations.first()
+            role_id = request.user.erp_profile.coord_relations.first().pk
     else:
         # Initial validations
         try:

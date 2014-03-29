@@ -37,7 +37,7 @@
                 {{ post.description }}
             </div>
             <div class="news_extra"></div>
-            {% for comment in post.childs.all %}
+            {% for comment in post.comments.all %}
             <div id="id_comment_{{ comment.pk }}" class="news_comment">
                 <div class="news_comment_left">
                     <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
@@ -71,6 +71,32 @@
             <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
         </div>
         <div class="news_main">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Recipient</th>
+                        <th>Actor</th>
+                        <th>Verb</th>
+                        <th>Action Object</th>
+                        <th>Target</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for notification in notifications %}
+                    <tr>
+                        <td>{{ notification.timestamp|date:"c" }}</td>
+                        <td>{{ notification.recipient|default:"" }}</td>
+                        <td>{{ notification.actor|default:"" }}</td>
+                        <td>{{ notification.verb|default:"" }}</td>
+                        <td>{{ notification.action_object|default:"" }}</td>
+                        <td>{{ notification.target|default:"" }}</td>
+                        <td>{{ notification.description|default:"" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
             <div class="news_head">
                 <a class="news_profile_name">Rahul Satish</a> and Solai Natarajan are now friends.
             </div>
