@@ -83,7 +83,12 @@
 .small {
 	font-size : 10px;
 }
-    /* Specific Template styles */
+.huge {
+	font-size : 80px;
+	line-height : 100px;
+}
+
+/* Specific Template styles */
 .topbar div > ul.nav.links a.settingButton, .nav.links a.settingButton {
     background-image: url(../img/fb_icons.png);
     background-repeat: no-repeat!important;

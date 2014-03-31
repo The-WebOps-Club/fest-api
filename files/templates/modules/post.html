@@ -9,9 +9,8 @@
     <div class="news_main">
         <div class="news_head">
         	<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
-            <a class="news_profile_name" href="{% url 'profile' post.by.id %}">
-            	{{ post.by.get_full_name }}</a> posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}
-            </a> 
+            <a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ post.by.get_full_name }}</a> 
+            posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
             <span class="muted small">{{ post.time_created|naturaltime }}</span>
         </div>
         <div class="news_body">
@@ -24,9 +23,10 @@
                     <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
                 </div>
                 <div class="news_comment_body">
-                    {{ comment.description }}
+                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description }}
                     <div class="news_comment_info">
-                        {{ comment.time_created|naturaltime }}
+                        {{ comment.time_created|naturaltime }} 
+                        {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
                     </div>
                 </div>
             </div>

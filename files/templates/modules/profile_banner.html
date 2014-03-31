@@ -1,0 +1,27 @@
+{% load staticfiles %} 
+{% load humanize %} 
+
+
+<div class="row-fluid" id="banner" style="">
+    <div class="span12" id="banner_wrapper">
+
+        <div class="span12" id="banner_pic">
+            <div id="banner_profile">
+                <a href="">
+                    <img src="{% static 'img/temp/profile_big.jpg' %}" />
+                </a>
+            </div>
+            <span class="banner_title">{{ wall.name }}</span>
+        </div>
+        <div class="span12" id="banner_bar">
+            <div class="banner_item"><a href="{% url 'wall' wall.id %}" class="banner_link {% if current_page == 'wall' %}active{% endif %}     ">Wall</a><i class="selection_caret"></i>
+            </div>
+            <div class="banner_item"><a href="" class="banner_link {% if current_page == 'profile' %}active{% endif %} ">Profile</a><i class="selection_caret"></i>
+            </div>
+            <div class="banner_item"><a href="" class="banner_link {% if current_page == 'media' %}active{% endif %} ">Media</a><i class="selection_caret"></i>
+            </div>
+            <div class="banner_item"><a href="" class="banner_link {% if current_page == 'portals' %}active{% endif %} ">Portals</a><i class="selection_caret"></i>
+            </div>
+        </div>
+    </div>
+</div>

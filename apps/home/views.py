@@ -33,6 +33,18 @@ def newsfeed(request):
     # print notifs
     return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
 
+@login_required
+def portals(request):
+    # notifications = request.user.notifications.unread()
+    # print notifs
+    return render_to_response("pages/portals.html", locals(), context_instance= global_context(request))
+
+@login_required
+def notifications(request):
+    # notifications = request.user.notifications.unread()
+    # print notifs
+    return render_to_response("pages/notifications.html", locals(), context_instance= global_context(request))
+
 # Gen for testing purposes
 @login_required
 def show_newsfeed(request):

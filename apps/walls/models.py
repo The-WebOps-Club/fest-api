@@ -104,7 +104,7 @@ class Comment(PostInfo):
         return self.description
 
     class Meta:
-        get_latest_by = 'time_updated'
+        get_latest_by = 'time_created'
 
 
 class Post(PostInfo):
@@ -135,4 +135,4 @@ class Post(PostInfo):
         return
 
     class Meta:
-        get_latest_by = 'time_updated'
+        get_latest_by = 'time_created'

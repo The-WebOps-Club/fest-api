@@ -37,6 +37,7 @@ urlpatterns = patterns('',
 
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'),
+    url(r'^norifications/$', 'apps.home.views.notifications', name='notifications'),
     url(r'^show/newsfeed/$', 'apps.home.views.show_newsfeed'),
 
     # Walls

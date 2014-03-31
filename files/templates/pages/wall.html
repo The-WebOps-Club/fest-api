@@ -5,82 +5,21 @@
 {% block title %} {{ FEST_NAME }} {% endblock %} 
 
 {% block content %}
-<div class="row-fluid" id="banner" style="">
-    <div class="span12" id="banner_wrapper">
-
-        <div class="span12" id="banner_pic">
-            <div id="banner_profile">
-                <a href="">
-                    <img src="{% static 'img/temp/profile_big.jpg' %}" />
-                </a>
-            </div>
-            <span class="banner_title">{{ wall.name }}</span>
-        </div>
-        <div class="span12" id="banner_bar">
-            <div class="banner_item"><a href="" class="banner_link active">Wall</a><i class="selection_caret"></i>
-            </div>
-            <div class="banner_item"><a href="" class="banner_link">About</a><i class="selection_caret"></i>
-            </div>
-            <div class="banner_item"><a href="" class="banner_link">Media</a><i class="selection_caret"></i>
-            </div>
-            <div class="banner_item"><a href="" class="banner_link">Portal</a><i class="selection_caret"></i>
-            </div>
-        </div>
-    </div>
-</div>
+{% include 'modules/profile_banner.html' %}
 <br/>
-<div class="row-fluid" style="">
 
     {% include "modules/new_post.html" %}
     
     {% for post in wall_posts %}
-        <hr />
-	    {% include "modules/post.html" %}
+        <div class="row-fluid" style="">
+	       {% include "modules/post.html" %}
+        </div>
 	{% empty %}
-		<div class="news_post span12">
-		    <hr />
-		    <div class="news_left">
-		        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
-		    </div>
-		    <div class="news_main">
-		        <div class="news_head">
-		        	<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
-		            <a class="news_profile_name">Rahul Satish</a> and Solai Natarajan are now friends.
-		        </div>
-		        <div class="news_body">
-		            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repudiandae, facilis, magnam, eum, qui error culpa iste molestiae aperiam optio harum officia sapiente voluptates rerum. Suscipit, quod, architecto nihil cupiditate aspernatur iure ad vero veritatis consequuntur fugit molestiae temporibus vel voluptate commodi magni esse ea ratione dicta reiciendis laborum atque ut mollitia dolorem perferendis nulla aut est quisquam consectetur eius omnis dolores quidem facere laboriosam laudantium nemo ullam modi perspiciatis voluptas doloremque blanditiis beatae asperiores. Fuga, temporibus, sunt! Reiciendis, voluptate, aperiam, repudiandae dolore eaque ipsa totam eum harum quam alias beatae quisquam laboriosam quae. Recusandae eos illum delectus esse officiis repellat!
-		        </div>
-		        <div class="news_extra"></div>
-		        <div class="news_comment">
-		            <div class="news_comment_left">
-		                <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
-		            </div>
-		            <div class="news_comment_body">
-		                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa, necessitatibus, voluptatum, recusandae, incidunt distinctio eveniet fugit nesciunt quas enim excepturi doloribus minus odio laudantium possimus fugiat rem autem ab molestiae omnis accusamus in nobis quis adipisci ut quos illum tenetur laborum perferendis sint et officia commodi cum quae esse quod?
-		                <div class="news_comment_info">
-		                    47 minutes ago
-		                </div>
-		            </div>
-
-		        </div>
-		        <div class="news_comment">
-		            <div class="news_comment_left">
-		                <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
-		            </div>
-		            <div class="news_comment_body">
-		                <form action="{% url 'create_comment' 1 %}" method="POST">
-		                    {% csrf_token %}
-		                    <textarea class="span12 comment_textarea" name="comment" id="id_status" cols="30" rows="1" placeholder="Post your comment here"></textarea>
-		                    <input class="submit_comment" type="submit" value="Comment" />
-		                </form>
-		            </div>
-		        </div>
-		    </div>
+		<div class="row-fluid huge muted">
+            <hr />
+            There are no Posts :(
 		</div>
-
-
     {% endfor %}
-</div>
 {% endblock %} {% block extra_css %} {{ block.super }}
 <style type="text/css">
 #banner {
