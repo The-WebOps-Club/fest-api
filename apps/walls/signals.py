@@ -17,6 +17,7 @@ from apps.walls.models import Wall, Post, Comment
 # Misc
 from misc.utils import *
 # Python
+import notifications
 
 @receiver(post_save, sender=Post, dispatch_uid="post.made.post_save_signal")
 def post_post_save(sender, instance, **kwargs):
@@ -27,7 +28,7 @@ def post_post_save(sender, instance, **kwargs):
     # If comments = 0 It is a new post.
     if not instance.comments_count:
         for recipient in instance.wall.notification_users.all():
-            notify.send(
+            notifications.notify.send(
                 sender=instance.by, recipient=recipient,
                 verb='has posted on', action_object=instance, target=instance.wall
             )
@@ -39,7 +40,7 @@ def comment_post_save(sender, instance, **kwargs):
         Creates     : Notification to correspinding notification_users on Post.
     """
     for recipient in instance.parent_post.all():
-        notify.send(
+        notifications.notify.send(
             sender=instance.by, recipient=recipient,
             verb='has commented on', action_object=instance, target=instance.parent_post
         )

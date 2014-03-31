@@ -1,0 +1,120 @@
+{% load staticfiles %} 
+{% load humanize %} 
+
+<div id="post_{{ post.id }}" class="news_post span12">
+	<hr />
+    <div class="news_left">
+        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
+    </div>
+    <div class="news_main">
+        <div class="news_head">
+        	<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
+            <a class="news_profile_name" href="{% url 'profile' post.by.id %}">
+            	{{ post.by.get_full_name }}</a> posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}
+            </a> 
+            <span class="muted small">{{ post.time_created|naturaltime }}</span>
+        </div>
+        <div class="news_body">
+            {{ post.description }}
+        </div>
+        <div class="news_extra"></div>
+        {% for comment in post.comments.all %}
+            <div id="comment_{{ comment.pk }}" class="news_comment">
+                <div class="news_comment_left">
+                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
+                </div>
+                <div class="news_comment_body">
+                    {{ comment.description }}
+                    <div class="news_comment_info">
+                        {{ comment.time_created|naturaltime }}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="news_comment">
+            <div class="news_comment_left">
+                <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
+            </div>
+            <div class="news_comment_body">
+                <form action="{% url 'create_comment' post.pk %}" method="POST">
+                    {% csrf_token %}
+                    <textarea class="span12 comment_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here"></textarea>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+div.news_post {
+}
+div.news_post hr {
+}
+.news_left img.news_profile, .news_left {
+    float:left;
+    width : 50px;
+    height : 50px;
+    vertical-align: text-top;
+}
+.news_main {
+    font-size : 14px;
+    width : auto;
+    line-height : 18px;
+    margin-left : 60px;
+}
+.news_main .news_head {
+    margin-bottom : 5px;
+}
+.news_main .news_profile_name {
+    font-weight : bold;
+}
+.news_comment {
+    margin-top : 2px;
+    background-color: #EEE;
+    padding : 5px;
+    display : block;
+}
+.news_comment .news_comment_left, .news_comment .news_comment_left .news_comment_profile {
+    height : 32px;
+    width : 32px;
+    float : left;
+}
+.news_comment .news_comment_body {
+    font-size : 12px;
+    line-height : 15px;
+    margin-left : 40px;
+    min-height : 32px;
+}
+.news_comment .news_comment_body .news_comment_info {
+    font-size : 11px;
+    line-height : 13px;
+    color : #666;
+    margin-top : 5px;
+}
+</style>
+
+<script type="text/javascript">
+    // FOcusing on the text areas
+    $( document ).ready(function() {            
+        $(".news_post").mouseover( function() {
+            $(this).find(".news_post_settings").show()
+        })
+        $(".news_post").mouseout( function() {
+            $(this).find(".news_post_settings").hide()
+        })
+        $(".news_post .comment_textarea").keydown(function (e) {
+            if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter pressed
+            	$(this).val($(this).val() + "\n")
+            	e.preventDefault()
+            } else if (e.keyCode == 13) { // Enter pressed
+                my_form = $(this).closest("form")
+                //my_form.submit()
+                console.log($(this)[0].id)
+            }
+
+        });
+
+    })
+
+</script>

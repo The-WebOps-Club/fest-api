@@ -41,49 +41,79 @@ def wall (request, wall_id=None):
         Raises:
             None
     """
-    wallpage = True
-    if wall_id:
-        wall = get_object_or_404(Wall, pk=int(wall_id))
+    # Default argument setting and checking
+    if wall_id == None:    
+        if hasattr(request.user, "erp_profile") and hasattr(request.user.erp_profile, "wall"):
+            wall_id = request.user.erp_profile.wall.id
+            wall = request.user.erp_profile.wall
     else:
-        wall = request.user.erp_profile.wall
-    # if request.user in wall.owners.all() or request.user in wall.visible_to.all():
-    posts = Post.objects.filter(wall=wall).order_by('-time_updated')
-    notifications = request.user.notifications.unread()
+        # Initial validations
+        try:
+            wall_id = int(wall_id)
+        except ValueError:
+            print wall_id, "could not convert to int"
+            wall_id = None
+        if not ( type(wall_id) is int ):
+            print "wall_id :", wall_id, type(wall_id)
+            raise InvalidArgumentTypeException
+        wall = get_object_or_404(Wall, id=wall_id)
+
+    # Logic
+    wall_posts = Post.objects.filter(wall = wall).order_by('-time_updated')
+    # wall_notifications = request.user.notifications.unread()
+
+    local_context = {
+        "current_page" : "wall",
+        "wall" : wall,
+        "wall_posts" : wall_posts,
+    }
     return render_to_response('pages/wall.html', locals(), context_instance= global_context(request))
 
 def create_post(request, wall_id):
     """
         Create a new wall post
     """
-    wallpage = True
-    data = request.POST.copy()
+    # Initial validations
     try:
-        wall = get_object_or_404(Wall, pk=int(wall_id))
-        if not request.user in wall.owners.all():
-            messages.error(request, strings.STD_ERROR %('You dont have permission to post here'))
-            return redirect('wall', wall_id=wall.pk)
-        Post.objects.create(description=data['status'], 
-            wall=wall, by=request.user)
-    except Exception, e:
-        messages.error(request, strings.STD_ERROR %(str(e.message)))
-    return redirect('wall', wall_id=wall.pk) # Newsfeeed? Need to provode a proper redirect method
+        wall_id = int(wall_id)
+    except ValueError:
+        print wall_id, "could not convert to int"
+        wall_id = None
+    if not ( type(wall_id) is int ):
+        print "wall_id :", wall_id, type(wall_id)
+        raise InvalidArgumentTypeException
+    wall = get_object_or_404(Wall, id=int(wall_id))
+    
+    data = request.POST.copy()
+    if not request.user in wall.owners.all():
+        messages.error(request, strings.STD_ERROR %('You dont have permission to post here'))
+        return redirect('wall', wall_id=wall.pk)
+    Post.objects.create(description=data['new_post'], wall=wall, by=request.user)
+    
+    return redirect('wall', wall_id=wall.pk)
 
 def create_comment(request, post_id):
     """
         Creates a new comment on a Post
     """
-    wallpage = True
+    # Initial validations
+    try:
+        post_id = int(post_id)
+    except ValueError:
+        print post_id, "could not convert to int"
+        post_id = None
+    if not ( type(post_id) is int ):
+        print "post_id :", post_id, type(post_id)
+        raise InvalidArgumentTypeException
+    post = get_object_or_404(Post, id=int(post_id))
+
     data = request.POST.copy()
-    # try:
-    parent_post = get_object_or_404(Post, pk=post_id)
-    new_comment = Comment.objects.create(description=data['status'], by=request.user)
-    parent_post.comments.add(new_comment)
-    parent_post.comments_count += 1
-    parent_post.save()
-    # parent_post.save()
-    # except Exception, e:
-    messages.error(request, strings.STD_ERROR )
-    return redirect('wall', wall_id=parent_post.wall.pk)
+    new_comment = Comment.objects.create(description=data['comment'], by=request.user)
+    post.comments.add(new_comment)
+    post.comments_count += 1
+    post.save()
+    
+    return redirect('wall', wall_id=post.wall.pk)
 
 
 # Gen testing views

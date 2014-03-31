@@ -27,6 +27,8 @@
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
 
+    <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
+
     {% block extra_css %}{% endblock %} 
 
     {% if not DEBUG %}
@@ -67,7 +69,6 @@
     </div>
 
 
-    <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-twipsy.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-alerts.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-buttons.js' %}"></script>
@@ -77,6 +78,7 @@
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-scrollspy.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/prefixfree.min.js' %}"></script>
     <script type="text/javascript" src='{% static "dajax/jquery.dajax.core.js" %}'></script>
+    <script type="text/javascript" src='{% static "js/jquery.autoresize.js" %}'></script>
     {% load dajaxice_templatetags %} {% dajaxice_js_import %} 
     {% block extra_js %}{% endblock %}
 
@@ -85,15 +87,16 @@
     {% include "base/users.html" %}
     {% include "base/settings.html" %}
     <script>
-        $(document).ready(function() {
         function hide_popups() {
-            $(".userButton").popover("hide")
-            $(".messageButton").popover("hide")
-            $(".notifButton").popover("hide")   
-            $(".settingButton").popover("hide") 
-        }
-        $(".below_topbar").click(hide_popups)
-    	$(".searchbar").click(hide_popups)
+	            $(".userButton").popover("hide")
+	            $(".messageButton").popover("hide")
+	            $(".notifButton").popover("hide")   
+	            $(".settingButton").popover("hide") 
+	    }
+	        
+	    $(document).ready(function() {
+	        $(".below_topbar").click(hide_popups)
+    		$(".searchbar").click(hide_popups)
             $(window).resize(function() {
                 outline = $("body")
                 console.log($("body").width() + "," + $("body").height())
@@ -101,7 +104,9 @@
                     console.log("dddddddd")
                 }
             });
+    	    $(".resize_textarea").autosize()
         });
+    
         
 
     </script>

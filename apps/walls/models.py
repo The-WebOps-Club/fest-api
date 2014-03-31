@@ -12,7 +12,6 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.core.signals import request_finished
 # Apps
-from notifications import notify
 # Decorators
 # Models
 # Forms
@@ -104,6 +103,10 @@ class Comment(PostInfo):
     def __unicode__(self):
         return self.description
 
+    class Meta:
+        get_latest_by = 'time_updated'
+
+
 class Post(PostInfo):
     """
         Defines the Post Class. Holds data about each post made on a Wall.
@@ -131,3 +134,5 @@ class Post(PostInfo):
         temp = super(Post, self).save(*args, **kwargs)
         return
 
+    class Meta:
+        get_latest_by = 'time_updated'

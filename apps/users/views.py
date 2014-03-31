@@ -47,7 +47,7 @@ def login_user(request):
             - Authenticates and logs in a django.contrib.auth.User
 
     """
-    # Default argument setting and checking
+    current_page = "profile"# Default argument setting and checking
     if request.user.is_authenticated(): # Check if user is already logged in
         return redirect("apps.home.views.home")
 
@@ -86,6 +86,7 @@ def login_user(request):
     # import pdb; pdb.set_trace()
     # Return
     local_context = {
+        "current_page" : "login",
         "login_form": login_form,
     }
     return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
@@ -142,6 +143,7 @@ def profile(request, user_id=None):
             messages.error(request, strings.INVALID_FORM)
     # Return
     local_context = {
+        "current_page" : "profile",
         "profile_form" : profile_form,
     }
     return render_to_response("pages/profile.html", local_context, context_instance= global_context(request))
