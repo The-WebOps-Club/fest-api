@@ -45,11 +45,33 @@ def portals(request):
 @login_required
 def notifications(request):
     local_context = {
-    	"current_page" : "newsfeed",
+    	"current_page" : "notifications",
     	#"posts" : Post.objects.order_by("-comments__time_updated", "-time_updated"),
     	"notifications" : request.user.notifications.unread(),
     }
     return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
+
+@login_required
+def read_notification(request, notif_id):
+	if notif_id == "all":
+		request.user.notifications.mark_all_as_read()
+		return redirect(reverse("newsfeed"))
+	else:
+		try:
+			notif_id = int(notif_id)
+		except ValueError:
+			print notif_id, "could not convert to int"
+			notif_id = None
+		if not ( type(notif_id) is int ):
+			print "notif_id :", notif_id, type(wall_id)
+			raise InvalidArgumentTypeException
+		try:
+			notif = request.user.notifications.get(id = notif_id)
+		except Notification.DoesNotExist:
+			raise InvalidArgumentValueException
+	# Logic
+	notif.mark_as_read()
+	return redirect(reverse("wall", kwargs={ "wall_id" : notif.target.wall.id }) + "#post_" + str(notif.target.id))
 
 
 @login_required

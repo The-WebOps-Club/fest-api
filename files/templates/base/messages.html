@@ -20,11 +20,12 @@ $( document ).ready(function() {
 	function messages_content() {
 		return $(".messages_content").html()
 	}
-	$(".messageButton").click( function() {
+	$(".messageButton").click( function(e) {
 		$(".userButton").popover("hide")
 		$(".notifButton").popover("hide")
 		$(".messageButton").popover("toggle")
 		$(".settingsButton").popover("hide")
+		e.preventDefault()
 	})
 	//$(".messageButton").popover("show")
 });

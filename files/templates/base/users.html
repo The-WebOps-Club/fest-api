@@ -20,11 +20,12 @@ $( document ).ready(function() {
 	function users_content() {
 		return $(".users_content").html()
 	}
-	$(".userButton").click( function() {
+	$(".userButton").click( function(e) {
 		$(".userButton").popover("toggle")
 		$(".notifButton").popover("hide")
 		$(".messageButton").popover("hide")
 		$(".settingsButton").popover("hide")
+		e.preventDefault()
 	})
 	
 });

@@ -27,26 +27,25 @@ urlpatterns = patterns('',
     url(r'^$', 'apps.home.views.home', name='home'),
 
     # Users
-    url(r'^login/$', 'apps.users.views.login_user', name='login'),
-    url(r'^profile/(?P<user_id>\d+)$', 'apps.users.views.profile', name='profile'),
+    url(r'^login/$', 'apps.users.views.login_user', name='login'), # Logs user in
+    url(r'^profile/(?P<user_id>\d+)$', 'apps.users.views.profile', name='profile'), # Shows profile page of user
     url(r'^profile$', 'apps.users.views.profile', name='profile'),
-    url(r'^identity/(?P<role_type>\w+)/(?P<role_id>\d+)$', 'apps.users.views.identity', name='identity'),
+    url(r'^identity/(?P<role_type>\w+)/(?P<role_id>\d+)$', 'apps.users.views.identity', name='identity'), # Changes identity of the user
     url(r'^identity$', 'apps.users.views.identity', name='identity'),
-    url(r'^show/login/$', 'apps.users.views.show_login_user'),
-    url(r'^show/profile/$', 'apps.users.views.show_profile'),
-
+    
     # Home
-    url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'),
-    url(r'^notifications/$', 'apps.home.views.notifications', name='notifications'),
-    url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'),
-    url(r'^show/newsfeed/$', 'apps.home.views.show_newsfeed'),
-
-    # Walls
+    url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'), # Shows newsfeed for a user
+    url(r'^notifications/$', 'apps.home.views.notifications', name='notifications'), # Shows all notifications for a user
+    url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
+    
+    # Notification
+	url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page
+	
+	# Walls
     url(r'^wall/(?P<wall_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall$', 'apps.walls.views.wall', name='wall'),
     url(r'^create_post/(?P<wall_id>\d+)/$', 'apps.walls.views.create_post',  name='create_post'),
     url(r'^create_comment/(?P<post_id>\d+)/$', 'apps.walls.views.create_comment',  name='create_comment'),
-    url(r'^show/wall/$', 'apps.walls.views.show_wall'),
     
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),
