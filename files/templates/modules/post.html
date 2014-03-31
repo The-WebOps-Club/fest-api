@@ -3,7 +3,9 @@
 {# Remember : post and notification are keywords used here #}
 
 <div id="post_{{ post.id }}" class="row-fluid" style="">
-	<hr />
+	{% if forloop.counter0 %} <hr /> 
+	{% else %} <div class="" style="height : 30px;"></div>
+	{% endif %}
 	<div class="news_post span12">
 	    <div class="news_left">
 	        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
@@ -16,7 +18,7 @@
 	            	posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
 	            	<span class="muted small">{{ post.time_created|naturaltime }}</span>
 	            {% elif notification %}
-	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ post.by.get_full_name }}</a> 
+	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ notification.actor.get_full_name|default:"" }}</a> 
 	            	{{notification.verb}} <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
 	            	<span class="muted small">{{ notification.timestamp|naturaltime }}</span>
 	            {% endif %}

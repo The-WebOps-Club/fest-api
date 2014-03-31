@@ -63,11 +63,43 @@ def wall (request, wall_id=None):
     # wall_notifications = request.user.notifications.unread()
 
     local_context = {
-        "current_page" : "wall",
         "wall" : wall,
         "wall_posts" : wall_posts,
     }
+    if request.user.erp_profile.wall == wall:
+        local_context["current_page"] = "wall"
+    elif request.session["role_dept"] == wall.id:
+    	local_context["current_page"] = "dept_wall"
     return render_to_response('pages/wall.html', local_context, context_instance= global_context(request))
+
+def my_wall(request, owner_type, owner_id):
+	# Initial validations
+	try:
+		owner_id = int(owner_id)
+	except ValueError:
+		print owner_id, "could not convert to int"
+		owner_id = None
+	if not ( type(owner_type) is str or type(owner_type) is unicode ) or type(owner_id) is not int:
+		print owner_id, type(owner_id)
+		print owner_type, type(owner_type)
+		raise InvalidArgumentTypeException
+	
+	wall_id = None
+	if owner_type == "user":
+		wall_id = request.user.erp_profile.wall.id
+	else:
+		if request.session["role"] == "coord":
+			if owner_type == "subdept":
+				wall_id = Subdept.objects.get(id = request.session["role_dept"]).wall.id
+			elif owner_type == "dept":
+				wall_id = Subdept.objects.get(id = request.session["role_dept"]).dept.wall.id
+		elif owner_type == "core" or owner_type == "supercoord":
+			if owner_type == "dept":
+				wall_id = Dept.objects.get(id = request.session["role_dept"]).wall.id
+	if wall_id == None:
+		raise InvalidArgumentValueException
+	return redirect(reverse("wall", kwargs={"wall_id" : wall_id}))
+
 
 def create_post(request, wall_id):
     """

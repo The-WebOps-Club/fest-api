@@ -10,7 +10,7 @@
 
 	{% for notification in notifications %}
 		{% with post=notification.target %}
-	    	{% include "modules/post.html" %}
+			{% include "modules/post.html" %}
 	    {% endwith %}
 	{% endfor %}
 	

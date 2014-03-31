@@ -193,6 +193,7 @@ ul.group_link.vertical > li:hover, ul.group_link.vertical > li a:hover {
 }
 .counter {
     opacity : 1;
+    font-size : 10px;
     background-color: #d8dfea;
     color: #3b5998;
 }
@@ -201,6 +202,8 @@ ul.group_link.vertical > li:hover, ul.group_link.vertical > li a:hover {
     background-color: transparent;
 }
 .topbar .counter {
+    font-size : 9px;
+    font-weight : 300;
     background-color: #dd3333;
     line-height : 11px;
     float : right;

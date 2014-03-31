@@ -47,9 +47,9 @@ def notifications(request):
     local_context = {
     	"current_page" : "notifications",
     	#"posts" : Post.objects.order_by("-comments__time_updated", "-time_updated"),
-    	"notifications" : request.user.notifications.unread(),
+    	"notifications" : request.user.notifications.all(),
     }
-    return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
+    return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 
 @login_required
 def read_notification(request, notif_id):
