@@ -67,7 +67,7 @@ def wall (request, wall_id=None):
         "wall" : wall,
         "wall_posts" : wall_posts,
     }
-    return render_to_response('pages/wall.html', locals(), context_instance= global_context(request))
+    return render_to_response('pages/wall.html', local_context, context_instance= global_context(request))
 
 def create_post(request, wall_id):
     """
@@ -110,8 +110,8 @@ def create_comment(request, post_id):
     data = request.POST.copy()
     new_comment = Comment.objects.create(description=data['comment'], by=request.user)
     post.comments.add(new_comment)
-    post.comments_count += 1
-    post.save()
+    #post.comments_count += 1
+    #post.save()
     
     return redirect('wall', wall_id=post.wall.pk)
 

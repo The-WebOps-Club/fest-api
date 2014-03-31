@@ -9,13 +9,14 @@ from misc.utils import *  #Import miscellaneous functions
 # Decorators
 # Models
 from django.contrib.auth.models import User
+from apps.walls.models import Post, Comment
+from notifications.models import Notification
 # Forms
 # View functions
 # Misc
 from django.templatetags.static import static
 # Python
 import os
-import notifications 
 
 @login_required
 def home (request, *args, **kwargs):
@@ -28,10 +29,12 @@ def home (request, *args, **kwargs):
     
 
 @login_required
-def newsfeed(request):
-    # notifications = request.user.notifications.unread()
-    # print notifs
-    return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
+def newsfeed(request): 
+    local_context = {
+    	"current_page" : "newsfeed",
+    	"notifications" : Notification.objects.order_by("-timestamp"),
+    }
+    return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 
 @login_required
 def portals(request):
@@ -41,8 +44,16 @@ def portals(request):
 
 @login_required
 def notifications(request):
-    # notifications = request.user.notifications.unread()
-    # print notifs
+    local_context = {
+    	"current_page" : "newsfeed",
+    	#"posts" : Post.objects.order_by("-comments__time_updated", "-time_updated"),
+    	"notifications" : request.user.notifications.unread(),
+    }
+    return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
+
+
+@login_required
+def contacts(request):
     return render_to_response("pages/notifications.html", locals(), context_instance= global_context(request))
 
 # Gen for testing purposes

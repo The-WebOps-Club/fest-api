@@ -1,6 +1,5 @@
 {% load staticfiles %} 
-{% load humanize %} 
-
+{% load humanize %}
 
 <div class="row-fluid" style="">
 	<div class="span12" id="new_post_media">
@@ -20,7 +19,7 @@
 	<div id="new_post_wrapper" class="span12">
 	    <div id="new_post_box">
 	        <div id="new_post_text" class="span12">
-	            <form id="id_form_status" name="form_status" action="{% url 'create_post' wall.pk %}" method="POST">
+	            <form id="id_form_status" name="form_status" action="{{ new_post_url }}" method="POST">
 	                {% csrf_token %}
 	                <textarea class="span12 new_post_textarea resize_textarea" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here"></textarea>
 	            </form>

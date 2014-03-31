@@ -1,53 +1,64 @@
 {% load staticfiles %} 
 {% load humanize %} 
+{# Remember : post and notification are keywords used here #}
 
-<div id="post_{{ post.id }}" class="news_post span12">
-	<hr />
-    <div class="news_left">
-        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
-    </div>
-    <div class="news_main">
-        <div class="news_head">
-        	<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
-            <a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ post.by.get_full_name }}</a> 
-            posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
-            <span class="muted small">{{ post.time_created|naturaltime }}</span>
-        </div>
-        <div class="news_body">
-            {{ post.description }}
-        </div>
-        <div class="news_extra"></div>
-        {% for comment in post.comments.all %}
-            <div id="comment_{{ comment.pk }}" class="news_comment">
-                <div class="news_comment_left">
-                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
-                </div>
-                <div class="news_comment_body">
-                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description }}
-                    <div class="news_comment_info">
-                        {{ comment.time_created|naturaltime }} 
-                        {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-        <div class="news_comment">
-            <div class="news_comment_left">
-                <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
-            </div>
-            <div class="news_comment_body">
-                <form action="{% url 'create_comment' post.pk %}" method="POST">
-                    {% csrf_token %}
-                    <textarea class="span12 comment_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here"></textarea>
-                </form>
-            </div>
-        </div>
-    </div>
+<div class="row-fluid" style="">
+		<hr />
+	<div id="post_{{ post.id }}" class="news_post span12">
+	    <div class="news_left">
+	        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
+	    </div>
+	    <div class="news_main">
+	        <div class="news_head">
+	        	{% if not notification %}
+	        		<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
+	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ post.by.get_full_name }}</a> 
+	            	posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
+	            	<span class="muted small">{{ post.time_created|naturaltime }}</span>
+	            {% elif notification %}
+	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ post.by.get_full_name }}</a> 
+	            	{{notification.verb}} <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
+	            	<span class="muted small">{{ notification.timestamp|naturaltime }}</span>
+	            {% endif %}
+	        </div>
+	        <div class="news_body">
+	            {{ post.description }}
+	        </div>
+	        <div class="news_extra"></div>
+	        {% for comment in post.comments.all %}
+	            <div id="comment_{{ comment.pk }}" class="news_comment">
+	                <div class="news_comment_left">
+	                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
+	                </div>
+	                <div class="news_comment_body">
+	                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description }}
+	                    <div class="news_comment_info">
+	                        {{ comment.time_created|naturaltime }} 
+	                        {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
+	                    </div>
+	                </div>
+	            </div>
+	        {% endfor %}
+	        <div class="news_comment">
+	            <div class="news_comment_left">
+	                <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
+	            </div>
+	            <div class="news_comment_body">
+	                <form action="{% url 'create_comment' post.pk %}" method="POST">
+	                    {% csrf_token %}
+	                    <textarea class="span12 comment_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here"></textarea>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 </div>
-
 
 <style>
 div.news_post {
+	transition-property: background;
+	transition-duration: 0.5s;
+	transition-timing-function: linear;
 }
 div.news_post hr {
 }
@@ -99,9 +110,15 @@ div.news_post hr {
     $( document ).ready(function() {            
         $(".news_post").mouseover( function() {
             $(this).find(".news_post_settings").show()
+            //$(this).css( { 
+            //	"background-color" : "#eeeeff",
+        	//})
         })
         $(".news_post").mouseout( function() {
             $(this).find(".news_post_settings").hide()
+            //$(this).css( { 
+            //	"background-color" : "transparent",
+        	//})
         })
         $(".news_post .comment_textarea").keydown(function (e) {
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter pressed

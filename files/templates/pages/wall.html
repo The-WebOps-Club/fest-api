@@ -5,16 +5,17 @@
 {% block title %} {{ FEST_NAME }} {% endblock %} 
 
 {% block content %}
-{% include 'modules/profile_banner.html' %}
-<br/>
+    {% url 'create_post' wall.id as new_post_url %}
+    {% include 'modules/profile_banner.html' %}
+    <br/>
 
     {% include "modules/new_post.html" %}
-    
-    {% for post in wall_posts %}
-        <div class="row-fluid" style="">
-	       {% include "modules/post.html" %}
-        </div>
-	{% empty %}
+		{% for post in wall_posts %}
+		    {% with show_post='True' %}
+		    	{% include "modules/post.html" %}
+		   	{% endwith %}
+		{% empty %}
+
 		<div class="row-fluid huge muted">
             <hr />
             There are no Posts :(
