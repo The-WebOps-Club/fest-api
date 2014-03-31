@@ -173,15 +173,16 @@ def identity(request, role_type=None, role_id=None):
     """
     # Default argument setting and checking
     if role_type == None and role_id == None:
-        if request.user.erp_profile.core_relations.count():
-            role_type = "core"
-            role_id = request.user.erp_profile.core_relations.first().id
-        elif request.user.erp_profile.supercoord_relations.count():
-            role_type = "supercoord"
-            role_id = request.user.erp_profile.supercoord_relations.first().id
-        elif request.user.erp_profile.coord_relations.count():
-            role_type = "coord"
-            role_id = request.user.erp_profile.coord_relations.first().id
+    	if not hasattr(request.session, "role"): # Do only if no role has been set yet
+		    if request.user.erp_profile.core_relations.count():
+		        role_type = "core"
+		        role_id = request.user.erp_profile.core_relations.first().id
+		    elif request.user.erp_profile.supercoord_relations.count():
+		        role_type = "supercoord"
+		        role_id = request.user.erp_profile.supercoord_relations.first().id
+		    elif request.user.erp_profile.coord_relations.count():
+		        role_type = "coord"
+		        role_id = request.user.erp_profile.coord_relations.first().id
     else:
         # Initial validations
         try:

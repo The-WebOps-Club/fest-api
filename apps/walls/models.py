@@ -36,9 +36,12 @@ class Wall(models.Model):
     
     # Relations with other models
     # Owners can view all the posts and make posts, For a department they are the Department Junta
-    owners              = models.ManyToManyField(User, null=True, blank=True, related_name='walls') # People who get notifications about this wall
+    owners              = models.ManyToManyField(User, null=True, blank=True, related_name='walls')
+    # People who get notifications about this wall
     notification_users  = models.ManyToManyField(User, null=True, blank=True, related_name='notified_wall')
+    # People who can see a wall
     visible_to          = models.ManyToManyField(User, null=True, blank=True, related_name='visible_wall')
+    
     # Analytics
 
 
@@ -55,14 +58,13 @@ class Wall(models.Model):
     @property
     def parent(self):
         temp = None
-        try : temp = self.person()
-        except AttributeError as ae2: 
-            try : temp = self.dept()
-            except AttributeError as ae2: 
-                try : temp = self.subdept()
-                except AttributeError as ae3: 
-                    temp = None
-            
+        if hasattr(self, "person"):
+            return self.person
+        if hasattr(self, "subdept"):
+            return self.subdept
+        if hasattr(self, "dept"):
+            return self.dept
+        print "No parent found"
         return temp
     
     def __unicode__(self):
@@ -106,10 +108,16 @@ class Post(PostInfo):
     """
         Defines the Post Class. Holds data about each post made on a Wall.
     """
+    # Relations with other models - Wall
     wall                = models.ForeignKey(Wall, related_name='posts', blank = True, null = True)
+    
+    # Relations with other models - Users
     notification_users  = models.ManyToManyField(User, null=True, blank=True, related_name='notified_post')
     visible_to          = models.ManyToManyField(User, null=True, blank=True, related_name='visible_post')
+    
     is_public           = models.BooleanField(default=True)
+    
+    # Relations with other models - Comments
     comments            = models.ManyToManyField(Comment, null=True, blank=True, related_name='parent_post')
     comments_count      = models.IntegerField(default=0)
 
@@ -123,29 +131,3 @@ class Post(PostInfo):
         temp = super(Post, self).save(*args, **kwargs)
         return
 
-
-@receiver(post_save, sender=Post, dispatch_uid="post.made.signal")
-def notify_post(sender, instance, **kwargs):
-    """
-        Signal for  : A Post got saved on a wall
-        Creates     : Notification to correspinding notification_users on wall.
-    """
-    # If comments = 0 It is a new post.
-    if not instance.comments_count:
-        for recipient in instance.wall.notification_users.all():
-            notify.send(
-                sender=instance.by, recipient=recipient,
-                verb='has posted on', action_object=instance, target=instance.wall
-            )
-
-@receiver(post_save, sender=Comment, dispatch_uid="comment.made.signal")
-def notify_comment(sender, instance, **kwargs):
-    """
-        Signal for  : A Comment got saved on a post
-        Creates     : Notification to correspinding notification_users on Post.
-    """
-    for recipient in instance.parent_post.all():
-        notify.send(
-            sender=instance.by, recipient=recipient,
-            verb='has commented on', action_object=instance, target=instance.parent_post
-        )

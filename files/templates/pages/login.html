@@ -12,7 +12,7 @@
                         <a class='brand big_brand bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
                     </div>
                     <div class='span6' id='login_box'>
-                        <form class='span9 pull-right' action='' method='POST' id='login_form'>
+                        <form class='span9 pull-right' action='' method='POST' id='login_form'  autocomplete="on">
                             {% csrf_token %}
                             <div class='span5 input_box'>
                                 <label for='id_username'>Email ID</label><br />

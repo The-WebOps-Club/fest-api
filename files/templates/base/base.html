@@ -85,6 +85,7 @@
     {% include "base/users.html" %}
     {% include "base/settings.html" %}
     <script>
+        $(document).ready(function() {
         function hide_popups() {
             $(".userButton").popover("hide")
             $(".messageButton").popover("hide")
@@ -93,6 +94,16 @@
         }
         $(".below_topbar").click(hide_popups)
     	$(".searchbar").click(hide_popups)
+            $(window).resize(function() {
+                outline = $("body")
+                console.log($("body").width() + "," + $("body").height())
+                if ( outline.width() < 1000 ) {
+                    console.log("dddddddd")
+                }
+            });
+        });
+        
+
     </script>
 </body>
 

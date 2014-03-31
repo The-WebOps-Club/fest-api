@@ -10,13 +10,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.db.models import Q
 from django.utils import timezone
 # Apps
 # Decorators
 # Models
 from misc.models import College
 from apps.walls.models import Wall, Post
-from apps.events.models import Event
 # Forms
 # View functions
 # Misc
@@ -41,17 +43,18 @@ class Dept(models.Model):
     def __unicode__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        """
-            An extended save method to handle   
-                - M2M associated with the model
-                - O2O associated with the model
-        """
-        wall, created_it = Wall.objects.get_or_create(name=self.name)
-        if created_it:
-            self.wall = wall
-        temp = super(Dept, self).save(*args, **kwargs)
-        return
+    def cores(self):
+        return [i.user for i in self.core_set.all()]
+    def supercoords(self):
+        return [i.user for i in self.supercoord_set.all()]
+    def coords(self):
+        ret = set()
+        ret.update([i.user for i in ERPProfile.objects.filter(coord_relations__in=self.subdepts.all())])
+        return list( ret )
+    def related_users(self):
+        ret = set()
+        ret.update( self.coords(), self.supercoords(), self.cores() )
+        return list(ret)
 
 class Subdept(models.Model):
     """ 
@@ -66,20 +69,20 @@ class Subdept(models.Model):
     # Basic information
     name            = models.CharField(max_length=30, unique=True)
     description     = models.TextField(max_length=500, null=True, blank=True)
+
     def __unicode__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
-        """
-            An extended save method to handle   
-                - M2M associated with the model
-                - O2O associated with the model
-        """
-        wall, created_it = Wall.objects.get_or_create(name=self.name)
-        if created_it:
-            self.wall = wall
-        temp = super(Subdept, self).save(*args, **kwargs)
-        return
+    def cores(self):
+        return [i.user for i in self.dept.core_set.all()]
+    def supercoords(self):
+        return [i.user for i in self.dept.supercoord_set.all()]
+    def coords(self):
+        return [i.user for i in self.coord_set.all()]
+    def related_users(self):
+        ret = set()
+        ret.update( self.coords(), self.supercoords(), self.cores() )
+        return list(ret)
 
 class UserProfile(models.Model): # The corresponding auth user
     """
@@ -159,6 +162,10 @@ class ERPProfile(models.Model):
     summer_stay     = models.CharField(max_length=30, blank=True, null=True)
     winter_stay     = models.CharField(max_length=30, blank=True, null=True)
     
+    @property
+    def name(self):
+        return self.user.get_full_name()
+    
     def get_name(self):
         if self.nickname:
             return self.nickname
@@ -191,14 +198,7 @@ class ERPProfile(models.Model):
     #    return dept_str
 
     def save(self, *args, **kwargs):
-        """
-            An extended save method to handle   
-                - M2M associated with the model
-                - O2O associated with the model
-        """
-        user_profile, created_it = UserProfile.objects.get_or_create(user=self.user)
-        wall, created_it = Wall.objects.get_or_create(name=self.user.get_full_name())
-        if created_it:
-            self.wall = wall
+        if hasattr(self.user, "profile"):
+            UserProfile.objects.create(user=self.user)
         temp = super(ERPProfile, self).save(*args, **kwargs)
         return 

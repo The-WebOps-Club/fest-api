@@ -74,11 +74,5 @@ def valid_phone_number(num_string):
     return data.isdigit() and len(data) >= 10 and len(data) <= 13 
 
 
-# ------------------ DB POPULATIONS
+# ------------------ SIMPLE UTILS
 #----------------------------------------------------------------------
-def populate_test_data(MAX_USERS = 20, MAX_EVENTS = 10, MAX_EVENT_INSTANCES = 4):
-    """
-        Populates the Database with some temporary test data
-        ONLY meant for testing out !
-    """
-    print "Need to make ..."

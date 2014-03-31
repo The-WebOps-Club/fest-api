@@ -31,13 +31,15 @@ class Command(BaseCommand):
         pass_key = "1"
         
         for dept_name in SAMPLE_DEPTS:
+            dept_name = str(dept_name).lower()
+
             dept, created_it = Dept.objects.get_or_create(name=dept_name)
             if created_it:
                 dept.description=DESC_STR %(dept_name)
                 dept.save()
                 self.stdout.write("Dept %s did not exist. Added it." %(dept_name))
                 
-            user, created_it = User.objects.get_or_create(username=str(dept_name).lower()+'_core', 
+            user, created_it = User.objects.get_or_create(username=dept_name+'_core', 
                                             email=str(dept_name).lower()+'_core'+'@festapi.com')
             user.first_name = str(dept_name).lower()
             user.last_name = "core"
