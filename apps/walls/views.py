@@ -11,7 +11,8 @@ from misc.utils import *  #Import miscellaneous functions
 # Decorators
 # Models
 from django.contrib.auth.models import User
-from models import Wall, Post, Comment
+from apps.walls.models import Wall, Post, Comment
+from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
 # Forms
 # View functions
 # Misc
@@ -93,7 +94,7 @@ def my_wall(request, owner_type, owner_id):
 				wall_id = Subdept.objects.get(id = request.session["role_dept"]).wall.id
 			elif owner_type == "dept":
 				wall_id = Subdept.objects.get(id = request.session["role_dept"]).dept.wall.id
-		elif owner_type == "core" or owner_type == "supercoord":
+		elif request.session["role"] == "core" or request.session["role"] == "supercoord":
 			if owner_type == "dept":
 				wall_id = Dept.objects.get(id = request.session["role_dept"]).wall.id
 	if wall_id == None:
