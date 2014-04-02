@@ -53,8 +53,8 @@
     height: 23px;
     padding: 0;
     position: absolute;
-    right: 0;
-    top: 0;
+    right: 1px;
+    top: 1px;
     width: 22px;
 }
 .nav a.privacyButton {
@@ -138,10 +138,9 @@
 }
 .sidebar #profile_tab .profile_dp {
     height : auto;
-    width : 37px;
+    width : 47px;
     margin: 3px 5px 3px 3px;
     display: inline-block;
-    width : 30%;
 }
 .sidebar #profile_tab .profile_name {
     width : 50%;

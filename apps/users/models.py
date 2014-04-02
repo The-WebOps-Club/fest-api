@@ -198,7 +198,7 @@ class ERPProfile(models.Model):
     #    return dept_str
 
     def save(self, *args, **kwargs):
-        if hasattr(self.user, "profile"):
+        if not hasattr(self.user, "profile"):
             UserProfile.objects.create(user=self.user)
         temp = super(ERPProfile, self).save(*args, **kwargs)
         return 

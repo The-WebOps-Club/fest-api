@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from apps.walls.models import Wall, Post, Comment
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
 # Forms
+
 # View functions
 # Misc
 from django.templatetags.static import static

@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
 from apps.walls.models import Wall, Post
 # Forms
-from forms import LoginForm, ProfileForm, UserForm
+from forms import LoginForm, UserProfileForm, ERPProfileForm, UserForm
 # View functions
 # Misc
 from annoying.functions import get_object_or_None
@@ -121,30 +121,54 @@ def profile(request, user_id=None):
     if user_id == None or user_id == request.user.id:
         user_id = request.user.id
         user = request.user
+        read_only = False
     else:
         user = get_object_or_404(User, pk=user_id)
+        read_only = True
 
     # Lofic of the view
+        # Basic variables
     erp_profile = user.erp_profile
-    form = UserForm(instance = user)
-    profile_form = ProfileForm(instance=profile)
+    user_profile = user.profile
+    user_form = UserForm(instance = user)
+    user_profile_form = UserProfileForm(instance=user_profile)
+    erp_profile_form = ERPProfileForm(instance=erp_profile)
+    
     if request.method == "POST":
-        form = UserForm(request.POST, instance=user)
-        if form.is_valid():
-            user = form.save(commit=False)
-            profile_form = ProfileForm(request.POST, instance=profile)
-            if profile_form.is_valid():
-                user.save()
-                profile_form.save()
-                messages.success(request, strings.UPDATE_SUCCESS %("Profile"))
-            else:
-                messages.error(request, strings.INVALID_FORM)
+        user_form = UserForm(request.POST, instance = user)
+        user_profile_form = UserProfileForm(request.POST, instance=user_profile)
+        erp_profile_form = ERPProfileForm(request.POST, instance=erp_profile)
+        
+        user_form_is_valid = user_form.is_valid()
+        user_profile_form_is_valid = user_profile_form.is_valid()
+        erp_profile_form_is_valid = erp_profile_form.is_valid()
+        if user_form_is_valid:
+            user = user_form.save(commit=False)
+        if user_profile_form_is_valid:
+            user_profile = user_profile_form.save(commit=False)
+        if erp_profile_form_is_valid:
+            erp_profile = erp_profile_form.save(commit=False)
+        
+        if user_form_is_valid and user_profile_form_is_valid and erp_profile_form_is_valid:
+            user.save()    
+            user_profile.save()    
+            erp_profile.save()    
         else:
-            messages.error(request, strings.INVALID_FORM)
+            print user_form.errors
+            print user_profile_form.errors
+            print erp_profile_form.errors
+            pass
+    print user_form.errors
+    print user_profile_form.errors
+    print erp_profile_form.errors
+    print erp_profile_form
     # Return
     local_context = {
         "current_page" : "profile",
-        "profile_form" : profile_form,
+        "user_form" : user_form,
+        "user_profile_form" : user_profile_form,
+        "erp_profile_form" : erp_profile_form,
+        "read_only" : read_only,
     }
     return render_to_response("pages/profile.html", local_context, context_instance= global_context(request))
 

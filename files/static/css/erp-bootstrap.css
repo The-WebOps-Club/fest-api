@@ -486,8 +486,8 @@ textarea {
 body {
   background-color: #ffffff;
   margin: 0;
+  min-width: 940px;
   overflow: auto;
-  overflow-x: auto;
   font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
   font-size: 13px;
   font-weight: normal;
@@ -1917,12 +1917,17 @@ table .headerSortUp.purple, table .headerSortDown.purple {
  * ---------------------------------------------------------------------------- */
 .topbar {
   height: 35px;
-  position: fixed;
+  float: left;
   top: 0;
   left: 0;
   right: 0;
   z-index: 10000;
   overflow: visible;
+}
+@media (min-width: 940px) {
+  .topbar {
+    position: fixed;
+  }
 }
 .topbar a {
   color: #ffffff;
