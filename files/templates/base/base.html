@@ -53,7 +53,15 @@
 
 <body>
 
-    {% block topbar %} {% include 'base/topbar.html' %} {% endblock %}
+    {% block topbar %} 
+    	{% include 'base/topbar.html' %} 
+
+	    {% include "base/notifs.html" %}
+	    {% include "base/messages.html" %}
+	    {% include "base/users.html" %}
+	    {% include "base/settings.html" %}
+
+    {% endblock %}
 
     <div class="container-fluid below_topbar">
         {% block full_content %}
@@ -81,11 +89,6 @@
     <script type="text/javascript" src='{% static "js/jquery.autoresize.js" %}'></script>
     {% load dajaxice_templatetags %} {% dajaxice_js_import %} 
     {% block extra_js %}{% endblock %}
-
-    {% include "base/notifs.html" %}
-    {% include "base/messages.html" %}
-    {% include "base/users.html" %}
-    {% include "base/settings.html" %}
     <script>
         function hide_popups() {
 	            $(".userButton").popover("hide")
