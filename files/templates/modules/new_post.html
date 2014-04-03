@@ -1,5 +1,6 @@
 {% load staticfiles %} 
 {% load humanize %}
+{% load once %}
 
 <div class="row-fluid" style="">
 	<div class="span12" id="new_post_media">
@@ -31,6 +32,8 @@
 	    </div>
 	</div>
 </div>
+
+{% once new_post_styles_and_scripts %}
 <style>
     #new_post_wrapper {
         border: 1px solid #B4BBCD;
@@ -126,3 +129,4 @@
         });
     })
 </script>
+{% endonce %}

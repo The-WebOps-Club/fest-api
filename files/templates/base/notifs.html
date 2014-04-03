@@ -1,5 +1,6 @@
 {% load staticfiles %} 
 {% load humanize %}
+{% load once %}
 
 <div class="hidden notifs_title">
 	<div class="notifs_title_inner">
@@ -22,8 +23,7 @@
 				data-recipient="{{ notification.recipient.id }}"
 				data-action-object="{{ notification.action_object.id }}" 
 				data-target="{{ notification.target.id }}" 
-				data-wall="{{ notification.target.wall.id }}"onclick="javascript:window.location.href = '{% url
-				'read_notification' notification.id %}'">
+				data-wall="{{ notification.target.wall.id }}"onclick="window.location.href = '{% url 'read_notification' notification.id %}'">
 				<div class="profile_pic">
 					<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
 				</div>
@@ -43,7 +43,13 @@
 			</div>
 		{% endfor %}
 		{% for notification in user.notifications.read %}
-			<div class="notif" data-sender="{{ notification.sender.id }}" data-recipient="{{ notification.recipient.id }}" data-action-object="{{ notification.action_object.id }}" data-target="{{ notification.target.id }}" data-wall="{{ notification.target.wall.id }}" onclick="window.location.href = '{% url 'read_notification' notification.id %}'">
+			<div class="notif" 
+			data-sender="{{ notification.sender.id }}" 
+			data-recipient="{{ notification.recipient.id }}" 
+			data-action-object="{{ notification.action_object.id }}" 
+			data-target="{{ notification.target.id }}" 
+			data-wall="{{ notification.target.wall.id }}" 
+			onclick="window.location.href = '{% url 'read_notification' notification.id %}'">
 				<div class="profile_pic">
 					<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
 				</div>
@@ -66,6 +72,7 @@
 	</div>
 </div>
 
+{% once notifs_topbar_styles_and_scripts %}
 <style>
 	.notifs_title_inner {
 	}
@@ -151,3 +158,4 @@
 		// $(".notifButton").popover("show")
 	});
 </script>
+{% endonce %}

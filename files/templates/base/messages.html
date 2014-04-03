@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load humanize %}
+{% load once %}
 
 <div class="hidden messages_title">
 	<div class="messages_title_inner">
@@ -14,7 +15,6 @@
 		<span class="messages_link" id="messages_settings">
 			<a href="javascript:alert('Not implemented yet');">SubDept</a>
 		</span>
-		
 	</div>
 </div>
 <div class="hidden messages_content">
@@ -36,9 +36,9 @@
 			</div>
 		{% endfor %}
 	</div>
-
 </div>
 
+{% once messages_topbar_styles_and_scripts %}
 <style>
 	.messages_title_inner .messages_title {
 		font-size : 13px;
@@ -112,3 +112,4 @@ $( document ).ready(function() {
 	//$(".messageButton").popover("show")
 });
 </script>
+{% endonce %}

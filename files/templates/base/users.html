@@ -1,35 +1,5 @@
 {% load staticfiles %}
-<script>
-$( document ).ready(function() {
-	$(".userButton").popover({
-		"animate": true,
-		"delayIn": 200,
-		"delayOut": 200,
-		"placement": "below",
-		"html": true,
-		"title": users_title,
-		"content": users_content,
-		"trigger": "manual",
-		"myClass": "jewel_popover popover_users"
-	})
-
-	function users_title() {
-		return $(".users_title").html()
-	}
-
-	function users_content() {
-		return $(".users_content").html()
-	}
-	$(".userButton").click( function(e) {
-		$(".userButton").popover("toggle")
-		$(".notifButton").popover("hide")
-		$(".messageButton").popover("hide")
-		$(".settingsButton").popover("hide")
-		e.preventDefault()
-	})
-	
-});
-</script>
+{% load once %}
 
 <div class="hidden users_title">
 	<div class="users_title_inner">
@@ -77,6 +47,7 @@ $( document ).ready(function() {
 	</div>
 </div>
 
+{% once users_topbar_styles_and_scripts %}
 <style>
 	.users_title_inner {
 	}
@@ -120,3 +91,35 @@ $( document ).ready(function() {
 		color : #aaa;
 	}
 </style>	
+<script>
+$( document ).ready(function() {
+	$(".userButton").popover({
+		"animate": true,
+		"delayIn": 200,
+		"delayOut": 200,
+		"placement": "below",
+		"html": true,
+		"title": users_title,
+		"content": users_content,
+		"trigger": "manual",
+		"myClass": "jewel_popover popover_users"
+	})
+
+	function users_title() {
+		return $(".users_title").html()
+	}
+
+	function users_content() {
+		return $(".users_content").html()
+	}
+	$(".userButton").click( function(e) {
+		$(".userButton").popover("toggle")
+		$(".notifButton").popover("hide")
+		$(".messageButton").popover("hide")
+		$(".settingsButton").popover("hide")
+		e.preventDefault()
+	})
+	
+});
+</script>
+{% endonce %}

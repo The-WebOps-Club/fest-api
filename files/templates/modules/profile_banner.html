@@ -1,6 +1,6 @@
 {% load staticfiles %} 
 {% load humanize %} 
-
+{% load once %}
 
 <div class="row-fluid" id="banner" style="">
     <div class="span12" id="banner_wrapper">
@@ -26,6 +26,7 @@
     </div>
 </div>
 
+{% once profile_banner_styles_and_scripts %}
 <style type="text/css">
 #banner {
     background-color: white;
@@ -100,3 +101,4 @@
     visibility : hidden;
 }
 </style>
+{% endonce %}
