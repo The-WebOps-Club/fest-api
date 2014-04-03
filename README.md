@@ -19,23 +19,23 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 
 2. TastyPie :
     - Till now, tastypie(v1.11) has some issues with through tables. So this creates an error in the BloodRequest model creation as the through table gves an error.
-    - Need to replace : 
+    - Need to replace (in the save_m2m function ~line 2300): 
      
-     ```
-     related_mngr.add(*related_objs)
-     ```
+    	```
+     	related_mngr.add(*related_objs)
+     	```
       with :
-
+      	```
+      	if hasattr(related_mngr, 'add'):
+			related_mngr.add(*related_objs)
+		else:
+			# handle m2m with a "through" class
+			for other_obj in related_objs:
+				related_mngr.through.objects.get_or_create(**{
+					related_mngr.source_field_name: bundle.obj,
+					related_mngr.target_field_name: other_obj
+				})
+		```
             
-            if hasattr(related_mngr, 'add'):
-                related_mngr.add(*related_objs)
-            else:
-                # handle m2m with a "through" class
-                for other_obj in related_objs:
-                    related_mngr.through.objects.get_or_create(**{
-                        related_mngr.source_field_name: bundle.obj,
-                        related_mngr.target_field_name: other_obj
-                    })
-            
-    in the save_m2m function ~line 2300
+    
 

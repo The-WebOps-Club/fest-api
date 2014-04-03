@@ -1,4 +1,5 @@
-{% load staticfiles %} {% load humanize %}
+{% load staticfiles %} 
+{% load humanize %}
 
 <div class="hidden notifs_title">
 	<div class="notifs_title_inner">
@@ -16,7 +17,13 @@
 <div class="hidden notifs_content">
 	<div class="notifs_contents_inner">
 		{% for notification in user.notifications.unread %}
-			<div class="notif unread" data-actor="{{ notification.actor.id }}" data-recipient="{{ notification.recipient.id }}" data-action-object="{{ notification.action_object.id }}" data-target="{{ notification.target.id }}" data-wall="{{ notification.target.wall.id }}" onclick="window.location.href = '{% url 'read_notification' notification.id %}'">
+			<div class="notif unread" 
+				data-actor="{{ notification.actor.id }}" 
+				data-recipient="{{ notification.recipient.id }}"
+				data-action-object="{{ notification.action_object.id }}" 
+				data-target="{{ notification.target.id }}" 
+				data-wall="{{ notification.target.wall.id }}"onclick="javascript:window.location.href = '{% url
+				'read_notification' notification.id %}'">
 				<div class="profile_pic">
 					<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
 				</div>
@@ -71,7 +78,7 @@
 		font-weight : 100;
 	}
 	.notifs_contents_inner {
-		max-height : 200px;
+		max-height : 300px;
 		overflow-y : auto;
 	}
 	.notifs_contents_inner .notif {

@@ -1,4 +1,86 @@
 {% load staticfiles %}
+{% load humanize %}
+
+<div class="hidden messages_title">
+	<div class="messages_title_inner">
+		<span class="messages_link active">
+			<a href="javascript:alert('Not implemented yet');">My messages</a>
+		</span>
+		<span class="messages_link"> | </span>
+		<span class="messages_link" id="messages_settings">
+			<a href="javascript:alert('Not implemented yet');">Dept</a>
+		</span>
+		<span class="messages_link"> | </span>
+		<span class="messages_link" id="messages_settings">
+			<a href="javascript:alert('Not implemented yet');">SubDept</a>
+		</span>
+		
+	</div>
+</div>
+<div class="hidden messages_content">
+	<div class="messages_contents_inner">
+		{% for msg in request.user.erp_profile.wall.posts.all %}
+			<div class="message">
+				<div class="profile_pic">
+					<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+				</div>
+				<div class="message_body">
+					<span class="profile_name">{{ msg.by.get_full_name|default:"" }} </span>
+					posted on <span class="bold">{{ msg.wall.name|default:"" }}</span> 
+					<br />
+					{{ msg.description|default:"" }}
+				</div>
+				<div class="message_foot">
+					{{ msg.time_created|naturaltime }}
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+
+</div>
+
+<style>
+	.messages_title_inner .messages_title {
+		font-size : 13px;
+	}
+	.messages_title_inner .messages_link {
+		font-size : 11px;
+		margin: 2px 2px;
+		font-weight : 100;
+	}
+	.messages_title_inner .messages_link.active a {
+		color : black;
+		text-decoration: none;
+	}
+	.messages_contents_inner {
+		max-height : 300px;
+		overflow-y : auto;
+	}
+	.messages_contents_inner .message {
+		border-bottom : 1px solid #ddd;
+		padding: 5px 10px;
+	}
+	.messages_contents_inner .message:last-child {
+		border-bottom : 0px;
+	}
+	.messages_contents_inner .message .profile_dp {
+		height : 50px;
+		width : 50px;
+		float : left;
+	}
+	.messages_contents_inner .message .message_body {
+		margin-left : 60px;
+		height : 43px;
+		font-size : 11px;
+	}
+	.messages_contents_inner .message .message_body .profile_name {
+		font-weight: bold;
+	}
+	.messages_contents_inner .message .message_foot {
+		margin-left : 60px;
+		color : #aaa;
+	}
+</style>	
 <script>
 $( document ).ready(function() {
 	$(".messageButton").popover({
@@ -30,93 +112,3 @@ $( document ).ready(function() {
 	//$(".messageButton").popover("show")
 });
 </script>
-
-<div class="hidden messages_title">
-	<div class="messages_title_inner">
-		<span class="messages_link active">
-			<a href="">Inbox</a>
-		</span>
-		<span class="messages_link"> | </span>
-		<span class="messages_link" id="messages_settings">
-			<a href="">Dept</a>
-		</span>
-		<span class="messages_link"> | </span>
-		<span class="messages_link" id="messages_settings">
-			<a href="">SubDept</a>
-		</span>
-		
-		<span class="pull-right messages_link" id="messages_read">
-			<a href="">Send a new message</a>
-		</span>
-	</div>
-</div>
-<div class="hidden messages_content">
-	<div class="messages_contents_inner">
-		<div class="message">
-			<div class="profile_pic">
-				<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
-			</div>
-			<div class="message_body">
-				<span class="profile_name">Lorem ipsum</span> dolor sit amet, consectetur adipisicing elit. Sunt, facilis, reprehenderit perspiciatis provident repellat magnam non placeat veritatis 
-			</div>
-			<div class="message_foot">
-				46 mins ago
-			</div>
-		</div>
-		<div class="message">
-			<div class="profile_pic">
-				<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
-			</div>
-			<div class="message_body">
-				<span class="profile_name">Lorem ipsum</span> dolor sit amet, consectetur adipisicing elit. Sunt, facilis, reprehenderit perspiciatis provident repellat magnam non placeat veritatis 
-			</div>
-			<div class="message_foot">
-				46 mins ago
-			</div>
-		</div>
-	</div>
-</div>
-
-<style>
-	.messages_title_inner {
-	}
-	.messages_title_inner .messages_title {
-		font-size : 13px;
-	}
-	.messages_title_inner .messages_link {
-		font-size : 11px;
-		margin: 2px 2px;
-		font-weight : 100;
-	}
-	.messages_title_inner .messages_link.active a {
-		color : black;
-		text-decoration: none;
-	}
-	.messages_contents_inner {
-		
-	}
-	.messages_contents_inner .message {
-		border-bottom : 1px solid #ddd;
-		padding: 5px 10px;
-	}
-	.messages_contents_inner .message:last-child {
-		border-bottom : 0px;
-	}
-	.messages_contents_inner .message .profile_dp {
-		height : 50px;
-		width : 50px;
-		position : absolute;
-	}
-	.messages_contents_inner .message .message_body {
-		margin-left : 60px;
-		height : 43px;
-		font-size : 11px;
-	}
-	.messages_contents_inner .message .message_body .profile_name {
-		font-weight: bold;
-	}
-	.messages_contents_inner .message .message_foot {
-		margin-left : 60px;
-		color : #aaa;
-	}
-</style>	

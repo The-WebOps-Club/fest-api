@@ -1,6 +1,8 @@
 {% load staticfiles %} 
 {% load humanize %} 
-{# Remember : post and notification are keywords used here #}
+{% load once %}
+
+{# Remember : "post" and "notification" are keywords used here #}
 
 <div id="post_{{ post.id }}" class="row-fluid" style="">
 	{% if forloop.counter0 %} <hr /> 
@@ -56,6 +58,7 @@
 	</div>
 </div>
 
+{% once new_post_styles_and_scripts %}
 <style>
 div.news_post {
 	transition-property: background;
@@ -138,3 +141,4 @@ div.news_post hr {
     })
 
 </script>
+{% endonce %}
