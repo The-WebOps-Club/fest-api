@@ -1,6 +1,5 @@
 {% load staticfiles %} 
 {% load humanize %}
-{% load markdown_deux_tags %}
 {% load once %}
 
 <div class="hidden notifs_title">
@@ -32,7 +31,7 @@
 					<span class="profile_name">{{ notification.actor.get_full_name|default:"" }} </span>
 					{{ notification.verb|default:"" }} <span class="bold">{{ notification.target|default:"" }}</span> 
 					<br />
-					{{ notification.action_object.description|default:"" }}
+					{{ notification.action_object.description }}
 				</div>
 				<div class="notif_foot">
 					{{ notification.timestamp|naturaltime }}

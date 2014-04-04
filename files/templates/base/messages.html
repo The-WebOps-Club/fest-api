@@ -28,7 +28,7 @@
 					<span class="profile_name">{{ msg.by.get_full_name|default:"" }} </span>
 					posted on <span class="bold">{{ msg.wall.name|default:"" }}</span> 
 					<br />
-					{{ msg.description|default:"" }}
+					{{ msg.description }}
 				</div>
 				<div class="message_foot">
 					{{ msg.time_created|naturaltime }}
