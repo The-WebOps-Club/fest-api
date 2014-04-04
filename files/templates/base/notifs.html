@@ -29,9 +29,9 @@
 				</div>
 				<div class="notif_body">
 					<span class="profile_name">{{ notification.actor.get_full_name|default:"" }} </span>
-					{{ notification.verb|default:"" }} <span class="bold">{{ notification.target|default:"" }}</span> 
+					{{ notification.verb|default:"" }} <span class="bold">{{ notification.target.wall|default:"" }}</span> 
 					<br />
-					{{ notification.action_object.description }}
+					{% autoescape off %} {{ notification.action_object.description }} {% endautoescape %}
 				</div>
 				<div class="notif_foot">
 					{{ notification.timestamp|naturaltime }}

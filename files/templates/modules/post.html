@@ -51,8 +51,7 @@
 	            <div class="news_comment_body">
 	                <form action="{% url 'create_comment' post.pk %}" method="POST">
 	                    {% csrf_token %}
-	                    <textarea class="span12 comment_textarea resize_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here. Markdown like : *italic* **bold** etc are allowed. Examples @ /markdown"></textarea>
-	                    {% markdown_allowed %}
+	                    <textarea class="span12 comment_textarea resize_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ /markdown"></textarea>
 	                </form>
 	            </div>
 	        </div>
@@ -130,7 +129,19 @@ div.news_post hr {
             //	"background-color" : "transparent",
         	//})
         })
+		$(".news_post .comment_textarea").keydown(function (e) {
+            e = e || event;
+            if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter pressed
+            	$(this).val($(this).val() + "\n")
+            	e.preventDefault()
+            } else if (!e.ctrlKey && e.keyCode == 13) { // Enter pressed
+                my_form = $(this).closest("form")
+                my_form.submit()
+                console.log($(this)[0].id)
+                e.preventDefault()
+            }
+            return true
+        });
     })
-
 </script>
 {% endonce %}
