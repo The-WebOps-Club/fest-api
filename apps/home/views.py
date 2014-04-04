@@ -78,6 +78,10 @@ def read_notification(request, notif_id):
 def contacts(request):
     return render_to_response("pages/notifications.html", locals(), context_instance= global_context(request))
 
+@login_required
+def markdown(request):
+    return render_to_response("pages/markdown.html", locals(), context_instance= global_context(request))
+
 # Gen for testing purposes
 @login_required
 def show_newsfeed(request):

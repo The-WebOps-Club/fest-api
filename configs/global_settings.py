@@ -52,6 +52,9 @@ THIRD_PARTY_APPS = (
 
     # Login
     'social.apps.django_app.default',
+
+    # Markdown for text area candy
+    'markdown_deux',
 )
 API_APPS =(
     'misc',
@@ -59,7 +62,6 @@ API_APPS =(
     'apps.users',
     'apps.walls',
     'apps.events',
-    
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 
@@ -183,9 +185,11 @@ LOGGING = {
 }
 
 # Settings for specific Apps
+# ---------------------------------------------------
 # Post Office
 EMAIL_BACKEND = 'post_office.EmailBackend'
 
+# ---------------------------------------------------
 # Python Social Auth
 AUTHENTICATION_BACKENDS = (
     'social.backends.twitter.TwitterOAuth',
@@ -276,3 +280,24 @@ SOCIAL_AUTH_PIPELINE = (
 )
 # SOCIAL_AUTH_PARTIAL_PIPELINE_KEY = 'partial_pipeline'
 SUPPORTED_PROVIDERS = [u'google', u'facebook', u'twitter']
+
+# ---------------------------------------------------
+# Django markdown deux
+MARKDOWN_DEUX_STYLES = {
+    "default": {
+        "extras": {
+            "code-friendly": None,
+            "cuddled-lists": True,
+        },
+        "safe_mode": "escape",
+    },
+    "trusted": {
+        "extras": {
+            "code-friendly": None,
+            "cuddled-lists": True,
+        },
+        "safe_mode": False,
+    },
+}
+MARKDOWN_DEUX_HELP_URL = "http://daringfireball.net/projects/markdown/syntax"
+

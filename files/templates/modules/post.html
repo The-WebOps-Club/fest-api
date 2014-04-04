@@ -1,5 +1,6 @@
 {% load staticfiles %} 
 {% load humanize %} 
+{% load markdown_deux_tags %}
 {% load once %}
 
 {# Remember : "post" and "notification" are keywords used here #}
@@ -25,8 +26,8 @@
 	            	<span class="muted small">{{ notification.timestamp|naturaltime }}</span>
 	            {% endif %}
 	        </div>
-	        <div class="news_body">
-	            {{ post.description }}
+	        <div class="news_body markdown_remove_p">
+	            {{ post.description|markdown:"default" }}
 	        </div>
 	        <div class="news_extra"></div>
 	        {% for comment in post.comments.all %}
@@ -35,7 +36,7 @@
 	                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
 	                </div>
 	                <div class="news_comment_body">
-	                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description }}
+	                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"default" }}
 	                    <div class="news_comment_info">
 	                        {{ comment.time_created|naturaltime }} 
 	                        {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
@@ -50,7 +51,8 @@
 	            <div class="news_comment_body">
 	                <form action="{% url 'create_comment' post.pk %}" method="POST">
 	                    {% csrf_token %}
-	                    <textarea class="span12 comment_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here"></textarea>
+	                    <textarea class="span12 comment_textarea resize_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here. Markdown like : *italic* **bold** etc are allowed. Examples @ /markdown"></textarea>
+	                    {% markdown_allowed %}
 	                </form>
 	            </div>
 	        </div>
@@ -102,6 +104,9 @@ div.news_post hr {
     margin-left : 40px;
     min-height : 32px;
 }
+.markdown_remove_p p {
+    display : inline;
+}
 .news_comment .news_comment_body .news_comment_info {
     font-size : 11px;
     line-height : 13px;
@@ -125,19 +130,6 @@ div.news_post hr {
             //	"background-color" : "transparent",
         	//})
         })
-        $(".news_post .comment_textarea").keydown(function (e) {
-            if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter pressed
-            	$(this).val($(this).val() + "\n")
-            	e.preventDefault()
-            } else if (e.keyCode == 13) { // Enter pressed
-                my_form = $(this).closest("form")
-                my_form.submit()
-                console.log($(this)[0].id)
-                e.preventDefault()
-            }
-
-        });
-
     })
 
 </script>
