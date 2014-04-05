@@ -14,7 +14,9 @@
 	    {% endwith %}
 	{% endfor %}
 	
+    
 </div>
+<center><button class="btn btn-success" name="see_more" id="id_see_more" onclick="Dajaxice.apps.home.newsfeed_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1 })">See more</button></center>
 {% endblock %} {% block extra_css %} {{ block.super }}
 <style type="text/css">
 #status_wrapper {
@@ -156,5 +158,14 @@ function hide_status_textarea() {
     $("#status_wrapper #status_submit").click(function() { 
         console.log("Posting");
     });
+function append_new_data(data){
+    if (!data.exhausted){
+        $('#main_body_content').append(data.append_string);
+        $('#id_current_page').val(parseInt($('#id_current_page').val())+1);
+    }
+    else {
+        $('#id_see_more').html('No more to load');
+    }
+}
 </script>
 {% endblock %}

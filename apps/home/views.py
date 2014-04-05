@@ -32,7 +32,7 @@ def home (request, *args, **kwargs):
 def newsfeed(request): 
     local_context = {
     	"current_page" : "newsfeed",
-    	"notifications" : Notification.objects.order_by("-timestamp"),
+    	"notifications" : Notification.objects.order_by("-timestamp")[:5],
     }
     return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 
@@ -44,6 +44,7 @@ def portals(request):
 
 @login_required
 def notifications(request):
+    notifications.request.user.notifications.all()
     local_context = {
     	"current_page" : "notifications",
     	#"posts" : Post.objects.order_by("-comments__time_updated", "-time_updated"),
