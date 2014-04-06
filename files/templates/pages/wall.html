@@ -14,14 +14,17 @@
 	{% for post in wall_posts %}
 	    {% with show_post='True' %}
 	    	{% include "modules/post.html" %}
-	   	{% endwith %}
+	   	{% endwith %}       
 	{% empty %}
 		<div class="row-fluid huge muted">
             <hr />
             There are no Posts :(
 		</div>
     {% endfor %}
-{% endblock %} {% block extra_css %} {{ block.super }}
+    </div>
+    <center><button class="btn btn-success" name="see_more" id="id_see_more" onclick="Dajaxice.apps.home.wall_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1, 'wall_id':{{wall.id}} })">See more</button></center>
+{% endblock %}
+{% block extra_css %} {{ block.super }}
 <style type="text/css">
 </style>
 {% endblock %} 
@@ -29,5 +32,14 @@
 {% block extra_js %} 
 {{ block.super }}
 <script type="text/javascript">
+function append_new_data(data){
+    if (!data.exhausted){
+        $('#main_body_content').append(data.append_string);
+        $('#id_current_page').val(parseInt($('#id_current_page').val())+1);
+    }
+    else {
+        $('#id_see_more').html('No more to load');
+    }
+}
 </script>
 {% endblock %}

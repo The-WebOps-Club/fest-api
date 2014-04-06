@@ -61,7 +61,7 @@ def wall (request, wall_id=None):
         wall = get_object_or_404(Wall, id=wall_id)
 
     # Logic
-    wall_posts = Post.objects.filter(wall = wall).order_by('-time_updated')
+    wall_posts = Post.objects.filter(wall = wall).order_by('-time_updated')[:5]
     # wall_notifications = request.user.notifications.unread()
 
     local_context = {

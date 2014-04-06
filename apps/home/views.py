@@ -44,7 +44,6 @@ def portals(request):
 
 @login_required
 def notifications(request):
-    notifications.request.user.notifications.all()
     local_context = {
     	"current_page" : "notifications",
     	#"posts" : Post.objects.order_by("-comments__time_updated", "-time_updated"),
