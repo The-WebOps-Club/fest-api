@@ -19,6 +19,7 @@ from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
 # Misc
 from django.templatetags.static import static
 from misc import strings
+from annoying.functions import get_object_or_None
 # Python
 import os
 import notifications
@@ -138,16 +139,21 @@ def create_comment(request, post_id):
         post_id = None
     if not ( type(post_id) is int ):
         print "post_id :", post_id, type(post_id)
-        raise InvalidArgumentTypeException
-    post = get_object_or_404(Post, id=int(post_id))
-
-    data = request.POST.copy()
-    new_comment = Comment.objects.create(description=data['comment'], by=request.user)
-    post.comments.add(new_comment)
-    #post.comments_count += 1
-    #post.save()
+        raise InvalidArgumentTypeException("argument `post_id` should be of type integer")
     
-    return redirect('wall', wall_id=post.wall.pk)
+    # Create a new comment
+    data = request.POST.copy()
+    if data.get("comment", None):
+        new_comment = Comment.objects.create(description=data['comment'], by=request.user)
+        # Attempt to get the post for the comment
+        post = get_object_or_None(Post, id=int(post_id))
+        if not post:
+            raise InvalidArgumentValueException("No Post with id `post_id` was found in the database")
+
+        post.comments.add(new_comment)
+        return redirect('wall', wall_id=post.wall.pk)
+    else:
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 # Gen testing views

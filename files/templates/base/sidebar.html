@@ -16,10 +16,11 @@
         </a></li>
         <li class="{% if current_page == 'newsfeed' %}active{% endif %}"><a href="{% url 'newsfeed' %}">
             <i class='icon-search'></i> News feed
+            {% if user.notifications.unread.count != 0 %} <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span> {% endif %}
         </a></li>
         <li class="{% if current_page == 'notifications' %}active{% endif %}"><a href="{% url 'notifications' %}">
             <i class='icon-search'></i> Notifications
-            {% if user.notifications.unread.count != 0 %} <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span> {% endif %}
+            
         </a></li>
         <li class="{% if current_page == 'contacts' %}active{% endif %}"><a href="{% url 'contacts' %}">
             <i class='icon-search'></i> User Contacts

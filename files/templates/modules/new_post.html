@@ -118,11 +118,9 @@
         //$("#new_post_wrapper *").focusout(hide_status_textarea);
 
         // Submitting Forms
-        $("textarea").keydown(function (e) {
+        $(".new_post_wrapper .new_post_textarea").keydown(function (e) {
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
-                my_form = $(this).closest("form")
-                my_form.submit()
-                console.log(my_form);
+                $(this).submit_form()
             }
         });
         $("#new_post_wrapper #new_post_submit").click(function() { 

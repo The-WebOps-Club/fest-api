@@ -313,3 +313,37 @@ form .clearfix.success .input-prepend .add-on, form .clearfix.success .input-app
   background-color: #3b6e22;
   border-color: #264716;
 }
+
+/* FB Autocomplete */
+#txtAutoCompleteSearch {
+	width: 250px;
+}
+
+#divAutoCompleteResults {
+	border: 1px solid #666;
+	border-bottom: 0px;
+	font-size: 10px;
+	font-family: arial;
+	padding: 0px;
+	display: none;
+}
+
+#divAutoCompleteResults div {
+    border-bottom: 1px solid #666;
+    padding: 3px;
+}
+
+#divAutoCompleteResults .selected {
+	background:#3b5998;
+    color:#FFFFFF;
+}
+
+#divAutoCompleteResults .unselected {
+	background-color: #fff;
+	color: #666;
+}
+.highlight 
+{
+    background-color : #E6E6E6;
+    font-weight : bold;
+}
