@@ -113,18 +113,61 @@
 	    $(document).ready(function() {
 	        $(".below_topbar").click(hide_popups)
     		$(".searchbar").click(hide_popups)
-            $(window).resize(function() {
+
+            $(window).resize(function() { // Check for small screens
                 outline = $("body")
                 console.log($("body").width() + "," + $("body").height())
                 if ( outline.width() < 1000 ) {
-                    console.log("dddddddd")
+                    console.log("width smaller than 1000")
                 }
             });
     	    $(".resize_textarea").autosize()
-        });
-    
-        
+    	    $("#topbar_search_input").atwho({
+    	    	at: "",
+		       	data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
+		      	tpl: "<li data-value='${name}'>${name} <small>${email}</small></li>",
+		      	show_the_at: false
+    	    }).atwho({
+    	    	at: "u:",
+		       	data: atwho_user_list,
+		      	tpl: "<li data-value='${name}'>${name} <small>${email}</small></li>",
+		      	show_the_at: false
+    	    }).atwho({
+    	    	at: "d:",
+		       	data: atwho_dept_list,
+		      	tpl: "<li data-value='${name}'>${name} <small>${email}</small></li>",
+		      	show_the_at: false
+    	    }).atwho({
+    	    	at: "s:",
+		       	data: atwho_subdept_list,
+		      	tpl: "<li data-value='${name}'>${name} <small>${email}</small></li>",
+		      	show_the_at: false
+    	    })
+    	})
 
+	    // Autocomplete for Users, Dept, Subdept
+		{% autoescape off %}
+		 	atwho_list = {{atwho_list}}
+	    {% endautoescape %}
+	    console.log(atwho_list)
+	    atwho_user_list = atwho_list['users']
+	    atwho_dept_list = atwho_list['dept']
+	    atwho_subdept_list = atwho_list['subdept']
+	    if ( atwho_user_list ) {
+	    	atwho_user_list = $.map(atwho_user_list, function(value, i) {
+	     	  	return {"name" : value["first_name"] + value["last_name"], "email" : value["email"]};
+	    	})
+	    }
+	    if ( atwho_dept_list ) {
+	    	atwho_dept_list = $.map(atwho_dept_list, function(value, i) {
+	     	  	return {"name" : value["name"], "email":"Department"};
+	    	})
+	    }
+	    if ( atwho_subdept_list ) {
+	    	atwho_subdept_list = $.map(atwho_subdept_list, function(value, i) {
+	     	  	return {"name" : value["name"], "email" : "Subdept"};
+	    	})
+	    }   
     </script>
 </body>
 

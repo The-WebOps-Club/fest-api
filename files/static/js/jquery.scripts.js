@@ -41,6 +41,5 @@
      	$el.focus()
      	el.selectionStart = el.selectionEnd = cur_pos + append_str.length
 	}
-
-
 })(jQuery)
+
