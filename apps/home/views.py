@@ -32,7 +32,7 @@ def home (request, *args, **kwargs):
 def newsfeed(request): 
     local_context = {
     	"current_page" : "newsfeed",
-    	"notifications" : Notification.objects.order_by("-timestamp"),
+    	"notifications" : Notification.objects.order_by("-timestamp")[:5],
     }
     return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 
@@ -40,7 +40,8 @@ def newsfeed(request):
 def portals(request):
     # notifications = request.user.notifications.unread()
     # print notifs
-    return render_to_response("pages/portals.html", locals(), context_instance= global_context(request))
+    local_context = {}
+    return render_to_response("pages/portals.html", local_context, context_instance= global_context(request))
 
 @login_required
 def notifications(request):
@@ -76,14 +77,10 @@ def read_notification(request, notif_id):
 
 @login_required
 def contacts(request):
-    return render_to_response("pages/notifications.html", locals(), context_instance= global_context(request))
+	local_context = {}
+	return render_to_response("pages/contacts.html", local_context, context_instance= global_context(request))
 
 @login_required
 def markdown(request):
-    return render_to_response("pages/markdown.html", locals(), context_instance= global_context(request))
-
-# Gen for testing purposes
-@login_required
-def show_newsfeed(request):
-    return render_to_response("pages/newsfeed.html", locals(), context_instance= global_context(request))
-        
+	local_context={}
+	return render_to_response("pages/markdown.html", local_context, context_instance= global_context(request))

@@ -26,7 +26,7 @@
 	            	<span class="muted small">{{ notification.timestamp|naturaltime }}</span>
 	            {% endif %}
 	        </div>
-	        <div class="news_body markdown_remove_p">
+	        <div class="news_body">
 	            {{ post.description|markdown:"default" }}
 	        </div>
 	        <div class="news_extra"></div>
@@ -35,7 +35,7 @@
 	                <div class="news_comment_left">
 	                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
 	                </div>
-	                <div class="news_comment_body">
+	                <div class="news_comment_body markdown_remove_p">
 	                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"default" }}
 	                    <div class="news_comment_info">
 	                        {{ comment.time_created|naturaltime }} 
@@ -103,7 +103,7 @@ div.news_post hr {
     margin-left : 40px;
     min-height : 32px;
 }
-.markdown_remove_p p {
+.markdown_remove_p > p {
     display : inline;
 }
 .news_comment .news_comment_body .news_comment_info {
@@ -115,6 +115,7 @@ div.news_post hr {
 </style>
 
 <script type="text/javascript">
+
     $( document ).ready(function() {            
         $(".news_post").mouseover( function() {
             $(this).find(".news_post_settings").show()
@@ -123,16 +124,55 @@ div.news_post hr {
             $(this).find(".news_post_settings").hide()
         })
 
-        
+		// var emojis = [ "smile", "iphone", "girl", "smiley", "heart", "kiss", "copyright", "coffee", "a", "ab", "airplane", "alien", "ambulance", "angel", "anger", "angry", "arrow_forward", "arrow_left", "arrow_lower_left", "arrow_lower_right", "arrow_right", "arrow_up", "arrow_upper_left", "arrow_upper_right", "art", "astonished", "atm", "b", "baby", "baby_chick", "baby_symbol", "balloon", "bamboo", "bank", "barber", "baseball", "basketball", "bath", "bear", "beer", "beers", "beginner", "bell", "bento", "bike", "bikini", "bird", "birthday", "black_square", "blue_car", "blue_heart", "blush", "boar", "boat", "bomb", "book", "boot", "bouquet", "bow", "bowtie", "boy", "bread", "briefcase", "broken_heart", "bug", "bulb", "person_with_blond_hair", "phone", "pig", "pill", "pisces", "plus1", "point_down", "point_left", "point_right", "point_up", "point_up_2", "police_car", "poop", "post_office", "postbox", "pray", "princess", "punch", "purple_heart", "question", "rabbit", "racehorse", "radio", "up", "us", "v", "vhs", "vibration_mode", "virgo", "vs", "walking", "warning", "watermelon", "wave", "wc", "wedding", "whale", "wheelchair", "white_square", "wind_chime", "wink", "wink2", "wolf", "woman", "womans_hat", "womens", "x", "yellow_heart", "zap", "zzz", "+1", "-1"
+	 //   	]
+	 	{% autoescape off %}
+		 	atwho_list = {{atwho_list}}
+	    {% endautoescape %}
+	    console.log(atwho_list)
+	    atwho_user_list = atwho_list['users']
+	    atwho_dept_list = atwho_list['dept']
+	    atwho_subdept_list = atwho_list['subdept']
+	    if ( atwho_user_list ) {
+	    	atwho_user_list = $.map(atwho_user_list, function(value, i) {
+	     	  	return {"name" : value["first_name"] + value["last_name"], "email" : value["email"]};
+	    	})
+	    }
+	    if ( atwho_dept_list ) {
+	    	atwho_dept_list = $.map(atwho_dept_list, function(value, i) {
+	     	  	return {"name" : value["name"], "email" : "Department"};
+	    	})
+	    }
+	    if ( atwho_subdept_list ) {
+	    	atwho_subdept_list = $.map(atwho_subdept_list, function(value, i) {
+	     	  	return {"name" : value["name"], "email" : "Subdept"};
+	    	})
+	    }
+	    
+	    at_config = {
+	        at: "@",
+	       	data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
+	      	tpl: "<li data-value='@${name}'>${name} <small>${email}</small></li>",
+	      	show_the_at: true
+	    }
+	    // var emoji_config = {
+	    //   at: ":",
+	    //   data: $.map(emojis, function(value, i) {
+	    //	   return {key: value, name:value};
+	    // }),
+	    //   tpl:"<li data-value=':${key}:'>${name} <img src='http://a248.e.akamai.net/assets.github.com/images/icons/emoji/${name}.png'  height='20' width='20' /></li>",
+	    //   insert_tpl: "<img src='http://a248.e.akamai.net/assets.github.com/images/icons/emoji/${name}.png'  height='20' width='20' />",
+	    // }
+    
+
 		$(".news_post .comment_textarea")
 			.keydown(function(e) {
 				e = e || event;
 	        	el = this; $el = $(this)
 	        	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter pressed
 	            	e.preventDefault() // to avoid auto submit of forms
-	            } else if ( e.keyCode == 50 ) {
-	            	
-	            	console.log("@")
+	            } else if (!e.ctrlKey && e.keyCode == 13) { // 
+	            	e.preventDefault();
 	            }
 	            //console.log(e)
 			})
@@ -141,6 +181,7 @@ div.news_post hr {
 	        	el = this; $el = $(this)
 	            if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter pressed
 	            	$el.add_to_textarea("\n")
+	            	setTimeout(function(){$el.trigger("input")}, 10)
 	            	e.preventDefault()
 	            } else if (!e.ctrlKey && e.keyCode == 13) { // Enter pressed
 	            	$el.submit_form()
@@ -148,6 +189,8 @@ div.news_post hr {
 	            } 
 	            //console.log(e)
 	        })
+	        .atwho(at_config) 
+	        //.atwho(emoji_config)
     })
 </script>
 {% endonce %}

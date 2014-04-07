@@ -16,19 +16,24 @@
 		return pos
 	}            
 
-	$.fn.submit_form = function() {
-		el = this; $el = $(this)
+	$.fn.submit_form = function(v) {
+		el = $(this).get(0); $el = $(this)
 		if ( ! ( el.tagName == "INPUT" || el.tagName == "TEXTAREA" || 
 			el.tagName == "SELECT" || el.tagName == "A") ) {
 			console.log("Trying to submit form for an Invalid tag.")
 			return;
 		}
-		my_form = $el.closest("form")
+		if (! v) {
+			my_form = $el.closest("form")
+		} else {
+			my_form = $el.closest("form" + str(v))
+		}
+		console.log(my_form)
         my_form.submit()
 	}
 
 	$.fn.add_to_textarea = function(v) {
-		el = this; $el = $(this); 
+		el = $(this).get(0); $el = $(this); 
     	var cur_val = $el.val(), 
     		cur_pos = $el.getCursorPosition(),
     		append_str = v;
@@ -37,5 +42,5 @@
      	el.selectionStart = el.selectionEnd = cur_pos + append_str.length
 	}
 
-	
+
 })(jQuery)

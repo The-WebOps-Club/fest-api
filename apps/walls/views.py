@@ -62,7 +62,7 @@ def wall (request, wall_id=None):
         wall = get_object_or_404(Wall, id=wall_id)
 
     # Logic
-    wall_posts = Post.objects.filter(wall = wall).order_by('-time_updated')
+    wall_posts = Post.objects.filter(wall = wall).order_by('-time_updated')[:5]
     # wall_notifications = request.user.notifications.unread()
 
     local_context = {
@@ -155,7 +155,3 @@ def create_comment(request, post_id):
     else:
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
-
-# Gen testing views
-def show_wall (request, wall_id=None):
-    return render_to_response('pages/wall.html', locals(), context_instance= global_context(request))

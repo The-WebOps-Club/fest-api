@@ -19,7 +19,7 @@
             {% if user.notifications.unread.count != 0 %} <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span> {% endif %}
         </a></li>
         <li class="{% if current_page == 'notifications' %}active{% endif %}"><a href="{% url 'notifications' %}">
-            <i class='icon-search'></i> Notifications
+            <i class='icon-search'></i> Recent posts
             
         </a></li>
         <li class="{% if current_page == 'contacts' %}active{% endif %}"><a href="{% url 'contacts' %}">

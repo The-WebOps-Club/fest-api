@@ -21,6 +21,7 @@ from django.contrib.auth.models import User, Group
 # Python
 from functools import wraps
 import datetime
+import json
 
 # ------------------ TEMPLATE CUSTOMIZATIONS
 #----------------------------------------------------------------------
@@ -30,10 +31,17 @@ def global_context(request):
         Some basic variables useful in templates
         Usage : add context_instance=global_context(request) to the kwargs of the response function
     """
+    from apps.users.models import Dept, Subdept
+    atwho_list = { 
+        "users" : list(User.objects.values("first_name", "last_name", "email")),
+        "dept" : list(Dept.objects.values("name")),
+        "subdept" : list(Subdept.objects.values("name")),
+    }
     vals = {
         'user':request.user,
         'session':request.session,
         'current_path':request.get_full_path(),
+        'atwho_list': json.dumps(atwho_list),
         'SITE_URL':settings.SITE_URL,
         'MEDIA_URL':settings.MEDIA_URL,
         'MEDIA_ROOT':settings.MEDIA_ROOT,

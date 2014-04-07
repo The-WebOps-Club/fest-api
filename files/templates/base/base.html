@@ -14,6 +14,7 @@
     {% if DEBUG %}
         <script>
             localStorage.clear(); /* kill cache */
+            
         </script>
     {% endif %}
 
@@ -25,6 +26,7 @@
     <![endif]-->
 
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/jquery.atwho.css' %}" rel="stylesheet" media="screen">
     <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
 
     <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
@@ -69,8 +71,9 @@
             <div class="span2 sidebar">
                 {% include 'base/sidebar.html' %}
             </div>
-            <div class="span10 main_body">
+            <div id="main_body_content" class="span10 main_body">
                 {% block content %} {% endblock %}
+                <input id="id_current_page" type="hidden" name="current_page" value="1" />
             </div>
         </div>
         {% endblock %}
@@ -84,12 +87,20 @@
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-popover.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-modal.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-scrollspy.js' %}"></script>
+    
     <script type="text/javascript" src="{% static 'js/prefixfree.min.js' %}"></script>
+    
     <script type="text/javascript" src='{% static "dajax/jquery.dajax.core.js" %}'></script>
-    <script type="text/javascript" src='{% static "js/jquery.autoresize.js" %}'></script>
-    <script type="text/javascript" src='{% static "js/chosen.jquery.js" %}'></script>
-    <script type="text/javascript" src='{% static "js/jquery.scripts.js" %}'></script>
     {% load dajaxice_templatetags %} {% dajaxice_js_import %} 
+    
+    
+    <script type="text/javascript" src='{% static "js/chosen.jquery.js" %}'></script>
+    
+    <script type="text/javascript" src='{% static "js/jquery.autoresize.js" %}'></script>
+    <script type="text/javascript" src='{% static "js/jquery.caret.js" %}'></script>
+    <script type="text/javascript" src='{% static "js/jquery.atwho.js" %}'></script>
+    
+    <script type="text/javascript" src='{% static "js/jquery.scripts.js" %}'></script>
     {% block extra_js %}{% endblock %}
     <script>
         function hide_popups() {

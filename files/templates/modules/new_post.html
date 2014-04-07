@@ -118,8 +118,9 @@
         //$("#new_post_wrapper *").focusout(hide_status_textarea);
 
         // Submitting Forms
-        $(".new_post_wrapper .new_post_textarea").keydown(function (e) {
+        $("#new_post_wrapper .new_post_textarea").keyup(function (e) {
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
+            	console.log("YAAYA")
                 $(this).submit_form()
             }
         });
