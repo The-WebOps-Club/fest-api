@@ -155,7 +155,7 @@
 	    atwho_subdept_list = atwho_list['subdept']
 	    if ( atwho_user_list ) {
 	    	atwho_user_list = $.map(atwho_user_list, function(value, i) {
-	     	  	return {"name" : value["first_name"] + value["last_name"], "email" : value["email"]};
+	     	  	return {"name" : value["first_name"] + "_" + value["last_name"], "email" : value["email"]};
 	    	})
 	    }
 	    if ( atwho_dept_list ) {
@@ -168,6 +168,23 @@
 	     	  	return {"name" : value["name"], "email" : "Subdept"};
 	    	})
 	    }   
+
+	    at_config = {
+	        at: "@",
+	       	data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
+	      	tpl: "<li data-value='@${name}'>${name} <small>${email}</small></li>",
+	      	show_the_at: true,
+	      	callbacks: {
+			    before_insert: function(value, $li) {
+       				console.log($li)
+       				if ( this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0 ) {
+       					this.$inputor.after("<input class='textarea_atwho_list' name='atwho_list' value='" + value + "' type='hidden'/>")
+       				}
+       				return value;
+      			},
+			},
+	    }
+	    
     </script>
 </body>
 

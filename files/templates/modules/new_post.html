@@ -120,13 +120,15 @@
         // Submitting Forms
         $("#new_post_wrapper .new_post_textarea").keyup(function (e) {
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
-            	console.log("YAAYA")
                 $(this).submit_form()
             }
-        });
+        })              .atwho(at_config);
+        
         $("#new_post_wrapper #new_post_submit").click(function() { 
             console.log("Posting");
         });
+
+
     })
 </script>
 {% endonce %}
