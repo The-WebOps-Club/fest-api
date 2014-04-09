@@ -27,15 +27,17 @@ def post_post_save(sender, instance, created, **kwargs):
     """
     # If comments = 0 It is a new post.
     if created:
+        by = instance.by
         for recipient in instance.wall.notification_users.all():
-            notifications.notify.send(
-                sender=instance.by, # The model who wrote the post - USER
-                recipient=recipient, # The model who sees the post - USER
-                verb='has posted on', # verb
-                action_object=instance, # the model on which something happened - POST
-                target=instance # The model which got affected - POST
-                # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
-            )
+            if recipient != by:
+                notifications.notify.send(
+                    sender=, # The model who wrote the post - USER
+                    recipient=recipient, # The model who sees the post - USER
+                    verb='has posted on', # verb
+                    action_object=instance, # the model on which something happened - POST
+                    target=instance # The model which got affected - POST
+                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+                )
 
 @receiver(m2m_changed, sender=Post.comments.through, dispatch_uid="post.made.m2m_changed_signal")
 def post_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwargs):
@@ -44,15 +46,17 @@ def post_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **
         Creates     : Notification to correspinding notification_users on Post.
     """
     if action == "post_add" :
+        by = instance.by
     	for recipient in instance.wall.notification_users.all():
-	        notifications.notify.send(
-	            sender=instance.by, # The model who wrote the post - USER
-	            recipient=recipient, # The model who sees the post - USER
-	            verb='has commented on', # verb
-	            action_object=model.objects.get(pk = list(pk_set)[0]), # the model on which something happened - COMMENT
-	            target=instance # The model which got affected - POST
-	            # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
-	        )
+            if recipient != by:
+    	        notifications.notify.send(
+    	            sender=by, # The model who wrote the post - USER
+    	            recipient=recipient, # The model who sees the post - USER
+    	            verb='has commented on', # verb
+    	            action_object=model.objects.get(pk = list(pk_set)[0]), # the model on which something happened - COMMENT
+    	            target=instance # The model which got affected - POST
+    	            # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+    	        )
 
 # @receiver(m2m_changed, sender=Wall., dispatch_uid="wall.made.m2m_changed_signal")
 # def wall_m2m_changed(sender, instance, **kwargs):

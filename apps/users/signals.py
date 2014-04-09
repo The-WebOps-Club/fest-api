@@ -24,10 +24,10 @@ import datetime
 
 def create_my_wall(item):
     """
-        Create wall for an item and check name for (ERPUser, Dept or Subdept) associated to the wall
+        Create wall for an item and check name for (ERPProfile, Dept or Subdept) associated to the wall
 
         Args:
-            item - An item of type (ERPUser, Dept or Subdept)
+            item - An item of type (ERPProfile, Dept or Subdept)
     """
     # Validate arguments
     changed_it = False
@@ -50,10 +50,10 @@ def create_my_wall(item):
 def associate_to_wall(item):
     """
         Associate the item to a wall
-            - Associate the item (ERPUser, Dept or Subdept) to it's wall to make the user an owner, add for notifs and reading rights
+            - Associate the item (ERPProfile, Dept or Subdept) to it's wall to make the user an owner, add for notifs and reading rights
 
         Args:
-            item - An item of type (ERPUser, Dept or Subdept)
+            item - An item of type (ERPProfile, Dept or Subdept)
     """
     # Validate arguments
     changed_it = False

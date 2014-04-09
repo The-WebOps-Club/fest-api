@@ -25,12 +25,13 @@ class Command(BaseCommand):
     def handle(self, arg=None, **options):
 
         for w in Wall.objects.all():
-            w.notification_users.add(ERPProfile.objects.all())
-            w.owners.add(ERPProfile.objects.all())
-            w.visible_to.add(ERPProfile.objects.all())
+            w.notification_users.add(*User.objects.all())
+            w.owners.add(*User.objects.all())
+            w.visible_to.add(*User.objects.all())
 
-        for p in Post.objects.all()
-            p.notification_users.add(ERPProfile.objects.all())
-            p.visible_to.add(ERPProfile.objects.all())
+        for p in Post.objects.all():
+            p.notification_users.add(*User.objects.all())
+            p.visible_to.add(*User.objects.all())
             p.is_public = True
-        self.stdout.write("All passwords have been set to " + str(pass_key))
+        self.stdout.write("Everyone can access everything.")
+

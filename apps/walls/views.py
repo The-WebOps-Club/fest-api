@@ -126,20 +126,29 @@ def create_post(request, wall_id):
 	except ValueError:
 		print wall_id, "could not convert to int"
 		wall_id = None
+	
 	if not ( type(wall_id) is int ):
 		print "wall_id :", wall_id, type(wall_id)
-		raise InvalidArgumentTypeException
+		raise InvalidArgumentTypeException("argument `wall_id` should be of type integer")
 	wall = get_object_or_404(Wall, id=int(wall_id))
-	
+	print wall
 	data = request.POST.copy()
-	if not request.user in wall.owners.all():
-		messages.error(request, strings.STD_ERROR %('You dont have permission to post here'))
+	if data.get("new_post", None):
+		new_post = Post.objects.create(description=data['new_post'], wall=wall, by=request.user)
+		notification_list =  data.getlist("atwho_list")
+		for i in notification_list:
+			i_type, i_id = i.split("_")[:-1], i.split("_")[-1]
+			if i_type.lower().startswith("department"):
+				i_type = "dept"
+			elif i_type.lower().startswith("subdept"):
+				i_type = "subdept"
+			print new_post
+		print "---------------------------------------------------"
 		return redirect('wall', wall_id=wall.pk)
-	Post.objects.create(description=data['new_post'], wall=wall, by=request.user)
-	print data.getlist("textarea_atwho_list")
-
-
-	return redirect('wall', wall_id=wall.pk)
+	else:
+		return redirect(request.META.get('HTTP_REFERER', '/'))
+	
+	
 
 def create_comment(request, post_id):
 	"""
@@ -164,6 +173,7 @@ def create_comment(request, post_id):
 		if not post:
 			raise InvalidArgumentValueException("No Post with id `post_id` was found in the database")
 
+		print "---------------------------------------------"
 		print data.getlist("textarea_atwho_list")
 	
 		post.comments.add(new_comment)
