@@ -59,9 +59,9 @@ class Wall(models.Model):
         temp = None
         if hasattr(self, "person"):
             return self.person
-        if hasattr(self, "subdept"):
+        elif hasattr(self, "subdept"):
             return self.subdept
-        if hasattr(self, "dept"):
+        elif hasattr(self, "dept"):
             return self.dept
         print "No parent found"
         return temp

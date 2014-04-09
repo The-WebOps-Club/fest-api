@@ -3,19 +3,6 @@ from django.contrib.auth.models import User
 from apps.users.models import Dept, Subdept, ERPProfile
 from apps.walls.models import Wall, Post, Comment
 
-SAMPLE_DEPTS = [
-    'Design',
-    'Events',
-    'Facilities',
-    'Finance',
-    'QMS',
-    'Hospitality',
-    'Sponsorship',
-    'WebOps'
-]
-
-DESC_STR = "Description for %s"
-
 class Command(BaseCommand):
     """
         Give all users access rights to everyone

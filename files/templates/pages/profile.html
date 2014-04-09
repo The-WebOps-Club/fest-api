@@ -4,7 +4,7 @@
 {% block title %} {{ FEST_NAME }} {% endblock %}
 
 {% block content %}
-	{% with wall=user.erp_profile.wall %}
+	{% with wall=erp_profile.wall %}
 		{% include 'modules/profile_banner.html' %}
 	{% endwith %}
 	
@@ -12,8 +12,10 @@
 		<div class="span12">
 			<div class="profile_head">
 				About 
+				
 				<a class="btn form_edit offset7" href="javascript:void(0)"><i class="icon-pencil"></i> <span class="edit_text">Edit Profile</span></a>
 				<a class="btn primary form_input form_submit" href="javascript:void(0)"> Save Changes</a>
+				
 			</div>
 			<div class="profile_body">
 				<form method="POST" enctype="multipart/form-data" class="form_profile">
@@ -54,11 +56,11 @@
 							<div class="profile_section_head">Contact Info</div>
 							<div class="row-fluid">
 								<label class="span4 form_label" for="id_mobile_number">Mobile number:</label> 
-								<input id="id_mobile_number" maxlength="10" name="mobile_number" type="text" class="form_input " value="{{ user_profile_form.mobile_number.value|default_if_none:'' }}">
+								<input id="id_mobile_number" maxlength="10" name="mobile_number" type="text" pattern="[0-9]*" class="form_input only_number" value="{{ user_profile_form.mobile_number.value|default_if_none:'' }}">
 							</div>
 							<div class="row-fluid">
 								<label class="span4 form_label" for="id_summer_number">Summer number:</label> 
-								<input id="id_summer_number" maxlength="10" name="summer_number" type="text" class="form_input "value="{{ erp_profile_form.summer_number.value|default_if_none:'' }}">
+								<input id="id_summer_number" maxlength="10" pattern="[0-9]*" name="summer_number" type="text" class="form_input only_number"value="{{ erp_profile_form.summer_number.value|default_if_none:'' }}">
 							</div>
 							<div class="row-fluid">
 								<label class="span4 form_label" for="id_email">Email address:</label>
@@ -85,7 +87,7 @@
 							</div>
 				    		<div class="row-fluid">
 								<label class="span4 form_label" for="id_room_no">Room no:</label> 
-								<input id="id_room_no" name="room_no" type="number" class="form_input" value="{{ erp_profile_form.room_no.value|default_if_none:'' }}">
+								<input id="id_room_no" name="room_no" type="text" class="form_input only_number" value="{{ erp_profile_form.room_no.value|default_if_none:'' }}">
 							</div>
 				    		<div class="row-fluid">
 								<label class="span4 form_label" for="id_hostel">Hostel:</label> 
@@ -232,11 +234,22 @@
 	}
 	flip_form_profile("hide")
 
+	$("input.only_number").on("input", function(e){ 
+		console.log(e)
+	})
+
 	$(".form_submit").click( function () {
 		$("form_profile").submit()
 	})
-	$(".form_edit").click( function () {
-		flip_form_profile("toggle", 200);
-	})
+
+	{% if user != user_form.instance %}
+		$(".form_edit").remove()
+		$(".form_input").remove()
+	{% else %}
+		$(".form_edit").click( function () {
+			flip_form_profile("toggle", 200);
+		})
+	{% endif %}
+	
 </script>
 {% endblock %}

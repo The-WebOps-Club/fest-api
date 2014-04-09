@@ -13,8 +13,6 @@ SAMPLE_DEPTS = [
     'WebOps'
 ]
 
-DESC_STR = "Description for %s"
-
 class Command(BaseCommand):
     """
         Creates the department given in SAMPLE_DEPTS and add a core
@@ -29,6 +27,7 @@ class Command(BaseCommand):
     def handle(self, arg=None, **options):
         # Department specific users
         pass_key = "1"
+        DESC_STR = "Description for %s"
         
         for dept_name in SAMPLE_DEPTS:
             dept_name = str(dept_name).lower()
@@ -47,6 +46,7 @@ class Command(BaseCommand):
             user.save()
             erp_profile, created_it = ERPProfile.objects.get_or_create(user=user)
             erp_profile.core_relations.add(dept)
+            
             erp_profile.save()
 
             subdept_name = str(dept_name) + '_subdept1'

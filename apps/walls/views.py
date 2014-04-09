@@ -142,6 +142,7 @@ def create_post(request, wall_id):
 				i_type = "dept"
 			elif i_type.lower().startswith("subdept"):
 				i_type = "subdept"
+				
 			print new_post
 		print "---------------------------------------------------"
 		return redirect('wall', wall_id=wall.pk)

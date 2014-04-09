@@ -14,14 +14,34 @@
             <span class="banner_title">{{ wall.name }}</span>
         </div>
         <div class="span12" id="banner_bar">
-            <div class="banner_item"><a href="{% url 'wall' wall.id %}" class="banner_link {% if current_page == 'wall' %}active{% endif %}">Wall</a><i class="selection_caret"></i>
+            <div class="banner_item">
+                <a href="{% url 'wall' wall.id %}" class="banner_link {% if current_page == 'wall' %}active{% endif %}">
+                    Wall
+                </a>
+                <i class="selection_caret"></i>
             </div>
-            <div class="banner_item"><a href="" class="banner_link {% if current_page == 'profile' %}active{% endif %} ">Profile</a><i class="selection_caret"></i>
+            {% if wall.person %}
+                <div class="banner_item">
+                    <a href="{% url 'profile' wall.parent.user.id %}" class="banner_link {% if current_page == 'profile' %}active{% endif %} ">
+                        Profile
+                    </a>
+                    <i class="selection_caret"></i>
+                </div>
+            {% endif %}
+            <div class="banner_item">
+                <a href="" class="banner_link {% if current_page == 'media' %}active{% endif %} ">
+                    Media
+                </a>
+                <i class="selection_caret"></i>
             </div>
-            <div class="banner_item"><a href="" class="banner_link {% if current_page == 'media' %}active{% endif %} ">Media</a><i class="selection_caret"></i>
-            </div>
-            <div class="banner_item"><a href="" class="banner_link {% if current_page == 'portals' %}active{% endif %} ">Portals</a><i class="selection_caret"></i>
-            </div>
+            {% if wall.person == erp_profile %}
+                <div class="banner_item">
+                    <a href="" class="banner_link {% if current_page == 'portals' %}active{% endif %} ">
+                        Portals
+                    </a>
+                    <i class="selection_caret"></i>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
