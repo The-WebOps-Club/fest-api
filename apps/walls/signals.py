@@ -31,7 +31,7 @@ def post_post_save(sender, instance, created, **kwargs):
         for recipient in instance.wall.notification_users.all():
             if recipient != by:
                 notifications.notify.send(
-                    sender=, # The model who wrote the post - USER
+                    sender=by, # The model who wrote the post - USER
                     recipient=recipient, # The model who sees the post - USER
                     verb='has posted on', # verb
                     action_object=instance, # the model on which something happened - POST
