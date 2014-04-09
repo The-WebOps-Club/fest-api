@@ -33,9 +33,9 @@ def global_context(request):
     """
     from apps.users.models import Dept, Subdept
     atwho_list = { 
-        "users" : list(User.objects.values("first_name", "last_name", "email")),
-        "dept" : list(Dept.objects.values("name")),
-        "subdept" : list(Subdept.objects.values("name")),
+        "users" : list(User.objects.values("id", "first_name", "last_name", "email")),
+        "dept" : list(Dept.objects.values("id", "name")),
+        "subdept" : list(Subdept.objects.values("id", "name")),
     }
     vals = {
         'user':request.user,

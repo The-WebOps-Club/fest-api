@@ -56,6 +56,7 @@ class Dept(models.Model):
         ret.update( self.coords(), self.supercoords(), self.cores() )
         return list(ret)
 
+
 class Subdept(models.Model):
     """ 
         A model having data about specific SubDepartments @ the fest 
