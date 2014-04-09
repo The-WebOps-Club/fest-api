@@ -18,6 +18,7 @@
 *.sublime-workspace
 .AppleDouble
 .DS_Store
+.c9revisions
 
 # Server config files
 restart-project.sh
