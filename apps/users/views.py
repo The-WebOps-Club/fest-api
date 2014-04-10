@@ -183,6 +183,7 @@ def profile(request, user_id=None):
         "user_form" : user_form,
         "user_profile_form" : user_profile_form,
         "erp_profile_form" : erp_profile_form,
+        "profile_wall" : erp_profile.wall,
         "read_only" : read_only,
         "HOSTEL_CHOICES" : [i[0] for i in HOSTEL_CHOICES],
         "BRANCH_CHOICES" : [i[0] for i in BRANCH_CHOICES],
