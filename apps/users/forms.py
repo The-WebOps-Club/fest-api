@@ -64,7 +64,7 @@ class UserProfileForm(forms.ModelForm):
             'dob', 
             'mobile_number',
             'branch',
-            # 'college',
+            'college',
             'college_roll',
             'school_student',
             'want_accomodation',

@@ -40,7 +40,7 @@ def global_context(request):
     vals = {
         'user':request.user,
         'erp_profile':request.user.erp_profile,
-        #'profile':request.user.profile,
+        'user_profile':request.user.profile,
         'session':request.session,
         'current_path':request.get_full_path(),
         'atwho_list': json.dumps(atwho_list),

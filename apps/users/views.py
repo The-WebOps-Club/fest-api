@@ -8,6 +8,7 @@ from django.templatetags.static import static
 # Apps
 from misc.utils import *  #Import miscellaneous functions
 from misc import strings
+from misc.constants import HOSTEL_CHOICES, BRANCH_CHOICES
 # Decorators
 # Models
 from django.contrib.auth.models import User
@@ -134,10 +135,16 @@ def profile(request, user_id=None):
     user_profile_form = UserProfileForm(instance=user_profile)
     erp_profile_form = ERPProfileForm(instance=erp_profile)
     
+    data = request.POST.copy()
     if request.method == "POST":
-        user_form = UserForm(request.POST, instance = user)
-        user_profile_form = UserProfileForm(request.POST, instance=user_profile)
-        erp_profile_form = ERPProfileForm(request.POST, instance=erp_profile)
+        hostel_name = data.get("hostel", None)
+        if hostel_name: data["hostel"] = data["hostel"].strip()
+        branch_name = data.get("branch", None)
+        if branch_name: data["branch"] = data["branch"].strip()
+        
+        user_form = UserForm(data, instance = user)
+        user_profile_form = UserProfileForm(data, instance=user_profile)
+        erp_profile_form = ERPProfileForm(data, instance=erp_profile)
         
         user_form_is_valid = user_form.is_valid()
         user_profile_form_is_valid = user_profile_form.is_valid()
@@ -161,7 +168,7 @@ def profile(request, user_id=None):
     print user_form.errors
     print user_profile_form.errors
     print erp_profile_form.errors
-    print erp_profile_form
+    
     # Return
     local_context = {
         "current_page" : "profile",
@@ -169,6 +176,8 @@ def profile(request, user_id=None):
         "user_profile_form" : user_profile_form,
         "erp_profile_form" : erp_profile_form,
         "read_only" : read_only,
+        "HOSTEL_CHOICES" : [i[0] for i in HOSTEL_CHOICES],
+        "BRANCH_CHOICES" : [i[0] for i in BRANCH_CHOICES],
     }
     return render_to_response("pages/profile.html", local_context, context_instance= global_context(request))
 

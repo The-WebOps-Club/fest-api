@@ -133,8 +133,11 @@ class UserProfile(models.Model): # The corresponding auth user
 		super(UserProfile, self).delete(*args, **kwargs)
 	
 	def set_iitm_user(self, *args, **kwagrs):
-		self.college = College.objects.filter(name__iexact="IIT MADRAS", state__iexact="Tamil Nadu")
-		self.save()
+		try:
+			self.college = College.objects.get(name__iexact="IIT MADRAS", state__iexact="Tamil Nadu")
+			self.save()
+		except:
+			pass
 
 	def __unicode__(self):
 		return self.user.first_name
