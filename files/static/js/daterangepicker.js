@@ -58,7 +58,7 @@
 		opt = $.extend(true,
 		{
 			autoClose: false,
-			format: 'MMM Do YYYY',
+			format: 'D MMM, YYYY',
 			separator: ' to ',
 			language: 'auto',
 			startOfWeek: 'sunday',// or monday

@@ -141,7 +141,8 @@ def profile(request, user_id=None):
         if hostel_name: data["hostel"] = data["hostel"].strip()
         branch_name = data.get("branch", None)
         if branch_name: data["branch"] = data["branch"].strip()
-        
+        print "----------------------------------------"
+        print ">>>>>>>>>", data
         user_form = UserForm(data, instance = user)
         user_profile_form = UserProfileForm(data, instance=user_profile)
         erp_profile_form = ERPProfileForm(data, instance=erp_profile)
@@ -161,14 +162,14 @@ def profile(request, user_id=None):
             user_profile.save()    
             erp_profile.save()    
         else:
-            print user_form.errors
-            print user_profile_form.errors
-            print erp_profile_form.errors
+            # print user_form.errors
+            # print user_profile_form.errors
+            # print erp_profile_form.errors
             pass
-    print user_form.errors
-    print user_profile_form.errors
-    print erp_profile_form.errors
-    
+    # print user_form.errors
+    # print user_profile_form.errors
+    # print erp_profile_form.errors
+    print [unicode(i) for i in user_profile_form.fields['dob'].input_formats]
     # Return
     local_context = {
         "current_page" : "profile",
