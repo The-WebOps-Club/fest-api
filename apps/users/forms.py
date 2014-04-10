@@ -99,7 +99,9 @@ class ERPProfileForm(forms.ModelForm):
 			'hostel',
 			'summer_number',
 			'summer_stay',
+			'summer_stay2',
 			'winter_stay',
+			'winter_stay2',
 		]
 
 	def save(self, commit=True, *args, **kwargs):

@@ -105,18 +105,20 @@
 								<div class="profile_section_head">Accomodation Info</div>
 								<label class="span4 form_label" for="id_summer_stay">Summer stay:</label> 
 								<input id="id_summer_stay" maxlength="30" name="summer_stay" type="text" class="form_input form_visible date_range_picker" value="{{ erp_profile_form.summer_stay.value|default_if_none:'' }}">
-								<a href="javascript:void(0)" class="add_another_field form_visible">and</a>
+								{% if not erp_profile_form.summer_stay2.value %} <a href="javascript:void(0)" class="add_another_field form_visible">and</a>{% endif %}
+								<input id="id_summer_stay2" maxlength="30" name="summer_stay2" type="text" class="form_input {% if erp_profile_form.summer_stay2.value %} form_visible {% else %} hide {% endif %} date_range_picker" value="{{ erp_profile_form.summer_stay2.value|default_if_none:'' }}">
 							</div>
 							<div class="row-fluid">
 								<label class="span4 form_label" for="id_winter_stay">Winter stay:</label> 
 								<input id="id_winter_stay" maxlength="30" name="winter_stay" type="text" class="form_input form_visible date_range_picker" value="{{ erp_profile_form.winter_stay.value|default_if_none:'' }}">
-								<a href="javascript:void(0)" class="add_another_field form_visible">and</a>
+								{% if not erp_profile_form.winter_stay2.value %} <a href="javascript:void(0)" class="add_another_field form_visible">and</a>{% endif %}
+								<input id="id_winter_stay2" maxlength="30" name="winter_stay2" type="text" class="form_input {% if erp_profile_form.winter_stay2.value %} form_visible {% else %} hide {% endif %} date_range_picker" value="{{ erp_profile_form.winter_stay2.value|default_if_none:'' }}">
 							</div>
 							<div class="row-fluid">
 								<label class="span4 form_label" for="id_want_accomodation">Want accomodation: </label> 
 								<span class="form_visible label_input label {% if user_profile_form.want_accomodation.value %}active{% endif %}">YES</span>&nbsp;
 								<span class="form_visible label_input label {% if not user_profile_form.want_accomodation.value %}active{% endif%}">NO</span>
-								{{ erp_profile_form.want_accomodation.value }}
+								
 								<input id="id_want_accomodation" name="want_accomodation" class="label_input_hidden form_input hide"  type="checkbox" 
 									{% if user_profile_form.want_accomodation.value %}
 										checked=true
@@ -270,12 +272,7 @@
 	function add_another_field() {
 		el = this
 		$el = $(el)
-		$el_input = $el.parent().find("input").last()
-		$el_input.clone().insertAfter($el_input)
-		$(".date_range_picker").dateRangePicker({
-		    format: 'MMM Do, YYYY',
-		    showShortcuts: false,
-		});
+		$el_input2 = $el.parent().find("input").last().slideDown(500)
 		$el.remove()
 	}
 

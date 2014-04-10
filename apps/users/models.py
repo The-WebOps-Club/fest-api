@@ -167,9 +167,11 @@ class ERPProfile(models.Model):
 	summer_number   = models.CharField(max_length=10, blank=True, null=True)
 	
 	# Holiday stay
-	summer_stay     = models.CharField(max_length=50, blank=True, null=True)
-	winter_stay     = models.CharField(max_length=50, blank=True, null=True)
-	
+	summer_stay     = models.CharField(max_length=100, blank=True, null=True)
+	winter_stay     = models.CharField(max_length=100, blank=True, null=True)
+	summer_stay2    = models.CharField(max_length=100, blank=True, null=True)
+	winter_stay2    = models.CharField(max_length=100, blank=True, null=True)
+
 	@property
 	def name(self):
 		return self.user.get_full_name()

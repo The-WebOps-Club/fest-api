@@ -141,6 +141,13 @@ def profile(request, user_id=None):
         if hostel_name: data["hostel"] = data["hostel"].strip()
         branch_name = data.get("branch", None)
         if branch_name: data["branch"] = data["branch"].strip()
+        summer_stay_data = data.getlist("summer_stay", None)
+        if summer_stay_data: data["summer_stay"] = " and ".join([i.strip() for i in data.getlist("summer_stay")])
+        print summer_stay_data
+        print data['summer_stay']
+        # winter_stay_data = data.get("winter_stay", None)
+        # if winter_stay_data: data["winter_stay"] = " and ".join([i.strip() for i in data.getlist("winter_stay")])
+        # print winter_stay_data
         print "----------------------------------------"
         print ">>>>>>>>>", data
         user_form = UserForm(data, instance = user)
