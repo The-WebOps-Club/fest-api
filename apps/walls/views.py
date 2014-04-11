@@ -87,33 +87,32 @@ def my_wall(request, owner_type, owner_id):
 		print owner_type, type(owner_type)
 		raise InvalidArgumentTypeException
 	owner_type = owner_type.lower()
-	wall_id = None
+	wall = None
 
 	if owner_type == "user":
-		wall_id = get_object_or_404(Wall, person__user__id=owner_id if owner_id else request.user.id)
-		if wall_id:
-			wall_id = wall_id.id
+		wall = get_object_or_404(Wall, person__user__id=owner_id if owner_id else request.user.id)
+		
 	elif owner_type == "subdept":
 		if owner_id:
-			wall_id = get_object_or_404(Wall, subdept__id=owner_id)
+			wall = get_object_or_404(Wall, subdept__id=owner_id)
 		else:
 			if request.session["role"] == "coord":
-				wall_id = get_object_or_404(Wall, subdept__id=request.session["role_dept"])
+				wall = get_object_or_404(Wall, subdept__id=request.session["role_dept"])
 	elif owner_type == "dept":
 		if owner_id:
-			wall_id = get_object_or_404(Wall, dept__id=owner_id)
+			wall = get_object_or_404(Wall, dept__id=owner_id)
 		else:
 			if request.session["role"] == "coord":
 				dept_id = get_object_or_404(Subdept, id=request.session["role_dept"])
 				if dept_id:
 					dept_id = dept_id.dept.id
-					wall_id = get_object_or_404(Wall, dept__id=dept_id)
+					wall = get_object_or_404(Wall, dept__id=dept_id)
 			else: # supercoord and core
-				wall_id = get_object_or_404(Wall, dept__id=request.session["role_dept"])
+				wall = get_object_or_404(Wall, dept__id=request.session["role_dept"])
 
-	if wall_id == None:
+	if wall == None:
 		raise InvalidArgumentValueException
-	return redirect(reverse("wall", kwargs={"wall_id" : wall_id}))
+	return redirect(reverse("wall", kwargs={"wall_id" : wall.id}))
 
 
 def create_post(request, wall_id):
