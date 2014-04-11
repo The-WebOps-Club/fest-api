@@ -39,8 +39,8 @@ def global_context(request):
     }
     vals = {
         'user':request.user,
-        'erp_profile':request.user.erp_profile,
-        'user_profile':request.user.profile,
+        'erp_profile':request.user.erp_profile if hasattr(request.user, "erp_profile") else None,
+        'user_profile':request.user.profile if hasattr(request.user, "profile") else None,
         'session':request.session,
         'current_path':request.get_full_path(),
         'atwho_list': json.dumps(atwho_list),
