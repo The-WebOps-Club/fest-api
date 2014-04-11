@@ -118,6 +118,10 @@ class Post(PostInfo):
     notification_users  = models.ManyToManyField(User, null=True, blank=True, related_name='notified_post')
     visible_to          = models.ManyToManyField(User, null=True, blank=True, related_name='visible_post')
     
+    # Dept and Sub-dept
+    notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_post')
+    notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_post')
+
     is_public           = models.BooleanField(default=True)
     
     # Relations with other models - Comments
