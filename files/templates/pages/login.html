@@ -12,7 +12,7 @@
                         <a class='brand big_brand bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
                     </div>
                     <div class='span6' id='login_box'>
-                        <form class='span9 pull-right' action='' method='POST' id='login_form'  autocomplete="on">
+                        <form class='span9 pull-right' action='{% url "login" %}' method='POST' id='login_form'  autocomplete="on">
                             {% csrf_token %}
                             <div class='span5 input_box'>
                                 <label for='id_username'>Email ID</label><br />
@@ -21,7 +21,7 @@
                             <div class='span5 input_box'>
                                 <label for='id_password'>Password</label><br />
                                 <input type='password' name='password' id='id_password' placeholder='Password' required='true' class='input-large' value='{{ login_form.password.value|default_if_none:"" }}'><br />
-                                <a id='forgot_passwd'>Forgotten Password</a>
+                                <a id='forgot_passwd' href='{% url "password_reset" %}'>Forgotten Password</a>
                             </div>
                             <div class='span2 submit_box'>
                                 <label for="id_submit"></label><br />
@@ -45,6 +45,7 @@
 {% endblock %}
 
 {% block extra_css %}
+{{ block.super }}
 <style>
     #login_topbar_inner {
         height: 82px;
@@ -96,6 +97,7 @@
 
 
 {% block extra_js %}
+{{ block.super }}
     <script>
     $( document ).ready(function() {    
         // Form submission 
