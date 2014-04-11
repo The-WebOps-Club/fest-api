@@ -76,45 +76,44 @@ def wall (request, wall_id=None):
     return render_to_response('pages/wall.html', local_context, context_instance= global_context(request))
 
 def my_wall(request, owner_type, owner_id):
-    # Initial validations
-    try:
-        owner_id = int(owner_id)
-    except ValueError:
-        print owner_id, "could not convert to int"
-        owner_id = None
-    if not ( type(owner_type) is str or type(owner_type) is unicode ):
-        print owner_id, type(owner_id)
-        print owner_type, type(owner_type)
-        raise InvalidArgumentTypeException
-    owner_type = owner_type.lower()
-    wall_id = None
 
-    if owner_type == "user":
-        wall_id = get_object_or_404(Wall, person__user__id=owner_id if owner_id else request.user.id)
-        if wall_id:
-            wall_id = wall_id.id
-    elif owner_type == "subdept":
-        if owner_id:
-            wall_id = get_object_or_404(Wall, subdept__id=owner_id)
-        else:
-            if request.session["role"] == "coord":
-                wall_id = get_object_or_404(Wall, subdept__id=request.session["role_dept"])
-    elif owner_type == "dept":
-        if owner_id:
-            wall_id = get_object_or_404(Wall, dept__id=owner_id)
-        else:
-            if request.session["role"] == "coord":
-                dept_id = get_object_or_404(Subdept, id=request.session["role_dept"])
-                if dept_id:
-                    dept_id = dept_id.dept.id
-                    wall_id = get_object_or_404(Wall, dept__id=dept_id)
-            else: # supercoord and core
-                wall_id = get_object_or_404(Wall, dept__id=request.session["role_dept"])
+	# Initial validations
+	try:
+		owner_id = int(owner_id)
+	except ValueError:
+		print owner_id, "could not convert to int"
+		owner_id = None
+	if not ( type(owner_type) is str or type(owner_type) is unicode ):
+		print owner_id, type(owner_id)
+		print owner_type, type(owner_type)
+		raise InvalidArgumentTypeException
+	owner_type = owner_type.lower()
+	wall = None
 
-    if wall_id == None:
-        raise InvalidArgumentValueException
-    return redirect(reverse("wall", kwargs={"wall_id" : wall_id}))
+	if owner_type == "user":
+		wall = get_object_or_404(Wall, person__user__id=owner_id if owner_id else request.user.id)
+		
+	elif owner_type == "subdept":
+		if owner_id:
+			wall = get_object_or_404(Wall, subdept__id=owner_id)
+		else:
+			if request.session["role"] == "coord":
+				wall = get_object_or_404(Wall, subdept__id=request.session["role_dept"])
+	elif owner_type == "dept":
+		if owner_id:
+			wall = get_object_or_404(Wall, dept__id=owner_id)
+		else:
+			if request.session["role"] == "coord":
+				dept_id = get_object_or_404(Subdept, id=request.session["role_dept"])
+				if dept_id:
+					dept_id = dept_id.dept.id
+					wall = get_object_or_404(Wall, dept__id=dept_id)
+			else: # supercoord and core
+				wall = get_object_or_404(Wall, dept__id=request.session["role_dept"])
 
+	if wall == None:
+		raise InvalidArgumentValueException
+	return redirect(reverse("wall", kwargs={"wall_id" : wall.id}))
 
 def create_post(request, wall_id):
     """
