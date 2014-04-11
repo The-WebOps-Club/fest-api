@@ -174,9 +174,9 @@ def create_post(request, wall_id):
             new_post.notification_users.add(tagged_user)
 
         print "---------------------------------------------------"
-        return redirect('wall', wall_id=wall.pk)
-    else:
-        return redirect(request.META.get('HTTP_REFERER', '/'))
+    #     return redirect('wall', wall_id=wall.pk)
+    # else:
+    return redirect(request.META.get('HTTP_REFERER', '/'))
     
     
 
@@ -245,8 +245,8 @@ def create_comment(request, post_id):
             post.notification_subdepts.add(tagged_subdept)
         if notification_users:
             post.notification_users.add(tagged_user)
-        return redirect('wall', wall_id=post.wall.pk)
-    else:
-        return redirect(request.META.get('HTTP_REFERER', '/'))
+    #     return redirect('wall', wall_id=post.wall.pk)
+    # else:
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 # def add_notification_users(__name__list, ):

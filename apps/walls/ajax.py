@@ -19,6 +19,9 @@ from misc.utils import *  #Import miscellaneous functions
 # From Apps
 from apps.walls.models import Post
 
+# Ajax post & comment
+from django.shortcuts import get_object_or_404
+from apps.walls.models import Wall, Post, Comment
 
 @dajaxice_register
 def hello_world(request):
@@ -106,3 +109,41 @@ def notifs_pagination(request, page, notif_type = 'unread'):
     	'exhausted':exhausted, 
     	'notif_type':notif_type
     })
+
+@dajaxice_register
+def create_post(request, wall_id, new_post):
+    """
+        Create a new wall post
+    """
+    # Initial validations
+    try:
+        wall_id = int(wall_id)
+    except ValueError:
+        print wall_id, "could not convert to int"
+        wall_id = None
+    
+    if not ( type(wall_id) is int ):
+        print "wall_id :", wall_id, type(wall_id)
+        raise InvalidArgumentTypeException("argument `wall_id` should be of type integer")
+    wall = get_object_or_404(Wall, id=int(wall_id))
+    print wall
+
+    # create a new post
+    data = request.POST.copy()
+    append_string = ""
+    if new_post:
+        new_post = Post.objects.create(description=new_post, wall=wall, by=request.user)
+        notification_list =  data.getlist("atwho_list")
+        for i in notification_list:
+            i_type, i_id = i.split("_")[:-1], i.split("_")[-1]
+            if i_type.lower().startswith("department"):
+                i_type = "dept"
+            elif i_type.lower().startswith("subdept"):
+                i_type = "subdept"
+                
+            print new_post
+        print "---------------------------------------------------"
+        
+        # Render the new post
+        append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance= global_context(request))
+    return json.dumps({ 'append_string': append_string })
