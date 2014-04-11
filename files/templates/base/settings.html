@@ -51,25 +51,28 @@ $( document ).ready(function() {
 		<div class="setting breakpoint">
 			<a href="{% url 'logout' %}">Log Out</a>
 		</div>
-		<div class="breaktitle">
-			Use ERP as :
-		</div>
 		
-		{% for core in user.erp_profile.core_relations.all %}
-			<div class="setting">
-				<a href="{% url 'identity' 'core' core.pk %}" class="" id="core_{{core.pk}}">{{ core }} Core</a>
+		{% if erp_profile.relations_count >= 0 %}
+			<div class="breaktitle">
+				Use ERP as :
 			</div>
-		{% endfor %}
-		{% for supercoord in user.erp_profile.supercoord_relations.all %}
-			<div class="setting">
-				<a href="{% url 'identity' 'supercoord' supercoord.pk %}" class="" id="supercoord_{{supercoord.pk}}">{{ supercoord }} SuperCoord</a>
-			</div>
-		{% endfor %}
-		{% for coord in user.erp_profile.coord_relations.all %}
-			<div class="setting">
-				<a href="{% url 'identity' 'coord' coord.pk %}" class="" id="coord_{{coord.pk}}">{{ coord.dept }} {{ coord }} Coord</a>
-			</div>
-		{% endfor %}
+			
+			{% for core in erp_profile.core_relations.all %}
+				<div class="setting">
+					<a href="{% url 'identity' 'core' core.pk %}" class="" id="core_{{core.pk}}">{{ core }} Core</a>
+				</div>
+			{% endfor %}
+			{% for supercoord in erp_profile.supercoord_relations.all %}
+				<div class="setting">
+					<a href="{% url 'identity' 'supercoord' supercoord.pk %}" class="" id="supercoord_{{supercoord.pk}}">{{ supercoord }} SuperCoord</a>
+				</div>
+			{% endfor %}
+			{% for coord in erp_profile.coord_relations.all %}
+				<div class="setting">
+					<a href="{% url 'identity' 'coord' coord.pk %}" class="" id="coord_{{coord.pk}}">{{ coord.dept }} ({{ coord }}) Coord</a>
+				</div>
+			{% endfor %}
+		{% endif %}
 	</div>
 </div>
 
