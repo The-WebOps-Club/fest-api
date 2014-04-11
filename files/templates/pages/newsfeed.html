@@ -16,7 +16,7 @@
 	
     
 </div>
-<center><button class="btn btn-success" name="see_more" id="id_see_more" onclick="Dajaxice.apps.home.newsfeed_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1 })">See more</button></center>
+<center><button class="btn btn-success" name="see_more" id="id_see_more" onclick="Dajaxice.apps.walls.newsfeed_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1 })">See more</button></center>
 {% endblock %} {% block extra_css %} {{ block.super }}
 <style type="text/css">
 #status_wrapper {
@@ -167,5 +167,15 @@ function append_new_data(data){
         $('#id_see_more').html('No more to load');
     }
 }
+
+
+// Infinite Scroll
+var win = $(window), doc = $(document);
+
+win.scroll(function(){
+    if( doc.scrollTop() >= doc.height() - win.height() ) {
+        $("#id_see_more").click();
+    }
+}).scroll();
 </script>
 {% endblock %}

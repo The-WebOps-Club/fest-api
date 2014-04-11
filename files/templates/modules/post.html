@@ -19,11 +19,11 @@
 	        	{% if not notification %}
 	        		<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
 	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ post.by.get_full_name }}</a> 
-	            	posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
+	            	posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a>'s wall. 
 	            	<span class="muted small">{{ post.time_created|naturaltime }}</span>
 	            {% elif notification %}
 	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ notification.actor.get_full_name|default:"" }}</a> 
-	            	{{notification.verb}} <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
+	            	{{notification.verb}} <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a>.
 	            	<span class="muted small">{{ notification.timestamp|naturaltime }}</span>
 	            {% endif %}
 	        </div>

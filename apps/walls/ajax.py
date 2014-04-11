@@ -61,7 +61,7 @@ def newsfeed_pagination(request, page):
 
     append_string = ""
     for item in items:
-        append_string += render_to_string('modules/post.html', {'post': item.target}, context_instance= global_context(request))
+        append_string += "<hr />" + render_to_string('modules/post.html', {'post': item.target}, context_instance= global_context(request))
     return json.dumps({'append_string': append_string, 'exhausted':exhausted})
 
 @dajaxice_register
@@ -82,7 +82,7 @@ def wall_pagination(request, page, wall_id):
 
     append_string = ""
     for item in items:
-        append_string += render_to_string('modules/post.html', {'post': item, 'show_post':'True'}, context_instance= global_context(request))
+        append_string += "<hr />" + render_to_string('modules/post.html', {'post': item, 'show_post':'True'}, context_instance= global_context(request))
     return json.dumps({'append_string': append_string, 'exhausted':exhausted})
 
 @dajaxice_register
@@ -146,7 +146,7 @@ def create_post(request, wall_id, new_post):
         print "---------------------------------------------------"
         
         # Render the new post
-        append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance= global_context(request))
+        append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance= global_context(request)) + "<hr />"
     return json.dumps({ 'append_string': append_string })
 
 @dajaxice_register
