@@ -149,6 +149,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_PATH, "files", "static-collected")
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_PATH, "files", "media")
+EMAIL_ROOT = os.path.join(PROJECT_PATH, "files", "emails")
 STATICFILES_DIRS = (
     os.path.join(PROJECT_PATH, "files", "static"),
 )
