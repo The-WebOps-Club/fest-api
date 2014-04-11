@@ -144,9 +144,10 @@ def create_post(request, wall_id):
 				
 			print new_post
 		print "---------------------------------------------------"
-		return redirect('wall', wall_id=wall.pk)
-	else:
-		return redirect(request.META.get('HTTP_REFERER', '/'))
+	return redirect(request.META.get('HTTP_REFERER', '/'))
+	# 	return redirect('wall', wall_id=wall.pk)
+	# else:
+	# 	return redirect(request.META.get('HTTP_REFERER', '/'))
 	
 	
 
@@ -177,8 +178,9 @@ def create_comment(request, post_id):
 		print data.getlist("textarea_atwho_list")
 	
 		post.comments.add(new_comment)
-		return redirect('wall', wall_id=post.wall.pk)
-	else:
-		return redirect(request.META.get('HTTP_REFERER', '/'))
+	return redirect(request.META.get('HTTP_REFERER', '/'))
+		# return redirect('wall', wall_id=post.wall.pk)
+	# else:
+		# return redirect(request.META.get('HTTP_REFERER', '/'))
 
 # def add_notification_users(__name__list, ):

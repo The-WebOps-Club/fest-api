@@ -7,7 +7,7 @@
 {% block content %}
 	{% url 'create_post' user.erp_profile.wall.id as new_post_url %}
 	<!-- {# {% include "modules/new_post.html" %} #} -->
-    
+    <div id="new_notification_placeholder" style="height:30px"></div>
 	{% for notification in notifications %}
 		{% with post=notification.target %}
 			{% include "modules/post.html" %}

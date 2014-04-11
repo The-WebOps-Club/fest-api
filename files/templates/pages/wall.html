@@ -10,7 +10,7 @@
     <br/>
     {% url 'create_post' wall.id as new_post_url %}
     {% include "modules/new_post.html" %}
-
+    <div id="new_post_placeholder" style="height : 30px;"></div>
 	{% for post in wall_posts %}
 	    {% with show_post='True' %}
 	    	{% include "modules/post.html" %}

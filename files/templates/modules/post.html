@@ -7,8 +7,9 @@
 
 <div id="post_{{ post.id }}" class="row-fluid" style="">
 	{% if forloop.counter0 %} <hr /> 
-	{% else %} <div class="" style="height : 30px;"></div>
 	{% endif %}
+	<!-- <div class="" style="height : 30px;"></div> -->
+	<!-- <hr /> -->
 	<div class="news_post span12">
 	    <div class="news_left">
 	        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
@@ -59,7 +60,6 @@
 	    </div>
 	</div>
 </div>
-
 {% once post_styles_and_scripts %}
 <style>
 div.news_post {
