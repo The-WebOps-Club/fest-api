@@ -17,66 +17,17 @@
 
 <div class="hidden notifs_content">
 	<div id="id_notifs_container_unread" class="notifs_contents_inner">
-		<input type="hidden" name="current_page_unread" id="id_current_page_unread" value="1" />
-		{% for notification in user.notifications.unread|slice:":5" %}
-			<div class="notif unread" 
-				data-actor="{{ notification.actor.id }}" 
-				data-recipient="{{ notification.recipient.id }}"
-				data-action-object="{{ notification.action_object.id }}" 
-				data-target="{{ notification.target.id }}" 
-				data-wall="{{ notification.target.wall.id }}" onclick="window.location.href = '{% url 'read_notification' notification.id %}'">
-				<div class="profile_pic">
-					<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
-				</div>
-				<div class="notif_body">
-					<span class="profile_name">{{ notification.actor.get_full_name|default:"" }} </span>
-					{{ notification.verb|default:"" }} <span class="bold">{{ notification.target.wall|default:"" }}</span> 
-					<br />
-					{% autoescape off %} {{ notification.action_object.description }} {% endautoescape %}
-				</div>
-				<div class="notif_foot">
-					{{ notification.timestamp|naturaltime }}
-				</div>
-			</div>
+		<input type="hidden" name="current_page_unread" id="id_current_page_unread" value="5" />
+		{% for notification in user.notifications.all|slice:":5" %}
+			{%include 'base/notification.html'%}
 		{% empty %}
 			<div class="notif muted">
-				You have no unread notifications :)
+				You have no unread notifications.
 			</div>
 		{% endfor %}
 	</div>
-	<center><button class="btn btn-small" name="see_more_unread" id="id_see_more_unread" onclick="Dajaxice.apps.home.notifs_pagination(callback, {'page':parseInt($('#id_current_page_unread').val())+1, 'notif_type': 'unread' })">See more</button></center>
-	Read:
-	<div id="id_notifs_container_read" class="notifs_contents_inner">
-		<input type="hidden" name="current_page_read" id="id_current_page_read" value="1" />
-		{% for notification in user.notifications.read|slice:":5" %}
-			<div class="notif" 
-			data-sender="{{ notification.sender.id }}" 
-			data-recipient="{{ notification.recipient.id }}" 
-			data-action-object="{{ notification.action_object.id }}" 
-			data-target="{{ notification.target.id }}" 
-			data-wall="{{ notification.target.wall.id }}" 
-			onclick="window.location.href = '{% url 'read_notification' notification.id %}'">
-				<div class="profile_pic">
-					<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
-				</div>
-				<div class="notif_body">
-					<span class="profile_name">{{ notification.actor.get_full_name|default:"" }} </span>
-					{{ notification.verb|default:"" }} <span class="bold">{{ notification.target|default:"" }}</span> 
-					<br />
-					{{ notification.action_object.description|default:"" }}
-				</div>
-				<div class="notif_foot">
-					{{ notification.timestamp|naturaltime }}
-				</div>
-			</div>
-		{% endfor %}
-		{% if user.notifications.count == 0 %}
-			<div class="notif muted">
-				You have no notifications ! :(
-			</div>
-		{% endif %}
-	</div>
-	<center><button class="btn btn-small" name="see_more_read" id="id_see_more_read" onclick="Dajaxice.apps.home.notifs_pagination(callback, {'page':parseInt($('#id_current_page_read').val())+1, 'notif_type': 'read' })">See more</button></center>
+	<center><button class="btn btn-small" name="see_more_unread" id="id_see_more_unread" onclick="Dajaxice.apps.home.load_notifs(Dajax.process, {'start':parseInt($('#id_current_page_unread').val()),'end':parseInt($('#id_current_page_unread').val())+4 ,'targetdiv': '#id_notifs_container_unread' })">See more</button></center>
+	
 </div>
 
 {% once notifs_topbar_styles_and_scripts %}
