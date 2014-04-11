@@ -22,6 +22,7 @@ from apps.walls.models import Post
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
 from apps.walls.models import Wall, Post, Comment
+from annoying.functions import get_object_or_None
 
 @dajaxice_register
 def hello_world(request):
@@ -147,3 +148,37 @@ def create_post(request, wall_id, new_post):
         # Render the new post
         append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance= global_context(request))
     return json.dumps({ 'append_string': append_string })
+
+@dajaxice_register
+def create_comment(request, post_id, new_comment):
+    """
+        Creates a new comment on a Post
+    """
+    # Initial validations
+    try:
+        post_id = int(post_id)
+    except ValueError:
+        print post_id, "could not convert to int"
+        post_id = None
+    if not ( type(post_id) is int ):
+        print "post_id :", post_id, type(post_id)
+        raise InvalidArgumentTypeException("argument `post_id` should be of type integer")
+    
+    # Create a new comment
+    data = request.POST.copy()
+    append_string = ""
+    if new_comment:
+        new_comment = Comment.objects.create(description=new_comment, by=request.user)
+        # Attempt to get the post for the comment
+        post = get_object_or_None(Post, id=int(post_id))
+        if not post:
+            raise InvalidArgumentValueException("No Post with id `post_id` was found in the database")
+
+        print "---------------------------------------------"
+        print data.getlist("textarea_atwho_list")
+    
+        post.comments.add(new_comment)
+        
+        # Render the new comment
+        append_string =  render_to_string('modules/comment.html', {'comment': new_comment, 'post': post}, context_instance= global_context(request))
+    return json.dumps({ 'append_string': append_string })    
