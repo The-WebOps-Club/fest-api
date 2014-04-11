@@ -16,6 +16,7 @@ from apps.walls.models import Wall, Post, Comment
 # View functions
 # Misc
 from misc.utils import *
+from annoying.functions import get_object_or_None
 # Python
 import notifications
 
@@ -43,19 +44,22 @@ def post_post_save(sender, instance, created, **kwargs):
 def post_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwargs):
     """
         Signal for  : A Comment got saved on a post
-        Creates     : Notification to correspinding notification_users on Post.
+        Creates     : Notification to corresponding notification_users on Post.
     """
     if action == "post_add" :
-        by = instance.by
+        by = instance.comments.last().by
     	for recipient in instance.wall.notification_users.all():
+            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=instance.id)
+            if curr_notif:
+                curr_notif.mark_as_read()
             if recipient != by:
     	        notifications.notify.send(
-    	            sender=by, # The model who wrote the post - USER
+    	            sender= by, # The model who wrote the post - USER
     	            recipient=recipient, # The model who sees the post - USER
     	            verb='has commented on', # verb
     	            action_object=model.objects.get(pk = list(pk_set)[0]), # the model on which something happened - COMMENT
-    	            target=instance # The model which got affected - POST
-    	            # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+    	            target=instance, # The model which got affected - POST
+       	            # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
     	        )
 
 # @receiver(m2m_changed, sender=Wall., dispatch_uid="wall.made.m2m_changed_signal")

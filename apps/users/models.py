@@ -27,7 +27,6 @@ from misc.constants import *
 # Python
 import datetime
 
-
 # Department Models
 class Dept(models.Model):
 	""" 

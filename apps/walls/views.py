@@ -136,14 +136,6 @@ def create_post(request, wall_id):
 	if data.get("new_post", None):
 		new_post = Post.objects.create(description=data['new_post'], wall=wall, by=request.user)
 		notification_list =  data.getlist("atwho_list")
-		for i in notification_list:
-			i_type, i_id = i.split("_")[:-1], i.split("_")[-1]
-			if i_type.lower().startswith("department"):
-				i_type = "dept"
-			elif i_type.lower().startswith("subdept"):
-				i_type = "subdept"
-				
-			print new_post
 		print "---------------------------------------------------"
 		return redirect('wall', wall_id=wall.pk)
 	else:
