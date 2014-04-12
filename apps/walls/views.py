@@ -180,7 +180,6 @@ def create_post(request, wall_id):
         return redirect(request.META.get('HTTP_REFERER', '/'))
     
     
-
 def create_comment(request, post_id):
     """
         Creates a new comment on a Post
