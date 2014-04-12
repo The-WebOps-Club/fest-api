@@ -1,0 +1,61 @@
+{% extends "pages/login.html" %}
+
+{% block full_content %}
+<div class="below_loginbar">
+	<div class="container-fluid">
+		<div class="row-fluid">
+	    	<div class="span6 offset3 well">
+				<div class="">
+					<p class="bold big">Password Reset Successful</p>
+					<p>We've sent you instructions on how to reset your password. <br />You should be receiving it shortly.</p>
+				</div>
+				<hr />
+				<div>
+					<p>You may now close this page or click <a href="{% url 'home' %}">here</a> to go back to the home page.</p>
+					<p>
+					<span class="muted pull-right">You will be automatically redirected to the home page in <span id="countdown" class="bold"></span> seconds.</span></p>
+				</div>
+			</div>
+	    </div>
+	</div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+    .below_loginbar {
+        margin-top : 100px;
+    }
+    .big {
+        font-size : 30px;
+        line-height : 40px;
+    }
+    p {
+    	font-size : 13px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+	//change below target URL to your own
+	var targetURL="{% url 'home' %}";
+	//change the second to start counting down from
+	var countdownfrom=5000;
+	var currentsecond=document.getElementById("countdown").innerHTML=countdownfrom+1;
+	function countredirect(){
+		if (currentsecond!=1){
+			currentsecond-=1;
+			document.getElementById("countdown").innerHTML=currentsecond;
+		}
+		else{
+			window.location=targetURL;
+			return;
+		}
+		setTimeout("countredirect()",1000);
+	}
+	countredirect();
+</script>
+{% endblock %}

@@ -43,3 +43,7 @@ SITE_URL = 'http://localhost:8000/'
 SEND_EMAIL = True
 DEFAULT_FROM_EMAIL = 'Fest-API <noreply@festapi.com>'
 SERVER_EMAIL = 'Fest-API Server <server@festapi.com>' #The email address that error messages come from, such as those sent to ADMINS and MANAGERS.
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'full_path_for_emails'
+

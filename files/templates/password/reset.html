@@ -1,0 +1,56 @@
+{% extends "pages/login.html" %}
+
+{% block full_content %}
+<div class="below_loginbar">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span6 offset3 well">
+            
+                <div class="page-header">
+                    <p class="bold big">Find Your Account</p>
+                    <p class="">Enter your email address below, and we'll email instructions for setting a new one.</p>
+                    
+                </div>
+                <div>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                            <div class="row-fluid">
+                                <div class="center span12">
+                                    {{ field }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                            
+                        <div class="row-fluid below_topbar">
+                            <div class="span12 center">
+                                <input class="btn primary" type="submit" name="editprofile" value="Reset my password">
+                                <a class="btn btn-link" href="{% url 'home' %}">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+    .below_loginbar {
+        margin-top : 100px;
+    }
+    .big {
+        font-size : 30px;
+        line-height : 40px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+
+{% endblock %}
