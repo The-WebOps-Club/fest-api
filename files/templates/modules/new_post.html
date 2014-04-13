@@ -27,7 +27,7 @@
 	            </form>
 	        </div>
 	        <div id="new_post_bottom_bar" class="span12">
-	            <a class="btn primary small new_post_submit" href="#" onclick="Dajaxice.apps.walls.create_post(prepend_new_post, {'wall_id':{{wall.id}}, 'new_post': $('#id_new_post').val()})"> Post
+	            <a class="btn primary small new_post_submit" href="#" onclick="Dajaxice.apps.walls.create_post(prepend_new_post, {'wall_id':{{wall.id}}, 'post_form': $('#id_form_status').serialize(true) })"> Post
 	            </a>
 	        </div>
 	    </div>
@@ -130,7 +130,8 @@
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
                 // $(this).submit_form()
                 // Submitting via Dajax instead
-                Dajaxice.apps.walls.create_post(prepend_new_post, {'wall_id':{{wall.id}}, 'new_post': $("#id_new_post").val()})
+                el = this; $el = $(this)
+                Dajaxice.apps.walls.create_post(prepend_new_post, {'wall_id':{{wall.id}}, 'post_form': $('#id_form_status').serialize(true) })
             }
         })              .atwho(at_config);
         

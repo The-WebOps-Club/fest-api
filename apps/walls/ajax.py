@@ -1,5 +1,6 @@
 # For simple dajax(ice) functionalities
 from dajaxice.decorators import dajaxice_register
+from dajaxice.utils import deserialize_form
 from dajax.core import Dajax
 
 # From Django
@@ -17,7 +18,8 @@ from notifications.models import Notification
 from misc.utils import *  #Import miscellaneous functions
 
 # From Apps
-from apps.walls.models import Post
+from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
+
 
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
@@ -112,7 +114,7 @@ def notifs_pagination(request, page, notif_type = 'unread'):
     })
 
 @dajaxice_register
-def create_post(request, wall_id, new_post):
+def create_post(request, wall_id, post_form):
     """
         Create a new wall post
     """
@@ -132,25 +134,54 @@ def create_post(request, wall_id, new_post):
     # create a new post
     data = request.POST.copy()
     append_string = ""
-    if new_post:
-        new_post = Post.objects.create(description=new_post, wall=wall, by=request.user)
-        notification_list =  data.getlist("atwho_list")
-        for i in notification_list:
-            i_type, i_id = i.split("_")[:-1], i.split("_")[-1]
-            if i_type.lower().startswith("department"):
-                i_type = "dept"
-            elif i_type.lower().startswith("subdept"):
-                i_type = "subdept"
-                
-            print new_post
-        print "---------------------------------------------------"
-        
+    if post_form:
+        data = deserialize_form(post_form)
+        post_text = data['new_post']
+        tags =  data.getlist("atwho_list")
+        parsed_tags = [tag.rsplit("_",1) for tag in tags]
+        notification_depts = []
+        notification_subdepts = []
+        notification_users = []
+        link_text = '<a href="%s"> %s</a>'
+        for tag in parsed_tags:
+            id = int(tag[1])
+            key = tag[0]
+            if key == 'department':
+                tagged_dept = get_object_or_None(Dept, id=id)
+                if tagged_dept:
+                    notification_depts.append(tagged_dept)
+                    post_text = post_text.replace('@' + tagged_dept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_dept.wall.pk}), tagged_dept.name) )
+                else:
+                    print "No id for dept"
+            elif key == 'subdept':
+                tagged_subdept = get_object_or_None(Subdept, id=id)
+                if tagged_subdept:
+                    notification_subdepts.append(tagged_subdept)
+                    post_text = post_text.replace('@' + tagged_subdept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_subdept.wall.pk}), tagged_subdept.name) )
+                else:
+                    print "No id for subdept"
+            else:
+                tagged_user = get_object_or_None(User, id=id)
+                if tagged_user:
+                    notification_users.append(tagged_user)
+                    post_text = post_text.replace('@' + tagged_user.first_name+"_"+tagged_user.last_name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_user.erp_profile.wall.pk}), tagged_user.get_full_name()) )
+                else:
+                    print "No id for user"
+
+        new_post = Post.objects.create(description=post_text, wall=wall, by=request.user)
+
+        if notification_depts:
+            new_post.notification_depts.add(tagged_dept)
+        if notification_subdepts:
+            new_post.notification_subdepts.add(tagged_subdept)
+        if notification_users:
+            new_post.notification_users.add(tagged_user)
         # Render the new post
         append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance= global_context(request)) + "<hr />"
     return json.dumps({ 'append_string': append_string })
 
 @dajaxice_register
-def create_comment(request, post_id, new_comment):
+def create_comment(request, post_id, comment_form):
     """
         Creates a new comment on a Post
     """
@@ -167,18 +198,57 @@ def create_comment(request, post_id, new_comment):
     # Create a new comment
     data = request.POST.copy()
     append_string = ""
-    if new_comment:
-        new_comment = Comment.objects.create(description=new_comment, by=request.user)
+    if comment_form:
+        data = deserialize_form(comment_form)
+        print data
         # Attempt to get the post for the comment
         post = get_object_or_None(Post, id=int(post_id))
+        comment_text = data['comment']
         if not post:
             raise InvalidArgumentValueException("No Post with id `post_id` was found in the database")
 
         print "---------------------------------------------"
-        print data.getlist("textarea_atwho_list")
-    
+        tags = data.getlist("atwho_list")
+        # Gives the first and last words after splitting with underscore.
+        # First id and last is keyword (department, subdepartment and any others: email)
+        parsed_tags = [tag.rsplit("_",1) for tag in tags]
+        notification_depts = []
+        notification_subdepts = []
+        notification_users = []
+        link_text = '<a href="%s"> %s</a>'
+        for tag in parsed_tags:
+            id = int(tag[1])
+            key = tag[0]
+            if key == 'department':
+                tagged_dept = get_object_or_None(Dept, id=id)
+                if tagged_dept:
+                    notification_depts.append(tagged_dept)
+                    comment_text = comment_text.replace('@' + tagged_dept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_dept.wall.pk}), tagged_dept.name) )
+                else:
+                    print "No id for dept"
+            elif key == 'subdept':
+                tagged_subdept = get_object_or_None(Subdept, id=id)
+                if tagged_subdept:
+                    notification_subdepts.append(tagged_subdept)
+                    comment_text = comment_text.replace('@' + tagged_subdept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_subdept.wall.pk}), tagged_subdept.name) )
+                else:
+                    print "No id for subdept"
+            else:
+                tagged_user = get_object_or_None(User, id=id)
+                if tagged_user:
+                    notification_users.append(tagged_user)
+                    comment_text = comment_text.replace('@' + tagged_user.first_name+"_"+tagged_user.last_name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_user.erp_profile.wall.pk}), tagged_user.get_full_name()) )
+                else:
+                    print "No id for user"
+
+        new_comment = Comment.objects.create(description=comment_text, by=request.user)
         post.comments.add(new_comment)
-        
+        if notification_depts:
+            post.notification_depts.add(tagged_dept)
+        if notification_subdepts:
+            post.notification_subdepts.add(tagged_subdept)
+        if notification_users:
+            post.notification_users.add(tagged_user)
         # Render the new comment
         append_string =  render_to_string('modules/comment.html', {'comment': new_comment, 'post': post}, context_instance= global_context(request))
     return json.dumps({ 'append_string': append_string })    

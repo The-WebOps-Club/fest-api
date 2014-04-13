@@ -176,7 +176,8 @@ div.news_post hr {
 	            } else if (!e.ctrlKey && e.keyCode == 13) { // Enter pressed
 	            	// $el.submit_form()
 	            	// Submitting via Dajax
-	            	Dajaxice.apps.walls.create_comment(append_new_comment, {'post_id':{{post.id}}, 'new_comment': $("#id_new_comment_{{ post.id }}").val()});
+                    //alert(this.parent())
+	            	Dajaxice.apps.walls.create_comment(append_new_comment, {'post_id':{{post.id}}, 'comment_form': $el.parent().serialize(true)});
 	                e.preventDefault()
 	            } 
 	            //console.log(e)
