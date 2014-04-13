@@ -248,5 +248,3 @@ def create_comment(request, post_id):
     #     return redirect('wall', wall_id=post.wall.pk)
     # else:
     return redirect(request.META.get('HTTP_REFERER', '/'))
-
-# def add_notification_users(__name__list, ):
