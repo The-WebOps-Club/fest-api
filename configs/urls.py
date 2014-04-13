@@ -51,7 +51,7 @@ urlpatterns = patterns('',
     
     # Docs
     # Gen testing
-    url(r'^docs/$', 'apps.docs.views.docs', name='docs'), # Shows media page
+    url(r'^docs/', include('apps.docs.urls')), # Shows media page
 
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),

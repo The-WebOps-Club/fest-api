@@ -1,0 +1,5 @@
+test doc
+
+https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2callback&response_type=code&client_id=46389932382-ja94ulqb30qaqbdhuak1391iskutpf4k.apps.googleusercontent.com&access_type=offline
+
+https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Foauth2callback&response_type=code&client_id=46389932382-ja94ulqb30qaqbdhuak1391iskutpf4k.apps.googleusercontent.com&access_type=offline

@@ -33,6 +33,7 @@ files/static-collected/*
 
 # General configs
 configs/settings.py
+configs/docs_client_secret.json
 
 #Documentation build files
 doc/*
