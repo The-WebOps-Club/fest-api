@@ -7,8 +7,9 @@
 
 <div id="post_{{ post.id }}" class="row-fluid" style="">
 	{% if forloop.counter0 %} <hr /> 
-	{% else %} <div class="" style="height : 30px;"></div>
 	{% endif %}
+	<!-- <div class="" style="height : 30px;"></div> -->
+	<!-- <hr /> -->
 	<div class="news_post span12">
 	    <div class="news_left">
 	        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
@@ -18,11 +19,11 @@
 	        	{% if not notification %}
 	        		<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
 	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ post.by.get_full_name }}</a> 
-	            	posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
+	            	posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a>'s wall. 
 	            	<span class="muted small">{{ post.time_created|naturaltime }}</span>
 	            {% elif notification %}
 	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ notification.actor.get_full_name|default:"" }}</a> 
-	            	{{notification.verb}} <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
+	            	{{notification.verb}} <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a>.
 	            	<span class="muted small">{{ notification.timestamp|naturaltime }}</span>
 	            {% endif %}
 	        </div>
@@ -31,20 +32,26 @@
 	            {{ post.description|markdown:"trusted" }}
             </div>
 	        <div class="news_extra"></div>
-	        {% for comment in post.comments.all %}
+	        <div class="news_comment_wrapper">
+	        	<div class="news_comment_aggregator" style="display:none;">
+	        		<a href="#">See more</a>
+	        	</div>
+	        	{% for comment in post.comments.all %}
 	            <div id="comment_{{ comment.pk }}" class="news_comment">
 	                <div class="news_comment_left">
 	                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
 	                </div>
 	                <div class="news_comment_body markdown_remove_p">
-	                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"trusted" }}
+	                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> {{ comment.description|markdown:"trusted" }}
 	                    <div class="news_comment_info">
 	                        {{ comment.time_created|naturaltime }} 
 	                        {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
 	                    </div>
 	                </div>
 	            </div>
-	        {% endfor %}
+	        	{% endfor %}
+	    	</div>
+	        <div id="new_comment_placeholder"></div>
 	        <div class="news_comment">
 	            <div class="news_comment_left">
 	                <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
@@ -60,7 +67,6 @@
 	    </div>
 	</div>
 </div>
-
 {% once post_styles_and_scripts %}
 <style>
 div.news_post {
@@ -114,9 +120,19 @@ div.news_post hr {
     color : #666;
     margin-top : 5px;
 }
+
+ /*comments aggregation*/
+.news_comment_aggregator>.news_comment{
+	display: none;
+}
 </style>
 
 <script type="text/javascript">
+
+	function append_new_comment(data){
+        $("#id_new_comment_{{ post.id }}").val("").blur();
+        $("#new_comment_placeholder").before(data.append_string);
+	}
 
     $( document ).ready(function() {            
         $(".news_post").mouseover( function() {
@@ -158,13 +174,30 @@ div.news_post hr {
 	            	setTimeout(function(){$el.trigger("input")}, 10)
 	            	e.preventDefault()
 	            } else if (!e.ctrlKey && e.keyCode == 13) { // Enter pressed
-	            	$el.submit_form()
+	            	// $el.submit_form()
+	            	// Submitting via Dajax
+	            	Dajaxice.apps.walls.create_comment(append_new_comment, {'post_id':{{post.id}}, 'new_comment': $("#id_new_comment_{{ post.id }}").val()});
 	                e.preventDefault()
 	            } 
 	            //console.log(e)
 	        })
 	        .atwho(at_config) 
 	        //.atwho(emoji_config)
+
+	        // Comments aggregation
+	        $(".news_comment_wrapper").each(function(index){
+	        	var number_of_comments = $(this).children().length;
+	        	if( number_of_comments > 4){
+	        		$(this).children().slice(0,-2).appendTo($(this).children(".news_comment_aggregator"));
+					$(this).children(".news_comment_aggregator").show();
+	        	}
+	        });
+
+	        $(".news_comment_aggregator>a").click(function(){
+	        	$(this).parent().children(".news_comment").slice(-5).insertAfter($(this).parent());
+	        	if($(this).parent().children().length==1)
+	        		$(this).hide();
+	        });
     })
 </script>
 {% endonce %}

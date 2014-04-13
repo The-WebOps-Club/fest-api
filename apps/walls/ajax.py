@@ -19,6 +19,10 @@ from misc.utils import *  #Import miscellaneous functions
 # From Apps
 from apps.walls.models import Post
 
+# Ajax post & comment
+from django.shortcuts import get_object_or_404
+from apps.walls.models import Wall, Post, Comment
+from annoying.functions import get_object_or_None
 
 @dajaxice_register
 def hello_world(request):
@@ -57,7 +61,7 @@ def newsfeed_pagination(request, page):
 
     append_string = ""
     for item in items:
-        append_string += render_to_string('modules/post.html', {'post': item.target}, context_instance= global_context(request))
+        append_string += "<hr />" + render_to_string('modules/post.html', {'post': item.target}, context_instance= global_context(request))
     return json.dumps({'append_string': append_string, 'exhausted':exhausted})
 
 @dajaxice_register
@@ -78,7 +82,7 @@ def wall_pagination(request, page, wall_id):
 
     append_string = ""
     for item in items:
-        append_string += render_to_string('modules/post.html', {'post': item, 'show_post':'True'}, context_instance= global_context(request))
+        append_string += "<hr />" + render_to_string('modules/post.html', {'post': item, 'show_post':'True'}, context_instance= global_context(request))
     return json.dumps({'append_string': append_string, 'exhausted':exhausted})
 
 @dajaxice_register
@@ -106,3 +110,75 @@ def notifs_pagination(request, page, notif_type = 'unread'):
     	'exhausted':exhausted, 
     	'notif_type':notif_type
     })
+
+@dajaxice_register
+def create_post(request, wall_id, new_post):
+    """
+        Create a new wall post
+    """
+    # Initial validations
+    try:
+        wall_id = int(wall_id)
+    except ValueError:
+        print wall_id, "could not convert to int"
+        wall_id = None
+    
+    if not ( type(wall_id) is int ):
+        print "wall_id :", wall_id, type(wall_id)
+        raise InvalidArgumentTypeException("argument `wall_id` should be of type integer")
+    wall = get_object_or_404(Wall, id=int(wall_id))
+    print wall
+
+    # create a new post
+    data = request.POST.copy()
+    append_string = ""
+    if new_post:
+        new_post = Post.objects.create(description=new_post, wall=wall, by=request.user)
+        notification_list =  data.getlist("atwho_list")
+        for i in notification_list:
+            i_type, i_id = i.split("_")[:-1], i.split("_")[-1]
+            if i_type.lower().startswith("department"):
+                i_type = "dept"
+            elif i_type.lower().startswith("subdept"):
+                i_type = "subdept"
+                
+            print new_post
+        print "---------------------------------------------------"
+        
+        # Render the new post
+        append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance= global_context(request)) + "<hr />"
+    return json.dumps({ 'append_string': append_string })
+
+@dajaxice_register
+def create_comment(request, post_id, new_comment):
+    """
+        Creates a new comment on a Post
+    """
+    # Initial validations
+    try:
+        post_id = int(post_id)
+    except ValueError:
+        print post_id, "could not convert to int"
+        post_id = None
+    if not ( type(post_id) is int ):
+        print "post_id :", post_id, type(post_id)
+        raise InvalidArgumentTypeException("argument `post_id` should be of type integer")
+    
+    # Create a new comment
+    data = request.POST.copy()
+    append_string = ""
+    if new_comment:
+        new_comment = Comment.objects.create(description=new_comment, by=request.user)
+        # Attempt to get the post for the comment
+        post = get_object_or_None(Post, id=int(post_id))
+        if not post:
+            raise InvalidArgumentValueException("No Post with id `post_id` was found in the database")
+
+        print "---------------------------------------------"
+        print data.getlist("textarea_atwho_list")
+    
+        post.comments.add(new_comment)
+        
+        # Render the new comment
+        append_string =  render_to_string('modules/comment.html', {'comment': new_comment, 'post': post}, context_instance= global_context(request))
+    return json.dumps({ 'append_string': append_string })    

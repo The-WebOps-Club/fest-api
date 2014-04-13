@@ -1,7 +1,6 @@
 # For simple dajax(ice) functionalities
 from dajaxice.decorators import dajaxice_register
 from dajax.core import Dajax
-
 # From Django
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -36,3 +35,22 @@ def hello(request):
     """
     #html_content = render_to_string("dash/task_tables/coord_you.html", query_dictionary, RequestContext(request))
     return json.dumps({'message': 'hello'})
+
+@dajaxice_register
+def load_notifs( request, **kwargs ):
+    """
+        loading additional notifications.
+    """
+
+    html_content = ""
+    end = kwargs['end']
+    if end >= request.user.notifications.count():
+        end = request.user.notifications.count()
+    #import pdb;pdb.set_trace()
+    for index in range( kwargs['start'], end ):
+        html_content+=render_to_string("base/notification.html", {'notification':request.user.notifications.all()[index]}, RequestContext(request))
+
+    dajax = Dajax()
+    dajax.append(kwargs['targetdiv'], 'innerHTML', html_content)
+    dajax.script("$('#id_current_page_unread').attr('value', parseInt($('#id_current_page_unread').val())+"+format(end-kwargs['start'])+");")
+    return dajax.json()
