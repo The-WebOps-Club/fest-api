@@ -30,7 +30,7 @@ from apiclient.http import MediaFileUpload
 from apiclient import http, errors
 import pprint
 
-from api import insert_permission, insert_file, drive
+from api import *
 
 FLOW = flow_from_clientsecrets(
     settings.GOOGLE_API_CLIENT_SECRETS, 
@@ -74,7 +74,7 @@ def docs (request):
     # Shall consider moving this to a settings variable, else too much db calls
     PARENT_FOLDER_ID = FileInfo.objects.filter(name='ROOT')[0].file_id
     print PARENT_FOLDER_ID
-
+    files = retrieve_all_files(drive())
     return render_to_response('pages/docs.html',locals(), context_instance= global_context(request))
 
 
@@ -97,6 +97,10 @@ def initialise_drive(request):
         all the user's email addresses.
 
         OR MAKE IT PUBLIC?
+
+        Needs to be run on background
+
+        TODO: Write a management script to do this, Add default folders to departments and all
     """
     service = drive()
     file  = insert_file(service, settings.FEST_NAME, "Root folder", None, 'application/vnd.google-apps.folder', settings.FEST_NAME, folder=True)
