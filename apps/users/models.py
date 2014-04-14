@@ -196,7 +196,6 @@ class ERPProfile(models.Model):
     
     def relations_count(self):
         return self.core_relations.count() + self.supercoord_relations.count() + self.coord_relations.count()
-
     def save(self, *args, **kwargs):
         if not hasattr(self.user, "profile"):
             user_profile = UserProfile(user=self.user)
