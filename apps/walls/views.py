@@ -66,6 +66,7 @@ def wall (request, wall_id=None):
     # wall_notifications = request.user.notifications.unread()
 
     local_context = {
+    	"current_page" : "wall",
         "wall" : wall,
         "wall_posts" : wall_posts,
     }

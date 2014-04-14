@@ -3,152 +3,154 @@
 
 {% block title %} {{ FEST_NAME }} {% endblock %}
 
-{% block content %}
-	{% with wall=profile_wall %}
-		{% include 'modules/profile_banner.html' %}
-	{% endwith %}
-	
-	<div class="row-fluid profile_wrapper">
-		<div class="span12">
-			<div class="profile_head">
-				About 
-				
-				<a class="btn form_edit offset7" href="javascript:void(0)"><i class="icon-pencil"></i> <span class="edit_text">Edit Profile</span></a>
-				<a class="btn primary form_input form_submit" href="javascript:void(0)"> Save Changes</a>
-				
-			</div>
-			<div class="profile_body">
-				<form method="POST" enctype="multipart/form-data" class="form_profile" id="profile_form">
-					{% csrf_token %}	
-					<div class="profile_left span6">
-						<div class="profile_section ">
-							<!-- Basic Info -->
-							<div class="profile_section_head">Basic Info</div>
-							<div class="row-fluid">
-								<label class="form_label span4" for="id_name">Name:</label>
-								<label class="hide" for="id_first_name">First name:</label>
-								<input id="id_first_name" maxlength="30" name="first_name" type="text" class="form_input form_visible input-medium" value="{{ user_form.first_name.value|default_if_none:'' }}">
-							
-								<label class="hide" for="id_last_name">Last name:</label>
-								<input id="id_last_name" maxlength="30" name="last_name" type="text" class="form_input form_visible input-medium" value="{{ user_form.last_name.value|default_if_none:'' }}">
-							</div>
-							
-							<div class="row-fluid">
-								<label class="span4 form_label " for="id_nickname">Nickname:</label>
-								<input id="id_nickname" name="nickname"  class="form_input form_visible input-medium" value="{{ erp_profile_form.nickname.value|default_if_none:'' }}">
-							</div>
-
-							<div class="row-fluid">
-								<label class="span4 form_label " for="id_gender">Gender:</label>
-								<span class="form_visible label_input label {% if user_profile_form.gender.value == 'M' %}active{% endif %}">M</span>&nbsp;
-								<span class="form_visible label_input label {% if user_profile_form.gender.value == 'F' %}active{% endif%}">F</span>
-								<input id="id_gender" name="gender"  class="label_input_hidden form_input hide" type="text" value="{{ user_profile_form.gender.value|default_if_none:'' }}">
-							</div>
-
-							<div class="row-fluid">
-								<label class="span4" for="id_dob">Date of Birth:</label> 
-
-								<input id="id_dob" name="dob" type="text"  class="date_picker form_visible form_input" value="{{ user_profile_form.dob.value|default_if_none:'' }}">	
+{% block right_content %}
+	<div id="main_body_content" class="span8 main_body">
+		{% with wall=profile_wall %}
+			{% include 'modules/profile_banner.html' %}
+		{% endwith %}
+		
+		<div class="row-fluid profile_wrapper">
+			<div class="span12">
+				<div class="profile_head">
+					About 
+					
+					<a class="btn form_edit offset7" href="javascript:void(0)"><i class="icon-pencil"></i> <span class="edit_text">Edit Profile</span></a>
+					<a class="btn primary form_input form_submit" href="javascript:void(0)"> Save Changes</a>
+					
+				</div>
+				<div class="profile_body">
+					<form method="POST" enctype="multipart/form-data" class="form_profile" id="profile_form">
+						{% csrf_token %}	
+						<div class="profile_left span6">
+							<div class="profile_section ">
+								<!-- Basic Info -->
+								<div class="profile_section_head">Basic Info</div>
+								<div class="row-fluid">
+									<label class="form_label span4" for="id_name">Name:</label>
+									<label class="hide" for="id_first_name">First name:</label>
+									<input id="id_first_name" maxlength="30" name="first_name" type="text" class="form_input form_visible input-medium" value="{{ user_form.first_name.value|default_if_none:'' }}">
 								
-							</div>
-						</div>
-
-						
-						<div class="profile_section">
-							<!-- Contact Info -->
-							<div class="profile_section_head">Contact Info</div>
-							<div class="row-fluid">
-								<label class="span4 form_label" for="id_mobile_number">Mobile number:</label> 
-								<input id="id_mobile_number" maxlength="10" name="mobile_number" type="text" pattern="[0-9]*" class="form_input form_visible only_number" value="{{ user_profile_form.mobile_number.value|default_if_none:'' }}">
-							</div>
-							<div class="row-fluid">
-								<label class="span4 form_label" for="id_summer_number">Summer number:</label> 
-								<input id="id_summer_number" maxlength="10" pattern="[0-9]*" name="summer_number" type="text" class="form_input form_visible only_number"value="{{ erp_profile_form.summer_number.value|default_if_none:'' }}">
-							</div>
-							<div class="row-fluid">
-								<label class="span4 form_label" for="id_email">Email address:</label>
-								<input id="id_email" maxlength="75" name="email" type="email" class="form_input form_visible" value="{{ user_form.email.value|default_if_none:'' }}">
-							</div>
-						</div>
-						
-					</div>
-					<div class="profile_right span6">
-						<div class="profile_section">
-							<div class="row-fluid">
-								<!-- College Info -->
-								<div class="profile_section_head">College Info</div>
-								<label class="span4 form_label" for="id_college">College:</label> 
-								<input id="id_college" name="college" type="text" disabled="disabled" class="form_input form_visible" value="{{ user_profile.college }}">
-							</div>
-							<div class="row-fluid">
-								<label class="span4 form_label" for="id_college_roll">College Roll:</label> 
-								<input id="id_college_roll" name="college_roll" type="text" class="form_input form_visible" value="{{ user_profile_form.college_roll.value|default_if_none:'' }}">
-							</div>
-							<div class="row-fluid">
-								<label class="span4 form_label" for="id_branch">Branch:</label> 
-								<input id="id_branch" name="branch" type="text" class="form_input form_visible" value="{{ user_profile_form.branch.value|default_if_none:'' }}">
-							</div>
-							<div class="row-fluid">
-								<label class="span4 form_label" for="id_room_no">Room no:</label> 
-								<input id="id_room_no" name="room_no" type="text" class="form_input form_visible only_number" value="{{ erp_profile_form.room_no.value|default_if_none:'' }}">
-							</div>
-							<div class="row-fluid">
-								<label class="span4 form_label" for="id_hostel">Hostel:</label> 
-								<input id="id_hostel" name="hostel" class="form_input form_visible" value="{{ erp_profile_form.hostel.value|default_if_none:'' }}">
-							</div>
-						</div>
-						
-
-						<div class="profile_section">
-							<div class="row-fluid">
-								<!-- Holiday Info -->
-								<div class="profile_section_head">Accomodation Info</div>
-								<label class="span4 form_label" for="id_summer_stay">Summer stay:</label> 
-								<input id="id_summer_stay" maxlength="30" name="summer_stay" type="text" class="form_input form_visible date_range_picker" value="{{ erp_profile_form.summer_stay.value|default_if_none:'' }}">
-								{% if not erp_profile_form.summer_stay2.value %} <a href="javascript:void(0)" class="add_another_field form_visible">and</a>{% endif %}
-								<input id="id_summer_stay2" maxlength="30" name="summer_stay2" type="text" class="form_input {% if erp_profile_form.summer_stay2.value %} form_visible {% else %} hide {% endif %} date_range_picker" value="{{ erp_profile_form.summer_stay2.value|default_if_none:'' }}">
-							</div>
-							<div class="row-fluid">
-								<label class="span4 form_label" for="id_winter_stay">Winter stay:</label> 
-								<input id="id_winter_stay" maxlength="30" name="winter_stay" type="text" class="form_input form_visible date_range_picker" value="{{ erp_profile_form.winter_stay.value|default_if_none:'' }}">
-								{% if not erp_profile_form.winter_stay2.value %} <a href="javascript:void(0)" class="add_another_field form_visible">and</a>{% endif %}
-								<input id="id_winter_stay2" maxlength="30" name="winter_stay2" type="text" class="form_input {% if erp_profile_form.winter_stay2.value %} form_visible {% else %} hide {% endif %} date_range_picker" value="{{ erp_profile_form.winter_stay2.value|default_if_none:'' }}">
-							</div>
-							<div class="row-fluid">
-								<label class="span4 form_label" for="id_want_accomodation">Want accomodation: </label> 
-								<span class="form_visible label_input label {% if user_profile_form.want_accomodation.value %}active{% endif %}">YES</span>&nbsp;
-								<span class="form_visible label_input label {% if not user_profile_form.want_accomodation.value %}active{% endif%}">NO</span>
+									<label class="hide" for="id_last_name">Last name:</label>
+									<input id="id_last_name" maxlength="30" name="last_name" type="text" class="form_input form_visible input-medium" value="{{ user_form.last_name.value|default_if_none:'' }}">
+								</div>
 								
-								<input id="id_want_accomodation" name="want_accomodation" class="label_input_hidden form_input hide"  type="checkbox" 
-									{% if user_profile_form.want_accomodation.value %}
-										checked=true
-									{% endif %}
-								>
+								<div class="row-fluid">
+									<label class="span4 form_label " for="id_nickname">Nickname:</label>
+									<input id="id_nickname" name="nickname"  class="form_input form_visible input-medium" value="{{ erp_profile_form.nickname.value|default_if_none:'' }}">
+								</div>
+
+								<div class="row-fluid">
+									<label class="span4 form_label " for="id_gender">Gender:</label>
+									<span class="form_visible label_input label {% if user_profile_form.gender.value == 'M' %}active{% endif %}">M</span>&nbsp;
+									<span class="form_visible label_input label {% if user_profile_form.gender.value == 'F' %}active{% endif%}">F</span>
+									<input id="id_gender" name="gender"  class="label_input_hidden form_input hide" type="text" value="{{ user_profile_form.gender.value|default_if_none:'' }}">
+								</div>
+
+								<div class="row-fluid">
+									<label class="span4" for="id_dob">Date of Birth:</label> 
+
+									<input id="id_dob" name="dob" type="text"  class="date_picker form_visible form_input" value="{{ user_profile_form.dob.value|default_if_none:'' }}">	
+									
+								</div>
+							</div>
+
+							
+							<div class="profile_section">
+								<!-- Contact Info -->
+								<div class="profile_section_head">Contact Info</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_mobile_number">Mobile number:</label> 
+									<input id="id_mobile_number" maxlength="10" name="mobile_number" type="text" pattern="[0-9]*" class="form_input form_visible only_number" value="{{ user_profile_form.mobile_number.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_summer_number">Summer number:</label> 
+									<input id="id_summer_number" maxlength="10" pattern="[0-9]*" name="summer_number" type="text" class="form_input form_visible only_number"value="{{ erp_profile_form.summer_number.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_email">Email address:</label>
+									<input id="id_email" maxlength="75" name="email" type="email" class="form_input form_visible" value="{{ user_form.email.value|default_if_none:'' }}">
+								</div>
+							</div>
+							
+						</div>
+						<div class="profile_right span6">
+							<div class="profile_section">
+								<div class="row-fluid">
+									<!-- College Info -->
+									<div class="profile_section_head">College Info</div>
+									<label class="span4 form_label" for="id_college">College:</label> 
+									<input id="id_college" name="college" type="text" disabled="disabled" class="form_input form_visible" value="{{ user_profile.college }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_college_roll">College Roll:</label> 
+									<input id="id_college_roll" name="college_roll" type="text" class="form_input form_visible" value="{{ user_profile_form.college_roll.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_branch">Branch:</label> 
+									<input id="id_branch" name="branch" type="text" class="form_input form_visible" value="{{ user_profile_form.branch.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_room_no">Room no:</label> 
+									<input id="id_room_no" name="room_no" type="text" class="form_input form_visible only_number" value="{{ erp_profile_form.room_no.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_hostel">Hostel:</label> 
+									<input id="id_hostel" name="hostel" class="form_input form_visible" value="{{ erp_profile_form.hostel.value|default_if_none:'' }}">
+								</div>
+							</div>
+							
+
+							<div class="profile_section">
+								<div class="row-fluid">
+									<!-- Holiday Info -->
+									<div class="profile_section_head">Accomodation Info</div>
+									<label class="span4 form_label" for="id_summer_stay">Summer stay:</label> 
+									<input id="id_summer_stay" maxlength="30" name="summer_stay" type="text" class="form_input form_visible date_range_picker" value="{{ erp_profile_form.summer_stay.value|default_if_none:'' }}">
+									{% if not erp_profile_form.summer_stay2.value %} <a href="javascript:void(0)" class="add_another_field form_visible">and</a>{% endif %}
+									<input id="id_summer_stay2" maxlength="30" name="summer_stay2" type="text" class="form_input {% if erp_profile_form.summer_stay2.value %} form_visible {% else %} hide {% endif %} date_range_picker" value="{{ erp_profile_form.summer_stay2.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_winter_stay">Winter stay:</label> 
+									<input id="id_winter_stay" maxlength="30" name="winter_stay" type="text" class="form_input form_visible date_range_picker" value="{{ erp_profile_form.winter_stay.value|default_if_none:'' }}">
+									{% if not erp_profile_form.winter_stay2.value %} <a href="javascript:void(0)" class="add_another_field form_visible">and</a>{% endif %}
+									<input id="id_winter_stay2" maxlength="30" name="winter_stay2" type="text" class="form_input {% if erp_profile_form.winter_stay2.value %} form_visible {% else %} hide {% endif %} date_range_picker" value="{{ erp_profile_form.winter_stay2.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_want_accomodation">Want accomodation: </label> 
+									<span class="form_visible label_input label {% if user_profile_form.want_accomodation.value %}active{% endif %}">YES</span>&nbsp;
+									<span class="form_visible label_input label {% if not user_profile_form.want_accomodation.value %}active{% endif%}">NO</span>
+									
+									<input id="id_want_accomodation" name="want_accomodation" class="label_input_hidden form_input hide"  type="checkbox" 
+										{% if user_profile_form.want_accomodation.value %}
+											checked=true
+										{% endif %}
+									>
+								</div>
 							</div>
 						</div>
-					</div>
-						
-					<div class="profile_right span12">
+							
+						<div class="profile_right span12">
 
-					</div>
+						</div>
 
-				</form>
+					</form>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="row-fluid profile_wrapper">
-		<div class="span12">
-			<div class="profile_head">Shaastra Relations</div>
-			<div class="profile_body">
+		<div class="row-fluid profile_wrapper">
+			<div class="span12">
+				<div class="profile_head">Shaastra Relations</div>
+				<div class="profile_body">
 
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="row-fluid profile_wrapper">
-		<div class="span12">
-			<div class="profile_head">Media Relations</div>
-			<div class="profile_body">
-				
+		<div class="row-fluid profile_wrapper">
+			<div class="span12">
+				<div class="profile_head">Media Relations</div>
+				<div class="profile_body">
+					
+				</div>
 			</div>
 		</div>
 	</div>

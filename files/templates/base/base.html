@@ -68,12 +68,21 @@
         {% block full_content %}
         <div class="row-fluid">
             <div class="span2 offset1 sidebar">
-                {% include 'base/sidebar.html' %}
+                {% block left_content %} 
+                	{% include 'base/sidebar.html' %}
+                {% endblock %}
+
             </div>
-            <div id="main_body_content" class="span6 main_body">
-                {% block content %} {% endblock %}
-                <input id="id_current_page" type="hidden" name="current_page" value="1" />
-            </div>
+            {% block right_content %} 
+	            <div id="main_body_content" class="span6 main_body">
+	                {% block content %} {% endblock %}
+	                <input id="id_current_page" type="hidden" name="current_page" value="1" />
+	            </div>
+	            <div class="span2 rightbar">
+	                {% block rightbar %} {% endblock %}
+	                <input id="id_current_page" type="hidden" name="current_page" value="1" />
+	            </div>
+            {% endblock %}
         </div>
         {% endblock %}
     </div>
