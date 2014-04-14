@@ -6,22 +6,22 @@
 
 {% block content %}
     <div class="row-fluid">
-    	<div class="span5 animated table_departments active">
-    		<table class="zebra-striped table ">
-				<tr class="depts_head">
-					<th>Departments</th>
+    	<div class="span4 animated table_depts active">
+    		<table class="zebra-striped table " cellpadding="0" cellspacing="0">
+				<tr class="head">
+					<th colspan="2">Departments</th>
 				</tr>
 				<tr class="template dept_template" style="display : none;">
 					<td>
-						${name} 
-						<i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i>
+						<span>${name}</span>
+						<span><i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i></span>
 					</td>
 				</tr>
 			</table>
 		</div>
-    	<div class="span3 animated table_subdepts">
+    	<div class="span4 animated table_subdepts">
     		<table class="zebra-striped table ">
-				<tr>
+				<tr class="head">
 					<th>Sub Depts</th>
 				</tr>
 				<tr class="template subdept_template" style="display : none;">
@@ -30,7 +30,7 @@
 						<i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i>
 					</td>
 				</tr>
-				<tr>
+				<tr class="head">
 					<th>Users</th>
 				</tr>
 				<tr class="template user_template" style="display : none;">
@@ -42,9 +42,9 @@
 			</table>
 		</div>
 
-    	<div class="span3 animated table_users">
+    	<div class="span4 animated table_users">
     		<table class="zebra-striped table ">
-				<tr>
+				<tr class="head">
 					<th>Users</th>
 				</tr>
 				<tr class="template user_template" style="display : none;">
@@ -62,6 +62,10 @@
 {% block extra_css %}
 {{ block.super }}
 <style type='text/css'>
+td {
+   	overflow: hidden;
+  	white-space: nowrap;
+}
 .animated {
 	-webkit-transition : width 1s;
 	-moz-transition : width 1s;
@@ -109,9 +113,39 @@ tr.active > td {
 			)
 		})
 		$el.insertBefore($template)
-		$el.show()
+		$el.show(750)
 	}
-	function remove_
+	function remove_contact_element(i, type) {
+		var excludes = ".template, .head"
+		if ( i == "all" ) {
+			$(".table_subdepts tr, .table_users tr").not(excludes).remove()
+		} else if ( i == "depts" ) {
+			$(".table_depts tr").not(excludes).remove()
+		} else if ( i == "subdepts" ) {
+			$(".table_subdepts tr").not(excludes).remove()
+		} else if ( i == "users" ) {
+			$(".table_users tr").not(excludes).remove()
+		} else {
+			var $all_trs = $(".table_depts tr, .table_subdepts tr, .table_users tr").not(excludes)
+			$.each($all_trs, function($el) {
+				if ( $el.data("id") == i && $el.data("type") == type )
+					$el.remove()
+			})
+		}
+	}
+	function focus_table(type) {
+		$(".table_depts, .table_subdepts, .table_users")
+						.removeClass("span4")
+						.addClass("span4")
+		var $el = null
+		if ( typeof type == "string" )
+			$el = $(".table_" + type)
+		else 
+			$el = $(type)
+		$el.removeClass("span4")
+			.addClass("span4")
+			
+	}
 	function show_depts(list, $template) {
 		$.each( list, function(i, val) {
 			create_contact_element(i, val, $template)
@@ -120,38 +154,26 @@ tr.active > td {
 		})
 	}
 	function show_subdepts(list, $template) {
-		if ( list.length ) {
-
-		}
 		$.each( list, function(i, val) {
 			create_contact_element(i, val, $template)
 			$el.data("type", "subdept")
-		})
-		$(".table_subdepts tr").click(function() {
-			var $el = $(this)
-			
-			$(".table_departments")
-						.removeClass("span5")
-						.addClass("span3")
-			$(".table_subdepts")
-						.removeClass("span5")
-						.addClass("span3")
-			$(".table_users")
-						.addClass("span5")
-						.removeClass("span3")
-			$(".table_subdepts tr ")
-						.removeClass("active")
-			$el.addClass("active")
+			$el.click(function() {
+				var $el = $(this)
+				
+				focus_table("users")
+				$(".table_subdepts tr ").removeClass("active")
+				$el.addClass("active")
+				remove_contact_element("users")
 
-
-			$user_el_template = $(".table_users tr.template.user_template")
-			user_structure_subdepts = []
-			$.each(user_structure, function(i, val) {
-				//user_structure_lvl2.merge(val)
-				for ( var attrname in val["subdepts"])
-				user_structure_subdepts[attrname] = val["subdepts"][attrname];
+				$user_el_template = $(".table_users tr.template.user_template")
+				user_structure_subdepts = []
+				$.each(user_structure, function(i, val) {
+					//user_structure_lvl2.merge(val)
+					for ( var attrname in val["subdepts"])
+					user_structure_subdepts[attrname] = val["subdepts"][attrname];
+				})
+				show_users(user_structure_subdepts[$el.data("id")]["users"], $user_el_template)
 			})
-			show_users(user_structure_subdepts[$el.data("id")]["users"], $user_el_template)
 		})
 	}
 	function show_users(list, $template) {
@@ -161,28 +183,26 @@ tr.active > td {
 		})
 	}
 	function populate_contacts() {
-		$dept_el_template = $(".table_departments tr.template.dept_template")
+		$dept_el_template = $(".table_depts tr.template.dept_template")
 		
 		show_depts(user_structure, $dept_el_template)
 
-		$(".table_departments tr").click(function() {
+		$(".table_depts tr").click(function() {
 			var $el = $(this)
-			$(".table_departments")
-						.removeClass("span5")
-						.addClass("span3")
-			$(".table_subdepts")
-						.removeClass("span3")
-						.addClass("span5")
-			$(".table_departments td")
-						.removeClass("active")
+			focus_table("subdepts")
+			$(".table_depts tr").removeClass("active")
 			$el.addClass("active")
+			remove_contact_element("subdepts")
 
-
-			$subdept_el_template = $(".table_subdepts tr.template.subdept_template")
-			
-			show_subdepts(user_structure[$el.data("id")]["subdepts"], $subdept_el_template)
-			show_users(user_structure[$el.data("id")]["users"], $dept_el_template)
+			show_subdepts(user_structure[$el.data("id")]["subdepts"], $(".table_subdepts tr.template.subdept_template"))
+			show_users(user_structure[$el.data("id")]["users"], $(".table_subdepts tr.template.user_template"))
 		})
+
+		/*$(".table_depts tr, .table_subdepts tr, .table_users tr").click(function() {
+			el = this; $el = $(el);
+			focus_table($el.closest(".table_depts, .table_subdepts, .table_users"))
+			console.log($el.closest(".table_depts, .table_subdepts, .table_users"))
+		})*/
 
 	}
 	$(document).ready(function() {
