@@ -48,9 +48,13 @@ def load_notifs( request, **kwargs ):
         end = request.user.notifications.count()
     #import pdb;pdb.set_trace()
     for index in range( kwargs['start'], end ):
-        html_content+=render_to_string("base/notification.html", {'notification':request.user.notifications.all()[index]}, RequestContext(request))
-
+        html_content+=render_to_string("base/notification.html", {
+	        	'notification' : request.user.notifications.all()[index]
+	        }, RequestContext(request)
+	    )
     dajax = Dajax()
     dajax.append(kwargs['targetdiv'], 'innerHTML', html_content)
     dajax.script("$('#id_current_page_unread').attr('value', parseInt($('#id_current_page_unread').val())+"+format(end-kwargs['start'])+");")
     return dajax.json()
+
+    
