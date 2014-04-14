@@ -7,7 +7,12 @@
 {% block content %}
     Docs
     <a class="btn" href="{% url 'get_refresh_token' %}">Get refresh token (one time only)</a>
-    <iframe src="https://drive.google.com/embeddedfolderview?id={{PARENT_FOLDER_ID}}#grid" width="800" height="600" frameborder="0"></iframe>
+
+    <a href="" class="btn">Add a new Folder here</a>
+    <a href="" class="btn">Add Folder</a>
+
+
+    <iframe src="https://drive.google.com/embeddedfolderview?id={{PARENT_FOLDER_ID}}#list" width="800" height="600" frameborder="0"></iframe>
 
 {% endblock %}
 

@@ -21,13 +21,16 @@ from oauth2client.client import flow_from_clientsecrets, Credentials
 from oauth2client.django_orm import Storage
 from oauth2client import xsrfutil
 from django.contrib.auth.models import User
-from models import CredentialsModel
+from models import CredentialsModel, FileInfo
 from annoying.functions import get_object_or_None
 import json
 import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
+from apiclient import http, errors
 import pprint
+
+from api import insert_permission, insert_file, drive
 
 FLOW = flow_from_clientsecrets(
     settings.GOOGLE_API_CLIENT_SECRETS, 
@@ -35,6 +38,7 @@ FLOW = flow_from_clientsecrets(
     redirect_uri=settings.GOOGLE_API_REDIRECT_URI)
 FLOW.params['access_type'] = 'offline'
 FLOW.params['approval_prompt'] = 'force'
+
 @login_required
 def get_refresh_token(request):
     if not request.user == User.objects.get(email=settings.GOOGLE_API_USER_EMAIL):
@@ -67,26 +71,11 @@ def auth_callback(request):
 
 @login_required
 def docs (request):
-    PARENT_FOLDER_ID = '0B75xGGtqUve5eHhzcWdCR2VHcnc'
+    # Shall consider moving this to a settings variable, else too much db calls
+    PARENT_FOLDER_ID = FileInfo.objects.filter(name='ROOT')[0].file_id
+    print PARENT_FOLDER_ID
+
     return render_to_response('pages/docs.html',locals(), context_instance= global_context(request))
-
-
-def drive():
-    """
-        Args: None
-        Returns: Authenticated drive service object
-
-        Currently assuming there will be only one Credential
-        saved by the user having settings.GOOGLE_API_USER_EMAIL as email
-    """
-    try:
-        storage = CredentialsModel.objects.all()[0]
-    except CredentialsModel.DoesNotExist:
-        return redirect('get_refresh_token')
-    credential = Credentials.new_from_json(storage.credential)
-    http = httplib2.Http()
-    http = credential.authorize(http)
-    return build('drive', 'v2', http=http)
 
 
 #Sample function to upload a file
@@ -101,7 +90,7 @@ def upload_a_file(request):
     pprint.pprint(file)
     return HttpResponse('done')
 
-def initialise_drive():
+def initialise_drive(request):
     """
         First time initialisation for the drive folder
         Creates a folder with FEST NAME and share it with
@@ -109,4 +98,11 @@ def initialise_drive():
 
         OR MAKE IT PUBLIC?
     """
-    return
+    service = drive()
+    file  = insert_file(service, settings.FEST_NAME, "Root folder", None, 'application/vnd.google-apps.folder', settings.FEST_NAME, folder=True)
+    new_file = FileInfo.objects.get_or_create(name="ROOT", file_id=file['id'], metadata=json.dumps(file))
+    email_list = [user.email for user in User.objects.all()]
+    for email in email_list:
+        prems = insert_permission(service, file['id'], email, 'user')
+    return HttpResponse('success')
+

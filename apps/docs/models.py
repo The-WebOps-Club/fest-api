@@ -24,4 +24,13 @@ class CredentialsAdmin(admin.ModelAdmin):
 
 admin.site.register(CredentialsModel, CredentialsAdmin)
 
-# class  FileInfo
+class FileInfo(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=100)
+    file_id = models.CharField(max_length=200)
+    metadata = models.TextField(blank=True, null=True)
+
+    def __unicode__(self):
+        return str(self.timestamp) + str(self.name)
+
+admin.site.register(FileInfo)
