@@ -27,7 +27,7 @@
 	            </form>
 	        </div>
 	        <div id="new_post_bottom_bar" class="span12">
-	            <a class="btn primary small new_post_submit" href="#" onclick="$('#id_form_status').submit();"> Post
+	            <a class="btn primary small new_post_submit" href="#" onclick="Dajaxice.apps.walls.create_post(prepend_new_post, {'wall_id':{{wall.id}}, 'post_form': $('#id_form_status').serialize(true) })"> Post
 	            </a>
 	        </div>
 	    </div>
@@ -113,6 +113,14 @@
         $("#new_post_wrapper #new_post_bottom_bar").hide();
     }
 
+    // New post handler
+    function prepend_new_post(data){
+        $("#id_new_post").val("").blur();
+        $("#new_post_placeholder").after(data.append_string);
+        hide_status_textarea();
+        $("#empty_wall_msg").hide();
+    }
+
     $( document ).ready(function() {            
         $("#new_post_wrapper *").focusin(show_status_textarea);
         //$("#new_post_wrapper *").focusout(hide_status_textarea);
@@ -120,7 +128,10 @@
         // Submitting Forms
         $("#new_post_wrapper .new_post_textarea").keyup(function (e) {
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
-                $(this).submit_form()
+                // $(this).submit_form()
+                // Submitting via Dajax instead
+                el = this; $el = $(this)
+                Dajaxice.apps.walls.create_post(prepend_new_post, {'wall_id':{{wall.id}}, 'post_form': $('#id_form_status').serialize(true) })
             }
         })
         

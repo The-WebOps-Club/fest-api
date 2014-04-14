@@ -56,6 +56,8 @@ THIRD_PARTY_APPS = (
     # Markdown for text area candy
     'markdown_deux',
 
+    # Search Indexer
+    # 'haystack',
 )
 API_APPS =(
     'misc',
@@ -63,6 +65,7 @@ API_APPS =(
     'apps.users',
     'apps.walls',
     'apps.events',
+    'apps.docs',
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 

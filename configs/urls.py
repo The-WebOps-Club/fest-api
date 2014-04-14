@@ -49,6 +49,10 @@ urlpatterns = patterns('',
     url(r'^create_post/(?P<wall_id>\d+)/$', 'apps.walls.views.create_post',  name='create_post'),
     url(r'^create_comment/(?P<post_id>\d+)/$', 'apps.walls.views.create_comment',  name='create_comment'),
     
+    # Docs
+    # Gen testing
+    url(r'^docs/$', 'apps.docs.views.docs', name='docs'), # Shows media page
+
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),
     url(r'^show/500/$', 'misc.views.err500',  name='err505'),

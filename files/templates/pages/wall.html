@@ -10,19 +10,19 @@
     <br/>
     {% url 'create_post' wall.id as new_post_url %}
     {% include "modules/new_post.html" %}
-
+    <div id="new_post_placeholder" style="height : 30px;"></div>
 	{% for post in wall_posts %}
 	    {% with show_post='True' %}
 	    	{% include "modules/post.html" %}
 	   	{% endwith %}       
 	{% empty %}
-		<div class="row-fluid huge muted">
+		<div id="empty_wall_msg" class="row-fluid huge muted">
             <hr />
             There are no Posts :(
 		</div>
     {% endfor %}
     </div>
-    <center><button class="btn btn-success" name="see_more" id="id_see_more" onclick="Dajaxice.apps.home.wall_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1, 'wall_id':{{wall.id}} })">See more</button></center>
+    <center><button class="btn btn-success" name="see_more" id="id_see_more" onclick="Dajaxice.apps.walls.wall_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1, 'wall_id':{{wall.id}} })">See more</button></center>
 {% endblock %}
 {% block extra_css %} {{ block.super }}
 <style type="text/css">
@@ -41,5 +41,15 @@ function append_new_data(data){
         $('#id_see_more').html('No more to load');
     }
 }
+
+// Inifinite scroll
+var win = $(window), doc = $(document);
+
+win.scroll(function(){
+    if( doc.scrollTop() >= doc.height() - win.height() ) {
+        $("#id_see_more").click();
+    }
+}).scroll();
+
 </script>
 {% endblock %}
