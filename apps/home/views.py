@@ -30,9 +30,12 @@ def home (request, *args, **kwargs):
 
 @login_required
 def newsfeed(request): 
+    user = request.user
     local_context = {
         "current_page" : "newsfeed",
-        "notifications" : Notification.objects.order_by("-timestamp")[:5],
+#        "notifications" : Notification.objects.order_by("-timestamp")[:5],
+    	"current_page" : "newsfeed",
+    	"notifications" : user.notifications.unread(),
     }
     return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 
@@ -54,26 +57,31 @@ def notifications(request):
 
 @login_required
 def read_notification(request, notif_id):
-    if notif_id == "all":
-        request.user.notifications.mark_all_as_read()
-        return redirect(reverse("newsfeed"))
-    else:
-        try:
-            notif_id = int(notif_id)
-        except ValueError:
-            print notif_id, "could not convert to int"
-            notif_id = None
-        if not ( type(notif_id) is int ):
-            print "notif_id :", notif_id, type(wall_id)
-            raise InvalidArgumentTypeException
-        try:
-            notif = request.user.notifications.get(id = notif_id)
-        except Notification.DoesNotExist:
-            raise InvalidArgumentValueException
-    # Logic
-    notif.mark_as_read()
-    return redirect(reverse("wall", kwargs={ "wall_id" : notif.target.wall.id }) + "#post_" + str(notif.target.id))
-
+	if notif_id == "all":
+		all_notifs = request.user.notifications
+		for a in all_notifs:
+		    a.public = False
+		    a.save()
+		all_notifs.mark_all_as_read()
+		return redirect(reverse("newsfeed"))
+	else:
+		try:
+			notif_id = int(notif_id)
+		except ValueError:
+			print notif_id, "could not convert to int"
+			notif_id = None
+		if not ( type(notif_id) is int ):
+			print "notif_id :", notif_id, type(wall_id)
+			raise InvalidArgumentTypeException
+		try:
+			notif = request.user.notifications.get(id = notif_id)
+		except Notification.DoesNotExist:
+			raise InvalidArgumentValueException
+	# Logic
+	notif.public = False #Use this to check if a notification was "read" by recipient, or another notif was added for same post
+	notif.save()
+	notif.mark_as_read()
+	return redirect(reverse("wall", kwargs={ "wall_id" : notif.target.wall.id }) + "#post_" + str(notif.target.id))
 
 @login_required
 def contacts(request):
@@ -85,4 +93,3 @@ def contacts(request):
 def markdown(request):
     local_context={}
     return render_to_response("pages/markdown.html", local_context, context_instance= global_context(request))
-

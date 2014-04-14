@@ -27,7 +27,6 @@ from misc.constants import *
 # Python
 import datetime
 
-
 # Department Models
 class Dept(models.Model):
     """ 
@@ -192,7 +191,7 @@ class ERPProfile(models.Model):
         return request.session["role"] == "supercoord"
     def is_core(self, request):
         return request.session["role"] == "core"
-    def get_position (self):
+    def get_position (self, request):
         return request.session["role"].title()
     
     def relations_count(self):

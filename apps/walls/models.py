@@ -66,6 +66,11 @@ class Wall(models.Model):
         print "No parent found"
         return temp
     
+    def notify_users(self):
+        users = set()
+        users.update(self.notification_users.all())
+        return users
+    
     def __unicode__(self):
         return self.name
     
@@ -138,5 +143,14 @@ class Post(PostInfo):
         temp = super(Post, self).save(*args, **kwargs)
         return
 
+    def notify_users(self):
+       	users = set()
+       	users.update(self.notification_users.all())
+       	for dept in self.notification_depts.all():
+            users.update(dept.related_users())
+        for sub_dept in self.notification_subdepts.all():
+            users.update(sub_dept.related_users())
+        return users
+    	
     class Meta:
         get_latest_by = 'time_created'
