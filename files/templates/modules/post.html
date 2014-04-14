@@ -163,21 +163,15 @@ div.news_post hr {
 	            	$el.add_to_textarea("\n")
 	            	setTimeout(function(){$el.trigger("input")}, 10)
 	            	e.preventDefault()
-<<<<<<< HEAD
-=======
 	            } else if (!e.ctrlKey && e.keyCode == 13) { // Enter pressed
 	            	// $el.submit_form()
 	            	// Submitting via Dajax
                     //alert(this.parent())
 	            	Dajaxice.apps.walls.create_comment(append_new_comment, {'post_id':{{post.id}}, 'comment_form': $el.parent().serialize(true)});
 	                e.preventDefault()
->>>>>>> 1136037be65f4532bb67467d689ed80aabd005df
 	            } 
 	        })
-<<<<<<< HEAD
-=======
-	        .atwho(at_config) 
-	        //.atwho(emoji_config)
+
 
 	        // Comments aggregation
 	        $(".news_comment_wrapper").each(function(index){
@@ -193,7 +187,6 @@ div.news_post hr {
 	        	if($(this).parent().children().length==1)
 	        		$(this).hide();
 	        });
->>>>>>> 1136037be65f4532bb67467d689ed80aabd005df
     })
 </script>
 {% endonce %}
