@@ -5,18 +5,20 @@
 {% block title %} {{ FEST_NAME }} {% endblock %} 
 
 {% block content %}
+	<input id="id_current_page" type="hidden" name="current_page" value="1" />
+	
 	{% url 'create_post' user.erp_profile.wall.id as new_post_url %}
 	<!-- {# {% include "modules/new_post.html" %} #} -->
-    <div id="new_notification_placeholder" style="height:30px"></div>
-	{% for notification in notifications %}
-		{% with post=notification.target %}
-			{% include "modules/post.html" %}
-	    {% endwith %}
-	{% endfor %}
+    	{% for notification in notifications %}
+			{% with post=notification.target %}
+				{% include "modules/post.html" %}
+		    {% endwith %}
+		{% endfor %}
 	
+	<div class="row-fluid centered">
+		<div class="span12 center" name="see_more" id="id_see_more" href="javascript:void(0)">See more</div>
+	</div>
     
-</div>
-<center><button class="btn btn-success" name="see_more" id="id_see_more" onclick="Dajaxice.apps.walls.newsfeed_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1 })">See more</button></center>
 {% endblock %} {% block extra_css %} {{ block.super }}
 <style type="text/css">
 #status_wrapper {
@@ -134,48 +136,65 @@ div.news_post hr {
     color : #666;
     margin-top : 5px;
 }
+#id_see_more {
+	cursor : pointer;
+	margin-top : 20px;
+	padding : 20px 20px;
+	vertical-align : middle;
+	background-color : #eee;
+	color : #3B5998;
+}
+#id_see_more:hover {
+	background-color : #dedede;
+	color : #000;
+}
 </style>
 {% endblock %} {% block extra_js %} {{ block.super }}
 <script type="text/javascript">
-function show_status_textarea() {
-    $("#status_wrapper #id_status").height(50);
-    $("#status_wrapper #status_bottom_bar").show();
-}
-function hide_status_textarea() {
-    $("#status_wrapper #id_status").height(20);
-       $("#status_wrapper #status_bottom_bar").hide();
-}
-
-    $("#status_wrapper *").focusin(show_status_textarea);
-    //$("#status_wrapper *").focusout(hide_status_textarea);
-
-    $("#status_wrapper #status_submit").keydown(function (e) {
-        if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
-        	console.log("Posting");
-        } 
-        
-    });
-    $("#status_wrapper #status_submit").click(function() { 
-        console.log("Posting");
-    });
-function append_new_data(data){
-    if (!data.exhausted){
-        $('#main_body_content').append(data.append_string);
-        $('#id_current_page').val(parseInt($('#id_current_page').val())+1);
-    }
-    else {
-        $('#id_see_more').html('No more to load');
-    }
-}
+	function show_status_textarea() {
+	    $("#status_wrapper #id_status").height(50);
+	    $("#status_wrapper #status_bottom_bar").show();
+	}
+	function hide_status_textarea() {
+	    $("#status_wrapper #id_status").height(20);
+	       $("#status_wrapper #status_bottom_bar").hide();
+	}
 
 
-// Infinite Scroll
-var win = $(window), doc = $(document);
+	    $("#status_wrapper *").focusin(show_status_textarea);
+	    //$("#status_wrapper *").focusout(hide_status_textarea);
 
-win.scroll(function(){
-    if( doc.scrollTop() >= doc.height() - win.height() ) {
-        $("#id_see_more").click();
-    }
-}).scroll();
+	    $("#status_wrapper #status_submit").keydown(function (e) {
+	        if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
+	        	console.log("Posting");
+	        } 
+	        
+	    });
+	    $("#status_wrapper #status_submit").click(function() { 
+	        console.log("Posting");
+	    });
+	function append_new_data(data){
+	    if (!data.exhausted){
+	        $('#main_body_content').find("#id_see_more").before(data.append_string);
+	        $('#id_current_page').val(parseInt($('#id_current_page').val())+1);
+	    }
+	    else {
+	        $('#id_see_more').html('No more to load');
+	    }
+	}
+
+	$( document ).ready(function() {    
+		// See more button
+		$("#id_see_more").click(function() {
+			Dajaxice.apps.walls.newsfeed_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1 })
+		})
+		
+		// Inifinite scroll
+		$(window).scroll(function(){
+		    if( $(document).scrollTop() >= $(document).height() - $(window).height() ) {
+		        $("#id_see_more").click();
+		    }	
+		}).scroll();
+	})
 </script>
 {% endblock %}

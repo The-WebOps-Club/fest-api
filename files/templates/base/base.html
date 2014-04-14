@@ -76,11 +76,9 @@
             {% block right_content %} 
 	            <div id="main_body_content" class="span6 main_body">
 	                {% block content %} {% endblock %}
-	                <input id="id_current_page" type="hidden" name="current_page" value="1" />
 	            </div>
 	            <div class="span2 rightbar">
 	                {% block rightbar %} {% endblock %}
-	                <input id="id_current_page" type="hidden" name="current_page" value="1" />
 	            </div>
             {% endblock %}
         </div>
@@ -145,6 +143,9 @@
        				return value;
       			},
 			}
+			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
+                setup_autocomplete_lists();
+            }
     	})
 
         function setup_autocomplete_lists() {
@@ -224,23 +225,26 @@
 	    // Autocomplete for Users, Dept, Subdept
         $.getJSON("{% static 'json/user_list.json' %}", function(json) {
             atwho_user_list = json;
-            if ( atwho_user_list && atwho_subdept_list && atwho_dept_list ) {
+            
+			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
                 setup_autocomplete_lists();
             }
         });
         $.getJSON("{% static 'json/subdept_list.json' %}", function(json) {
             atwho_subdept_list = json;
-            if ( atwho_user_list && atwho_subdept_list && atwho_dept_list ) {
+            
+			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
                 setup_autocomplete_lists();
             }
         });
         $.getJSON("{% static 'json/dept_list.json' %}", function(json) {
             atwho_dept_list = json;
-            if ( atwho_user_list && atwho_subdept_list && atwho_dept_list ) {
+            
+			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
                 setup_autocomplete_lists();
             }
         });
-        
+	        
     </script>
 </body>
 
