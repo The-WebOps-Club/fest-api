@@ -87,6 +87,9 @@
 	font-size : 80px;
 	line-height : 100px;
 }
+.opacity_half {
+    opacity : 0.5;
+}
 
 /* Specific Template styles */
 .topbar div > ul.nav.links a.settingButton, .nav.links a.settingButton {

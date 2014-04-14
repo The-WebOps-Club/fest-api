@@ -12,7 +12,7 @@
                     
                 </div>
                 <div>
-                    <form action="" method="POST">
+                    <form action="" method="POST" id="password_reset_form">
                         {% csrf_token %}
                         
                         {% for field in form %}
@@ -52,5 +52,15 @@
 
 {% block extra_js %}
 {{ block.super }}
-
+<script>
+    {% for k, v in form.errors.items %}
+        $("form#password_reset_form #id_{{ k }}")
+            .addClass("error")
+            .popover({
+                "title" : function() { return "Error" },
+                "content" : function() { return "{% for i in v %} {{i}} {% endfor %}" },
+                "placement" : "below",
+            })
+    {% endfor %}
+</script>
 {% endblock %}

@@ -51,7 +51,7 @@
 	            <div class="news_comment_body">
 	                <form action="{% url 'create_comment' post.pk %}" method="POST">
 	                    {% csrf_token %}
-	                    <textarea class="span12 comment_textarea resize_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
+	                    <textarea class="span12 comment_textarea atwho_at_config resize_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
 	                    
 	                </form>
 	            </div>
@@ -147,7 +147,6 @@ div.news_post hr {
 	            } else if (!e.ctrlKey && e.keyCode == 13) { // 
 	            	e.preventDefault();
 	            }
-	            //console.log(e)
 			})
 			.keyup(function (e) {
 	        	e = e || event;
@@ -160,10 +159,7 @@ div.news_post hr {
 	            	$el.submit_form()
 	                e.preventDefault()
 	            } 
-	            //console.log(e)
 	        })
-	        .atwho(at_config) 
-	        //.atwho(emoji_config)
     })
 </script>
 {% endonce %}

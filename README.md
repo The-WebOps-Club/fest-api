@@ -21,7 +21,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 
 
 2. TastyPie :
-    - Till now, tastypie(v1.11) has some issues with through tables. So this creates an error in the BloodRequest model creation as the through table gves an error.
+    - Till now, tastypie(v1.11) has some issues with through tables.
     - Need to replace (in the save_m2m function ~line 2300): 
      
     	```

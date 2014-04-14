@@ -68,13 +68,10 @@ urlpatterns = patterns('',
     # url(r'^reset/done/?$','django.contrib.auth.views.password_reset_done',{'template_name':'password/reset_done.html'}, name='password_reset_done'),
     # url(r'^reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/?$','django.contrib.auth.views.password_reset_confirm',{'template_name':'password/reset_new_password.html'}, name='password_reset_confirm'),
     # url(r'^reset/complete/?$','django.contrib.auth.views.password_reset_complete',{'template_name':'password/reset_complete.html'}, name='password_reset_complete'),
-    url(  r'^password_reset/$', 'django.contrib.auth.views.password_reset', {'template_name':'password/reset.html'}, name='password_reset'),
-    url(r'^password_reset/done/$', 'django.contrib.auth.views.password_reset_done',{'template_name':'password/reset_done.html'}, name='password_reset_done'),
-    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        'django.contrib.auth.views.password_reset_confirm',
-        {'template_name':'password/reset_new_password.html'},
-        name='password_reset_confirm'),
-    url(r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete',{'template_name':'password/reset_complete.html'}, name='password_reset_complete'),
+    url(r'^password_reset/$', 'django.contrib.auth.views.password_reset', {'template_name':'password/reset.html', 'extra_context':{'FEST_NAME':settings.FEST_NAME,}}, name='password_reset'),
+    url(r'^password_reset/done/$', 'django.contrib.auth.views.password_reset_done',{'template_name':'password/reset_done.html', 'extra_context':{'FEST_NAME':settings.FEST_NAME,}}, name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', 'django.contrib.auth.views.password_reset_confirm', {'template_name':'password/reset_new_password.html', 'extra_context':{'FEST_NAME':settings.FEST_NAME,}}, name='password_reset_confirm'),
+    url(r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete',{'template_name':'password/reset_complete.html', 'extra_context':{'FEST_NAME':settings.FEST_NAME,}}, name='password_reset_complete'),
 
     # ------------------------------------------------------------------
     # THIRD PARTY APPS
@@ -83,8 +80,16 @@ urlpatterns = patterns('',
     # Notifications
     url(r'^inbox/notifications/', include(notifications.urls)),
     # Python social auth
-    url(r'', include('social.apps.django_app.urls', namespace='social'))
-
+    url(r'', include('social.apps.django_app.urls', namespace='social')),
+    url(r'^login-error/?$', 'apps.users.views.socialauth_error'),
+    url(r'^auth_disconnect/(?P<backend>[^/]+)/(?P<association_id>[^/]+)/$', 'apps.users.views.socialauth_disconnect', name='auth_disconnect'),
+    url(r'^complete/(?P<backend>[^/]+)/$', 'apps.users.views.socialauth_completed_view', name='socialauth_complete'),
+    # url(r'^' + settings.SOCIAL_AUTH_TWITTER_EMAIL_VALIDATION_URL[1:] + r'?$', 'accounts.pipeline.validation_sent'),
+    url(r'^'+settings.SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL[1:]+r'?$', 'apps.users.views.new_association'),
+    url(r'^'+settings.SOCIAL_AUTH_DISCONNECT_REDIRECT_URL[1:]+r'?$', 'apps.users.views.disconnected'),
+    
+    
+    
 )
 
 # 400 & 500

@@ -196,7 +196,7 @@ class ERPProfile(models.Model):
         return request.session["role"].title()
     
     def relations_count(self):
-        return erp_profile.core_relations.count() + erp_profile.supercoord_relations.count() + erp_profile.coord_relations.count()
+        return self.core_relations.count() + self.supercoord_relations.count() + self.coord_relations.count()
 
     def save(self, *args, **kwargs):
         if not hasattr(self.user, "profile"):

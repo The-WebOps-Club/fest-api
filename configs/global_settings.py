@@ -50,11 +50,12 @@ THIRD_PARTY_APPS = (
     # Notification
     'notifications',
 
-    # Login
+    # Social Auth Login
     'social.apps.django_app.default',
 
     # Markdown for text area candy
     'markdown_deux',
+
 )
 API_APPS =(
     'misc',
@@ -149,9 +150,11 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_PATH, "files", "static-collected")
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_PATH, "files", "media")
-EMAIL_ROOT = os.path.join(PROJECT_PATH, "files", "emails")
+EMAIL_ROOT = os.path.join(PROJECT_PATH, "files", "emails") # Contains email files for Post Office
+DATA_ROOT = os.path.join(PROJECT_PATH, "files", "data") # Contains gen data files (used by some manage commands)
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_PATH, "files", "static"),
+    os.path.join(PROJECT_PATH, "files", "static"), # Remember first element should be the user defined one.
+    # used in management commands
 )
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_PATH, "files", "templates"),
@@ -207,7 +210,7 @@ EMAIL_BACKEND = 'post_office.EmailBackend'
 # ---------------------------------------------------
 # Python Social Auth
 AUTHENTICATION_BACKENDS = (
-    'social.backends.twitter.TwitterOAuth',
+    # 'social.backends.twitter.TwitterOAuth',
     'social.backends.facebook.FacebookOAuth2',
     # 'social.backends.google.GoogleOAuth',
     'social.backends.google.GoogleOAuth2',
@@ -294,7 +297,7 @@ SOCIAL_AUTH_PIPELINE = (
     #'apps.home.pipeline.social_story_on_join',
 )
 # SOCIAL_AUTH_PARTIAL_PIPELINE_KEY = 'partial_pipeline'
-SUPPORTED_PROVIDERS = [u'google', u'facebook', u'twitter']
+SUPPORTED_PROVIDERS = [u'google', u'facebook']
 
 # ---------------------------------------------------
 # Django markdown deux

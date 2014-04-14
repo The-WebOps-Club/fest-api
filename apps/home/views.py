@@ -77,10 +77,12 @@ def read_notification(request, notif_id):
 
 @login_required
 def contacts(request):
-    local_context = {}
+    local_context = {
+    }
     return render_to_response("pages/contacts.html", local_context, context_instance= global_context(request))
 
 @login_required
 def markdown(request):
     local_context={}
     return render_to_response("pages/markdown.html", local_context, context_instance= global_context(request))
+

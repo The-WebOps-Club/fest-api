@@ -5,13 +5,78 @@
 {% block title %} {{ FEST_NAME }} {% endblock %}
 
 {% block content %}
+    <div class="row-fluid">
+    	<div class="span5 animated table_departments active">
+    		<table class="zebra-striped table ">
+				<tr class="depts_head">
+					<th>Departments</th>
+				</tr>
+				<tr class="template dept_template" style="display : none;">
+					<td>
+						${name} 
+						<i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i>
+					</td>
+				</tr>
+			</table>
+		</div>
+    	<div class="span3 animated table_subdepts">
+    		<table class="zebra-striped table ">
+				<tr>
+					<th>Sub Depts</th>
+				</tr>
+				<tr class="template subdept_template" style="display : none;">
+					<td>
+						${name} 
+						<i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i>
+					</td>
+				</tr>
+				<tr>
+					<th>Users</th>
+				</tr>
+				<tr class="template user_template" style="display : none;">
+					<td>
+						${name} 
+						<i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+    	<div class="span3 animated table_users">
+    		<table class="zebra-striped table ">
+				<tr>
+					<th>Users</th>
+				</tr>
+				<tr class="template user_template" style="display : none;">
+					<td>
+						${name} 
+						<i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i>
+					</td>
+				</tr>
+			</table>
+		</div>
+    </div>
     
-      Not implemented yet
 {% endblock %}
 
 {% block extra_css %}
 {{ block.super }}
 <style type='text/css'>
+.animated {
+	-webkit-transition : width 1s;
+	-moz-transition : width 1s;
+	-o-transition : width 1s;
+	-ms-transition : width 1s;
+	transition : width 1s;
+}
+tr:hover .opacity_half,
+tr.active .opacity_half {
+    opacity : 1;
+}
+tr.active,
+tr.active > td {
+    background-color: #D9D9D9 !important;
+}
 </style>
 {% endblock %}
 
@@ -19,5 +84,113 @@
 {% block extra_js %}
 {{ block.super }}
 <script type='text/javascript'>
+	user_structure = null
+
+	function create_contact_element(i, val, $template) {
+		$el = $template.clone().removeClass("template")
+			.removeClass("dept_template")
+			.removeClass("subdept_template")
+			.removeClass("user_template")
+		$el.data("id", i)
+		$.each($el.find("td"), function() {
+			$el_cell = $(this)
+			
+			name = ''
+			if ( val["name"] )
+				name = val["name"]
+			else if ( val["first_name"] && val["last_name"] )
+				name = val["first_name"] + " " + val["last_name"]
+			else if ( val["first_name"] || val["last_name"] ) 
+				name = val["first_name"] || val["last_name"]
+
+			$el_cell.html(
+				$el_cell.html()
+					.replace("${name}", name) 
+			)
+		})
+		$el.insertBefore($template)
+		$el.show()
+	}
+	function remove_
+	function show_depts(list, $template) {
+		$.each( list, function(i, val) {
+			create_contact_element(i, val, $template)
+
+			$el.data("type", "dept")
+		})
+	}
+	function show_subdepts(list, $template) {
+		if ( list.length ) {
+
+		}
+		$.each( list, function(i, val) {
+			create_contact_element(i, val, $template)
+			$el.data("type", "subdept")
+		})
+		$(".table_subdepts tr").click(function() {
+			var $el = $(this)
+			
+			$(".table_departments")
+						.removeClass("span5")
+						.addClass("span3")
+			$(".table_subdepts")
+						.removeClass("span5")
+						.addClass("span3")
+			$(".table_users")
+						.addClass("span5")
+						.removeClass("span3")
+			$(".table_subdepts tr ")
+						.removeClass("active")
+			$el.addClass("active")
+
+
+			$user_el_template = $(".table_users tr.template.user_template")
+			user_structure_subdepts = []
+			$.each(user_structure, function(i, val) {
+				//user_structure_lvl2.merge(val)
+				for ( var attrname in val["subdepts"])
+				user_structure_subdepts[attrname] = val["subdepts"][attrname];
+			})
+			show_users(user_structure_subdepts[$el.data("id")]["users"], $user_el_template)
+		})
+	}
+	function show_users(list, $template) {
+		$.each( list, function(i, val) {
+			create_contact_element(i, val, $template)
+			$el.data("type", "user")
+		})
+	}
+	function populate_contacts() {
+		$dept_el_template = $(".table_departments tr.template.dept_template")
+		
+		show_depts(user_structure, $dept_el_template)
+
+		$(".table_departments tr").click(function() {
+			var $el = $(this)
+			$(".table_departments")
+						.removeClass("span5")
+						.addClass("span3")
+			$(".table_subdepts")
+						.removeClass("span3")
+						.addClass("span5")
+			$(".table_departments td")
+						.removeClass("active")
+			$el.addClass("active")
+
+
+			$subdept_el_template = $(".table_subdepts tr.template.subdept_template")
+			
+			show_subdepts(user_structure[$el.data("id")]["subdepts"], $subdept_el_template)
+			show_users(user_structure[$el.data("id")]["users"], $dept_el_template)
+		})
+
+	}
+	$(document).ready(function() {
+		$.getJSON("{% static 'json/user_structure.json' %}", function(json) {
+            user_structure = json;
+            populate_contacts()
+        });
+
+	})
 </script>
 {% endblock %}

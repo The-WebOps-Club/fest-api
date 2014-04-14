@@ -37,16 +37,24 @@
 
 
 {% block full_content %}
-    <div class='span6'>
-    </div>
-    <div class='span6'>
-        <span class='big'>Sign Up</span>
+    <div class='row-fluid below_loginbar'>
+        <div class='span6'>
+        </div>
+        <div class='span6'>
+            <span class='big'>Sign Up</span>
+            <a class='zocial facebook btn-block' href="{% url 'social:begin' 'facebook' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Facebook</a>
+
+            <a class='zocial google btn-block' href="{% url 'social:begin' 'google' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Google</a>
+        </div>
     </div>
 {% endblock %}
 
 {% block extra_css %}
 {{ block.super }}
 <style>
+    .below_loginbar {
+        margin-top : 100px;
+    }
     #login_topbar_inner {
         height: 82px;
     }
