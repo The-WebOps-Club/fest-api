@@ -130,201 +130,185 @@ def create_post(request, wall_id):
     """
         Create a new wall post
     """
-    # Initial validations
-    try:
-        wall_id = int(wall_id)
-    except ValueError:
-        print wall_id, "could not convert to int"
-        wall_id = None
+#     # Initial validations
+#     try:
+#         wall_id = int(wall_id)
+#     except ValueError:
+#         print wall_id, "could not convert to int"
+#         wall_id = None
     
-    if not ( type(wall_id) is int ):
-        print "wall_id :", wall_id, type(wall_id)
-        raise InvalidArgumentTypeException("argument `wall_id` should be of type integer")
-    wall = get_object_or_404(Wall, id=int(wall_id))
-<<<<<<< HEAD
-    data = request.POST.copy()
-    if data.get("new_post", None):
-        post_text = data['new_post']
-        tags =  data.getlist("atwho_list")
-        parsed_tags = [tag.rsplit("_",1) for tag in tags]
-        notification_depts = []
-        notification_subdepts = []
-        notification_users = []
-        link_text = '<a href="%s"> %s</a>'
-        for tag in parsed_tags:
-            id = int(tag[1])
-            key = tag[0]
-            if key == 'department':
-                tagged_dept = get_object_or_None(Dept, id=id)
-                if tagged_dept:
-                    notification_depts.append(tagged_dept)
-                    post_text = post_text.replace('@' + tagged_dept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_dept.wall.pk}), tagged_dept.name) )
-                else:
-                    print "No id for dept"
-            elif key == 'subdept':
-                tagged_subdept = get_object_or_None(Subdept, id=id)
-                if tagged_subdept:
-                    notification_subdepts.append(tagged_subdept)
-                    post_text = post_text.replace('@' + tagged_subdept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_subdept.wall.pk}), tagged_subdept.name) )
-=======
-    print wall
-    data = request.POST.copy()
-    if data.get("new_post", None):
-        new_post = Post.objects.create(description=data['new_post'], wall=wall, by=request.user)
+#     if not ( type(wall_id) is int ):
+#         print "wall_id :", wall_id, type(wall_id)
+#         raise InvalidArgumentTypeException("argument `wall_id` should be of type integer")
+#     wall = get_object_or_404(Wall, id=int(wall_id))
+#     data = request.POST.copy()
+#     if data.get("new_post", None):
+#         post_text = data['new_post']
+#         tags =  data.getlist("atwho_list")
+#         parsed_tags = [tag.rsplit("_",1) for tag in tags]
+#         notification_depts = []
+#         notification_subdepts = []
+#         notification_users = []
+#         link_text = '<a href="%s"> %s</a>'
+#         for tag in parsed_tags:
+#             id = int(tag[1])
+#             key = tag[0]
+#             if key == 'department':
+#                 tagged_dept = get_object_or_None(Dept, id=id)
+#                 if tagged_dept:
+#                     notification_depts.append(tagged_dept)
+#                     post_text = post_text.replace('@' + tagged_dept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_dept.wall.pk}), tagged_dept.name) )
+#                 else:
+#                     print "No id for dept"
+#             elif key == 'subdept':
+#                 tagged_subdept = get_object_or_None(Subdept, id=id)
+#                 if tagged_subdept:
+#                     notification_subdepts.append(tagged_subdept)
+#                     post_text = post_text.replace('@' + tagged_subdept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_subdept.wall.pk}), tagged_subdept.name) )
+#     print wall
+#     data = request.POST.copy()
+#     if data.get("new_post", None):
+#         new_post = Post.objects.create(description=data['new_post'], wall=wall, by=request.user)
         
-        tags =  data.getlist("atwho_list")
-        parsed_tags = [[tag.split('_')[-1:][0], tag.split('_')[:1][0]] for tag in tags]
-        print parsed_tags
-        for tag in parsed_tags:
-            id = int(tag[0])
-            if tag[1] == 'department':
-                tagged_dept = get_object_or_None(Dept, id=id)
-                if tagged_dept:
-                    new_post.notification_depts.add(tagged_dept)
-                else:
-                    print "No id for dept"
-            elif tag[1] == 'subdept':
-                tagged_subdept = get_object_or_None(Subdept, id=id)
-                if tagged_subdept:
-                    new_post.notification_subdepts.add(tagged_subdept)
->>>>>>> 50b0b1633ae0f3abb263b35a1b8fdddc7f4a88b1
-                else:
-                    print "No id for subdept"
-            else:
-                tagged_user = get_object_or_None(User, id=id)
-                if tagged_user:
-<<<<<<< HEAD
-                    notification_users.append(tagged_user)
-                    post_text = post_text.replace('@' + tagged_user.first_name+"_"+tagged_user.last_name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_user.erp_profile.wall.pk}), tagged_user.get_full_name()) )
-                else:
-                    print "No id for user"
+#         tags =  data.getlist("atwho_list")
+#         parsed_tags = [[tag.split('_')[-1:][0], tag.split('_')[:1][0]] for tag in tags]
+#         print parsed_tags
+#         for tag in parsed_tags:
+#             id = int(tag[0])
+#             if tag[1] == 'department':
+#                 tagged_dept = get_object_or_None(Dept, id=id)
+#                 if tagged_dept:
+#                     new_post.notification_depts.add(tagged_dept)
+#                 else:
+#                     print "No id for dept"
+#             elif tag[1] == 'subdept':
+#                 tagged_subdept = get_object_or_None(Subdept, id=id)
+#                 if tagged_subdept:
+#                     new_post.notification_subdepts.add(tagged_subdept)
+#                 else:
+#                     print "No id for subdept"
+#             else:
+#                 tagged_user = get_object_or_None(User, id=id)
+#                 if tagged_user:
+#                     notification_users.append(tagged_user)
+#                     post_text = post_text.replace('@' + tagged_user.first_name+"_"+tagged_user.last_name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_user.erp_profile.wall.pk}), tagged_user.get_full_name()) )
+#                 else:
+#                     print "No id for user"
 
-        new_post = Post.objects.create(description=post_text, wall=wall, by=request.user)
+#         new_post = Post.objects.create(description=post_text, wall=wall, by=request.user)
 
-        if notification_depts:
-            new_post.notification_depts.add(tagged_dept)
-        if notification_subdepts:
-            new_post.notification_subdepts.add(tagged_subdept)
-        if notification_users:
-            new_post.notification_users.add(tagged_user)
+#         if notification_depts:
+#             new_post.notification_depts.add(tagged_dept)
+#         if notification_subdepts:
+#             new_post.notification_subdepts.add(tagged_subdept)
+#         if notification_users:
+#             new_post.notification_users.add(tagged_user)
 
-        print "---------------------------------------------------"
-    #     return redirect('wall', wall_id=wall.pk)
-    # else:
-    return redirect(request.META.get('HTTP_REFERER', '/'))
+#         print "---------------------------------------------------"
+#     #     return redirect('wall', wall_id=wall.pk)
+#     # else:
+#     return redirect(request.META.get('HTTP_REFERER', '/'))
     
-=======
-                    new_post.notification_users.add(tagged_user)
-                else:
-                    print "No id for user"
+#                     new_post.notification_users.add(tagged_user)
+#                 else:
+#                     print "No id for user"
                 
-        print "---------------------------------------------------"
-        return redirect('wall', wall_id=wall.pk)
-    else:
-        return redirect(request.META.get('HTTP_REFERER', '/'))
->>>>>>> 50b0b1633ae0f3abb263b35a1b8fdddc7f4a88b1
+#         print "---------------------------------------------------"
+#         return redirect('wall', wall_id=wall.pk)
+#     else:
+    return redirect(request.META.get('HTTP_REFERER', '/'))
     
 def create_comment(request, post_id):
     """
         Creates a new comment on a Post
     """
     # Initial validations
-    try:
-        post_id = int(post_id)
-    except ValueError:
-        print post_id, "could not convert to int"
-        post_id = None
-    if not ( type(post_id) is int ):
-        print "post_id :", post_id, type(post_id)
-        raise InvalidArgumentTypeException("argument `post_id` should be of type integer")
+#     try:
+#         post_id = int(post_id)
+#     except ValueError:
+#         print post_id, "could not convert to int"
+#         post_id = None
+#     if not ( type(post_id) is int ):
+#         print "post_id :", post_id, type(post_id)
+#         raise InvalidArgumentTypeException("argument `post_id` should be of type integer")
     
-    # Create a new comment
-    data = request.POST.copy()
-    if data.get("comment", None):
-<<<<<<< HEAD
-        # Attempt to get the post for the comment
-        post = get_object_or_None(Post, id=int(post_id))
-        comment_text = data['comment']
-=======
-        new_comment = Comment.objects.create(description=data['comment'], by=request.user)
-        # Attempt to get the post for the comment
-        post = get_object_or_None(Post, id=int(post_id))
->>>>>>> 50b0b1633ae0f3abb263b35a1b8fdddc7f4a88b1
-        if not post:
-            raise InvalidArgumentValueException("No Post with id `post_id` was found in the database")
+#     # Create a new comment
+#     data = request.POST.copy()
+#     if data.get("comment", None):
+#         # Attempt to get the post for the comment
+#         post = get_object_or_None(Post, id=int(post_id))
+#         comment_text = data['comment']
+#         new_comment = Comment.objects.create(description=data['comment'], by=request.user)
+#         # Attempt to get the post for the comment
+#         post = get_object_or_None(Post, id=int(post_id))
+#         if not post:
+#             raise InvalidArgumentValueException("No Post with id `post_id` was found in the database")
 
-        print "---------------------------------------------"
-        tags = data.getlist("atwho_list")
-        # Gives the first and last words after splitting with underscore.
-        # First id and last is keyword (department, subdepartment and any others: email)
-<<<<<<< HEAD
-        parsed_tags = [tag.rsplit("_",1) for tag in tags]
-        notification_depts = []
-        notification_subdepts = []
-        notification_users = []
-        link_text = '<a href="%s"> %s</a>'
-        for tag in parsed_tags:
-            id = int(tag[1])
-            key = tag[0]
-            if key == 'department':
-                tagged_dept = get_object_or_None(Dept, id=id)
-                if tagged_dept:
-                    notification_depts.append(tagged_dept)
-                    comment_text = comment_text.replace('@' + tagged_dept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_dept.wall.pk}), tagged_dept.name) )
-                else:
-                    print "No id for dept"
-            elif key == 'subdept':
-                tagged_subdept = get_object_or_None(Subdept, id=id)
-                if tagged_subdept:
-                    notification_subdepts.append(tagged_subdept)
-                    comment_text = comment_text.replace('@' + tagged_subdept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_subdept.wall.pk}), tagged_subdept.name) )
-=======
-        parsed_tags = [[tag.split('_')[-1:][0], tag.split('_')[:1][0]] for tag in tags]
-        print parsed_tags
-        for tag in parsed_tags:
-            id = int(tag[0])
-            if tag[1] == 'department':
-                tagged_dept = get_object_or_None(Dept, id=id)
-                if tagged_dept:
-                    print("BLINGMAXX")
-                    post.notification_depts.add(tagged_dept)
-                else:
-                    print "No id for dept"
-            elif tag[1] == 'subdept':
-                tagged_subdept = get_object_or_None(Subdept, id=id)
-                if tagged_subdept:
-                    post.notification_subdepts.add(tagged_subdept)
->>>>>>> 50b0b1633ae0f3abb263b35a1b8fdddc7f4a88b1
-                else:
-                    print "No id for subdept"
-            else:
-                tagged_user = get_object_or_None(User, id=id)
-                if tagged_user:
-<<<<<<< HEAD
-                    notification_users.append(tagged_user)
-                    comment_text = comment_text.replace('@' + tagged_user.first_name+"_"+tagged_user.last_name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_user.erp_profile.wall.pk}), tagged_user.get_full_name()) )
-                else:
-                    print "No id for user"
+#         print "---------------------------------------------"
+#         tags = data.getlist("atwho_list")
+#         # Gives the first and last words after splitting with underscore.
+#         # First id and last is keyword (department, subdepartment and any others: email)
+#         parsed_tags = [tag.rsplit("_",1) for tag in tags]
+#         notification_depts = []
+#         notification_subdepts = []
+#         notification_users = []
+#         link_text = '<a href="%s"> %s</a>'
+#         for tag in parsed_tags:
+#             id = int(tag[1])
+#             key = tag[0]
+#             if key == 'department':
+#                 tagged_dept = get_object_or_None(Dept, id=id)
+#                 if tagged_dept:
+#                     notification_depts.append(tagged_dept)
+#                     comment_text = comment_text.replace('@' + tagged_dept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_dept.wall.pk}), tagged_dept.name) )
+#                 else:
+#                     print "No id for dept"
+#             elif key == 'subdept':
+#                 tagged_subdept = get_object_or_None(Subdept, id=id)
+#                 if tagged_subdept:
+#                     notification_subdepts.append(tagged_subdept)
+#                     comment_text = comment_text.replace('@' + tagged_subdept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_subdept.wall.pk}), tagged_subdept.name) )
+#         parsed_tags = [[tag.split('_')[-1:][0], tag.split('_')[:1][0]] for tag in tags]
+#         print parsed_tags
+#         for tag in parsed_tags:
+#             id = int(tag[0])
+#             if tag[1] == 'department':
+#                 tagged_dept = get_object_or_None(Dept, id=id)
+#                 if tagged_dept:
+#                     print("BLINGMAXX")
+#                     post.notification_depts.add(tagged_dept)
+#                 else:
+#                     print "No id for dept"
+#             elif tag[1] == 'subdept':
+#                 tagged_subdept = get_object_or_None(Subdept, id=id)
+#                 if tagged_subdept:
+#                     post.notification_subdepts.add(tagged_subdept)
+#                 else:
+#                     print "No id for subdept"
+#             else:
+#                 tagged_user = get_object_or_None(User, id=id)
+#                 if tagged_user:
+#                     notification_users.append(tagged_user)
+#                     comment_text = comment_text.replace('@' + tagged_user.first_name+"_"+tagged_user.last_name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_user.erp_profile.wall.pk}), tagged_user.get_full_name()) )
+#                 else:
+#                     print "No id for user"
 
-        new_comment = Comment.objects.create(description=comment_text, by=request.user)
-        post.comments.add(new_comment)
-        if notification_depts:
-            post.notification_depts.add(tagged_dept)
-        if notification_subdepts:
-            post.notification_subdepts.add(tagged_subdept)
-        if notification_users:
-            post.notification_users.add(tagged_user)
-    #     return redirect('wall', wall_id=post.wall.pk)
-    # else:
+#         new_comment = Comment.objects.create(description=comment_text, by=request.user)
+#         post.comments.add(new_comment)
+#         if notification_depts:
+#             post.notification_depts.add(tagged_dept)
+#         if notification_subdepts:
+#             post.notification_subdepts.add(tagged_subdept)
+#         if notification_users:
+#             post.notification_users.add(tagged_user)
+#     #     return redirect('wall', wall_id=post.wall.pk)
+#     # else:
+#     return redirect(request.META.get('HTTP_REFERER', '/'))
+#                     post.notification_users.add(tagged_user)
+#                 else:
+#                     print "No id for user"
+#         post.comments.add(new_comment)
+#         return redirect('wall', wall_id=post.wall.pk)
+#     else:
     return redirect(request.META.get('HTTP_REFERER', '/'))
-=======
-                    post.notification_users.add(tagged_user)
-                else:
-                    print "No id for user"
-        post.comments.add(new_comment)
-        return redirect('wall', wall_id=post.wall.pk)
-    else:
-        return redirect(request.META.get('HTTP_REFERER', '/'))
 
-# def add_notification_users(__name__list, ):
->>>>>>> 50b0b1633ae0f3abb263b35a1b8fdddc7f4a88b1
