@@ -22,7 +22,7 @@
 		</div>
     {% endfor %}
     </div>
-    <center><button class="btn btn-success" name="see_more" id="id_see_more" onclick="Dajaxice.apps.walls.wall_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1, 'wall_id':{{wall.id}} })">See more</button></center>
+    <center style="display : none;"><button class="btn btn-success" name="see_more" id="id_see_more"See more</button></center>
 {% endblock %}
 {% block extra_css %} {{ block.super }}
 <style type="text/css">
@@ -32,24 +32,29 @@
 {% block extra_js %} 
 {{ block.super }}
 <script type="text/javascript">
-function append_new_data(data){
-    if (!data.exhausted){
-        $('#main_body_content').append(data.append_string);
-        $('#id_current_page').val(parseInt($('#id_current_page').val())+1);
-    }
-    else {
-        $('#id_see_more').html('No more to load');
-    }
-}
+	function append_new_data(data){
+	    if (!data.exhausted){
+	        $('#main_body_content').append(data.append_string);
+	        $('#id_current_page').val(parseInt($('#id_current_page').val())+1);
+	    }
+	    else {
+	        $('#id_see_more').html('No more to load');
+	    }
+	}
 
-// Inifinite scroll
-var win = $(window), doc = $(document);
+	$( document ).ready(function() {    
+		// See More
+		$("#id_see_more").click(function() {
+			Dajaxice.apps.walls.wall_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1, 'wall_id':{{wall.id}} })
+		})
 
-win.scroll(function(){
-    if( doc.scrollTop() >= doc.height() - win.height() ) {
-        $("#id_see_more").click();
-    }
-}).scroll();
-
+		// Inifinite scroll
+		$(window).scroll(function(){
+		    if( $(document).scrollTop() >= $(document).height() - $(window).height() ) {
+		        $("#id_see_more").click();
+		    }	
+		}).scroll();
+		
+	})
 </script>
 {% endblock %}

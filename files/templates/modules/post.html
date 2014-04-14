@@ -33,8 +33,8 @@
             </div>
 	        <div class="news_extra"></div>
 	        <div class="news_comment_wrapper">
-	        	<div class="news_comment_aggregator" style="display:none;">
-	        		<a href="#">See more</a>
+	        	<div class="news_comment_aggregator center" style="display:none;">
+	        		See more
 	        	</div>
 	        	{% for comment in post.comments.all %}
 	            <div id="comment_{{ comment.pk }}" class="news_comment">
@@ -126,6 +126,21 @@ div.news_post hr {
 .news_comment_aggregator>.news_comment{
 	display: none;
 }
+.news_comment_aggregator {
+    font-size : 11px;
+    margin-top : 2px;
+    padding : 3px;
+    line-height : 13px;
+    font-weight : bold;
+    background-color: #EEE;
+    display : block;
+    color : #3B5998;
+    cursor : pointer;
+}
+.news_comment_aggregator:hover {
+	color : #333;
+	text-decoration : underline;
+}
 </style>
 
 <script type="text/javascript">
@@ -147,26 +162,14 @@ div.news_post hr {
 			.keydown(function(e) {
 				e = e || event;
 	        	el = this; $el = $(this)
-	        	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter pressed
+	        	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
 	            	e.preventDefault() // to avoid auto submit of forms
-	            } else if (!e.ctrlKey && e.keyCode == 13) { // 
-	            	e.preventDefault();
 	            }
 			})
 			.keyup(function (e) {
 	        	e = e || event;
 	        	el = this; $el = $(this)
-	            if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter pressed
-	            	$el.submit_form()
-	                e.preventDefault()
-	            } else if (!e.ctrlKey && e.keyCode == 13) { // Enter pressed
-	            	$el.add_to_textarea("\n")
-	            	setTimeout(function(){$el.trigger("input")}, 10)
-	            	e.preventDefault()
-	            } else if (!e.ctrlKey && e.keyCode == 13) { // Enter pressed
-	            	// $el.submit_form()
-	            	// Submitting via Dajax
-                    //alert(this.parent())
+	            if (e.ctrlKey && e.keyCode == 13) { // Enter
 	            	Dajaxice.apps.walls.create_comment(append_new_comment, {'post_id':{{post.id}}, 'comment_form': $el.parent().serialize(true)});
 	                e.preventDefault()
 	            } 
@@ -182,10 +185,11 @@ div.news_post hr {
 	        	}
 	        });
 
-	        $(".news_comment_aggregator>a").click(function(){
-	        	$(this).parent().children(".news_comment").slice(-5).insertAfter($(this).parent());
-	        	if($(this).parent().children().length==1)
-	        		$(this).hide();
+	        $(".news_comment_aggregator").click(function(){
+	        	$el = $(this)
+	        	$el.children(".news_comment").slice(-5).insertAfter($el);
+	        	if( $el.children().length == 1 )
+	        		$el.hide();
 	        });
     })
 </script>
