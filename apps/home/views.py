@@ -20,12 +20,12 @@ import os
 
 @login_required
 def home (request, *args, **kwargs):
-	"""
-		The home page that people will see when the login or go to the root URL
-		 - Redirects to newsfeed if logged in
-		 - Redirects to login page if not logged in
-	"""
-	return redirect("apps.home.views.newsfeed")
+    """
+        The home page that people will see when the login or go to the root URL
+         - Redirects to newsfeed if logged in
+         - Redirects to login page if not logged in
+    """
+    return redirect("apps.home.views.newsfeed")
     
 
 @login_required
@@ -47,9 +47,9 @@ def portals(request):
 @login_required
 def notifications(request):
     local_context = {
-    	"current_page" : "notifications",
-    	#"posts" : Post.objects.order_by("-comments__time_updated", "-time_updated"),
-    	"notifications" : request.user.notifications.all(),
+        "current_page" : "notifications",
+        #"posts" : Post.objects.order_by("-comments__time_updated", "-time_updated"),
+        "notifications" : request.user.notifications.all(),
     }
     return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 
@@ -81,13 +81,12 @@ def read_notification(request, notif_id):
 	notif.mark_as_read()
 	return redirect(reverse("wall", kwargs={ "wall_id" : notif.target.wall.id }) + "#post_" + str(notif.target.id))
 
-
 @login_required
 def contacts(request):
-	local_context = {}
-	return render_to_response("pages/contacts.html", local_context, context_instance= global_context(request))
+    local_context = {}
+    return render_to_response("pages/contacts.html", local_context, context_instance= global_context(request))
 
 @login_required
 def markdown(request):
-	local_context={}
-	return render_to_response("pages/markdown.html", local_context, context_instance= global_context(request))
+    local_context={}
+    return render_to_response("pages/markdown.html", local_context, context_instance= global_context(request))

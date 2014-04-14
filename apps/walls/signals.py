@@ -28,8 +28,15 @@ def post_post_save(sender, instance, created, **kwargs):
     """
     # If comments = 0 It is a new post.
     if created:
+        #print(instance)
         by = instance.by
-        for recipient in instance.wall.notification_users.all():
+        set_recipients = set()
+        set_recipients.update(instance.wall.notify_users())
+        set_recipients.update(instance.notify_users())
+        for recipient in list(set_recipients):
+            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=instance.id)
+            if curr_notif:
+                curr_notif.mark_as_read()
             if recipient != by:
                 notifications.notify.send(
                     sender=by, # The model who wrote the post - USER
@@ -48,7 +55,10 @@ def post_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **
     """
     if action == "post_add" :
         by = instance.comments.last().by
-    	for recipient in instance.wall.notification_users.all():
+        set_recipients = set()
+        set_recipients.update(instance.wall.notify_users())
+        set_recipients.update(instance.notify_users())
+    	for recipient in list(set_recipients):
             curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=instance.id)
             if curr_notif:
                 curr_notif.mark_as_read()
@@ -58,6 +68,63 @@ def post_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **
     	            recipient=recipient, # The model who sees the post - USER
     	            verb='has commented on', # verb
     	            action_object=model.objects.get(pk = list(pk_set)[0]), # the model on which something happened - COMMENT
+    	            target=instance, # The model which got affected - POST
+       	            # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+    	        )
+
+@receiver(m2m_changed, sender=Post.notification_depts.through, dispatch_uid="depts.made.m2m_changed_signal")
+def dept_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwargs):
+    """
+        Signal for  : A Dept added to a post
+        Creates     : Notification to corresponding users part of notification_depts on Post.
+    """
+    if action == "post_add" :
+        if(instance.comments.last()):
+            by = instance.comments.last().by
+        else:
+        	by = instance.by    
+        set_recipients = set()
+        set_recipients.update(instance.wall.notify_users())
+        set_recipients.update(instance.notify_users())
+    	for recipient in list(set_recipients):
+            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=instance.id)
+            if curr_notif:
+                curr_notif.mark_as_read()
+            if recipient != by:
+    	        notifications.notify.send(
+    	            sender= by, # The model who wrote the post - USER
+    	            recipient=recipient, # The model who sees the post - USER
+    	            verb='has commented on', # verb
+    	            # TODO: @Ali -Changed action_object from model.objects.get(pk = list(pk_set)[0]), please check if this affects 						anything you did before
+    	            action_object=instance.comments.last(), # the model on which something happened - COMMENT
+    	            target=instance, # The model which got affected - POST
+       	            # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+    	        )
+    	        
+@receiver(m2m_changed, sender=Post.notification_subdepts.through, dispatch_uid="subdepts.made.m2m_changed_signal")
+def subdept_m2m_changed(sender, instance, action, reverse, model, pk_set, using, **kwargs):
+    """
+        Signal for  : A Dept added to a post
+        Creates     : Notification to corresponding users part of notification_subdepts on Post.
+    """
+    if action == "post_add" :
+        if(instance.comments.last()):
+            by = instance.comments.last().by
+        else:
+        	by = instance.by    
+        set_recipients = set()
+        set_recipients.update(instance.wall.notify_users())
+        set_recipients.update(instance.notify_users())
+    	for recipient in list(set_recipients):
+            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=instance.id)
+            if curr_notif:
+                curr_notif.mark_as_read()
+            if recipient != by:
+    	        notifications.notify.send(
+    	            sender= by, # The model who wrote the post - USER
+    	            recipient=recipient, # The model who sees the post - USER
+    	            verb='has commented on', # verb
+    	            action_object=instance.comments.last(), # the model on which something happened - COMMENT
     	            target=instance, # The model which got affected - POST
        	            # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
     	        )

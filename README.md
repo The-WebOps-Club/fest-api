@@ -5,6 +5,8 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 
 1. Setup :
 	- Create a virtual env
+		- install `python-virtualenv`
+		- Go into the folder of the git repository and use `virtualenv --no-site-packages venv`
 	- Install configs/requirements.txt
 		- use 
 			```
@@ -14,6 +16,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 			```
 			pip install -r config/requirements.txt --upgrade
 			```
+	- Install `libmysqlclient-dev python-dev` if not already installed
 	- Modify configs/settings.sample.py to configs/settings.py with appropriate modifications
 
 
