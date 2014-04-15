@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError, NoArgsCommand
 from django.contrib.auth.models import User
 from apps.users.models import Dept, Subdept, ERPProfile
-
+from django.conf import settings
 SAMPLE_DEPTS = [
     'Design',
     'Events',
@@ -86,7 +86,7 @@ class Command(BaseCommand):
             self.stdout.write("Created users for Dept %s." % (dept))
 
         user, created_it = User.objects.get_or_create(username='root')
-        user.email = "root@festapi.com"
+        user.email = settings.GOOGLE_API_USER_EMAIL
         user.set_password(pass_key)
         user.first_name = "root"
         user.last_name = "root"

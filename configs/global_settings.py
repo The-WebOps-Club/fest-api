@@ -322,3 +322,10 @@ MARKDOWN_DEUX_STYLES = {
 }
 MARKDOWN_DEUX_HELP_URL = "http://daringfireball.net/projects/markdown/syntax"
 
+GOOGLE_API_USER_EMAIL = 'festapi14@gmail.com'
+GOOGLE_API_CLIENT_SECRETS = os.path.join(os.path.dirname(__file__),  'docs_client_secrets.json')
+GOOGLE_API_REDIRECT_URI = SITE_URL + 'docs/oauth2callback'
+GOOGLE_API_SCOPES = [
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/userinfo.email'
+]
