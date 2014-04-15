@@ -50,8 +50,11 @@ urlpatterns = patterns('',
     url(r'^create_comment/(?P<post_id>\d+)/$', 'apps.walls.views.create_comment',  name='create_comment'),
     
     # Docs
-    # Gen testing
-    url(r'^docs/', include('apps.docs.urls')), # Shows media page
+    url(r'^docs/$', 'apps.docs.views.docs', name='docs'),
+    url(r'^docs/refresh_token$', 'apps.docs.views.get_refresh_token', name='get_refresh_token'),
+    url(r'^docs/oauth2callback/?$', 'apps.docs.views.auth_callback', name='oauth2callback'),
+    url(r'^docs/upload/?$', 'apps.docs.views.upload_a_file', name='upload'),
+    url(r'^docs/init/?$', 'apps.docs.views.initialise_drive', name='init'),
 
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),

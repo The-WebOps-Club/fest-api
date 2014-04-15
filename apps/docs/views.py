@@ -8,29 +8,23 @@ from django.contrib.auth.decorators import login_required
 from misc.utils import *  #Import miscellaneous functions
 # Decorators
 # Models
-# from models import StoredCredential
-# import logging
-# # Forms
-# # View functions
-# # Misc
-# # Python
-# import json
-# from authorize import get_credentials, get_authorization_url
-# # from test import get_authorisation_code
+from apps.docs.models import CredentialsModel, FileInfo
+from django.contrib.auth.models import User
+# Forms
+# View functions
+# Misc
+from annoying.functions import get_object_or_None
+# Python
+import json
+import httplib2
+import pprint
+from api import *
 from oauth2client.client import flow_from_clientsecrets, Credentials
 from oauth2client.django_orm import Storage
 from oauth2client import xsrfutil
-from django.contrib.auth.models import User
-from models import CredentialsModel, FileInfo
-from annoying.functions import get_object_or_None
-import json
-import httplib2
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from apiclient import http, errors
-import pprint
-
-from api import *
 
 FLOW = flow_from_clientsecrets(
     settings.GOOGLE_API_CLIENT_SECRETS, 
