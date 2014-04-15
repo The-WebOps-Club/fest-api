@@ -180,8 +180,11 @@ div.news_post hr {
 	        $(".news_comment_wrapper").each(function(index){
 	        	var number_of_comments = $(this).children().length;
 	        	if( number_of_comments > 4){
-	        		$(this).children().slice(0,-2).appendTo($(this).children(".news_comment_aggregator"));
-					$(this).children(".news_comment_aggregator").show();
+	        		var $temp = $(this).children().slice(0,-2)
+	        		$temp
+	        			.appendTo($(this).children(".news_comment_aggregator"));
+
+					$(this).children(".news_comment_aggregator").slideDown(500);
 	        	}
 	        });
 
