@@ -93,8 +93,8 @@ def docs (request):
         PARENT_FOLDER_ID = FileInfo.objects.filter(name='ROOT')[0].file_id
     except Exception, e:
         pass
-    # print PARENT_FOLDER_ID
-    # files = retrieve_all_files(drive())
+    print PARENT_FOLDER_ID
+    files = retrieve_all_files(drive())
     return render_to_response('pages/docs.html',locals(), context_instance= global_context(request))
 
 

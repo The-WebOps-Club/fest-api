@@ -347,8 +347,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
     # Facebook
 SOCIAL_AUTH_FACEBOOK_KEY                = ''
 SOCIAL_AUTH_FACEBOOK_SECRET             = ''
-SOCIAL_AUTH_FACEBOOK_SCOPE              = ['basic_info', 'email']
-SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = ['email','publish_actions']
+SOCIAL_AUTH_FACEBOOK_SCOPE              = ['basic_info', 'email', 'user_birthday', 'user_education_history', 'friends_education_history', 'user_hometown', 'user_likes', 'friends_likes', 'user_photos', 'friends_photos']
+SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = ['basic_info', 'email', 'read_friendlists', 'create_event', 'manage_friendslists', 'publish_actions', 'publish_stream']
     # Twitter
 SOCIAL_AUTH_TWITTER_KEY                 = ''
 SOCIAL_AUTH_TWITTER_SECRET              = ''
@@ -380,7 +380,7 @@ MARKDOWN_DEUX_STYLES = {
 MARKDOWN_DEUX_HELP_URL = "http://daringfireball.net/projects/markdown/syntax"
 
 
-GOOGLE_API_USER_EMAIL = ''
+GOOGLE_API_USER_EMAIL = 'festapi14@gmail.com'
 GOOGLE_API_CLIENT_SECRETS = os.path.join(os.path.dirname(__file__),  'docs_client_secrets.json')
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'docs/oauth2callback'
 GOOGLE_API_CREDENTIALS = ""

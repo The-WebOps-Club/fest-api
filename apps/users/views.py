@@ -69,7 +69,8 @@ def login_user(request):
             if user is not None:
                 if user.is_active:
                     login(request, user) # Logs in the User
-                    #print "Logged the user in successfully"
+                    if ( not hasattr(user, "erp_profile") ): # No erp_profile ! Ask them to fill up forms
+                        return HttpResponseRedirect(reverse("profile")) # Redirect to home page    
                     return HttpResponseRedirect(reverse("identity")) # Redirect to home page
                 else:
                     login_form.errors.update( {
@@ -129,8 +130,12 @@ def profile(request, user_id=None):
 
     # Lofic of the view
         # Basic variables
-    erp_profile = user.erp_profile
-    user_profile = user.profile
+    erp_profile = None
+    user_profile = None
+    if hasattr(user, "erp_profile"):
+        erp_profile = user.erp_profile
+    if hasattr(user, "profile"):
+        user_profile = user.profile
     user_form = UserForm(instance = user)
     user_profile_form = UserProfileForm(instance=user_profile)
     erp_profile_form = ERPProfileForm(instance=erp_profile)
@@ -173,9 +178,7 @@ def profile(request, user_id=None):
             # print user_profile_form.errors
             # print erp_profile_form.errors
             pass
-    # print user_form.errors
-    # print user_profile_form.errors
-    # print erp_profile_form.errors
+    
     print [unicode(i) for i in user_profile_form.fields['dob'].input_formats]
     # Return
     local_context = {
