@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 data = json.loads(''.join(file.readlines()).replace('\n',''))
             CLIENT_ID = data['web']['client_id']
             CLIENT_SECRET = data['web']['client_secret']
-            OAUTH_SCOPE = ' '.join(settings.GOOGLE_API_SCOPES)
+            OAUTH_SCOPE = ' '.join(settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPES)
             flow = OAuth2WebServerFlow(CLIENT_ID, CLIENT_SECRET, OAUTH_SCOPE, settings.GOOGLE_API_REDIRECT_URI)
             flow.params['access_type'] = 'offline'
             flow.params['approval_prompt'] = 'force'

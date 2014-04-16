@@ -20,8 +20,10 @@ import httplib2, json
 
 def create_flow():
   FLOW = flow_from_clientsecrets(
-    settings.GOOGLE_API_CLIENT_SECRETS, 
-    ' '.join(settings.GOOGLE_API_SCOPES), redirect_uri=settings.GOOGLE_API_REDIRECT_URI)
+      settings.GOOGLE_API_CLIENT_SECRETS, 
+      ' '.join(settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE), 
+      redirect_uri=settings.GOOGLE_API_REDIRECT_URI
+  )
   FLOW.params['access_type'] = 'offline'
   FLOW.params['approval_prompt'] = 'force'
   return FLOW

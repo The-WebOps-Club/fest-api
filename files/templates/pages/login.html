@@ -44,7 +44,7 @@
             <span class='big'>Sign Up</span>
             <a class='zocial facebook btn-block' href="{% url 'social:begin' 'facebook' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Facebook</a>
 
-            <a class='zocial google btn-block' href="{% url 'social:begin' 'google' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Google</a>
+            <a class='zocial google btn-block' href="{% url 'social:begin' 'google-oauth2' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Google</a>
         </div>
     </div>
 {% endblock %}

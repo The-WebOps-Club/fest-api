@@ -51,3 +51,9 @@ EMAIL_FILE_PATH = 'full_path_for_emails'
 GOOGLE_API_USER_EMAIL = 'festapi14@gmail.com'
 GOOGLE_API_CREDENTIALS = ""
 GOOGLE_DRIVE_ROOT_FOLDER_ID = ""
+
+# Python social auth tokens
+# SOCIAL_AUTH_FACEBOOK_KEY          = ''
+# SOCIAL_AUTH_FACEBOOK_SECRET       = ''
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY     = ''
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET  = ''
