@@ -90,9 +90,11 @@ def initialise_drive(request):
 def docs (request):
     # Shall consider moving this to a settings variable, else too much db calls
     try:
-        PARENT_FOLDER_ID = FileInfo.objects.filter(name='ROOT')[0].file_id
+        PARENT_FOLDER_ID = settings.GOOGLE_DRIVE_ROOT_FOLDER_ID
+        print PARENT_FOLDER_ID
+        print "asdasdas"
     except Exception, e:
-        pass
+        raise e
     # print PARENT_FOLDER_ID
     # files = retrieve_all_files(drive())
     return render_to_response('pages/docs.html',locals(), context_instance= global_context(request))
