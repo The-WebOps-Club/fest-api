@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from misc.utils import *  #Import miscellaneous functions
 # Decorators
 # Models
-from apps.docs.models import CredentialsModel, FileInfo
+# from apps.docs.models import CredentialsModel, FileInfo
 from django.contrib.auth.models import User
 # Forms
 # View functions
@@ -26,15 +26,14 @@ from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from apiclient import http, errors
 
-FLOW = flow_from_clientsecrets(
-    settings.GOOGLE_API_CLIENT_SECRETS, 
-    ' '.join(settings.GOOGLE_API_SCOPES),
-    redirect_uri=settings.GOOGLE_API_REDIRECT_URI)
-FLOW.params['access_type'] = 'offline'
-FLOW.params['approval_prompt'] = 'force'
-
+###########################################################################################
+# These are one time actions, needs to be done per machine/installation. Better move to management command
 @login_required
 def get_refresh_token(request):
+    '''
+    Creates a flow object and return url
+    '''
+    FLOW = create_flow()
     if not request.user == User.objects.get(email=settings.GOOGLE_API_USER_EMAIL):
         return HttpResponse("You are not authorised to access the drive API")
     # storage = Storage(CredentialsModel, 'id', request.user, 'credential')
@@ -51,6 +50,7 @@ def get_refresh_token(request):
 
 @login_required
 def auth_callback(request):
+    FLOW = create_flow()
     if not xsrfutil.validate_token(settings.SECRET_KEY, request.REQUEST['state'], request.user):
         return  HttpResponseBadRequest()
     credential = FLOW.step2_exchange(request.REQUEST)
@@ -61,29 +61,9 @@ def auth_callback(request):
     storage.credential = credential.to_json()
     storage.refresh_token = credential.refresh_token
     storage.save()
-    return redirect('docs')
+    return HttpResponse("<p>Save this as GOOGLE_API_CREDENTIALS in settings.py</p><p>" + str(credential.to_json())+"</p><p>Close this page</p>")
 
 @login_required
-def docs (request):
-    # Shall consider moving this to a settings variable, else too much db calls
-    PARENT_FOLDER_ID = FileInfo.objects.filter(name='ROOT')[0].file_id
-    print PARENT_FOLDER_ID
-    files = retrieve_all_files(drive())
-    return render_to_response('pages/docs.html',locals(), context_instance= global_context(request))
-
-
-#Sample function to upload a file
-def upload_a_file(request):
-    body = {
-        'title': 'new function uploaded',
-        'description': 'function uploaded A test document',
-        'mimeType': 'text/plain'
-    }
-    fi = '/home/shahidh/works/fest-api/apps/docs/document.txt'
-    file = drive().files().insert(body=body, media_body=fi).execute()
-    pprint.pprint(file)
-    return HttpResponse('done')
-
 def initialise_drive(request):
     """
         First time initialisation for the drive folder
@@ -102,5 +82,33 @@ def initialise_drive(request):
     email_list = [user.email for user in User.objects.all()]
     for email in email_list:
         prems = insert_permission(service, file['id'], email, 'user')
-    return HttpResponse('success')
+    return HttpResponse("<p>Done! Save this as GOOGLE_DRIVE_ROOT_FOLDER_ID in settings.py</p><p>" + str(file['id'])+"</p><p>Close this page</p>")
+
+# End one time actions
+##############################################################################################
+@login_required
+def docs (request):
+    # Shall consider moving this to a settings variable, else too much db calls
+    try:
+        PARENT_FOLDER_ID = FileInfo.objects.filter(name='ROOT')[0].file_id
+    except Exception, e:
+        pass
+    # print PARENT_FOLDER_ID
+    # files = retrieve_all_files(drive())
+    return render_to_response('pages/docs.html',locals(), context_instance= global_context(request))
+
+
+#Sample function to upload a file
+def upload_a_file(request):
+    body = {
+        'title': 'new function uploaded',
+        'description': 'function uploaded A test document',
+        'mimeType': 'text/plain'
+    }
+    fi = '/home/shahidh/works/fest-api/apps/docs/document.txt'
+    file = drive().files().insert(body=body, media_body=fi).execute()
+    pprint.pprint(file)
+    return HttpResponse('done')
+
+
 

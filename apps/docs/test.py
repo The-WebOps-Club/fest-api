@@ -18,7 +18,7 @@ OAUTH_SCOPE = 'https://www.googleapis.com/auth/drive'
 FILENAME = 'document.txt'
 
     # Run through the OAuth flow and retrieve credentials
-flow = OAuth2WebServerFlow(CLIENT_ID, CLIENT_SECRET, OAUTH_SCOPE, REDIRECT_URL)
+flow = OAuth2WebServerFlow(CLIENT_ID, CLIENT_SECRET, OAUTH_SCOPE)
 flow.params['access_type'] = 'offline'
 flow.params['approval_prompt'] = 'force'
 authorize_url = flow.step1_get_authorize_url()

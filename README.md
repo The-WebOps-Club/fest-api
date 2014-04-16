@@ -39,6 +39,10 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 					related_mngr.target_field_name: other_obj
 				})
 		```
-            
+
+3. apiclient :
+    - There is a possibility that this error will occur in ```apiclient```
+        ```ImportError: from apiclient import __version__```
+    - Fix: add ```__version__ = '1.0.2'``` to ```apiclient/__init.py```           
     
 

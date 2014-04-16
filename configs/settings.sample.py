@@ -47,3 +47,7 @@ SERVER_EMAIL = 'Fest-API Server <server@festapi.com>' #The email address that er
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'full_path_for_emails'
 
+# Docs integration
+GOOGLE_API_USER_EMAIL = 'festapi14@gmail.com'
+GOOGLE_API_CREDENTIALS = ""
+GOOGLE_DRIVE_ROOT_FOLDER_ID = ""

@@ -10,7 +10,7 @@ from apiclient.discovery import build
 from misc.utils import *  #Import miscellaneous functions
 # Decorators
 # Models
-from models import CredentialsModel, FileInfo
+from models import CredentialsModel
 # Forms
 # View functions
 # Misc
@@ -19,7 +19,12 @@ import httplib2, json
 # ...
 
 def create_flow():
-  pass
+  FLOW = flow_from_clientsecrets(
+    settings.GOOGLE_API_CLIENT_SECRETS, 
+    ' '.join(settings.GOOGLE_API_SCOPES), redirect_uri=settings.GOOGLE_API_REDIRECT_URI)
+  FLOW.params['access_type'] = 'offline'
+  FLOW.params['approval_prompt'] = 'force'
+  return FLOW
 
 def drive():
   """
@@ -30,10 +35,9 @@ def drive():
       saved by the user having settings.GOOGLE_API_USER_EMAIL as email
   """
   try:
-      storage = CredentialsModel.objects.all()[0]
-  except CredentialsModel.DoesNotExist:
-      return redirect('get_refresh_token')
-  credential = Credentials.new_from_json(storage.credential)
+    credential = Credentials.new_from_json(settings.GOOGLE_API_CREDENTIALS)
+  except Exception,e:
+    return redirect('get_refresh_token')
   http = httplib2.Http()
   http = credential.authorize(http)
   return build('drive', 'v2', http=http)
