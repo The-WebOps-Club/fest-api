@@ -487,7 +487,7 @@ body {
   background-color: #ffffff;
   margin: 0;
   min-width: 940px;
-  overflow: auto;
+  /*overflow: auto;*/
   font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
   font-size: 13px;
   font-weight: normal;

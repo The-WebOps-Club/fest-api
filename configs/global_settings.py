@@ -291,7 +291,7 @@ SOCIAL_AUTH_STRATEGY            = 'social.strategies.django_strategy.DjangoStrat
 SOCIAL_AUTH_STORAGE             = 'social.apps.django_app.default.models.DjangoStorage'
 
 # SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/login/'
 # SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/profile/new'
 # SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/new-assoc/'
 # SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/account-disconnected/'
@@ -326,7 +326,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.get_username',
     # 'example.app.pipeline.require_email',
     # 'social.pipeline.mail.mail_validation',
-    'social.pipeline.user.create_user',
+    # 'social.pipeline.user.create_user',
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details'
@@ -345,17 +345,34 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
 ]
 
     # Facebook
-<<<<<<< HEAD
 SOCIAL_AUTH_FACEBOOK_KEY                = ''
 SOCIAL_AUTH_FACEBOOK_SECRET             = ''
-SOCIAL_AUTH_FACEBOOK_SCOPE              = ['basic_info', 'email', 'user_birthday', 'user_education_history', 'friends_education_history', 'user_hometown', 'user_likes', 'friends_likes', 'user_photos', 'friends_photos']
-SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = ['basic_info', 'email', 'read_friendlists', 'create_event', 'manage_friendslists', 'publish_actions', 'publish_stream']
-=======
-SOCIAL_AUTH_FACEBOOK_KEY                = '398345720274389'
-SOCIAL_AUTH_FACEBOOK_SECRET             = 'fd6da85c30b673d399ea6e61180e35da'
-SOCIAL_AUTH_FACEBOOK_SCOPE              = ['basic_info', 'email']
-SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = ['email','publish_actions']
->>>>>>> 73c6e5680c650d5ac55d6b4f7ccf698052c5c4cb
+SOCIAL_AUTH_FACEBOOK_SCOPE              = [
+    'basic_info', # Basic Info scope
+    'email', # Email scope
+    
+    'user_about_me', 'user_activities', 'user_birthday', 
+    'user_checkins', 'user_education_history', 'user_events', 
+    'user_groups', 'user_hometown', 'user_interests', 
+    'user_likes', 'user_location', 'user_notes', 'user_photos', 
+    'user_status', 'user_subscriptions', 'user_videos', 
+    'user_work_history', # User extended profile scope
+    
+    'friends_about_me', 'friends_activities', 'friends_birthday', 
+    'friends_checkins', 'friends_education_history', 'friends_events', 
+    'friends_groups', 'friends_hometown', 'friends_interests', 
+    'friends_likes', 'friends_location', 'friends_notes', 'friends_photos', 
+    'friends_status', 'friends_subscriptions', 'friends_videos', 
+    'friends_work_history', # friends extended profile scope
+    
+    'read_friendlists', 'read_insights', 'read_requests',
+    'user_online_presence', 'friends_online_presence', 
+    # Extended Permissions scope
+    
+    'create_event', 'manage_friendlists', 'manage_notifications', 
+    'publish_actions', 'publish_stream', # Extended permissions publish
+]
+SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = SOCIAL_AUTH_FACEBOOK_SCOPE
     # Twitter
 SOCIAL_AUTH_TWITTER_KEY                 = ''
 SOCIAL_AUTH_TWITTER_SECRET              = ''

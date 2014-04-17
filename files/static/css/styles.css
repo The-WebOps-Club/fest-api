@@ -90,7 +90,9 @@
 .opacity_half {
     opacity : 0.5;
 }
-
+.full_width {
+    width :100%;
+}
 /* Specific Template styles */
 .topbar div > ul.nav.links a.settingButton, .nav.links a.settingButton {
     background-image: url(../img/fb_icons.png);

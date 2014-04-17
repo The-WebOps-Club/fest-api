@@ -50,7 +50,10 @@ def login_user(request):
     """
     current_page = "profile"# Default argument setting and checking
     if request.user.is_authenticated(): # Check if user is already logged in
-        return redirect("apps.home.views.home")
+        if hasattr(request.session, "role"):
+            return redirect("apps.home.views.home")
+        else:
+            return HttpResponseRedirect(reverse("identity")) # Redirect to home page
 
     # Logic
     login_form = LoginForm()
@@ -90,6 +93,15 @@ def login_user(request):
     local_context = {
         "current_page" : "login",
         "login_form": login_form,
+    }
+    return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
+
+@login_required
+def associate(request): 
+    user = request.user
+    local_context = {
+        "current_page" : "associate",
+        "facebook_association" : user.social_auth.filter(provider="facebook").count(),
     }
     return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
 

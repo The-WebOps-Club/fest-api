@@ -28,6 +28,7 @@ urlpatterns = patterns('',
 
     # Users
     url(r'^login/$', 'apps.users.views.login_user', name='login'), # Logs user in
+    url(r'^associate/$', 'apps.users.views.associate', name='associate'), # Logs user in
     url(r'^profile/(?P<user_id>\d+)$', 'apps.users.views.profile', name='profile'), # Shows profile page of user
     url(r'^profile$', 'apps.users.views.profile', name='profile'),
     url(r'^identity/(?P<role_type>\w+)/(?P<role_id>\d+)$', 'apps.users.views.identity', name='identity'), # Changes identity of the user

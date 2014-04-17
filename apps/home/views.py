@@ -25,6 +25,15 @@ def home (request, *args, **kwargs):
          - Redirects to newsfeed if logged in
          - Redirects to login page if not logged in
     """
+    user = request.user
+    
+    if user.social_auth.filter(provider="facebook").count() == 0:
+        return redirect("apps.users.views.associate")
+
+    if user.is_authenticated(): # Check if user is already logged in
+        if "role" not in request.session.keys():
+            return HttpResponseRedirect(reverse("identity")) # Redirect to home page
+
     return redirect("apps.home.views.newsfeed")
     
 
