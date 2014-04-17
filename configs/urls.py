@@ -49,6 +49,13 @@ urlpatterns = patterns('',
     url(r'^create_post/(?P<wall_id>\d+)/$', 'apps.walls.views.create_post',  name='create_post'),
     url(r'^create_comment/(?P<post_id>\d+)/$', 'apps.walls.views.create_comment',  name='create_comment'),
     
+    # Docs
+    url(r'^docs/$', 'apps.docs.views.docs', name='docs'),
+    url(r'^docs/refresh_token$', 'apps.docs.views.get_refresh_token', name='get_refresh_token'),
+    url(r'^docs/oauth2callback/?$', 'apps.docs.views.auth_callback', name='oauth2callback'),
+    url(r'^docs/upload/?$', 'apps.docs.views.upload_a_file', name='upload'),
+    url(r'^docs/init/?$', 'apps.docs.views.initialise_drive', name='init'),
+
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),
     url(r'^show/500/$', 'misc.views.err500',  name='err505'),
@@ -64,16 +71,27 @@ urlpatterns = patterns('',
     
     #Auth
     url(r'^logout/?$', 'django.contrib.auth.views.logout', {'next_page':'/'}, name='logout'),
-    
+    url(r'^password_reset/$', 'django.contrib.auth.views.password_reset', {'template_name':'password/reset.html', 'extra_context':{'FEST_NAME':settings.FEST_NAME,}}, name='password_reset'),
+    url(r'^password_reset/done/$', 'django.contrib.auth.views.password_reset_done',{'template_name':'password/reset_done.html', 'extra_context':{'FEST_NAME':settings.FEST_NAME,}}, name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', 'django.contrib.auth.views.password_reset_confirm', {'template_name':'password/reset_new_password.html', 'extra_context':{'FEST_NAME':settings.FEST_NAME,}}, name='password_reset_confirm'),
+    url(r'^reset/done/$', 'django.contrib.auth.views.password_reset_complete',{'template_name':'password/reset_complete.html', 'extra_context':{'FEST_NAME':settings.FEST_NAME,}}, name='password_reset_complete'),
+
     # ------------------------------------------------------------------
     # THIRD PARTY APPS
     # Dajaxice
     url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
+    
     # Notifications
     url(r'^inbox/notifications/', include(notifications.urls)),
+    
     # Python social auth
-    url(r'', include('social.apps.django_app.urls', namespace='social'))
+    url(r'', include('social.apps.django_app.urls', namespace='social')),
+    
+    # ------------------------------------------------------------------
+    # PORTALS
 
+    # Coord Application portal
+    url(r'portals/applications/',include('apps.portals.applications.application_portal.urls', namespace='portal_applications'))
 )
 
 # 400 & 500

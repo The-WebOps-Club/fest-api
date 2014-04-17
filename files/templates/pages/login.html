@@ -12,7 +12,7 @@
                         <a class='brand big_brand bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
                     </div>
                     <div class='span6' id='login_box'>
-                        <form class='span9 pull-right' action='' method='POST' id='login_form'  autocomplete="on">
+                        <form class='span9 pull-right' action='{% url "login" %}' method='POST' id='login_form'  autocomplete="on">
                             {% csrf_token %}
                             <div class='span5 input_box'>
                                 <label for='id_username'>Email ID</label><br />
@@ -21,7 +21,7 @@
                             <div class='span5 input_box'>
                                 <label for='id_password'>Password</label><br />
                                 <input type='password' name='password' id='id_password' placeholder='Password' required='true' class='input-large' value='{{ login_form.password.value|default_if_none:"" }}'><br />
-                                <a id='forgot_passwd'>Forgotten Password</a>
+                                <a id='forgot_passwd' href='{% url "password_reset" %}'>Forgotten Password</a>
                             </div>
                             <div class='span2 submit_box'>
                                 <label for="id_submit"></label><br />
@@ -37,15 +37,24 @@
 
 
 {% block full_content %}
-    <div class='span6'>
-    </div>
-    <div class='span6'>
-        <span class='big'>Sign Up</span>
+    <div class='row-fluid below_loginbar'>
+        <div class='span6'>
+        </div>
+        <div class='span6'>
+            <span class='big'>Sign Up</span>
+            <a class='zocial facebook btn-block' href="{% url 'social:begin' 'facebook' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Facebook</a>
+
+            <a class='zocial google btn-block' href="{% url 'social:begin' 'google-oauth2' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Google</a>
+        </div>
     </div>
 {% endblock %}
 
 {% block extra_css %}
+{{ block.super }}
 <style>
+    .below_loginbar {
+        margin-top : 100px;
+    }
     #login_topbar_inner {
         height: 82px;
     }
@@ -96,6 +105,7 @@
 
 
 {% block extra_js %}
+{{ block.super }}
     <script>
     $( document ).ready(function() {    
         // Form submission 

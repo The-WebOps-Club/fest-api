@@ -262,3 +262,6 @@ def identity(request, role_type=None, role_id=None):
 
     # Return
     return redirect("apps.home.views.home")
+
+# --------------------------------------------------------------
+# Views for Python Social auth

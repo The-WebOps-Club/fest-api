@@ -43,3 +43,17 @@ SITE_URL = 'http://localhost:8000/'
 SEND_EMAIL = True
 DEFAULT_FROM_EMAIL = 'Fest-API <noreply@festapi.com>'
 SERVER_EMAIL = 'Fest-API Server <server@festapi.com>' #The email address that error messages come from, such as those sent to ADMINS and MANAGERS.
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'full_path_for_emails'
+
+# Docs integration
+GOOGLE_API_USER_EMAIL = 'festapi14@gmail.com'
+GOOGLE_API_CREDENTIALS = ""
+GOOGLE_DRIVE_ROOT_FOLDER_ID = ""
+
+# Python social auth tokens
+# SOCIAL_AUTH_FACEBOOK_KEY             = '398345720274389'
+# SOCIAL_AUTH_FACEBOOK_SECRET          = 'fd6da85c30b673d399ea6e61180e35da'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY        = '186928535147.apps.googleusercontent.com'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET     = 'N2LxEfSraUVwC79sn4aqtqFE'

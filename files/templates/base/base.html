@@ -14,7 +14,6 @@
     {% if DEBUG %}
         <script>
             localStorage.clear(); /* kill cache */
-            
         </script>
     {% endif %}
 
@@ -27,7 +26,8 @@
 
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
     <link href="{% static 'css/jquery.atwho.css' %}" rel="stylesheet" media="screen">
-    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <link href="{% static 'css/icons.css' %}" rel="stylesheet" media="screen">
+    <!--<link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">-->
 
     <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
 
@@ -68,13 +68,20 @@
     <div class="container-fluid below_topbar">
         {% block full_content %}
         <div class="row-fluid">
-            <div class="span2 sidebar">
-                {% include 'base/sidebar.html' %}
+            <div class="span2 offset1 sidebar">
+                {% block left_content %} 
+                	{% include 'base/sidebar.html' %}
+                {% endblock %}
+
             </div>
-            <div id="main_body_content" class="span10 main_body">
-                {% block content %} {% endblock %}
-                <input id="id_current_page" type="hidden" name="current_page" value="1" />
-            </div>
+            {% block right_content %} 
+	            <div id="main_body_content" class="span6 main_body">
+	                {% block content %} {% endblock %}
+	            </div>
+	            <div class="span2 rightbar">
+	                {% block rightbar %} {% endblock %}
+	            </div>
+            {% endblock %}
         </div>
         {% endblock %}
     </div>
@@ -137,82 +144,108 @@
        				return value;
       			},
 			}
-    	    $("#topbar_search_input").atwho({
-    	    	at: "",
-		       	data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
-		      	tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-		      	show_the_at: false,
-		      	callbacks : goto_wall,
-    	    }).atwho({
-    	    	at: "u:",
-		       	data: atwho_user_list,
-		      	tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-		      	show_the_at: false,
-		      	callbacks : goto_wall,
-    	    }).atwho({
-    	    	at: "d:",
-		       	data: atwho_dept_list,
-		      	tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-		      	show_the_at: false,
-		      	callbacks : goto_wall,
-    	    }).atwho({
-    	    	at: "s:",
-		       	data: atwho_subdept_list,
-		      	tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-		      	show_the_at: false,
-		      	callbacks : goto_wall,
-    	    })
+			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
+                setup_autocomplete_lists();
+            }
     	})
 
-	    // Autocomplete for Users, Dept, Subdept
-		{% autoescape off %}
-		 	atwho_list = {{atwho_list}}
-	    {% endautoescape %}
-	    console.log(atwho_list)
-	    atwho_user_list = atwho_list['users']
-	    atwho_dept_list = atwho_list['dept']
-	    atwho_subdept_list = atwho_list['subdept']
-	    if ( atwho_user_list ) {
-	    	atwho_user_list = $.map(atwho_user_list, function(value, i) {
-	     	  	return {"id" : value["id"], 
-	     	  		"name" : value["first_name"] + "_" + value["last_name"], 
-	     	  		"small" : value["email"]
-	     	  	};
-	    	})
-	    }
-	    if ( atwho_dept_list ) {
-	    	atwho_dept_list = $.map(atwho_dept_list, function(value, i) {
-	     	  	return {"id" : value["id"], 
-	     	  		"name" : value["name"], 
-	     	  		"small":"Department"
-	     	  	};
-	    	})
-	    }
-	    if ( atwho_subdept_list ) {
-	    	atwho_subdept_list = $.map(atwho_subdept_list, function(value, i) {
-	     	  	return {"id" : value["id"], 
-	     	  		"name" : value["name"], 
-	     	  		"small" : "Subdept"
-	     	  	};
-	    	})
-	    }   
+        function setup_autocomplete_lists() {
+            if ( atwho_user_list ) {
+                atwho_user_list = $.map(atwho_user_list, function(value, i) {
+                    return {"id" : value["id"], 
+                        "name" : value["first_name"] + "_" + value["last_name"], 
+                        "small" : value["email"]
+                    };
+                })
+            }
+            if ( atwho_dept_list ) {
+                atwho_dept_list = $.map(atwho_dept_list, function(value, i) {
+                    return {"id" : value["id"], 
+                        "name" : value["name"], 
+                        "small":"Department"
+                    };
+                })
+            }
+            if ( atwho_subdept_list ) {
+                atwho_subdept_list = $.map(atwho_subdept_list, function(value, i) {
+                    return {"id" : value["id"], 
+                        "name" : value["name"], 
+                        "small" : "Subdept"
+                    };
+                })
+            }   
 
-	    at_config = {
-	        at: "@",
-	       	data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
-	      	tpl: "<li data-value='@${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-	      	show_the_at: true,
-	      	callbacks: {
-			    before_insert: function(value, $li) {
-       				console.log($li)
-       				if ( this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0 ) {
-       					this.$inputor.after("<input class='textarea_atwho_list' name='atwho_list' value='" + $li.data("small").toLowerCase() + "_" + $li.data("id") + "' type='hidden'/>")
-       				}
-       				return value;
-      			},
-			},
-	    }
-	    
+            at_config = {
+                at: "@",
+                data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
+                tpl: "<li data-value='@${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
+                show_the_at: true,
+                callbacks: {
+                    before_insert: function(value, $li) {
+                        console.log($li)
+                        if ( this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0 ) {
+                            this.$inputor.after("<input class='textarea_atwho_list' name='atwho_list' value='" + $li.data("small").toLowerCase() + "_" + $li.data("id") + "' type='hidden'/>")
+                        }
+                        return value;
+                    },
+                },
+            }
+            
+            $("#topbar_search_input").atwho({
+                at: "",
+                data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
+                tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
+                show_the_at: false,
+                callbacks : goto_wall,
+            }).atwho({
+                at: "u:",
+                data: atwho_user_list,
+                tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
+                show_the_at: false,
+                callbacks : goto_wall,
+            }).atwho({
+                at: "d:",
+                data: atwho_dept_list,
+                tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
+                show_the_at: false,
+                callbacks : goto_wall,
+            }).atwho({
+                at: "s:",
+                data: atwho_subdept_list,
+                tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
+                show_the_at: false,
+                callbacks : goto_wall,
+            })
+
+            $(".atwho_at_config").atwho(at_config) 
+        }
+
+        atwho_user_list = null;
+        atwho_subdept_list = null;
+        atwho_dept_list = null;
+	    // Autocomplete for Users, Dept, Subdept
+        $.getJSON("{% static 'json/user_list.json' %}", function(json) {
+            atwho_user_list = json;
+            
+			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
+                setup_autocomplete_lists();
+            }
+        });
+        $.getJSON("{% static 'json/subdept_list.json' %}", function(json) {
+            atwho_subdept_list = json;
+            
+			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
+                setup_autocomplete_lists();
+            }
+        });
+        $.getJSON("{% static 'json/dept_list.json' %}", function(json) {
+            atwho_dept_list = json;
+            
+			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
+                setup_autocomplete_lists();
+            }
+        });
+	        
     </script>
 </body>
 

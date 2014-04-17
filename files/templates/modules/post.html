@@ -7,8 +7,9 @@
 
 <div id="post_{{ post.id }}" class="row-fluid" style="">
 	{% if forloop.counter0 %} <hr /> 
-	{% else %} <div class="" style="height : 30px;"></div>
 	{% endif %}
+	<!-- <div class="" style="height : 30px;"></div> -->
+	<!-- <hr /> -->
 	<div class="news_post span12">
 	    <div class="news_left">
 	        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
@@ -18,32 +19,39 @@
 	        	{% if not notification %}
 	        		<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
 	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ post.by.get_full_name }}</a> 
-	            	posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
+	            	posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a>'s wall. 
 	            	<span class="muted small">{{ post.time_created|naturaltime }}</span>
 	            {% elif notification %}
 	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ notification.actor.get_full_name|default:"" }}</a> 
-	            	{{notification.verb}} <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a> 
+	            	{{notification.verb}} <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a>.
 	            	<span class="muted small">{{ notification.timestamp|naturaltime }}</span>
 	            {% endif %}
 	        </div>
 	        <div class="news_body">
-	            {{ post.description|markdown:"default" }}
-	        </div>
+                
+	            {{ post.description|markdown:"trusted" }}
+            </div>
 	        <div class="news_extra"></div>
-	        {% for comment in post.comments.all %}
+	        <div class="news_comment_wrapper">
+	        	<div class="news_comment_aggregator center" style="display:none;">
+	        		See more
+	        	</div>
+	        	{% for comment in post.comments.all %}
 	            <div id="comment_{{ comment.pk }}" class="news_comment">
 	                <div class="news_comment_left">
 	                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
 	                </div>
 	                <div class="news_comment_body markdown_remove_p">
-	                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"default" }}
+	                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> {{ comment.description|markdown:"trusted" }}
 	                    <div class="news_comment_info">
 	                        {{ comment.time_created|naturaltime }} 
 	                        {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
 	                    </div>
 	                </div>
 	            </div>
-	        {% endfor %}
+	        	{% endfor %}
+	    	</div>
+	        <div id="new_comment_placeholder"></div>
 	        <div class="news_comment">
 	            <div class="news_comment_left">
 	                <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
@@ -51,7 +59,7 @@
 	            <div class="news_comment_body">
 	                <form action="{% url 'create_comment' post.pk %}" method="POST">
 	                    {% csrf_token %}
-	                    <textarea class="span12 comment_textarea resize_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
+	                    <textarea class="span12 comment_textarea atwho_at_config resize_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
 	                    
 	                </form>
 	            </div>
@@ -59,7 +67,6 @@
 	    </div>
 	</div>
 </div>
-
 {% once post_styles_and_scripts %}
 <style>
 div.news_post {
@@ -93,7 +100,8 @@ div.news_post hr {
     padding : 5px;
     display : block;
 }
-.news_comment .news_comment_left, .news_comment .news_comment_left .news_comment_profile {
+.news_comment .news_comment_left, 
+.news_comment .news_comment_left .news_comment_profile {
     height : 32px;
     width : 32px;
     float : left;
@@ -102,7 +110,7 @@ div.news_post hr {
     font-size : 12px;
     line-height : 15px;
     margin-left : 40px;
-    min-height : 32px;
+    min-height : 35px;
 }
 .markdown_remove_p > p {
     display : inline;
@@ -113,9 +121,34 @@ div.news_post hr {
     color : #666;
     margin-top : 5px;
 }
+
+ /*comments aggregation*/
+.news_comment_aggregator>.news_comment{
+	display: none;
+}
+.news_comment_aggregator {
+    font-size : 11px;
+    margin-top : 2px;
+    padding : 3px;
+    line-height : 13px;
+    font-weight : bold;
+    background-color: #EEE;
+    display : block;
+    color : #3B5998;
+    cursor : pointer;
+}
+.news_comment_aggregator:hover {
+	color : #333;
+	text-decoration : underline;
+}
 </style>
 
 <script type="text/javascript">
+
+	function append_new_comment(data){
+        $("#id_new_comment_{{ post.id }}").val("").blur();
+        $("#new_comment_placeholder").before(data.append_string);
+	}
 
     $( document ).ready(function() {            
         $(".news_post").mouseover( function() {
@@ -125,45 +158,42 @@ div.news_post hr {
             $(this).find(".news_post_settings").hide()
         })
 
-		// var emojis = [ "smile", "iphone", "girl", "smiley", "heart", "kiss", "copyright", "coffee", "a", "ab", "airplane", "alien", "ambulance", "angel", "anger", "angry", "arrow_forward", "arrow_left", "arrow_lower_left", "arrow_lower_right", "arrow_right", "arrow_up", "arrow_upper_left", "arrow_upper_right", "art", "astonished", "atm", "b", "baby", "baby_chick", "baby_symbol", "balloon", "bamboo", "bank", "barber", "baseball", "basketball", "bath", "bear", "beer", "beers", "beginner", "bell", "bento", "bike", "bikini", "bird", "birthday", "black_square", "blue_car", "blue_heart", "blush", "boar", "boat", "bomb", "book", "boot", "bouquet", "bow", "bowtie", "boy", "bread", "briefcase", "broken_heart", "bug", "bulb", "person_with_blond_hair", "phone", "pig", "pill", "pisces", "plus1", "point_down", "point_left", "point_right", "point_up", "point_up_2", "police_car", "poop", "post_office", "postbox", "pray", "princess", "punch", "purple_heart", "question", "rabbit", "racehorse", "radio", "up", "us", "v", "vhs", "vibration_mode", "virgo", "vs", "walking", "warning", "watermelon", "wave", "wc", "wedding", "whale", "wheelchair", "white_square", "wind_chime", "wink", "wink2", "wolf", "woman", "womans_hat", "womens", "x", "yellow_heart", "zap", "zzz", "+1", "-1"
-	 //   	]
-	 	
-	    // var emoji_config = {
-	    //   at: ":",
-	    //   data: $.map(emojis, function(value, i) {
-	    //	   return {key: value, name:value};
-	    // }),
-	    //   tpl:"<li data-value=':${key}:'>${name} <img src='http://a248.e.akamai.net/assets.github.com/images/icons/emoji/${name}.png'  height='20' width='20' /></li>",
-	    //   insert_tpl: "<img src='http://a248.e.akamai.net/assets.github.com/images/icons/emoji/${name}.png'  height='20' width='20' />",
-	    // }
-    
-
 		$(".news_post .comment_textarea")
 			.keydown(function(e) {
 				e = e || event;
 	        	el = this; $el = $(this)
-	        	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter pressed
+	        	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
 	            	e.preventDefault() // to avoid auto submit of forms
-	            } else if (!e.ctrlKey && e.keyCode == 13) { // 
-	            	e.preventDefault();
 	            }
-	            //console.log(e)
 			})
 			.keyup(function (e) {
 	        	e = e || event;
 	        	el = this; $el = $(this)
-	            if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter pressed
-	            	$el.add_to_textarea("\n")
-	            	setTimeout(function(){$el.trigger("input")}, 10)
-	            	e.preventDefault()
-	            } else if (!e.ctrlKey && e.keyCode == 13) { // Enter pressed
-	            	$el.submit_form()
+	            if (e.ctrlKey && e.keyCode == 13) { // Enter
+	            	Dajaxice.apps.walls.create_comment(append_new_comment, {'post_id':{{post.id}}, 'comment_form': $el.parent().serialize(true)});
 	                e.preventDefault()
 	            } 
-	            //console.log(e)
 	        })
-	        .atwho(at_config) 
-	        //.atwho(emoji_config)
+
+
+	        // Comments aggregation
+	        $(".news_comment_wrapper").each(function(index){
+	        	var number_of_comments = $(this).children().length;
+	        	if( number_of_comments > 4){
+	        		var $temp = $(this).children().slice(0,-2)
+	        		$temp
+	        			.appendTo($(this).children(".news_comment_aggregator"));
+
+					$(this).children(".news_comment_aggregator").slideDown(500);
+	        	}
+	        });
+
+	        $(".news_comment_aggregator").click(function(){
+	        	$el = $(this)
+	        	$el.children(".news_comment").slice(-5).insertAfter($el);
+	        	if( $el.children().length == 1 )
+	        		$el.hide();
+	        });
     })
 </script>
 {% endonce %}

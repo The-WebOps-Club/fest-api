@@ -66,6 +66,11 @@ class Wall(models.Model):
         print "No parent found"
         return temp
     
+    def notify_users(self):
+        users = set()
+        users.update(self.notification_users.all())
+        return users
+    
     def __unicode__(self):
         return self.name
     
@@ -118,6 +123,10 @@ class Post(PostInfo):
     notification_users  = models.ManyToManyField(User, null=True, blank=True, related_name='notified_post')
     visible_to          = models.ManyToManyField(User, null=True, blank=True, related_name='visible_post')
     
+    # Dept and Sub-dept
+    notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_post')
+    notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_post')
+
     is_public           = models.BooleanField(default=True)
     
     # Relations with other models - Comments
@@ -134,5 +143,14 @@ class Post(PostInfo):
         temp = super(Post, self).save(*args, **kwargs)
         return
 
+    def notify_users(self):
+       	users = set()
+       	users.update(self.notification_users.all())
+       	for dept in self.notification_depts.all():
+            users.update(dept.related_users())
+        for sub_dept in self.notification_subdepts.all():
+            users.update(sub_dept.related_users())
+        return users
+    	
     class Meta:
         get_latest_by = 'time_created'

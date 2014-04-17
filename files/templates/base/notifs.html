@@ -25,9 +25,10 @@
 				You have no unread notifications.
 			</div>
 		{% endfor %}
-	</div>
-	<center><button class="btn btn-small" name="see_more_unread" id="id_see_more_unread" onclick="Dajaxice.apps.home.load_notifs(Dajax.process, {'start':parseInt($('#id_current_page_unread').val()),'end':parseInt($('#id_current_page_unread').val())+4 ,'targetdiv': '#id_notifs_container_unread' })">See more</button></center>
-	
+		<div class="center" name="see_more_unread" id="id_see_more_unread">
+			See more
+		</div>
+	</div>	
 </div>
 
 {% once notifs_topbar_styles_and_scripts %}
@@ -82,6 +83,17 @@
 	.notif:hover {
 		background-color : #f0f0f0;
 	}
+	#id_see_more_unread {
+		background-color : #f0f0f0;	
+		padding : 5px;
+		color: #3B5998;
+		cursor : pointer;
+	}
+	#id_see_more_unread:hover {
+		background-color : #e0e0e0;	
+		color: #1B3978;
+		text-decoration : underline;
+	}
 </style>
 
 
@@ -126,8 +138,26 @@
 			e.preventDefault()
 		})
 		// $(".notifButton").popover("show")
-	});
+		function see_more_notifs(data) {
+			Dajax.process(data)
+		}
+		$("#id_see_more_unread").click(function () {
+			Dajaxice.apps.home.load_notifs(see_more_notifs, {
+				'start':parseInt($('#id_current_page_unread').val()),
+				'end':parseInt($('#id_current_page_unread').val())+4,
+				'targetdiv': '#id_notifs_container_unread' 
+			})
+		})
 
+	});
+	/*
+	$("#id_notifs_container_unread").scroll(function(){
+		var scrollPos = 0;
+		if(scrollPos==$(this).scrollTop()){
+			alert("reached bottom!");
+		}
+		scrollPos = $(this).scrollTop();
+	});*/
 	
 </script>
 {% endonce %}
