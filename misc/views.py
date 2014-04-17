@@ -16,10 +16,17 @@ from django.templatetags.static import static
 import os
 
 def err404 (request, *args, **kwargs):
-    err404page = True
-    return render_to_response('pages/404.html', locals(), context_instance= global_context(request))
+    print kwargs
+    local_context = {
+        "current_page" : "err404",
+        "messages" : ["hi", "bye"],
+    }
+    return render_to_response('base/404.html', local_context, context_instance= global_context(request))
     
 def err500 (request, *args, **kwargs):
-    err500page = True
-    return render_to_response('pages/500.html', locals(), context_instance= global_context(request))
+    local_context = {
+        "current_page" : "err404",
+        "messages" : ["hi", "bye"],
+    }
+    return render_to_response('base/500.html', local_context, context_instance= global_context(request))
 

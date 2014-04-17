@@ -31,7 +31,15 @@
                                 </div>
                             </form>
                         {% elif current_page == "associate" %}
-                            <h2 class="white right_text pull-right"> You need to associate your social accounts</h2>
+                            <h2 class="white right_text pull-right"> 
+                            {% if facebook_association == 0 %}
+                                You need to associate your facebook account
+                            {% else %}
+                                <a href="{{ SITE_URL }}">
+                                Skip to main site  >
+                                <!-- <i class="icon-chevron-right icon-white"></i> -->
+                                </a>
+                            {% endif %}</h2>
                         {% endif %}
                     </div>
                 </div>
@@ -78,6 +86,12 @@
                         <br />
                         <a class="zocial twitter full_width" href="{% url 'social:begin' 'twitter' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Twitter</a>
                         <br />
+                        {% if current_page == "associate" %}
+                            <br /><br />
+                            <div class="bold center">OR</div>
+                            <br />
+                            <a class="zocial logout full_width" href="{% url 'logout' %}">Sign Out</a>
+                        {% endif %}
                     </p>
                 </div>
             </div>

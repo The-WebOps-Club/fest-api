@@ -288,6 +288,7 @@ a.zocial {
 .zocial.linkedin:before {content: "L";}
 .zocial.lkdto:before {content: "\00EE";}
 .zocial.logmein:before {content: "\00EB";}
+.zocial.logout:before {content: "x";}
 .zocial.macstore:before {content: "^";}
 .zocial.meetup:before {content: "M";}
 .zocial.myspace:before {content: "_";}
@@ -390,6 +391,7 @@ a.zocial {
 .zocial.linkedin {background-color: #0083a8;}
 .zocial.lkdto {background-color: #7c786f;}
 .zocial.logmein {background-color: #000;}
+.zocial.logout {background-color: #000;}
 .zocial.macstore {background-color: #007dcb}
 .zocial.meetup {background-color: #ff0026;}
 .zocial.myspace {background-color: #000;}
