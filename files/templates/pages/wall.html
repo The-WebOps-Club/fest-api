@@ -13,9 +13,7 @@
     {% include "modules/new_post.html" %}
     <div id="new_post_placeholder" style="height : 30px;"></div>
         {% for post in wall_posts %}
-            {% with show_post='True' %}
-                {% include "modules/post.html" %}
-            {% endwith %}       
+            {% include "modules/post.html" %}    
         {% empty %}
             <div id="empty_wall_msg" class="row-fluid huge muted">
                 <hr />

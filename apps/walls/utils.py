@@ -51,6 +51,22 @@ def create_posts_page(request, items_list, **kwargs):
     }
     return local_context
 
+def create_notifications_page(request, items_list, **kwargs):
+    items, exhausted = paginate_items(items_list, **kwargs)
+    append_string = ""
+    for item in items:
+        local_context = {
+            'post' : item.target, 
+            'notification' : item,
+        }
+        append_string += "<hr />" \
+            + render_to_string('modules/post.html', local_context, context_instance= global_context(request))
+    local_context = {
+        "append_string" : append_string,
+        "exhausted" : exhausted,
+    }
+    return local_context
+
 def create_notifs_page(request, items_list, **kwargs):
     items, exhausted = paginate_items(items_list, **kwargs)
     append_string = ""

@@ -19,7 +19,7 @@ from misc.utils import *  #Import miscellaneous functions
 
 # From Apps
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-from apps.walls.utils import create_posts_page, create_notifs_page
+from apps.walls.utils import create_posts_page, create_notifs_page, create_notifications_page
 
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
@@ -52,7 +52,7 @@ def hello(request):
 @dajaxice_register
 def newsfeed_pagination(request, page, **kwargs):
     notifications_list = Notification.objects.order_by("-timestamp")
-    notifications_page = create_posts_page(request, notifications_list, page=page)
+    notifications_page = create_notifications_page(request, notifications_list, page=page)
     local_context = {}
     local_context.update(notifications_page)
     return json.dumps(local_context)

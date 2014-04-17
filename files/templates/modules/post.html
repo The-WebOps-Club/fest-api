@@ -8,8 +8,6 @@
 <div id="post_{{ post.id }}" class="row-fluid" style="">
 	{% if forloop.counter0 %} <hr /> 
 	{% endif %}
-	<!-- <div class="" style="height : 30px;"></div> -->
-	<!-- <hr /> -->
 	<div class="news_post span12">
 	    <div class="news_left">
 	        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
@@ -59,7 +57,13 @@
 	            <div class="news_comment_body">
 	                <form action="{% url 'create_comment' post.pk %}" method="POST">
 	                    {% csrf_token %}
-	                    <textarea class="span12 comment_textarea atwho_at_config resize_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
+	                    <textarea 
+	                    	class="span12 comment_textarea atwho_at_config resize_textarea" 
+	                    	name="comment" 
+	                    	cols="30" rows="1" 
+	                    	id="id_new_comment_{{ post.id }}" 
+	                    	placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown">
+	                    </textarea>
 	                    
 	                </form>
 	            </div>
