@@ -43,6 +43,7 @@ def newsfeed(request):
     local_context = {
         "current_page" : "newsfeed",
         "notifications" : Notification.objects.order_by("-timestamp")[:5],
+#        "notifications" : user.notifications.unread(),
     }
     return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 

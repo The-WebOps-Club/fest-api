@@ -5,56 +5,78 @@
 {% block title %} {{ FEST_NAME }} {% endblock %} 
 
 {% block content %}
+    <input id="id_current_page" type="hidden" name="current_page" value="1" />
     
     {% include 'modules/profile_banner.html' %}
     <br/>
     {% url 'create_post' wall.id as new_post_url %}
     {% include "modules/new_post.html" %}
     <div id="new_post_placeholder" style="height : 30px;"></div>
-	{% for post in wall_posts %}
-	    {% with show_post='True' %}
-	    	{% include "modules/post.html" %}
-	   	{% endwith %}       
-	{% empty %}
-		<div id="empty_wall_msg" class="row-fluid huge muted">
-            <hr />
-            There are no Posts :(
-		</div>
-    {% endfor %}
+        {% for post in wall_posts %}
+            {% with show_post='True' %}
+                {% include "modules/post.html" %}
+            {% endwith %}       
+        {% empty %}
+            <div id="empty_wall_msg" class="row-fluid huge muted">
+                <hr />
+                There are no Posts :(
+            </div>
+        {% endfor %}
+        <div class="row-fluid centered">
+            <div class="span12 center" name="see_more" id="id_see_more" href="javascript:void(0)">See more</div>
+        </div>
+
     </div>
-    <center style="display : none;"><button class="btn btn-success" name="see_more" id="id_see_more"See more</button></center>
 {% endblock %}
+
 {% block extra_css %} {{ block.super }}
 <style type="text/css">
+#id_see_more {
+    cursor : pointer;
+    margin-top : 20px;
+    padding : 20px 20px;
+    vertical-align : middle;
+    background-color : #eee;
+    color : #3B5998;
+}
+#id_see_more:hover {
+    background-color : #dedede;
+    color : #000;
+}
 </style>
 {% endblock %} 
 
 {% block extra_js %} 
 {{ block.super }}
 <script type="text/javascript">
-	function append_new_data(data){
-	    if (!data.exhausted){
-	        $('#main_body_content').append(data.append_string);
-	        $('#id_current_page').val(parseInt($('#id_current_page').val())+1);
-	    }
-	    else {
-	        $('#id_see_more').html('No more to load');
-	    }
-	}
+    function dajax_wall_pagination(data){
+        if (!data.exhausted){
+            $('#main_body_content #id_see_more').before(data.append_string);
+            $('#id_current_page').val(parseInt($('#id_current_page').val())+1);
+        }
+        else {
+            $('#id_see_more').html('No more to load');
+        }
+    }
 
-	$( document ).ready(function() {    
-		// See More
-		$("#id_see_more").click(function() {
-			Dajaxice.apps.walls.wall_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1, 'wall_id':{{wall.id}} })
-		})
+    $( document ).ready(function() {    
+        // See More
+        $("#id_see_more").click(function() {
+            Dajaxice.apps.walls.wall_pagination(dajax_wall_pagination, {
+                    'page' : parseInt($('#id_current_page').val())+1, 
+                    'wall_id' : {{ wall.id }} 
+            })
+        })
 
-		// Inifinite scroll
-		$(window).scroll(function(){
-		    if( $(document).scrollTop() >= $(document).height() - $(window).height() ) {
-		        $("#id_see_more").click();
-		    }	
-		}).scroll();
-		
-	})
+        // Inifinite scroll
+        $(window).scroll(function(){
+            var $doc = $(document),
+                $win = $(window)
+            if ($win.scrollTop() >= $doc.height()-$win.height()) {
+                $("#id_see_more").click();
+            }   
+        }).scroll();
+        
+    })
 </script>
 {% endblock %}

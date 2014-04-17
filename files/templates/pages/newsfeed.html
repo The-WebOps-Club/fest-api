@@ -8,7 +8,6 @@
 	<input id="id_current_page" type="hidden" name="current_page" value="1" />
 	
 	{% url 'create_post' user.erp_profile.wall.id as new_post_url %}
-	<!-- {# {% include "modules/new_post.html" %} #} -->
     	{% for notification in notifications %}
 			{% with post=notification.target %}
 				{% include "modules/post.html" %}
@@ -151,31 +150,9 @@ div.news_post hr {
 </style>
 {% endblock %} {% block extra_js %} {{ block.super }}
 <script type="text/javascript">
-	function show_status_textarea() {
-	    $("#status_wrapper #id_status").height(50);
-	    $("#status_wrapper #status_bottom_bar").show();
-	}
-	function hide_status_textarea() {
-	    $("#status_wrapper #id_status").height(20);
-	       $("#status_wrapper #status_bottom_bar").hide();
-	}
-
-
-	    $("#status_wrapper *").focusin(show_status_textarea);
-	    //$("#status_wrapper *").focusout(hide_status_textarea);
-
-	    $("#status_wrapper #status_submit").keydown(function (e) {
-	        if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
-	        	console.log("Posting");
-	        } 
-	        
-	    });
-	    $("#status_wrapper #status_submit").click(function() { 
-	        console.log("Posting");
-	    });
-	function append_new_data(data){
+	function dajax_newsfeed_pagination(data) {
 	    if (!data.exhausted){
-	        $('#main_body_content').find("#id_see_more").before(data.append_string);
+	        $('#main_body_content #id_see_more').before(data.append_string);
 	        $('#id_current_page').val(parseInt($('#id_current_page').val())+1);
 	    }
 	    else {
@@ -184,9 +161,11 @@ div.news_post hr {
 	}
 
 	$( document ).ready(function() {    
-		// See more button
+        // See more button
 		$("#id_see_more").click(function() {
-			Dajaxice.apps.walls.newsfeed_pagination(append_new_data, {'page':parseInt($('#id_current_page').val())+1 })
+			Dajaxice.apps.walls.newsfeed_pagination(dajax_newsfeed_pagination, {
+                    'page':parseInt($('#id_current_page').val())+1,
+            })
 		})
 		
 		// Inifinite scroll
