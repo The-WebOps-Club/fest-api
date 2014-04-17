@@ -10,6 +10,10 @@ import json
 
 from oauth2client.client import OAuth2WebServerFlow
 
+from django.contrib.auth.models import User
+from annoying.functions import get_object_or_None
+
+
 class Command(BaseCommand):
     help = 'Retrieves the drive credentials. Make sure that Google API user is defined in settings \
     Arguments: either authorize or initialize'
@@ -22,17 +26,22 @@ class Command(BaseCommand):
                 data = json.loads(''.join(file.readlines()).replace('\n',''))
             CLIENT_ID = data['web']['client_id']
             CLIENT_SECRET = data['web']['client_secret']
-            OAUTH_SCOPE = ' '.join(settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPES)
+            # OAUTH_SCOPE = ' '.join(settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE)
+            OAUTH_SCOPE = 'https://www.googleapis.com/auth/drive'
+
             flow = OAuth2WebServerFlow(CLIENT_ID, CLIENT_SECRET, OAUTH_SCOPE, settings.GOOGLE_API_REDIRECT_URI)
             flow.params['access_type'] = 'offline'
             flow.params['approval_prompt'] = 'force'
             authorize_url = flow.step1_get_authorize_url()
-            print 'Go to the following link in your browser: LOGIN AS '+ settings.GOOGLE_API_USER_EMAIL + authorize_url
+            print 'Go to the following link in your browser: LOGIN AS '+ settings.GOOGLE_API_USER_EMAIL +' '+ authorize_url
             code = raw_input('Enter verification code: ').strip()
             credentials = flow.step2_exchange(code)
             print credentials.to_json()
-            storage = CredentialsModel.objects.get_or_create(identifier=settings.GOOGLE_API_USER_EMAIL)
-            storage = storage[0]
+            storage = CredentialsModel.objects.filter(id=User.objects.get(email=settings.GOOGLE_API_USER_EMAIL))
+            if not storage:
+                storage = CredentialsModel.objects.create(id=User.objects.get(email=settings.GOOGLE_API_USER_EMAIL))
+            else:
+                storage = storage[0]
             storage.credential = credential.to_json()
             storage.refresh_token = credential.refresh_token
             storage.save()

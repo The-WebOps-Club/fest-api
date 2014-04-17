@@ -50,7 +50,7 @@ EMAIL_FILE_PATH = 'full_path_for_emails'
 # Docs integration
 GOOGLE_API_USER_EMAIL = 'festapi14@gmail.com'
 GOOGLE_API_CREDENTIALS = ""
-GOOGLE_DRIVE_ROOT_FOLDER_ID = ""
+GOOGLE_DRIVE_ROOT_FOLDER_ID = "0B75xGGtqUve5NGlHM1E0TWtVbEE"
 
 # Python social auth tokens - Ali
 # SOCIAL_AUTH_FACEBOOK_KEY             = '398345720274389'

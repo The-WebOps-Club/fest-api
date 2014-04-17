@@ -335,8 +335,8 @@ SOCIAL_AUTH_PIPELINE = (
     # Google
 SOCIAL_AUTH_GOOGLE_CONSUMER_KEY          = ''
 SOCIAL_AUTH_GOOGLE_CONSUMER_SECRET       = ''
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY            = ''
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET         = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY            = '186928535147.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET         = 'N2LxEfSraUVwC79sn4aqtqFE'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/userinfo.profile',
@@ -345,10 +345,17 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
 ]
 
     # Facebook
+<<<<<<< HEAD
 SOCIAL_AUTH_FACEBOOK_KEY                = ''
 SOCIAL_AUTH_FACEBOOK_SECRET             = ''
 SOCIAL_AUTH_FACEBOOK_SCOPE              = ['basic_info', 'email', 'user_birthday', 'user_education_history', 'friends_education_history', 'user_hometown', 'user_likes', 'friends_likes', 'user_photos', 'friends_photos']
 SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = ['basic_info', 'email', 'read_friendlists', 'create_event', 'manage_friendslists', 'publish_actions', 'publish_stream']
+=======
+SOCIAL_AUTH_FACEBOOK_KEY                = '398345720274389'
+SOCIAL_AUTH_FACEBOOK_SECRET             = 'fd6da85c30b673d399ea6e61180e35da'
+SOCIAL_AUTH_FACEBOOK_SCOPE              = ['basic_info', 'email']
+SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = ['email','publish_actions']
+>>>>>>> 73c6e5680c650d5ac55d6b4f7ccf698052c5c4cb
     # Twitter
 SOCIAL_AUTH_TWITTER_KEY                 = ''
 SOCIAL_AUTH_TWITTER_SECRET              = ''
