@@ -19,7 +19,7 @@ from misc.utils import *  #Import miscellaneous functions
 
 # From Apps
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-from apps.walls.utils import create_posts_page, create_notifs_page, create_notifications_page
+from apps.walls.utils import paginate_items
 
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
@@ -52,18 +52,38 @@ def hello(request):
 @dajaxice_register
 def newsfeed_pagination(request, page, **kwargs):
     notifications_list = Notification.objects.order_by("-timestamp")
-    notifications_page = create_notifications_page(request, notifications_list, page=page)
-    local_context = {}
-    local_context.update(notifications_page)
+    items, exhausted = paginate_items(notifications_list, page=page, **kwargs)
+    append_string = ""
+    for item in items:
+        local_context = {
+            'post' : item.target, 
+            'notification' : item,
+        }
+        append_string += "<hr />" \
+            + render_to_string('modules/post.html', local_context, context_instance= global_context(request))
+    local_context = {
+        "append_string" : append_string,
+        "exhausted" : exhausted,
+    }
     return json.dumps(local_context)
 
 @dajaxice_register
 def wall_pagination(request, page, wall_id, **kwargs):
     posts_list = Post.objects.filter(wall__id = int(wall_id)).order_by('-time_updated')
-    posts_page = create_posts_page(request, posts_list, page=page)
+    items, exhausted = paginate_items(posts_list, page=page, **kwargs)
+    append_string = ""
+    for item in items:
+        local_context = {
+            'post' : item, 
+            'show_post' : 'True',
+        }
+        append_string += "<hr />" \
+            + render_to_string('modules/post.html', local_context, context_instance= global_context(request))
     local_context = {
+        "append_string" : append_string,
+        "exhausted" : exhausted,
+        "wall_id" : wall_id,
     }
-    local_context.update(posts_page)
     return json.dumps(local_context)
 
 @dajaxice_register
@@ -74,10 +94,34 @@ def notifs_pagination(request, page, notif_type='unread', **kwargs):
         notifs_list = request.user.notifications.read()
     elif notif_type == 'all':
         notifs_list = request.user.notifications.all()
-    notifs_page = create_notifs_page(request, notifs_list, page=page)
+    items, exhausted = paginate_items(notifs_list, page=page, **kwargs)
+    append_string = ""
+    for item in items:
+        local_context = {
+            'notification' : item,
+        }
+        append_string += render_to_string('modules/notif.html', local_context, context_instance= global_context(request))
     local_context = {
+        "append_string" : append_string,
+        "exhausted" : exhausted,
     }
-    local_context.update(notifs_page)
+    return json.dumps(local_context)
+
+@dajaxice_register
+def comments_pagination(request, page, post_id, **kwargs):
+    comments_list = Post.objects.filter(post__id = int(post_id)).order_by('-time_created')
+    items, exhausted = paginate_items(comments_list, page=page, **kwargs)
+    append_string = ""
+    for item in items:
+        local_context = {
+            'notification' : item,
+        }
+        append_string += render_to_string('modules/notif.html', local_context, context_instance= global_context(request))
+    local_context = {
+        "append_string" : append_string,
+        "exhausted" : exhausted,
+        "post_id" : post_id,
+    }
     return json.dumps(local_context)
 
 # -------------------------------------------------------------

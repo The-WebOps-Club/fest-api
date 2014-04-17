@@ -17,7 +17,7 @@
 
 <div class="hidden notifs_content">
 	<div id="id_notifs_container_notifs" class="notifs_contents_inner">
-		<input type="hidden" name="current_page_unread" id="id_current_page_notifs" value="1" />
+		<input type="hidden" name="current_page_unread" class="current_page_notifs" value="1" />
 		{% for notification in user.notifications.all|slice:":5" %}
 			{% include 'modules/notif.html'%}
 		{% empty %}
@@ -25,7 +25,7 @@
 				You have no unread notifications.
 			</div>
 		{% endfor %}
-		<div class="center" name="see_more_notifs" id="id_see_more_notifs">
+		<div class="center see_more_notifs" name="see_more_notifs" >
 			See more
 		</div>
 	</div>	
@@ -85,13 +85,13 @@
 	.notif:hover {
 		background-color : #f0f0f0;
 	}
-	#id_see_more_notifs {
+	.see_more_notifs {
 		background-color : #f0f0f0;	
 		padding : 5px;
 		color: #3B5998;
 		cursor : pointer;
 	}
-	#id_see_more_notifs:hover {
+	.see_more_notifs:hover {
 		background-color : #e0e0e0;	
 		color: #1B3978;
 		text-decoration : underline;
@@ -103,13 +103,13 @@
 	notifs_loading = false
 	function dajax_notifs_pagination(data){
 	    if (!data.exhausted) {
-    	    $(".popover_notifs #id_see_more_notifs").before(data.append_string);
-	        $count_field = $(".popover_notifs #id_current_page_notifs")
-	        $count_field.val(parseInt($count_field.val())+1);
+    	    $(".popover_notifs .see_more_notifs").before(data.append_string);
+	        $value = $(".popover_notifs .current_page_notifs")
+	        $value.val( parseInt($value.val()) + 1 );
 	        notifs_loading = false
     	}
     	else {
-        	$(".popover_notifs #id_see_more_notifs").html('No more to load');
+        	$(".popover_notifs .see_more_notifs").html('No more to load');
     	}
 	}
 	function notifs_title() {
@@ -137,20 +137,20 @@
 			$(".userButton, .messageButton, .settingsButton").popover("hide")
 			$(".notifButton").popover("toggle")
 			
-			$(".popover_notifs #id_see_more_notifs").click( function () {
+			$(".popover_notifs .see_more_notifs").click( function () {
 				if ( notifs_loading == false ) {
 					notifs_loading = true
 					Dajaxice.apps.walls.notifs_pagination(dajax_notifs_pagination, {
-					    'page' : parseInt($('#id_current_page_notifs').val())+1, 
+					    'page' : parseInt($('.current_page_notifs').val())+1, 
 					})
 				}
 			})
 			e.preventDefault()
 			$(".popover_notifs #id_notifs_container_notifs").scroll(function(){
 				var $el = $(this)
-				console.log($(".popover_notifs #id_notifs_container_notifs").scrollTop())
+				
 				if( $el.scrollTop() >= $el.height() - $el.parent().height()){
-					$(".popover_notifs #id_see_more_notifs").click()
+					$(".popover_notifs .see_more_notifs").click()
 				}
 				scrollPos = $(this).scrollTop();
 			});
@@ -158,7 +158,6 @@
 		// $(".notifButton").popover("show")
 		
 	});
-
 	
 </script>
 {% endonce %}

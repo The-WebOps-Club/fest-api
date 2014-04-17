@@ -2,15 +2,68 @@
 {% load humanize %} 
 {% load markdown_deux_tags %}
 {% load once %}
-	            <div id="comment_{{ comment.pk }}" class="news_comment">
-	                <div class="news_comment_left">
-	                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
-	                </div>
-	                <div class="news_comment_body markdown_remove_p">
-	                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"trusted" }}
-	                    <div class="news_comment_info">
-	                        {{ comment.time_created|naturaltime }} 
-	                        {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
-	                    </div>
-	                </div>
-	            </div>
+
+<div {% if not new_comment %} id="comment_{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
+    <div class="news_comment_left">
+        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
+    </div>
+    <div class="news_comment_body markdown_remove_p">
+        {% if new_comment %} 
+			<form action="{% url 'create_comment' post.pk %}" method="POST">
+			    {% csrf_token %}
+			    <textarea 
+			    	class="span12 comment_textarea atwho_at_config resize_textarea" 
+			    	name="comment" 
+			    	cols="30" rows="1" 
+			    	id="id_new_comment_{{ post.id }}" 
+			    	placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
+			    
+			</form>
+        {% else %}
+	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"trusted" }}
+	        <div class="news_comment_info">
+	            {{ comment.time_created|naturaltime }} 
+	            {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
+	        </div>
+       	{% endif %}
+    </div>
+</div>
+
+
+{% once comment_styles_and_scripts %}
+<style>
+	.news_comment {
+	    margin-top : 2px;
+	    background-color: #EEE;
+	    padding : 5px;
+	    display : block;
+	}
+	.news_comment .news_comment_left, 
+	.news_comment .news_comment_left .news_comment_profile {
+	    height : 32px;
+	    width : 32px;
+	    float : left;
+	}
+	.news_comment .news_comment_body {
+	    font-size : 12px;
+	    line-height : 15px;
+	    margin-left : 40px;
+	    min-height : 35px;
+	}
+	.markdown_remove_p > p {
+	    display : inline;
+	}
+	.news_comment .news_comment_body .news_comment_info {
+	    font-size : 11px;
+	    line-height : 13px;
+	    color : #666;
+	    margin-top : 5px;
+	}
+
+</style>
+
+<script>
+	
+
+</script>
+{% endonce %}
