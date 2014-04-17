@@ -101,7 +101,7 @@ def associate(request):
     user = request.user
     local_context = {
         "current_page" : "associate",
-        "facebook_association" : user.social_auth.filter(provider="facebook").count(),
+        "facebook_association" : user.social_auth.filter(provider="facebook").count() if settings.SOCIAL_AUTH_FORCE_FB else 1,
     }
     return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
 

@@ -159,41 +159,41 @@ div.news_post hr {
         })
 
 		$(".news_post .comment_textarea")
-			.keydown(function(e) {
-				e = e || event;
-	        	el = this; $el = $(this)
-	        	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
-	            	e.preventDefault() // to avoid auto submit of forms
-	            }
-			})
-			.keyup(function (e) {
-	        	e = e || event;
-	        	el = this; $el = $(this)
-	            if (e.ctrlKey && e.keyCode == 13) { // Enter
-	            	Dajaxice.apps.walls.create_comment(append_new_comment, {'post_id':{{post.id}}, 'comment_form': $el.parent().serialize(true)});
-	                e.preventDefault()
-	            } 
-	        })
+		.keydown(function(e) {
+			e = e || event;
+        	el = this; $el = $(this)
+        	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
+            	e.preventDefault() // to avoid auto submit of forms
+            }
+		})
+		.keyup(function (e) {
+        	e = e || event;
+        	el = this; $el = $(this)
+            if (e.ctrlKey && e.keyCode == 13) { // Enter
+            	Dajaxice.apps.walls.create_comment(append_new_comment, {'post_id':{{post.id}}, 'comment_form': $el.parent().serialize(true)});
+                e.preventDefault()
+            } 
+        })
 
 
-	        // Comments aggregation
-	        $(".news_comment_wrapper").each(function(index){
-	        	var number_of_comments = $(this).children().length;
-	        	if( number_of_comments > 4){
-	        		var $temp = $(this).children().slice(0,-2)
-	        		$temp
-	        			.appendTo($(this).children(".news_comment_aggregator"));
+        // Comments aggregation
+        $(".news_comment_wrapper").each(function(index){
+        	var number_of_comments = $(this).children().length;
+        	if( number_of_comments > 4){
+        		var $temp = $(this).children().slice(0,-2)
+        		$temp
+        			.appendTo($(this).children(".news_comment_aggregator"));
 
-					$(this).children(".news_comment_aggregator").slideDown(500);
-	        	}
-	        });
+				$(this).children(".news_comment_aggregator").slideDown(500);
+        	}
+        });
 
-	        $(".news_comment_aggregator").click(function(){
-	        	$el = $(this)
-	        	$el.children(".news_comment").slice(-5).insertAfter($el);
-	        	if( $el.children().length == 1 )
-	        		$el.hide();
-	        });
+        $(".news_comment_aggregator").click(function(){
+        	$el = $(this)
+        	$el.children(".news_comment").slice(-5).insertAfter($el);
+        	if( $el.children().length == 1 )
+        		$el.hide();
+        });
     })
 </script>
 {% endonce %}

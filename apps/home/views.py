@@ -27,7 +27,7 @@ def home (request, *args, **kwargs):
     """
     user = request.user
     
-    if user.social_auth.filter(provider="facebook").count() == 0:
+    if settings.SOCIAL_AUTH_FORCE_FB and user.social_auth.filter(provider="facebook").count() == 0:
         return redirect("apps.users.views.associate")
 
     if user.is_authenticated(): # Check if user is already logged in
@@ -42,9 +42,7 @@ def newsfeed(request):
     user = request.user
     local_context = {
         "current_page" : "newsfeed",
-#        "notifications" : Notification.objects.order_by("-timestamp")[:5],
-        "current_page" : "newsfeed",
-        "notifications" : user.notifications.unread(),
+        "notifications" : Notification.objects.order_by("-timestamp")[:5],
     }
     return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 
