@@ -55,6 +55,8 @@ urlpatterns = patterns('',
     url(r'^docs/oauth2callback/?$', 'apps.docs.views.auth_callback', name='oauth2callback'),
     url(r'^docs/upload/?$', 'apps.docs.views.upload_a_file', name='upload'),
     url(r'^docs/init/?$', 'apps.docs.views.initialise_drive', name='init'),
+    url(r'^docs/picker/?$', 'apps.docs.views.picker', name='picker'),
+
 
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),

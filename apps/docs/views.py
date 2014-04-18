@@ -113,4 +113,18 @@ def upload_a_file(request):
     return HttpResponse('done')
 
 
+@login_required
+def picker (request):
+    # Shall consider moving this to a settings variable, else too much db calls
+    try:
+        PARENT_FOLDER_ID = settings.GOOGLE_DRIVE_ROOT_FOLDER_ID
+        print PARENT_FOLDER_ID
+        print "asdasdas"
+    except Exception, e:
+        raise e
+    # print PARENT_FOLDER_ID
+    # files = retrieve_all_files(drive())
+    new = drive()
+    token= get_access_token()
+    return render_to_response('pages/picker.html',locals(), context_instance= global_context(request))
 
