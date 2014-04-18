@@ -106,7 +106,7 @@
     	    $(".popover_notifs .see_more_notifs").before(data.append_string);
 	        $value = $(".popover_notifs .current_page_notifs")
 	        $value.val( parseInt($value.val()) + 1 );
-	        notifs_loading = false
+	        $(".popover_notifs .see_more_notifs")
     	}
     	else {
         	$(".popover_notifs .see_more_notifs").html('No more to load');
@@ -137,13 +137,17 @@
 			$(".userButton, .messageButton, .settingsButton").popover("hide")
 			$(".notifButton").popover("toggle")
 			
-			$(".popover_notifs .see_more_notifs").click( function () {
-				if ( notifs_loading == false ) {
-					notifs_loading = true
-					Dajaxice.apps.walls.notifs_pagination(dajax_notifs_pagination, {
-					    'page' : parseInt($('.current_page_notifs').val())+1, 
-					})
-				}
+			$(".popover_notifs .see_more_notifs").click( function (e) {
+	        	e = e || event;
+	        	el = this; $el = $(this)
+				if ( $el.data("clicked") ) {
+	                return
+	            }
+            	
+				Dajaxice.apps.walls.notifs_pagination(dajax_notifs_pagination, {
+				    'page' : parseInt($('.current_page_notifs').val())+1, 
+				})
+				$el.d
 			})
 			e.preventDefault()
 			$(".popover_notifs #id_notifs_container_notifs").scroll(function(){

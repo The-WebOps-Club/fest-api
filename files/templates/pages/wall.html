@@ -54,6 +54,7 @@
             $('#main_body_content .see_more_posts').before(data.append_string);
             var $value = $('#main_body_content .current_page_posts')
             $value.val( parseInt($value.val()) + 1 );
+            $('#main_body_content .see_more_posts').removeData("clicked")
         }
         else {
             $('#main_body_content .see_more_posts').html('No more to load');
@@ -62,11 +63,17 @@
 
     $( document ).ready(function() {    
         // See More
-        $("#main_body_content .see_more_posts").click(function() {
+        $("#main_body_content .see_more_posts").click(function(e) {
+            e = e || event;
+            el = this; $el = $(this)
+            if ( $el.data("clicked") ) {
+                return
+            }
             Dajaxice.apps.walls.get_posts(dajax_get_posts, {
                     'page' : parseInt($('#main_body_content .current_page_posts').val())+1, 
                     'wall_id' : {{ wall.id }} 
             })
+            $el.data("clicked", "yes")
         })
 
         // Inifinite scroll

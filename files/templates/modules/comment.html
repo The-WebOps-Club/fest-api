@@ -64,9 +64,8 @@
 
 <script>
 	function dajax_new_comment(data) {
-		console.log(data)
-		console.log($("#post_" + data.post_id + " .news_comment_placeholder"))
         $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
+        $("#post_" + data.post_id + " .comment_textarea").removeData("clicked")
 	}
 	
 	$( document ).ready(function() {
@@ -83,12 +82,15 @@
         	e = e || event;
         	el = this; $el = $(this)
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
-            	console.log($el.data("postid"))
-            	console.log($el);
+            	if ( $el.data("clicked") ) {
+					return
+				}
+				
             	Dajaxice.apps.walls.create_comment(dajax_new_comment, {
             		'post_id' : $el.data("postid"), 
             		'comment_form': $el.closest("form").serialize(true)
             	});
+            	$el.data("clicked", "yes")
                 e.preventDefault()
             } 
         })

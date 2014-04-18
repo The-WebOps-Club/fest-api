@@ -26,7 +26,7 @@
 	            {% endif %}
 	        </div>
 	        <div class="news_body">
-                {{ post.description|markdown:"trusted" }}
+                {{ post.description|markdown }}
             </div>
 	        <div class="news_extra"></div>
 	        <div class="news_comment_wrapper">
@@ -105,12 +105,15 @@
 	function dajax_get_comments(data){
         if (!data.exhausted) { 
         	$value = $("#post_" + data.post_id + " .current_page_comments")
-        	$value.val($value.val()+1)
+        	$value.val( parseInt($value.val()) + 1 );
 
         	$("#post_" + data.post_id + " .see_more_comments").after(data.append_string);
+
+        	$("#post_" + data.post_id + " .see_more_comments").removeData("clicked")
         } else {
         	$("#post_" + data.post_id + " .see_more_comments").html('No more to load');
         }
+        
 	}
     $( document ).ready(function() {
 	    $(".news_post").mouseover( function() {
@@ -120,13 +123,18 @@
             $(this).find(".news_post_settings").hide()
         })
 
-		$(".see_more_comments").click(function() {
-			$el = $(this)
+		$(".see_more_comments").click(function(e) {
+			e = e || event;
+        	el = this; $el = $(this)
+        	if ( $el.data("clicked") ) {
+				return
+			}
 			post_id = $el.closest(".post_container").data("id")
 			Dajaxice.apps.walls.get_comments(dajax_get_comments, {
                     'page' : parseInt($('#post_' + post_id + ' .current_page_comments').val())+1,
                     'post_id' : post_id,
             })
+            $el.data("clicked", "yes")
 		})
 	})
 </script>
