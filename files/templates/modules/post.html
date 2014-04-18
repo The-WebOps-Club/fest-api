@@ -5,11 +5,9 @@
 
 {# Remember : "post" and "notification" are keywords used here #}
 
-<div id="post_{{ post.id }}" class="row-fluid" style="">
+<div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container" style="">
 	{% if forloop.counter0 %} <hr /> 
 	{% endif %}
-	<!-- <div class="" style="height : 30px;"></div> -->
-	<!-- <hr /> -->
 	<div class="news_post span12">
 	    <div class="news_left">
 	        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
@@ -28,172 +26,116 @@
 	            {% endif %}
 	        </div>
 	        <div class="news_body">
-                
-	            {{ post.description|markdown:"trusted" }}
+                {{ post.description|markdown }}
             </div>
 	        <div class="news_extra"></div>
 	        <div class="news_comment_wrapper">
-	        	<div class="news_comment_aggregator center" style="display:none;">
+	        	<input class="current_page_comments" type="hidden" name="current_page" value="1" />
+	        	
+	        	<div class="news_comment see_more_comments center" >
 	        		See more
 	        	</div>
-	        	{% for comment in post.comments.all %}
-	            <div id="comment_{{ comment.pk }}" class="news_comment">
-	                <div class="news_comment_left">
-	                    <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
-	                </div>
-	                <div class="news_comment_body markdown_remove_p">
-	                    <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> {{ comment.description|markdown:"trusted" }}
-	                    <div class="news_comment_info">
-	                        {{ comment.time_created|naturaltime }} 
-	                        {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
-	                    </div>
-	                </div>
-	            </div>
+	        	{% for comment in post.comments.all|dictsortreversed:"time_created"|slice:":5" %}
+	            	{% include 'modules/comment.html' %}
 	        	{% endfor %}
+	        	
+	        	<div class="news_comment_placeholder"></div>
+	        	
+	        	{% with new_comment="true" %}
+	        		{% include 'modules/comment.html' %}
+	        	{% endwith %} 
 	    	</div>
-	        <div id="new_comment_placeholder"></div>
-	        <div class="news_comment">
-	            <div class="news_comment_left">
-	                <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
-	            </div>
-	            <div class="news_comment_body">
-	                <form action="{% url 'create_comment' post.pk %}" method="POST">
-	                    {% csrf_token %}
-	                    <textarea class="span12 comment_textarea atwho_at_config resize_textarea" name="comment" cols="30" rows="1" id="id_new_comment_{{ post.id }}" placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
-	                    
-	                </form>
-	            </div>
-	        </div>
+	        
 	    </div>
 	</div>
 </div>
+
 {% once post_styles_and_scripts %}
 <style>
-div.news_post {
-	transition-property: background;
-	transition-duration: 0.5s;
-	transition-timing-function: linear;
-}
-div.news_post hr {
-}
-.news_left img.news_profile, .news_left {
-    float:left;
-    width : 50px;
-    height : 50px;
-    vertical-align: text-top;
-}
-.news_main {
-    font-size : 14px;
-    width : auto;
-    line-height : 18px;
-    margin-left : 60px;
-}
-.news_main .news_head {
-    margin-bottom : 5px;
-}
-.news_main .news_profile_name {
-    font-weight : bold;
-}
-.news_comment {
-    margin-top : 2px;
-    background-color: #EEE;
-    padding : 5px;
-    display : block;
-}
-.news_comment .news_comment_left, 
-.news_comment .news_comment_left .news_comment_profile {
-    height : 32px;
-    width : 32px;
-    float : left;
-}
-.news_comment .news_comment_body {
-    font-size : 12px;
-    line-height : 15px;
-    margin-left : 40px;
-    min-height : 35px;
-}
-.markdown_remove_p > p {
-    display : inline;
-}
-.news_comment .news_comment_body .news_comment_info {
-    font-size : 11px;
-    line-height : 13px;
-    color : #666;
-    margin-top : 5px;
-}
-
- /*comments aggregation*/
-.news_comment_aggregator>.news_comment{
-	display: none;
-}
-.news_comment_aggregator {
-    font-size : 11px;
-    margin-top : 2px;
-    padding : 3px;
-    line-height : 13px;
-    font-weight : bold;
-    background-color: #EEE;
-    display : block;
-    color : #3B5998;
-    cursor : pointer;
-}
-.news_comment_aggregator:hover {
-	color : #333;
-	text-decoration : underline;
-}
+	div.news_post {
+		transition-property: background;
+		transition-duration: 0.5s;
+		transition-timing-function: linear;
+	}
+	div.news_post hr {
+	}
+	.news_left img.news_profile, .news_left {
+	    float:left;
+	    width : 50px;
+	    height : 50px;
+	    vertical-align: text-top;
+	}
+	.news_main {
+	    font-size : 14px;
+	    width : auto;
+	    line-height : 18px;
+	    margin-left : 60px;
+	}
+	.news_main .news_head {
+	    margin-bottom : 5px;
+	}
+	.news_main .news_profile_name {
+	    font-weight : bold;
+	}
+	.markdown_remove_p > p {
+	    display : inline;
+	}
+	
+	.news_comment.see_more_comments > .news_comment{
+		display: none;
+	}
+	.news_comment.see_more_comments {
+	    font-size : 11px;
+	    margin-top : 2px;
+	    padding : 3px;
+	    line-height : 13px;
+	    font-weight : bold;
+	    background-color: #EEE;
+	    display : block;
+	    color : #3B5998;
+	    cursor : pointer;
+	}
+	.news_comment.see_more_comments:hover {
+		color : #333;
+		text-decoration : underline;
+	}
 </style>
 
 <script type="text/javascript">
+	function dajax_get_comments(data){
+        if (!data.exhausted) { 
+        	$value = $("#post_" + data.post_id + " .current_page_comments")
+        	$value.val( parseInt($value.val()) + 1 );
 
-	function append_new_comment(data){
-        $("#id_new_comment_{{ post.id }}").val("").blur();
-        $("#new_comment_placeholder").before(data.append_string);
+        	$("#post_" + data.post_id + " .see_more_comments").after(data.append_string);
+
+        	$("#post_" + data.post_id + " .see_more_comments").removeData("clicked")
+        } else {
+        	$("#post_" + data.post_id + " .see_more_comments").html('No more to load');
+        }
+        
 	}
-
-    $( document ).ready(function() {            
-        $(".news_post").mouseover( function() {
+    $( document ).ready(function() {
+	    $(".news_post").mouseover( function() {
             $(this).find(".news_post_settings").show()
         })
         $(".news_post").mouseout( function() {
             $(this).find(".news_post_settings").hide()
         })
 
-		$(".news_post .comment_textarea")
-			.keydown(function(e) {
-				e = e || event;
-	        	el = this; $el = $(this)
-	        	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
-	            	e.preventDefault() // to avoid auto submit of forms
-	            }
-			})
-			.keyup(function (e) {
-	        	e = e || event;
-	        	el = this; $el = $(this)
-	            if (e.ctrlKey && e.keyCode == 13) { // Enter
-	            	Dajaxice.apps.walls.create_comment(append_new_comment, {'post_id':{{post.id}}, 'comment_form': $el.parent().serialize(true)});
-	                e.preventDefault()
-	            } 
-	        })
-
-
-	        // Comments aggregation
-	        $(".news_comment_wrapper").each(function(index){
-	        	var number_of_comments = $(this).children().length;
-	        	if( number_of_comments > 4){
-	        		var $temp = $(this).children().slice(0,-2)
-	        		$temp
-	        			.appendTo($(this).children(".news_comment_aggregator"));
-
-					$(this).children(".news_comment_aggregator").slideDown(500);
-	        	}
-	        });
-
-	        $(".news_comment_aggregator").click(function(){
-	        	$el = $(this)
-	        	$el.children(".news_comment").slice(-5).insertAfter($el);
-	        	if( $el.children().length == 1 )
-	        		$el.hide();
-	        });
-    })
+		$(".see_more_comments").click(function(e) {
+			e = e || event;
+        	el = this; $el = $(this)
+        	if ( $el.data("clicked") ) {
+				return
+			}
+			post_id = $el.closest(".post_container").data("id")
+			Dajaxice.apps.walls.get_comments(dajax_get_comments, {
+                    'page' : parseInt($('#post_' + post_id + ' .current_page_comments').val())+1,
+                    'post_id' : post_id,
+            })
+            $el.data("clicked", "yes")
+		})
+	})
 </script>
 {% endonce %}

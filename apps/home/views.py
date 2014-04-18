@@ -25,6 +25,15 @@ def home (request, *args, **kwargs):
          - Redirects to newsfeed if logged in
          - Redirects to login page if not logged in
     """
+    user = request.user
+    
+    if settings.SOCIAL_AUTH_FORCE_FB and user.social_auth.filter(provider="facebook").count() == 0:
+        return redirect("apps.users.views.associate")
+
+    if user.is_authenticated(): # Check if user is already logged in
+        if "role" not in request.session.keys():
+            return HttpResponseRedirect(reverse("identity")) # Redirect to home page
+
     return redirect("apps.home.views.newsfeed")
     
 
@@ -33,9 +42,8 @@ def newsfeed(request):
     user = request.user
     local_context = {
         "current_page" : "newsfeed",
-#        "notifications" : Notification.objects.order_by("-timestamp")[:5],
-        "current_page" : "newsfeed",
-        "notifications" : user.notifications.unread(),
+        "notifications" : Notification.objects.order_by("-timestamp")[:5],
+#        "notifications" : user.notifications.unread(),
     }
     return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 

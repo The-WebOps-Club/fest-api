@@ -90,6 +90,13 @@
 .opacity_half {
     opacity : 0.5;
 }
+.full_width {
+    width :100%;
+}
+.affix {
+  position: fixed;
+}
+
 
 /* Specific Template styles */
 .topbar div > ul.nav.links a.settingButton, .nav.links a.settingButton {

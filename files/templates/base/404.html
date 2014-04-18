@@ -1,61 +1,9 @@
-{% extends 'pages/base.html' %}
-{% load staticfiles %}
-
-{% block title %} 404 - NSS IITM {% endblock %}
-
-{% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 centered pad-top" id='login'>
-                <span class='text-huge'>
-                    <a class="navbar-brand navbar-logo nss" href="{{ SITE_URL }}"><img src="{% static 'img/nss_logo_medium.png' %}" /></a>
-                    Woah! &nbsp;&nbsp;&nbsp;&nbsp; What are you doing here?
-                </span>
-                <p>Seems like you stumbled upon the wrong page somehow :(</p>
-                <br /><br />
-                <span class='text-big'>Here are some links that may help you find your way back !</span>
-                <br /><br />
-                <div class='btn-group-lg'>
-                    <a href='{% url "home" %}' class='btn btn-primary'>Home</a>
-                    <a href='{% url "events" %}' class='btn btn-success'>Events</a>
-                    <a href='{% url "projects" %}' class='btn btn-warning'>Projects</a>
-                    <a href='{% url "aboutus" %}' class='btn btn-danger'>About Us</a>
-                </div>
-                <br /><br /><br /><br />
-                {% if not user.is_authenticated %}
-                    <span class='text-large'>Login :</span>
-                    <br /><br />
-                    <div class='btn-group'>
-                        <a class='btn zocial google' href="{% url 'socialauth_begin' 'google' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Google</a>
-                        <a class='btn zocial facebook' href="{% url 'socialauth_begin' 'facebook' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Facebook</a>
-                        <a class='btn zocial twitter' href="{% url 'socialauth_begin' 'twitter' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Twitter</a>
-                    </div>
-                    <br /><br />
-                    <p class="text-big">Or, <a id="regular-signup-link" href="{% url 'login' %}#regular-signup">Sign in with email.</a></p>
-                {% else %}
-                    <span class='text-large'>Account details :</span>
-                    <br /><br />
-                    <div class='btn-group-lg'>
-                        <a class='btn btn-danger' href='#'>Dashboard</a>
-                        <a class='btn btn-warning' href='#'>My Project</a>
-                        <a class='btn btn-success' href='#'>Upcoming Events</a>
-                        <a class='btn btn-primary' href='#'>Download the App !</a>
-                    </div>
-                {% endif %}
-            
-            </div>
-        </div>
-    </div>
-    
-{% endblock %}
-
-{% block extra_css %}
-{{ block.super }}
-    <link href="{% static 'css/zocial.css' %}" rel="stylesheet" media="screen"> 
-    <style type='text/css'></style>
-{% endblock %}
-
-
-{% block extra_js %}
-{{ block.super }}
-{% endblock %}
+<div>
+This is a 404
+</div>
+<hr />
+{% for m in messages %}
+	<div>
+	    {{ m }}
+	</div>
+{% endfor %}

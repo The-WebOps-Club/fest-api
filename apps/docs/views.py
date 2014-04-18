@@ -95,8 +95,9 @@ def docs (request):
         print "asdasdas"
     except Exception, e:
         raise e
-    # print PARENT_FOLDER_ID
-    # files = retrieve_all_files(drive())
+    print PARENT_FOLDER_ID
+    files = retrieve_all_files(drive())
+
     return render_to_response('pages/docs.html',locals(), context_instance= global_context(request))
 
 
