@@ -55,7 +55,6 @@ def coord_home(request):
         form = SelectSubDeptForm(request.POST)
         #import pdb;pdb.set_trace()
         if form.is_valid():
-            import pdb;pdb.set_trace()
             #name = str(form.cleaned_data['name']).split('| ')
             subdept = SubDept.objects.get(id = form.cleaned_data['name'])
             #names=['Hovercraft Making Workshop','Desmod','How Things Work', 'Gamedrome', 'Industrially Defined Problem Statement (IDP)','Shaastra Junior','Sustainable Cityscape', 'Project X']	
