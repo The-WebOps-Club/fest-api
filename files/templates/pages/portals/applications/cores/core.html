@@ -1,0 +1,43 @@
+{% extends "pages/portals/applications/cores/base.html" %} {% block content %}
+<style>
+small {
+    font-size:70%
+}
+</style>
+<table class="span4 offset4 table table-bordered table-striped table-hover">
+    <th>Departments</th>
+    <th>Submissions</h>
+        {% for dept in subdepts %}
+        <tr>
+            <td>
+                {{dept}}
+                <br>
+                <a href="{% url 'portal_applications:apps.portals.applications.core.views.questions' username=user subdept_id=dept.id %}">
+                    <small>(Questions)</small>
+                </a>
+                <a href="{% url 'portal_applications:apps.portals.applications.core.views.subdepartments_edit' username=user subdept_id=dept.id %}">
+                    <small>(Edit)</small>
+                </a>
+            </td>
+            <td><a href="{% url 'portal_applications:apps.portals.applications.core.views.submissions' username=user subdept_id=dept.id %}">View</a><br />
+            {% if dept.close_apps %}
+                <span style="color : red"> closed </span>
+            {% else %}
+                <span style="color : green"> open </span>
+            {% endif %}
+            </td>
+            <td><a href="{% url 'portal_applications:apps.portals.applications.core.views.add_instructions' username=user subdept_id=dept.id %}">Add Instructions</a>
+            </td>
+        </tr>
+        {% endfor %}
+</table>
+<div class="span8 offset4">
+    <a class="btn btn-info" href="{% url 'portal_applications:apps.portals.applications.core.views.questions_all' username=user.username %}"> Add questions for multiple departments </a>
+    <br>
+    <br>
+    <a class="btn btn-info" href="{% url 'portal_applications:apps.portals.applications.core.views.instructions_all' username=user %}"> Add instructions for multiple departments </a>
+    <br>
+    <br>
+    <a class="btn btn-inverse" href="{% url 'portal_applications:apps.portals.applications.core.views.subdepartments' username=user %}"> New Department </a>
+</div>
+{% endblock %}

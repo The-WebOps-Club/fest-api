@@ -1,0 +1,129 @@
+{% extends "pages/portals/applications/cores/base.html" %}
+{% block content %}
+<h3>Submissions for {{ subdept.get_short_name }}</h3>
+{% if saved %}
+All changes saved successfully
+{% endif %}
+<form action="" method="POST">
+    {%csrf_token%}
+    {{ appformset.management_form }}
+    <div class="alert alert-success">
+        <center><h5> Accepted Applications </h5></center>
+    </div>
+    <table id="apps_accepted" class="table table-bordered table-striped table-hover">
+        <thead>
+            <td>User</td>
+            <td>Preference</td>
+            <td>View Application</td>
+            <td>Timestamp</td>
+            <td>Status</td>
+            <td>Rank</td>
+        </thead>
+        <tbody>
+            {% for app in app_details %}
+            {% if app.0.status == 'accepted' and app.0.pass_cgpa %}
+            <tr class="success">
+                <td><a href="{% url 'portal_applications:apps.portals.applications.core.views.applicants' username=request.user applicant=app.0.user %}">{{app.0.user.first_name}} {{app.0.user.last_name}}</a></td>
+                <td>{{app.0.preference}}</td>
+                <td><a href="{% url 'portal_applications:apps.portals.applications.core.views.applications' username=request.user app_id=app.0.id %}">View Application</a></td>
+                <td>{{app.0.timestamp}}</td>
+                <td>{{app.0.status}}</td>
+                <td>{{ app.1.as_p }}</td>
+            </tr>
+            {{ app.hidden_fields }}            
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="alert alert-block">
+        <center> <h5> Pending Applications </h5></center>
+    </div>
+    <table id="apps_pending" class="table table-bordered table-striped table-hover">
+        <thead>
+            <td>User</td>
+            <td>Preference</td>
+            <td>View Application</td>
+            <td>Timestamp</td>
+            <td>Status</td>
+            <td>Rank</td>
+        </thead>
+        <tbody>
+            {% for app in app_details %}
+            {% if app.0.status == 'pending' and app.0.pass_cgpa %}
+            <tr class="info">
+                <td><a href="{% url 'portal_applications:apps.portals.applications.core.views.applicants' username=request.user applicant=app.0.user %}">{{app.0.user.first_name}} {{app.0.user.last_name}}</a></td>
+                <td>{{app.0.preference}}</td>
+                <td><a href="{% url 'portal_applications:apps.portals.applications.core.views.applications' username=request.user app_id=app.0.id %}">View Application</a></td>
+                <td>{{app.0.timestamp}}</td>
+                <td>{{app.0.status}}</td>
+                <td>{{ app.1.as_p }}</td>
+            </tr>
+            {{ app.hidden_fields }}            
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class='alert alert-danger'>
+        <center><h5>Rejected Applications</h5></center>
+    </div>
+    <table id="apps_rejected" class="table table-bordered table-striped table-hover">
+        <thead>
+            <td>User</td>
+            <td>Preference</td>
+            <td>View Application</td>
+            <td>Timestamp</td>
+            <td>Status</td>
+            <td>Rank</td>
+        </thead>
+        <tbody>
+            {% for app in app_details %}
+            {% if app.0.status == 'rejected' and app.0.pass_cgpa %}
+            <tr class="error">
+                <td><a href="{% url 'portal_applications:apps.portals.applications.core.views.applicants' username=request.user applicant=app.0.user %}">{{app.0.user.first_name}} {{app.0.user.last_name}}</a></td>
+                <td>{{app.0.preference}}</td>
+                <td><a href="{% url 'portal_applications:apps.portals.applications.core.views.applications' username=request.user app_id=app.0.id %}">View Application</a></td>
+                <td>{{app.0.timestamp}}</td>
+                <td>{{app.0.status}}</td>
+                <td>{{ app.1.as_p }}</td>
+            </tr>
+            {{ app.hidden_fields }}            
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="alert alert-info">
+        <center><h5> Applications below CGPA of 7.0 </h5></center>
+    </div>
+
+    <table id="apps_cgpa" class="table table-bordered table-striped table-hover">
+        <thead>
+            <td>User</td>
+            <td>Preference</td>
+            <td>View Application</td>
+            <td>Timestamp</td>
+            <td>Status</td>
+            <td>Rank</td>
+        </thead>
+        <tbody>
+            {% for app in app_details %}
+            {% if not app.0.pass_cgpa %}
+            <tr class="warning">
+                <td><a href="{% url 'portal_applications:apps.portals.applications.core.views.applicants' username=request.user applicant=app.0.user %}">{{app.0.user.first_name}} {{app.0.user.last_name}}</a></td>
+                <td>{{app.0.preference}}</td>
+                <td><a href="{% url 'portal_applications:apps.portals.applications.core.views.applications' username=request.user app_id=app.0.id %}">View Application</a></td>
+                <td>{{app.0.timestamp}}</td>
+                <td>{{app.0.status}}</td>
+                <td>{{ app.1.as_p }}</td>
+            </tr>
+            
+            {{ app.hidden_fields }}            
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="control-group">
+        <input type="submit" class="btn btn-primary" />
+        <a href="{{site_url}}" class="btn">Back</a>
+    </div>
+    {% endblock %}

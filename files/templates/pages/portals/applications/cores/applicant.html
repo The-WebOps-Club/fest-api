@@ -1,0 +1,30 @@
+{% extends "pages/portals/applications/cores/base.html" %}
+{% block content %}
+<h3>Details of {{ applicant }}</h3>
+<h5>Applicant Profile Details:</h5>
+<div class="span12" style="margin-left:0px">
+  <table class="table table-bordered span7">
+    <tr><td><strong>Name: </strong></td><td>{{ applicant.first_name }} {{ applicant.last_name }}</td></tr>
+    <tr><td><strong>Nick: </strong></td><td>{{ applicant_profile.nick }}</td></tr>
+    <tr><td><strong>Hostel: </strong></td><td>{{ applicant_profile.hostel }}</td></tr>
+    <tr><td><strong>CGPA: </strong></td><td>{{ applicant_profile.cgpa }}</td></tr>
+    <tr><td><strong>Room No: </strong></td><td>{{ applicant_profile.room_no }}</td></tr>
+    <tr><td><strong>Phone No: </strong></td><td>{{ applicant_profile.ph_no }}</td></tr>
+    <tr><td><strong>Region: </strong></td><td>{{ applicant_profile.summer_location}}</td></tr>
+    <tr><td><strong>Email: </strong></td><td>{{ applicant.email}}</td></tr>
+  </table>
+</div>
+<h5>Submitted Applications:</h5>
+<table class="span7 table table-bordered table-striped table-hover">
+    <tr>
+        <th class="span8">Sub-Department</th>
+        <th class="span2">Preference Number</th>
+    </tr>
+    {% for app in applications %}
+    <tr>
+        <td>{{app.subdept}}</td>
+        <td>{{app.preference}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

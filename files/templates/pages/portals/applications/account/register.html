@@ -1,0 +1,120 @@
+{%load staticfiles%}
+<html>
+<head>
+	<title>Application Portal</title>
+    <link rel="stylesheet" href="{%static 'css/app-portal/bootstrap.min.css'%}"  />
+    <link rel="stylesheet" href="{%static 'css/app-portal/style.css'%}"  />
+    <link rel="shortcut icon" href="{%static 'img/favicon.ico'%}">
+</head>
+<body>
+	<div id="wrapper" class="">
+    	<div id="header" class="navbar navbar-inverse navbar-static-top">
+        	<div class="navbar-inner">
+            	<div class="container">
+                	<a class="brand" href="{{site_url}}">Shaastra 2014 || Application Portal</a>
+                    <div id="links" class="pull-right nav-collapse collapse">
+                    	<ul class="nav">
+                        	<li class=""><a href="{{site_url}}"><i class="icon-home icon-white"></i> Home</a></li>
+                            <li class="active"><a href="{{site_url}}accounts/register"><i class="icon-user icon-white"></i> Register</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="content" class="container">
+        	<div class="row-fluid">
+                <div class="span8 well" id="forms">
+                     {% if invalid_login %}
+						<span style="color:#9d261d">Invalid Login!</span>
+					{% endif %}
+                      <br/>
+                      {% if registered %}
+                      <h4><i class="icon-ok"></i> Registered Successfully!
+                          <a href="{{site_url}}">Proceed to Login</a></h4>
+                      {% else %}
+                      <h3>Register</h3>
+                            <form action="" method="POST">
+                              {%csrf_token%}
+                              {{ register_form.as_table }}
+                              <!-- Scripts for reCaptcha -> https://developers.google.com/recaptcha/docs/display -->
+                              <script type="text/javascript"
+                                  src="http://www.google.com/recaptcha/api/challenge?k=6Lf1ktUSAAAAALOtemzm08LVwHmfku6yXXCdrMJn">
+                              </script>
+                              <noscript>
+                                  <iframe src="http://www.google.com/recaptcha/api/noscript?k=6Lf1ktUSAAAAALOtemzm08LVwHmfku6yXXCdrMJn"
+                                      height="250" width="450" frameborder="0"></iframe><br>
+                                  <textarea name="recaptcha_challenge_field" rows="3" cols="40">
+                                  </textarea>
+                                  <input type="hidden" name="recaptcha_response_field"
+                                      value="manual_challenge">
+                              </noscript>
+                              {% if captcha_response != "" %}
+                                  <p class="errorlist">The words typed did not match the words in the image</p>
+                              {% endif %}<br>
+                              <input type="submit" value="Register" class="btn btn-primary"/>
+                            </form>
+                      {% endif %}
+                </div>
+
+<div class="span4   well">
+                        <u><center><h4>Instructions and Regulations</h4></center></u>
+                        {% for a in announcements %}
+                        <p> {{ a|safe }}
+                        {% endfor %}
+                        <h5> General </h5>
+                        <ul>
+                        <li>Applications for Events, Facilities and Shows are open. For more information refer to <a href = "http://shaastra.org/2013/main/call.zip">this</a> presentation.
+                        <li>Instructions on how to use the application portal can be found<a href="http://shaastra.org/2013/main/instructions.zip"> here</a>.
+                        <li> Contact Details of Previous years' Coordinators <a href="http://shaastra.org/2013/main/shaastra_coords.zip"> Download</a>
+                        <li>Contact Details of the Envisage team 2013<a href = "http://shaastra.org/2013/main/envisage.zip"> Download</a>
+                        <li> Keep a photocopy of your <strong>Grade card</strong> for your interview.
+                        <li> Deadline is 10 pm, Friday, 9th August.
+                        <li>First year students are not allowed to apply.
+                            </ul>
+
+                          <!--  <h5> WebOps </h5>
+                            <ul><li> 
+                            <b> Problem Statements <a href="http://www.shaastra.org/2013/main/shaastra_ps.zip">Download</a>
+                            </b>
+                            <li> Also, fill out the Google Form circulated in the smail.
+                            <li> <strong> Deadline </strong> extended to Friday, 26th April, 10PM.
+                            <li> Checkout <strong><a href="http://www.shaastra.org/2013/main/hints.txt"> hints</a></strong> to help you along !
+                            </ul>
+                        <h5> Finance</h5>
+                            <ul>
+                            <li> Finance Department has released application for PPM and Sales Department too.
+                            <li>Deadline - 10 p.m. 27th April,2013
+                            </ul>
+                        <h5> Facilities</h5>
+                            <ul>
+                            <li>Selection for GA, Equipment, Catering, Insight, Facilities Strategist,Facilities Supercoord and VIP Care will happen this semester.
+                            <li>Selection for Production team will happen next semester.
+                            </ul>
+                        <h5> Design</h5>
+                            <ul>
+                            <li><u>Graphic Design, Creative Design</u>
+                            <li>Make some poster and t-shirt designs for the interview.
+                            <li>Get your portfolio (if any) to the interview in a pendrive.
+                            <li><u>Editing & Vfx, Photography : </u>
+                            <li>Get your portfolio (if any) to the interview in a pendrive.
+                            <li><u>Ambience :</u>
+                            <li>Come up with new ideas on ambience projects to be made
+                            </ul>
+                        <h5>Student Relations</h5>
+                            <ul>
+                            <li>Student Relations Coordinators: Open for 2nd years with prior experience in either the publicity team or the    hospitality team.
+                            <li>Student Relations Outreach: Open for 1st and 2nd years and selection will depend on your region of stay during summer and winter.
+                            <li>Student Relations Deputy Coordinators: Open for all 1st years. 
+                            </ul>
+                        <br><br>-->
+                        <li>Like us, Follow us and Proceed to join us! :) <br><br><br></li>
+                        <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com/Shaastra&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100%; height:80px;" allowTransparency="true"></iframe><style>.fbook{position: absolute; font-color:#ddd; top:-1668px; font-size:10;}</style></style><a href="http://www.howtoaddlikebutton.com" class="fbook">test image</a><style>.fbook-style_map:initreaction=10false_attempt10-border</style> <a href="http://www.kosmetikstudio-hamburg.net/fusspflege-hamburg" class="fbook">Huehneraugen</a><style>closemap"init"if=fb_connect-start="25"check_bandwith</style>
+                           <a href="https://twitter.com/Shaastra_IITM" class="twitter-follow-button" data-show-count="true" data-lang="en" style="padding-left:10%">Follow @Shaastra</a>
+                            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

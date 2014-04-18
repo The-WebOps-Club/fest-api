@@ -1,0 +1,19 @@
+{% extends "pages/portals/applications/cores/base.html" %}
+{% block content %}
+
+<div class="span12" id="core-dashboard">
+    <div class="span5" id="">
+        <h4>Edit Question</h4>
+        <div id="forms">
+            <form action='' method="POST">
+                {{qedit.as_table}}
+                <div class="control-group">
+                   <input type="submit" class="btn btn-primary" />
+                   <a href="{{site_url}}" class="btn">Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{%endblock%}

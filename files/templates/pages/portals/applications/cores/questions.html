@@ -1,0 +1,34 @@
+{% extends "pages/portals/applications/cores/base.html" %}
+{% block content %}
+<div class="span5" id="edit">
+    <h5>Add Questions</h5>
+    <form action='' method="POST">
+        {{ questionformset.management_form }}
+        {% for form in questionformset %}
+        {{form.as_table}}<br>
+        {% endfor %}
+        {%csrf_token%}
+    	<div class="control-group">
+            <input type="submit"  value="Create Questions" class="btn btn-primary" />
+           <a href="{{site_url}}" class="btn">Back</a>
+        </div>
+
+    </form>
+</div>
+<div class="span6 pull-right" id="view">
+    <h5>Current Questions in this Sub Department</h5>
+    {% if index %}
+    <p class="text-success">Thanks! {{index}} questions have been saved.</p>
+    {% endif %}
+    {% if delete %}
+    You have successfully deleted {{question}}. Congrats!(or Not).
+    {% endif %}
+    <table class="table table-bordered table-striped table-hover">
+        {% for q in questions %}
+        <tr><td class="span9">{{q.question|safe}}</td>
+            <td class="span1">
+                <a href="{% url core.views.questions_edit username=request.user subdept_id=subdept_id q_id=q.id %}" style="margin-right:10px;">Edit</a></td><td><a Onclick="return confirm('Are you sure you want to delete this question?');" href="{% url core.views.questions_delete username=request.user subdept_id=subdept_id q_id=q.id %}"><strong>&times;</strong></a></td></tr>
+        {%endfor%}
+    </table>
+</div>
+{% endblock %}

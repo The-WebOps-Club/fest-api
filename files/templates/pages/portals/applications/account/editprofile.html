@@ -1,0 +1,43 @@
+{%load staticfiles%}
+<html>
+<head>
+	<title>Application Portal</title>
+    <link rel="stylesheet" href="{%static 'css/app-portal/bootstrap.min.css'%}"  />
+    <link rel="stylesheet" href="{%static 'css/app-portal/style.css'%}"  />
+    <link rel="shortcut icon" href="{%static 'img/favicon.ico'%}">
+</head>
+<body>
+	<div id="wrapper" class="">
+    	<div id="header" class="navbar navbar-inverse navbar-static-top">
+        	<div class="navbar-inner">
+            	<div class="container">
+                	<a class="brand" href="{{site_url}}">Shaastra 2014 || Appplication Portal</a>
+                    <div id="links" class="pull-right nav-collapse collapse">
+                    	<ul class="nav">
+                        	<li class=""><a href="{{site_url}}"><i class="icon-home icon-white"></i> Home</a></li>
+                            <li class-"active"><a href = "{{site_url}}accounts/editprofile"><i class="icon-user icon-white"></i> Edit Profile</a></li>
+                            <li class=""><a href="{{site_url}}accounts/logout"><i class="icon-off icon-white"></i> Logout</a></li>
+                        </ul> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="content" class="container">
+        	<div class="row-fluid">     
+                <div class="span12 well" id="forms">
+                      {% if editted %}
+                      <h5 class="text-success"><i class="icon-ok"></i> Changes saved Successfully!
+                      <a href="{{site_url}}">Home</a></h5>
+                      {% endif %}
+                      <h3>Edit Profile</h3>
+                      <form action="" method="POST">
+                        {% csrf_token %}
+                        <div class="span12">{{ edit_form.as_table }}</div>
+                        <input type="submit" value="Edit" class="btn btn-primary"/>
+                      </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

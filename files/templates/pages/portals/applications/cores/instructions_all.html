@@ -1,0 +1,43 @@
+{% extends "pages/portals/applications/cores/base.html" %}
+{% block content %}
+<h5>Add Instructions to Mutliple Deparmtents</h5>
+<script type="text/javascript">
+    function selectall() {
+        checkboxes = document.getElementsByName('subdepartments');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].checked = true;
+        }
+    }
+    window.onload = selectall;
+    </script>
+<script type="text/javascript">
+    function toggle(source) {
+        checkboxes = document.getElementsByName('subdepartments');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+</script>
+{% if index %}
+<div class="alert-success well">
+	Your instructions were added to {{index}} department(s).
+</div>
+</div>
+{% endif %}
+<form action='' method="POST" class="form-horizontal">
+    {%csrf_token%}
+    <div class="control-group">{{i.as_table}}</div>
+	 <div class="control-group"><input name="mastertoggle" type="checkbox" onClick="toggle(this)" checked /> <strong>Toggle All</strong></div>
+    {% for subdept in subdepts %}
+    <div class="control-group">
+        <input type="checkbox" name="subdepartments" id="option{{subdept.id}}" value={{subdept.id}} />
+        <label for="option{{subdept.id}}" class="checkboxes"><strong>{{subdept.name}}</strong></label>
+    </div>
+    {% endfor %}
+    <div class="control-group">
+        <input type="submit" class="btn btn-primary" />
+        <a href="{{site_url}}" class="btn">Back</a>
+    </div>
+
+</form>
+{% endblock %}

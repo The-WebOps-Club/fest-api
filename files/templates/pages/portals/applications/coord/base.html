@@ -1,0 +1,37 @@
+{%load staticfiles%}
+<html>
+<head>
+	<title>Application Portal</title>
+	<link rel="stylesheet" href="{%static 'css/app-portal/bootstrap.min.css'%}"  />
+    <link rel="stylesheet" href="{%static 'css/app-portal/style.css'%}"  />
+    <link rel="shortcut icon" href="{%static 'img/favicon.ico'%}">
+</head>
+<body>
+	<div id="wrapper" class="">
+    	<div id="header" class="navbar navbar-inverse navbar-static-top">
+        	<div class="navbar-inner">
+            	<div class="container">
+                        <a href="http://www.shaastra.org"><img class="pull-left" src="{{site_url}}static/img/slogo2.png" width=60px height=60px></a>
+                        <a class="brand" style="color:white">&nbsp;  Application Portal</a>
+                    <div id="links" class="pull-right nav-collapse collapse">
+                    	<ul class="nav">
+                        	<li class=""><a href="{{site_url}}"><i class="icon-home icon-white"></i> Home</a></li>
+                            <li class-""><a href = "{{site_url}}accounts/editprofile"><i class="icon-user icon-white"></i> Edit Profile</a></li>
+                            <li class=""><a href="{{site_url}}accounts/logout/"><i class="icon-off icon-white"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="content" class="container">
+        	<div class="row-fluid">
+                <div class="span12" id="dashboard">
+                	 {% block content %}
+                        <h2>{{msg}}</h2>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

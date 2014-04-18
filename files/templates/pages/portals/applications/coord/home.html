@@ -1,0 +1,33 @@
+{% extends "pages/portals/applications/coord/base.html" %}
+{% block content %}
+
+<div class="span5">
+          <h4>Welcome {{request.user.first_name}}</h4> <br> Please choose the department of your interest and click <strong>apply</strong>. Please complete the questionnaire before the deadline. You are allowed to apply in any number of departments.
+          <br><h5>Good luck!</br></h5>
+    {% if apps %}
+    <p>You have applied for the following coordships. To edit your applications Click on the sub department name</p>
+          <table class="table table-bordered table-striped table-hover">
+              <tr>
+              <th class="span1">Preference</th>
+              <th>Sub Department</th>
+              <th></th>
+          </tr>
+              {% for a in apps %}
+              <tr>
+              <td class="span1">{{a.preference}}</td>
+              <td><a href = "{{site_url}}coord/application/{{a.subdept.id}}">{{a.subdept}}</a></td>
+              <td><a Onclick="return confirm('If you ever want to resubmit for this sub department, please select the sub department ->view application and change the preference number to a positive number.')" href = "{{site_url}}coord/delete/{{a.subdept.id}}">Cancel application</a></td>
+              </tr>
+              {% endfor %}
+          </table>
+          {%endif%}
+      </div>
+    <div class="span5 pull-right">
+         <form action="" method="POST">
+          {% csrf_token %}
+          {{ form.as_table }}
+          <input type="submit" value="Now View Questions" class="btn btn-primary" style="margin-top:-10px;"/>
+            
+        </form>
+    </div>
+    {% endblock %}

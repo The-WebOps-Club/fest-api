@@ -1,0 +1,27 @@
+{% extends "pages/portals/applications/cores/base.html" %}
+{% block content %}
+    <div class="span12" id="forms">
+        {% if index %}
+            <div class="span12 well alert-success">
+                You have successfully created {{subdept.name}} subdepartment under {{subdept.dept.name}}.
+            </div>
+        {% endif %}
+        <u><center><h4>Add Sub Departments</h4></center></u>
+        <form action='' method="POST">
+            {%csrf_token%}
+            
+            
+            <div class="span12 well">
+                {{ subdeptform.as_p }}
+            </div>
+            
+            
+            
+             <div class="control-group">
+                    <input type="submit" value="Create Departments" class="btn btn-primary">
+                    <a href="{{site_url}}" class="btn btn-inverse">Back</a>
+-                </div>
+            
+        </form>
+    </div>
+    {%endblock%}

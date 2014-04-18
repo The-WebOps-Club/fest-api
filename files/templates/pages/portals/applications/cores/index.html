@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Application Portal</title>
+<link rel="stylesheet" href="{{site_url}}static/css/bootstrap.min.css"  />
+<link rel="stylesheet" href="{{site_url}}static/css/style.css"  />
+<link rel="shortcut icon" href="{{site_url}}static/img/favicon.ico">
+</head>
+<body>
+	<div id="wrapper" class="">
+    	<div id="header" class="navbar navbar-inverse navbar-static-top">
+        	<div class="navbar-inner">
+            	<div class="container">
+                	<a class="brand" href="#">Shaastra 2014 || Appplication Portal</a>
+                    <div id="links" class="pull-right nav-collapse collapse">
+                    	<ul class="nav">
+                        	<li class="active"><a href="#">Home</a></li>
+                            <li><a href="{{site_url}}accounts/register/">Register</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="content" class="container">
+        	<div class="row-fluid">
+            	<div class="span8 well">
+               		<h4>Instructions and Regulations</h4>
+               		{% for a in announcements %}
+               		<p> {{ a|safe }}
+               		{% endfor %}
+                </div>
+                <div class="span4 well" id="login">
+                	<h4>Login:</h4>
+                    <form action="{{site_url}}accounts/login/" method="POST" class="form span12">
+
+                        {% csrf_token %}
+  						<div class="control-group">
+    						<label class="span3 control-label">Roll No</label>
+      						<input type="text" id="id_username" name="username" placeholder="Roll No" class="span8">
+  						</div>
+  						<div class="control-group">
+    						<label class="span3 control-label">Password</label>
+      						<input type="password" id="id_password" name="password" placeholder="Password" class="span8">
+  						</div>
+                         <div class="control-group">
+    						<input id="submit" value="Login" class="btn btn-primary" type="submit">
+  						</div>
+                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

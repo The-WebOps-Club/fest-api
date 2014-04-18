@@ -1,0 +1,29 @@
+{% extends "pages/portals/applications/cores/base.html" %}
+{% block content %}
+<h4>Application for {{app.subdept}} submitted by {{app.user.first_name}} {{app.user.last_name}}</h4>
+    {% if saved %}
+     <h7> All changes saved successfully! </h7>
+    {% endif %}
+    <ul>
+        <li><strong>User:</strong> {{app.user}} </li>
+        <li><strong>Preference Number:</strong> {{app.preference}} </li>
+        <li><strong>Credentials:</strong> <p>{{app.credentials}}</p> </li>
+        <li><strong>References:</strong> <p>{{app.references}}</p></li>
+        <li><strong>Time:</strong> {{app.timestamp}} </li>
+    </ul>
+    <form action="" method="POST">
+        {{appcommentsform.as_table}}<hr>
+        {{ commentsformset.management_form }}
+        <h5>Answers to the Questionnaire</h5>
+        <ol>
+        {% for q in qna %}
+        <li><strong>{{ q.0 }}</strong>
+        <p>{{ q.1|linebreaks }}</p>
+        {{ q.2.as_table }}</li><hr>
+        {% endfor %}
+        </ol>
+        {%csrf_token%}
+        <input type="submit" value="Save" class="btn btn-primary"/>
+    </form>
+        <a href="{% url core.views.submissions username=request.user subdept_id=app.subdept.id%}" class="btn">Back</a>
+{% endblock %}

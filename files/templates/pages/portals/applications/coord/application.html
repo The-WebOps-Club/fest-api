@@ -1,0 +1,50 @@
+{% extends "pages/portals/applications/coord/base.html" %}
+{% block content %}
+<div class="well">
+    <center>
+        <h4> Please Save as often as possible. Your saved application will automatically be submitted.</h4>
+</center>
+</div>
+<div class = "well">
+{% if inst %}    
+    <h4><u>Instructions</u></h4>
+    {{inst|safe}}
+{% endif %}
+</div>
+<form action="" method="POST">
+    {%csrf_token%}
+    {{ forms.management_form}}
+    <div class="alert alert-info"><center> <h5><font color='black'><u>Aptitude and Competence Questionnaire:</u></font></h5></center></div>
+    <ol>
+        {% for q in zipped %}
+        <h5><li><p><strong>{{q.0.question|safe}}</strong></p></h5>
+        {{q.1|safe}}</li>
+        <!--<p>{{q.question}}</p>
+        {{f.as_table}}-->
+        {% endfor %}
+    </ol>
+    <div class="alert alert-block"><center> <h5><font color='black'><u>Personal Details</u></h5>
+            </center>
+            <ul>
+                <li>Please enter the preference number of your application. 
+                <li>It is compusory to mention contact details of references.
+                <li><u><strong> NOTE: </strong> Your application will not save if you leave the Credentials and References fields blank.</u>
+                </ul>
+        </font>
+    </div>
+    {{ app.as_table}}
+    <!--<ul>
+        {% for field in app.visible_fields %}
+        <li><h5>{{field.label}}</h5>
+        {{ field }}
+        {% endfor %}
+        {% for field in app.hidden_fields %}
+        {{field}}
+        {% endfor %}
+    </ul>-->
+
+    <center><input type="submit" value="Save" class="btn btn-large btn-primary"/>
+        <a href="{{site_url}}" class="btn">Back</a></center>
+</form>
+{% endblock %}
+
