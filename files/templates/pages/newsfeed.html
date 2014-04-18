@@ -164,6 +164,7 @@
 	$( document ).ready(function() {    
         // See more button
 		$("#main_body_content .see_more_notifications").click(function() {
+			$el = $(this)
 			Dajaxice.apps.walls.newsfeed_pagination(dajax_newsfeed_pagination, {
                     'page':parseInt($('#main_body_content .current_page_notifications').val())+1,
             })

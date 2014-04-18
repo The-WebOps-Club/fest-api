@@ -15,7 +15,7 @@
 			    	class="span12 comment_textarea atwho_at_config resize_textarea" 
 			    	name="comment" 
 			    	cols="30" rows="1" 
-			    	id="id_new_comment_{{ post.id }}" 
+			    	data-postid="{{ post.id }}"
 			    	placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
 			    
 			</form>
@@ -38,8 +38,8 @@
 	    padding : 5px;
 	    display : block;
 	}
-	.news_comment .news_comment_left, 
-	.news_comment .news_comment_left .news_comment_profile {
+	.news_comment .news_comment_left, .news_comment_profile  
+	.news_comment .news_comment_left ,.news_comment .news_comment_left .news_comment_profile {
 	    height : 32px;
 	    width : 32px;
 	    float : left;
@@ -63,7 +63,35 @@
 </style>
 
 <script>
+	function dajax_new_comment(data) {
+		console.log(data)
+		console.log($("#post_" + data.post_id + " .news_comment_placeholder"))
+        $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
+	}
 	
-
+	$( document ).ready(function() {
+		
+		$(".comment_textarea")
+		.keydown(function(e) {
+			e = e || event;
+        	el = this; $el = $(this)
+        	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
+            	e.preventDefault() // to avoid auto submit of forms
+            }
+		})
+		.keyup(function (e) {
+        	e = e || event;
+        	el = this; $el = $(this)
+            if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
+            	console.log($el.data("postid"))
+            	console.log($el);
+            	Dajaxice.apps.walls.create_comment(dajax_new_comment, {
+            		'post_id' : $el.data("postid"), 
+            		'comment_form': $el.closest("form").serialize(true)
+            	});
+                e.preventDefault()
+            } 
+        })
+	});
 </script>
 {% endonce %}

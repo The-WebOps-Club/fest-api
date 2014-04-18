@@ -109,14 +109,15 @@ def notifs_pagination(request, page, notif_type='unread', **kwargs):
 
 @dajaxice_register
 def comments_pagination(request, page, post_id, **kwargs):
-    comments_list = Post.objects.filter(post__id = int(post_id)).order_by('-time_created')
+    comments_list = Post.objects.get(id = int(post_id)).comments.order_by('-time_created')
     items, exhausted = paginate_items(comments_list, page=page, **kwargs)
     append_string = ""
+    items = [i for i in items][::-1]
     for item in items:
         local_context = {
-            'notification' : item,
+            'comment' : item,
         }
-        append_string += render_to_string('modules/notif.html', local_context, context_instance= global_context(request))
+        append_string += render_to_string('modules/comment.html', local_context, context_instance= global_context(request))
     local_context = {
         "append_string" : append_string,
         "exhausted" : exhausted,
@@ -228,7 +229,7 @@ def create_comment(request, post_id, comment_form):
         notification_depts = []
         notification_subdepts = []
         notification_users = []
-        link_text = '<a href="%s"> %s</a>'
+        link_text = '[%s](%s)'
         for tag in parsed_tags:
             id = int(tag[1])
             key = tag[0]
@@ -236,21 +237,24 @@ def create_comment(request, post_id, comment_form):
                 tagged_dept = get_object_or_None(Dept, id=id)
                 if tagged_dept:
                     notification_depts.append(tagged_dept)
-                    comment_text = comment_text.replace('@' + tagged_dept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_dept.wall.pk}), tagged_dept.name) )
+                    link_href = reverse("wall", kwargs={"wall_id" : tagged_dept.wall.pk})
+                    comment_text = comment_text.replace('@' + tagged_dept.name, link_text % (tagged_dept.name, link_href) )
                 else:
                     print "No id for dept"
             elif key == 'subdept':
                 tagged_subdept = get_object_or_None(Subdept, id=id)
                 if tagged_subdept:
                     notification_subdepts.append(tagged_subdept)
-                    comment_text = comment_text.replace('@' + tagged_subdept.name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_subdept.wall.pk}), tagged_subdept.name) )
+                    link_href = reverse("wall", kwargs={"wall_id" : tagged_subdept.wall.pk})
+                    comment_text = comment_text.replace('@' + tagged_subdept.name, link_text %(tagged_subdept.name, link_href) )
                 else:
                     print "No id for subdept"
             else:
                 tagged_user = get_object_or_None(User, id=id)
                 if tagged_user:
                     notification_users.append(tagged_user)
-                    comment_text = comment_text.replace('@' + tagged_user.first_name+"_"+tagged_user.last_name, link_text %(reverse("wall", kwargs={"wall_id" : tagged_user.erp_profile.wall.pk}), tagged_user.get_full_name()) )
+                    link_href = reverse("wall", kwargs={"wall_id" : tagged_user.erp_profile.wall.pk})
+                    comment_text = comment_text.replace('@' + tagged_user.first_name+"_"+tagged_user.last_name, link_text %(tagged_user.get_full_name(), link_href) )
                 else:
                     print "No id for user"
 
@@ -263,5 +267,13 @@ def create_comment(request, post_id, comment_form):
         if notification_users:
             post.notification_users.add(tagged_user)
         # Render the new comment
-        append_string =  render_to_string('modules/comment.html', {'comment': new_comment, 'post': post}, context_instance= global_context(request))
-    return json.dumps({ 'append_string': append_string })    
+        local_context = {
+            'comment': new_comment, 
+            'post': post
+        }
+        append_string =  render_to_string( 'modules/comment.html', local_context, context_instance=global_context(request) )
+    local_context = { 
+        'append_string': append_string,
+        'post_id' : post_id
+    }
+    return json.dumps(local_context)

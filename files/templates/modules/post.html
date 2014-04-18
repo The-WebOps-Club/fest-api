@@ -5,7 +5,7 @@
 
 {# Remember : "post" and "notification" are keywords used here #}
 
-<div id="post_{{ post.id }}" class="row-fluid" style="">
+<div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container" style="">
 	{% if forloop.counter0 %} <hr /> 
 	{% endif %}
 	<div class="news_post span12">
@@ -32,12 +32,15 @@
 	        <div class="news_comment_wrapper">
 	        	<input class="current_page_comments" type="hidden" name="current_page" value="1" />
 	        	
-	        	<div class="news_comment .see_more_comments center" style="display:none;">
+	        	<div class="news_comment see_more_comments center" >
 	        		See more
 	        	</div>
-	        	{% for comment in post.comments.all %}
+	        	{% for comment in post.comments.all|dictsortreversed:"time_created"|slice:":5" %}
 	            	{% include 'modules/comment.html' %}
 	        	{% endfor %}
+	        	
+	        	<div class="news_comment_placeholder"></div>
+	        	
 	        	{% with new_comment="true" %}
 	        		{% include 'modules/comment.html' %}
 	        	{% endwith %} 
@@ -99,42 +102,30 @@
 </style>
 
 <script type="text/javascript">
-
 	function dajax_comments_pagination(data){
-        $value = $("#post_id_" + data.post_id + " .current_page_comments")
-        $value.val($value.val()+1)
-        
-        $("#new_comment_placeholder").before(data.append_string);
-	}
+        if (!data.exhausted) { 
+        	$value = $("#post_" + data.post_id + " .current_page_comments")
+        	$value.val($value.val()+1)
 
-    $( document ).ready(function() {            
-        $(".news_post").mouseover( function() {
+        	$("#post_" + data.post_id + " .see_more_comments").after(data.append_string);
+        } else {
+        	$("#post_" + data.post_id + " .see_more_comments").html('No more to load');
+        }
+	}
+    $( document ).ready(function() {
+	    $(".news_post").mouseover( function() {
             $(this).find(".news_post_settings").show()
         })
         $(".news_post").mouseout( function() {
             $(this).find(".news_post_settings").hide()
         })
 
-		$(".news_post .comment_textarea")
-		.keydown(function(e) {
-			e = e || event;
-        	el = this; $el = $(this)
-        	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
-            	e.preventDefault() // to avoid auto submit of forms
-            }
-		})
-		.keyup(function (e) {
-        	e = e || event;
-        	el = this; $el = $(this)
-            if (e.ctrlKey && e.keyCode == 13) { // Enter
-            	Dajaxice.apps.walls.create_comment(append_new_comment, {'post_id':{{post.id}}, 'comment_form': $el.parent().serialize(true)});
-                e.preventDefault()
-            } 
-        })
-
 		$(".see_more_comments").click(function() {
+			$el = $(this)
+			post_id = $el.closest(".post_container").data("id")
 			Dajaxice.apps.walls.comments_pagination(dajax_comments_pagination, {
-                    'page':parseInt($('#id_current_page').val())+1,
+                    'page' : parseInt($('#post_' + post_id + ' .current_page_comments').val())+1,
+                    'post_id' : post_id,
             })
 		})
 	})
