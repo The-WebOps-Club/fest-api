@@ -302,8 +302,15 @@ def instructions_all(request,username=None):
         for x in add_to:
             instruction=InstructionsForm(request.POST)
             if instruction.is_valid:
-                i=instruction.save(commit=False)
-                i.sub_dept=SubDept.objects.get(id=x)
+                i = None
+                try:
+                    i = Instructions.objects.get( sub_dept_id = x)
+                    #import pdb;pdb.set_trace()
+                    i.instructions += instruction.data['instructions']
+                except:
+                    i = instruction.save(commit=False)
+                    i.sub_dept=SubDept.objects.get(id=x)
+                
                 i.save()
                 index+=1
             else:
