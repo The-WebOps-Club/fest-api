@@ -404,9 +404,11 @@ MARKDOWN_DEUX_STYLES = {
 }
 MARKDOWN_DEUX_HELP_URL = "http://daringfireball.net/projects/markdown/syntax"
 
-
-GOOGLE_API_USER_EMAIL = 'festapi14@gmail.com'
-GOOGLE_API_CLIENT_SECRETS = os.path.join(os.path.dirname(__file__),  'docs_client_secrets.json')
+GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'docs/oauth2callback'
-GOOGLE_API_CREDENTIALS = ""
-GOOGLE_DRIVE_ROOT_FOLDER_ID = ""
+GOOGLE_API_CREDENTIALS_FILE_PATH = os.path.abspath(os.path.join(PROJECT_PATH, "configs", "google_api_credentials.json" ) )
+GOOGLE_API_CREDENTIALS = ''
+GOOGLE_DRIVE_ROOT_FOLDER_ID = ''
+if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
+    with open(GOOGLE_API_CREDENTIALS_FILE_PATH) as f:
+        GOOGLE_API_CREDENTIALS = f.read()

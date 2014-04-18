@@ -18,7 +18,7 @@
                     	{% endif %}
                     </a></li>
                 </ul>
-                <ul class='nav searchbar'>
+                <ul class='nav topbar_searchbar searchbar'>
                     <li>
                         <input class='input-xxlarge' id='topbar_search_input' name='' type='text' placeholder='Search for people, events and pages'>
                         <button type='submit'></button>
@@ -30,8 +30,12 @@
                         <img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
                         <span class='profile_name'>{{ user.get_full_name }}</span>
                     </a></li>
-                    <li><a href='{{ SITE_URL }}' class='bold'><span>Home</span></a></li>
-                    <li><a href='javascript:void(0)' class='settingButton'><span>&nbsp;</span></a></li>
+                    <li>
+                        <a href='{{ SITE_URL }}' class='bold'><span>Home</span></a>
+                    </li>
+                    <li>
+                        <a href='javascript:void(0)' class='settingButton'><span>&nbsp;</span></a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -39,6 +43,34 @@
 </div>
 
 <style>
+.topbar div > ul.nav.links a.settingButton, .nav.links a.settingButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat!important;
+    background-size: auto!important;
+    background-position: -80px 0!important;
+    height : 15px;
+    padding: 5px 10px 10px;
+    margin: 5px 0 0 0px;
+}
+.topbar div > ul.nav.links li.topbar_profile a, .nav.links li.topbar_profile a {
+    padding: 0px 0px 0px 0px;
+    margin: 5px 0 0 0px;
+}
+.topbar div > ul.nav.links li.topbar_profile a .profile_name, .nav.links li.topbar_profile a .profile_name {
+    padding: 0px 0px 0px 0px;
+    margin: 5px 5px 0px 0px;
+    max-width: 175px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: top;
+}
+.topbar .profile_dp {
+    height : 23px;
+    width : 23px;
+    margin: 3px 5px 3px 3px;
+}
 #atwho-ground-topbar_search_input {
 	z-index : 1;
 }
@@ -46,4 +78,8 @@
 	position : fixed;
 	z-index : 1;
 }
+.topbar_searchbar button {
+    
+}
+
 </style>

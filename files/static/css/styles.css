@@ -1,5 +1,5 @@
 /* FB Buttons */
- .jewels a {
+.jewels a {
     height : 15px;
     width : 5px;
     padding: 5px 20px 5px;
@@ -99,34 +99,7 @@
 
 
 /* Specific Template styles */
-.topbar div > ul.nav.links a.settingButton, .nav.links a.settingButton {
-    background-image: url(../img/fb_icons.png);
-    background-repeat: no-repeat!important;
-    background-size: auto!important;
-    background-position: -80px 0!important;
-    height : 15px;
-    padding: 5px 10px 10px;
-    margin: 5px 0 0 0px;
-}
-.topbar div > ul.nav.links li.topbar_profile a, .nav.links li.topbar_profile a {
-    padding: 0px 0px 0px 0px;
-    margin: 5px 0 0 0px;
-}
-.topbar div > ul.nav.links li.topbar_profile a .profile_name, .nav.links li.topbar_profile a .profile_name {
-    padding: 0px 0px 0px 0px;
-    margin: 5px 5px 0px 0px;
-    max-width: 175px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
-    white-space: nowrap;
-    vertical-align: top;
-}
-.topbar .profile_dp {
-    height : 23px;
-    width : 23px;
-    margin: 3px 5px 3px 3px;
-}
+
 .below_topbar {
 	margin-top : 40px;
 }
@@ -138,34 +111,6 @@
     border-right-style: solid;
     border-right-width: 1px;
     padding: 10px 10px;
-}
-.sidebar {
-    padding: 10px 10px;
-}
-.sidebar #profile_tab {
-    padding : 10px;
-    font-size: 11px;
-}
-.sidebar #profile_tab .profile_dp {
-    height : auto;
-    width : 47px;
-    margin: 3px 5px 3px 3px;
-    display: inline-block;
-}
-.sidebar #profile_tab .profile_name {
-    width : 50%;
-    padding: 0px 0px 0px 0px;
-    margin: 5px 5px 0px 0px;
-    display: inline-block;
-    word-wrap: break-word;
-    vertical-align: top;
-    white-space: nowrap;
-}
-.sidebar .group_link_head, .group_head {
-    color: #999;
-    font-size: 9px;
-    font-weight: bold;
-    padding-top : 10px;
 }
 ul.group_link.vertical {
     list-style-type: none;
@@ -191,14 +136,6 @@ ul.group_link.vertical > li:hover, ul.group_link.vertical > li a:hover {
     color : black;
     text-decoration : none;
     background-color : rgb(239, 242, 247);
-}
-.sidebar ul.group_link.vertical > li.active {
-    font-weight : bold;
-    background-color: rgb(216, 223, 234);
-}
-.sidebar ul.group_link.vertical > li.active a:hover, .sidebar ul.group_link.vertical > li.active:hover {
-    font-weight : bold;
-    background-color: rgb(216, 223, 234);
 }
 .counter {
     opacity : 1;

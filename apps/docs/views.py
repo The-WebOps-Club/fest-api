@@ -18,13 +18,15 @@ from annoying.functions import get_object_or_None
 import json
 import httplib2
 import pprint
-from api import *
+import os
+# For google Drive
 from oauth2client.client import flow_from_clientsecrets, Credentials
 from oauth2client.django_orm import Storage
 from oauth2client import xsrfutil
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 from apiclient import http, errors
+from api import *
 
 ###########################################################################################
 # These are one time actions, needs to be done per machine/installation. Better move to management command
@@ -47,11 +49,18 @@ def auth_callback(request):
     # storage = Storage(CredentialsModel, 'id', request.user, 'credential')
     # storage.put(credential)
     storage = CredentialsModel.objects.get_or_create(id = request.user)
-    storage = storage[0]
-    storage.credential = credential.to_json()
-    storage.refresh_token = credential.refresh_token
-    storage.save()
-    return HttpResponse("<p>Save this as GOOGLE_API_CREDENTIALS in settings.py</p><p>" + str(credential.to_json())+"</p><p>Close this page</p>")
+    # storage = storage[0]
+    # storage.credential = credential.to_json()
+    # storage.refresh_token = credential.refresh_token
+    # storage.save()
+    docs_client_json = str(credential.to_json())
+    file_path = settings.GOOGLE_API_CREDENTIALS_FILE_PATH
+    # if not os.path.exists(file_path):
+    #     os.makedirs(file_path)
+    with open(file_path, 'w') as f:
+        f.write(docs_client_json)
+
+    return HttpResponse("Restart your server for google drive to work.")
 
 @login_required
 def initialise_drive(request):
