@@ -19,73 +19,40 @@
 
 {% block extra_js %}
 {{ block.super }}
-<script type="text/javascript">
+<script src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    var developerKey = 'AIzaSyBTomGBXOfCPDylTCYGU6YDZrzoZqTqG9Q';
 
-      // The API developer key obtained from the Google Developers Console.
-      var developerKey = 'AIzaSyBTomGBXOfCPDylTCYGU6YDZrzoZqTqG9Q';
+    // Use the Google Loader script to load the google.picker script.
+    google.setOnLoadCallback(createPicker);
+    google.load('picker', '1');
 
-      // The Client ID obtained from the Google Developers Console.
-      var clientId = '46389932382-ja94ulqb30qaqbdhuak1391iskutpf4k.apps.googleusercontent.com';
+    // Create and render a Picker object for searching images
+    // and uploading files.
+    function createPicker() {
+        // Create a view to search images.
+        var view = new google.picker.View(google.picker.ViewId.DOCS);
+        // view.setMimeTypes('image/png,image/jpeg');
 
-      // Scope to use to access user's photos.
-      var scope = ['https://www.googleapis.com/auth/photos'];
+        // Use DocsUploadView to upload documents to Google Drive.
+        var uploadView = new google.picker.DocsUploadView();
 
-      var pickerApiLoaded = false;
-      var oauthToken;
+        var picker = new google.picker.PickerBuilder().
+            addView(view).
+            addView(uploadView).
+            setOAuthToken('{{token}}').
+            setDeveloperKey(developerKey).
+            setCallback(pickerCallback).
+            build();
+        picker.setVisible(true);
+    }
 
-      // Use the API Loader script to load google.picker and gapi.auth.
-      function onApiLoad() {
-        gapi.load('auth', {'callback': onAuthApiLoad});
-        gapi.load('picker', {'callback': onPickerApiLoad});
-      }
-
-      function onAuthApiLoad() {
-        window.gapi.auth.authorize(
-            {
-              'client_id': clientId,
-              'scope': scope,
-              'immediate': false
-            },
-            handleAuthResult);
-      }
-
-      function onPickerApiLoad() {
-        pickerApiLoaded = true;
-        createPicker();
-      }
-
-      function handleAuthResult(authResult) {
-        if (authResult && !authResult.error) {
-          oauthToken = authResult.access_token;
-          createPicker();
+    // A simple callback implementation.
+    function pickerCallback(data) {
+        if (data.action == google.picker.Action.PICKED) {
+            var fileId = data.docs[0].id;
+            alert('The user selected: ' + fileId);
         }
-      }
-
-      // Create and render a Picker object for picking user Photos.
-      function createPicker() {
-        if (pickerApiLoaded && oauthToken) {
-          var picker = new google.picker.PickerBuilder().
-              addView(google.picker.ViewId.DOCS).
-              setOAuthToken('{{token}}').
-              setDeveloperKey(developerKey).
-              setCallback(pickerCallback).
-              build();
-          picker.setVisible(true);
-        }
-      }
-
-      // A simple callback implementation.
-      function pickerCallback(data) {
-        var url = 'nothing';
-        if (data[google.picker.Response.ACTION] == google.picker.Action.PICKED) {
-          var doc = data[google.picker.Response.DOCUMENTS][0];
-          url = doc[google.picker.Document.URL];
-        }
-        var message = 'You picked: ' + url;
-        document.getElementById('result').innerHTML = message;
-      }
+    }
     </script>
-
-    <!-- The Google API Loader script. -->
-    <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
 {% endblock %}

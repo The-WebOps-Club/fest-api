@@ -34,17 +34,7 @@ def get_refresh_token(request):
     Creates a flow object and return url
     '''
     FLOW = create_flow()
-    if not request.user == User.objects.get(email=settings.GOOGLE_API_USER_EMAIL):
-        return HttpResponse("You are not authorised to access the drive API")
-    # storage = Storage(CredentialsModel, 'id', request.user, 'credential')
-    # credential = storage.get()
-    storage = get_object_or_None(CredentialsModel, id=request.user)
-    try:
-        credential = Credentials.new_from_json(json.loads(storage.credential))
-    except Exception,e:
-        credential = None
-    if credential is None or credential.invalid == True:
-        FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY, request.user)
+    FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY, request.user)
     authorize_url = FLOW.step1_get_authorize_url()
     return HttpResponseRedirect(authorize_url)
 
