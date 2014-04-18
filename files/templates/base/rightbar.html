@@ -1,0 +1,142 @@
+{% load staticfiles %}
+
+<div class="rightbar">
+    <div class="row-fluid right_new_post">
+        <div class="span12">
+            <textarea class="new_post" placeholder="Quick Post - Not working"></textarea>
+            <a class="pull-right btn primary small new_post_submit" href="javascript:void(0)"> Post </a>
+        </div>
+    </div>
+    <div class="row-fluid right_data">
+        <div class="span12 righ_data_inner">
+            {% with name="aaaa" %}
+                {% include "modules/right_data_item.html" %}
+            {% endwith %}
+            {% with name="aaaa" %}
+                {% include "modules/right_data_item.html" %}
+            {% endwith %}
+            {% with name="aaaa" %}
+                {% include "modules/right_data_item.html" %}
+            {% endwith %}
+            {% with name="aaaa" %}
+                {% include "modules/right_data_item.html" %}
+            {% endwith %}
+            {% with name="aaaa" %}
+                {% include "modules/right_data_item.html" %}
+            {% endwith %}
+            {% with name="aaaa" %}
+                {% include "modules/right_data_item.html" %}
+            {% endwith %}
+            {% with name="aaaa" %}
+                {% include "modules/right_data_item.html" %}
+            {% endwith %}
+            {% with name="aaaa" %}
+                {% include "modules/right_data_item.html" %}
+            {% endwith %}
+            {% with name="aaaa" %}
+                {% include "modules/right_data_item.html" %}
+            {% endwith %}
+            {% with name="aaaa" %}
+                {% include "modules/right_data_item.html" %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="row-fluid right_search">
+        <div class='contact_searchbar searchbar'>  
+            <input class='input' id='topbar_search_input' type='text' placeholder='     Search for people'>
+            <button type='submit'></button>
+        </div>
+    </div>
+</div>
+
+<style>
+
+.rightbar {
+    position : fixed;
+    float : right;
+    background-color: #E9EAED;
+    border-left: 1px solid rgba(0, 0, 0, 0.4);
+    border-left-color: #CBCBCB;
+    height: 90%;
+    right: 0;
+    bottom: 0;
+    width: 205px;
+    -webkit-background-clip: padding-box;
+    -webkit-box-shadow: 1px 0 0 #F0F0F2 inset;
+}
+.rightbar .right_new_post {
+    margin-bottom : 5px;
+}
+.rightbar .right_new_post .new_post {
+}
+.rightbar .right_new_post .new_post_submit {
+    margin-top : 3px;
+    margin-right : 3px;
+}
+.rightbar .right_data {
+    position : absolute; 
+    bottom : 24px;
+}
+.rightbar .right_data .data_item {
+    color: #141823;
+    height : 30px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+}
+.rightbar .right_data .data_item:hover,
+.rightbar .right_data .data_item.active {
+    background-color : #dcdcde;
+    border-top: 1px solid #c0c0c1;
+    border-bottom: 1px solid #c0c0c1;
+}
+.rightbar .right_data .data_item .pic {
+    position : absolute;
+    margin : 0px 5px;
+}
+.rightbar .right_data .data_item .pic,
+.rightbar .right_data .data_item .pic img {
+    margin-top : 1px;
+    height : 26px;
+}
+.rightbar .right_data .data_item .text {
+    position : absolute;
+    margin-left : 34px;
+    padding-left : 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 30px;
+
+}
+.rightbar .right_search {
+    position : absolute; 
+    bottom : 0px;
+}
+.contact_searchbar input {
+    height : 14px;
+    padding : 4px;
+    border: 1px solid #D4DAE8;
+    margin : 0px;
+}
+.contact_searchbar button {
+    cursor: pointer;
+    display: block;
+    height: 23px;
+    padding: 0;
+    position: absolute;
+    left: 1px;
+    top: 0px;
+    width: 22px;
+}
+</style>
+
+<script>
+    $( document ).ready(function() {            
+        $(".new_post_submit").click(function() {
+            Dajaxice.apps.walls.create_post(prepend_new_post, {
+                'wall_id': {{ wall.id }}, 
+                'post_form': $('#id_form_status').serialize(true) 
+            })
+        });
+    });
+</script>

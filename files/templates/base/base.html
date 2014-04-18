@@ -78,9 +78,9 @@
 	            <div id="main_body_content" class="span6 main_body">
 	                {% block content %} {% endblock %}
 	            </div>
-	            <div class="span2 rightbar">
-	                {% block rightbar %} {% endblock %}
-	            </div>
+            {% endblock %}
+            {% block rightbar %} 
+                {% include 'base/rightbar.html' %}
             {% endblock %}
         </div>
         {% endblock %}

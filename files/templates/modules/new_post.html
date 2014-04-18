@@ -27,7 +27,7 @@
 	            </form>
 	        </div>
 	        <div id="new_post_bottom_bar" class="span12">
-	            <a class="btn primary small new_post_submit" href="#" onclick="Dajaxice.apps.walls.create_post(prepend_new_post, {'wall_id':{{wall.id}}, 'post_form': $('#id_form_status').serialize(true) })"> Post
+	            <a class="btn primary small new_post_submit" href="javascript:void(0)"> Post
 	            </a>
 	        </div>
 	    </div>
@@ -137,6 +137,13 @@
         
         $("#new_post_wrapper #new_post_submit").click(function() { 
             console.log("Posting");
+        });
+
+        $(".new_post_submit").click(function() {
+        	Dajaxice.apps.walls.create_post(prepend_new_post, {
+        		'wall_id': {{ wall.id }}, 
+        		'post_form': $('#id_form_status').serialize(true) 
+        	})
         });
     })
 </script>
