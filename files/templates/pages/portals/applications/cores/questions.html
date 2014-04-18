@@ -10,7 +10,7 @@
         {%csrf_token%}
     	<div class="control-group">
             <input type="submit"  value="Create Questions" class="btn btn-primary" />
-           <a href="{{site_url}}" class="btn">Back</a>
+           <a href="{% url 'portal_applications:apps.portals.applications.application_portal.views.home'%}" class="btn">Back</a>
         </div>
 
     </form>
@@ -27,7 +27,7 @@
         {% for q in questions %}
         <tr><td class="span9">{{q.question|safe}}</td>
             <td class="span1">
-                <a href="{% url core.views.questions_edit username=request.user subdept_id=subdept_id q_id=q.id %}" style="margin-right:10px;">Edit</a></td><td><a Onclick="return confirm('Are you sure you want to delete this question?');" href="{% url core.views.questions_delete username=request.user subdept_id=subdept_id q_id=q.id %}"><strong>&times;</strong></a></td></tr>
+                <a href="{% url 'portal_applications:apps.portals.applications.core.views.questions_edit' username=request.user subdept_id=subdept_id q_id=q.id %}" style="margin-right:10px;">Edit</a></td><td><a Onclick="return confirm('Are you sure you want to delete this question?');" href="{% url 'portal_applications:apps.portals.applications.core.views.questions_delete' username=request.user subdept_id=subdept_id q_id=q.id %}"><strong>&times;</strong></a></td></tr>
         {%endfor%}
     </table>
 </div>
