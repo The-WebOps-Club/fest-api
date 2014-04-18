@@ -106,7 +106,12 @@ def editprofile(request):
         View for editting the profile details of the currently logged in user.
     """
     user = request.user
-    user_profile = user.get_profile()
+    user_profile = None
+    try:
+        user_profile = user.application_profile.all()[0]    # get the only application profile.
+    except:
+        raise PermissionDenied('Error retreiving Application Profile.')
+        
     if request.method == 'POST':
         edit_form = EditUserProfileForm(request.POST, instance = user_profile)
         if edit_form.is_valid():

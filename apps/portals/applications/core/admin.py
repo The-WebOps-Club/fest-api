@@ -4,9 +4,9 @@
 from django.contrib import admin
 from apps.portals.applications.core.models import *
 
-"""class SubDeptAdmin(admin.ModelAdmin):
+class SubDeptAdmin(admin.ModelAdmin):
     pass
-admin.site.register(SubDept, SubDeptAdmin)"""
+admin.site.register(SubDept, SubDeptAdmin)
 
 class QuestionAdmin(admin.ModelAdmin):
     pass

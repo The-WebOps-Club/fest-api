@@ -41,10 +41,11 @@ class SubDeptForm(ModelForm):
         model=SubDept
         exclude=('dept',)
 
-    def __init__(self, user=None, *args, **kwargs):
-        super(SubDeptForm, self).__init__(*args, **kwargs)
+    def __init__(self, current_user=None, *args, **kwargs):
         #import pdb;pdb.set_trace()
-        self.fields['dept_choice'].choices = [(x.id,x.name) for x in user.erp_profile.core_relations.all()]
+        super(SubDeptForm, self).__init__(*args, **kwargs)
+        
+        self.fields['dept_choice'].choices = [(x.id,x.name) for x in current_user.erp_profile.core_relations.all()]
         self.empty_permitted = False
 
 class SelectAppForm(ModelForm):

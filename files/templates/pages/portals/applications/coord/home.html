@@ -10,13 +10,14 @@
               <tr>
               <th class="span1">Preference</th>
               <th>Sub Department</th>
-              <th></th>
+              <th>Status</th>
           </tr>
               {% for a in apps %}
               <tr>
               <td class="span1">{{a.preference}}</td>
-              <td><a href = "{{site_url}}coord/application/{{a.subdept.id}}">{{a.subdept}}</a></td>
-              <td><a Onclick="return confirm('If you ever want to resubmit for this sub department, please select the sub department ->view application and change the preference number to a positive number.')" href = "{{site_url}}coord/delete/{{a.subdept.id}}">Cancel application</a></td>
+              <td><a href = "{%url 'portal_applications:apps.portals.applications.coord.views.application' a.subdept.id%}">{{a.subdept}}</a></td>
+              <td>{{a.status}}</td>
+              <td><a Onclick="return confirm('If you ever want to resubmit for this sub department, please select the sub department ->view application and change the preference number to a positive number.')" href = "{%url 'portal_applications:apps.portals.applications.coord.views.delete' a.subdept.id%}">Cancel application</a></td>
               </tr>
               {% endfor %}
           </table>

@@ -4,9 +4,10 @@
     <div id="forms">
         <form action='' method="POST">
               <div class="span12">{{subedit.as_table}}</div>
+              {%csrf_token%}
               <div class="control-group">
                  <input type="submit" class="btn btn-primary" />
-                 <a href="{{site_url}}" class="btn">Back</a>
+                 <a href="{%url 'portal_applications:apps.portals.applications.application_portal.views.home' %}" class="btn">Back</a>
               </div>
         </form>
     </div>

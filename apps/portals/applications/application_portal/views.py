@@ -17,10 +17,9 @@ def home(request):
     if request.user.is_authenticated():
         if request.user.is_superuser:
             return HttpResponseRedirect(settings.SITE_URL + 'admin/')
-        
         try:
             userprofile = request.user.erp_profile
-            if userprofile.is_core_of:
+            if userprofile.is_core:
                 return redirect('portal_applications:apps.portals.applications.core.views.core_dashboard',username=request.user)
         except:
             return redirect('portal_applications:apps.portals.applications.coord.views.coord_home')

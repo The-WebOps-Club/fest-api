@@ -13,12 +13,12 @@
     	<div id="header" class="navbar navbar-inverse navbar-static-top">
         	<div class="navbar-inner">
             	<div class="container">
-                        <a href="http://www.shaastra.org"><img class="pull-left" src="{%static 'img/slogo2.png'%}" width=60px height=60px></a>
+                        <a href="http://www.shaastra.org"><img class="pull-left" src="{%static 'img/app-portal/slogo2.png'%}" width=60px height=60px></a>
                         <a class="brand" style='color:white'>&nbsp;  Application Portal</a>
                     <div id="links" class="pull-right nav-collapse collapse">
                     	<ul class="nav">
-                        	<li class=""><a href="{{site_url}}"><i class="icon-home icon-white"></i> Home</a></li>
-                            <li class=""><a href="{{site_url}}accounts/logout/"><i class="icon-off icon-white"></i> Logout </a></li>
+                        	<li class=""><a href="{%url 'portal_applications:apps.portals.applications.application_portal.views.home' %}"><i class="icon-home icon-white"></i> Home</a></li>
+                            <li class=""><a href="{%url 'portal_applications:logout' %}"><i class="icon-off icon-white"></i> Logout </a></li>
                         </ul>
                     </div>
                 </div>

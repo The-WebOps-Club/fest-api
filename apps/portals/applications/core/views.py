@@ -138,14 +138,14 @@ def subdepartments(request,username=None):
     #SubdeptFormset = modelformset_factory(SubDept, form=SubDeptForm, extra=3)
     subdept = None
     if request.method == 'POST':
-        subdeptform=SubDeptForm( data=request.POST, user=request.user )
+        subdeptform=SubDeptForm( data=request.POST, current_user=request.user )
         if subdeptform.is_valid():
             subdept=subdeptform.save(commit=False)
             subdept.dept_id=subdeptform.cleaned_data['dept_choice']
             subdept.save()
             index=1
 
-    subdeptform = SubDeptForm( user = request.user )
+    subdeptform = SubDeptForm( current_user = request.user )
     return render_to_response("pages/portals/applications/cores/subdepts.html", locals(), context_instance=RequestContext(request))
 
 """
@@ -177,10 +177,10 @@ def subdepartments_edit(request,username=None,subdept_id=None):
     """
     subdept=SubDept.objects.get(id=subdept_id)
     if request.method!="POST":
-        subedit=SubDeptForm(instance=subdept)
+        subedit=SubDeptForm( current_user = request.user, instance=subdept)
         return render_to_response('pages/portals/applications/cores/edit_s.html',locals(), context_instance=RequestContext(request))
     else:
-        s=SubDeptForm(request.POST,instance=subdept)
+        s=SubDeptForm( current_user = request.user ,  instance=subdept, data = request.POST )
         s.save()
     return redirect('portal_applications:apps.portals.applications.core.views.core_dashboard',username=request.user)
 
@@ -223,7 +223,7 @@ def applicants(request,username=None,applicant=None):
     Portal to view all details about an applicant.
     """
     applicant = User.objects.get(username=applicant)
-    applicant_profile = applicant.get_profile()
+    applicant_profile = applicant.application_profile.all()[0]
     applications = Application.objects.filter(user=applicant).exclude(preference = -1)
     return render_to_response("pages/portals/applications/cores/applicant.html",locals(), context_instance=RequestContext(request))
 
@@ -234,8 +234,9 @@ def applications(request,username=None,app_id=None):
     Portal to view the details of a particular application
     """
     app = Application.objects.get(id=app_id)
-    if request.user.get_profile().is_core_of != app.subdept.dept:
+    if app.subdept.dept not in request.user.erp_profile.core_relations.all():
         return redirect('portal_applications:apps.portals.applications.core.views.applicants', username=request.user, applicant = app.user)
+
     answers   = app.answers.all()
     questions = [ans.question for ans in answers]
     comments = Comments.objects.filter(answer__in=answers)
@@ -262,7 +263,7 @@ def cgpa_filter(request,username=None,subdept_id=None,default=7.0):
     subdept=SubDept.objects.get(id=subdept_id)
     apps=Application.objects.filter(subdept__id=subdept_id)
     for app in apps:
-        if app.user.fet_profile().cgpa<default:
+        if app.user.application_profile.all()[0].cgpa<default:
             app.status='rejected'
             app.rank=-1
             app.save()
@@ -294,7 +295,7 @@ def add_instructions(request, username = None,subdept_id = None):
 @login_required
 @core_test
 def instructions_all(request,username=None):
-    subdepts=SubDept.objects.filter(dept=request.user.get_profile().is_core_of)
+    subdepts=SubDept.objects.filter(dept=request.user.erp_profile.core_relations.all())
     if request.method=="POST":
         index=0;
         add_to=request.POST.getlist('subdepartments')

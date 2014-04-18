@@ -4,7 +4,7 @@
     <title>Appllcation Portal</title>
     <link rel="stylesheet" href="{%static 'css/app-portal/bootstrap.min.css'%}"  />
     <link rel="stylesheet" href="{%static 'css/app-portal/style.css'%}"  />
-    <link rel="shortcut icon" href="{%static 'img/favicon.ico'%}">
+    <link rel="shortcut icon" href="{%static 'img/app-portal/favicon.ico'%}">
 </head>
 
 <body>
@@ -15,9 +15,9 @@
                     <a class="brand" href="{{site_url}}">Shaastra 2014 || Appplication Portal</a>
                     <div id="links" class="pull-right nav-collapse collapse">
                         <ul class="nav">
-                            <li class=""><a href="{{site_url}}">Home</a>
+                            <li class=""><a href="{%url 'portal_applications:apps.portals.applications.application_portal.views.home' %}">Home</a>
                             </li>
-                            <li class=""><a href="{{site_url}}accounts/register">Register</a>
+                            <li class=""><a href="{%url 'portal_applications:apps.portals.applications.account.views.register' %}">Register</a>
                             </li>
                         </ul>
                     </div>

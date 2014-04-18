@@ -25,5 +25,5 @@
         {%csrf_token%}
         <input type="submit" value="Save" class="btn btn-primary"/>
     </form>
-        <a href="{% url core.views.submissions username=request.user subdept_id=app.subdept.id%}" class="btn">Back</a>
+        <a href="{% url 'portal_applications:apps.portals.applications.core.views.submissions' username=request.user subdept_id=app.subdept.id%}" class="btn">Back</a>
 {% endblock %}
