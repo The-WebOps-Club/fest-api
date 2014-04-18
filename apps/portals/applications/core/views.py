@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.template.defaultfilters import slugify
 from django.forms.formsets import formset_factory
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 
 from apps.portals.applications.core.models import *
 from apps.portals.applications.coord.models import *
@@ -22,17 +23,31 @@ from apps.portals.applications.core.forms import *
 def urlhandler(request):
     return redirect('portal_applications:apps.portals.applications.core.views.core_dashboard',username= request.user )
 
+def handle_permission_exception( in_func ):
+
+    def out_func( request, *args, **kwargs):
+        try:
+            return in_func( request, *args, **kwargs )
+        except PermissionDenied as p:
+            return render_to_response('pages/portals/applications/cores/403.html',locals(),RequestContext(request))
+    return out_func
+
+
 def core_test( in_func ):
 
     def out_func( request, *args, **kwargs ):
-        if not ( request.user.erp_profile.is_core( request ) ):
-            raise PermissionDenied('PermissionDenied')
+        try:
+            if not ( request.user.erp_profile.is_core( request ) ):
+                raise PermissionDenied('You\'re not a core. These are core waters.... ')
+        except:
+            raise PermissionDenied('You\'re not a core. These are core waters.... ')
         return in_func( request, *args, **kwargs )
 
     return out_func
 
 
 @login_required
+@handle_permission_exception
 @core_test
 def core_dashboard(request,username=None):
     """
@@ -46,6 +61,7 @@ def core_dashboard(request,username=None):
     return render_to_response("pages/portals/applications/cores/core.html",locals(), context_instance=RequestContext(request))
 
 @login_required
+@handle_permission_exception
 @core_test
 def questions_edit(request,username=None,subdept_id=None,q_id=None):
     """
@@ -69,6 +85,7 @@ def questions_edit(request,username=None,subdept_id=None,q_id=None):
 
 
 @login_required
+@handle_permission_exception
 @core_test
 def questions_delete(request,username=None,subdept_id=None,q_id=None):
     """
@@ -86,6 +103,7 @@ def questions_delete(request,username=None,subdept_id=None,q_id=None):
 
 
 @login_required
+@handle_permission_exception
 @core_test
 def questions_all(request,username=None):
     subdepts=SubDept.objects.filter(dept=request.user.erp_profile.core_relations.all())
@@ -105,6 +123,7 @@ def questions_all(request,username=None):
     return render_to_response("pages/portals/applications/cores/questions_all.html",locals(),context_instance=RequestContext(request))
 
 @login_required
+@handle_permission_exception
 @core_test
 def questions(request,username=None,subdept_id=None):
     """
@@ -130,6 +149,7 @@ def questions(request,username=None,subdept_id=None):
     return render_to_response("pages/portals/applications/cores/questions.html", locals(), context_instance=RequestContext(request))
 
 @login_required
+@handle_permission_exception
 @core_test
 def subdepartments(request,username=None):
     """
@@ -166,6 +186,7 @@ def subdepartments(request,username=None):
     return render_to_response("pages/portals/applications/cores/subdepts.html", locals(), context_instance=RequestContext(request))
 """
 @login_required
+@handle_permission_exception
 @core_test
 def subdepartments_edit(request,username=None,subdept_id=None):
     """
@@ -185,6 +206,7 @@ def subdepartments_edit(request,username=None,subdept_id=None):
     return redirect('portal_applications:apps.portals.applications.core.views.core_dashboard',username=request.user)
 
 @login_required
+@handle_permission_exception
 @core_test
 def submissions(request,username=None,subdept_id=None):
     """
@@ -217,6 +239,7 @@ def submissions(request,username=None,subdept_id=None):
 
 
 @login_required
+@handle_permission_exception
 @core_test
 def applicants(request,username=None,applicant=None):
     """
@@ -228,6 +251,7 @@ def applicants(request,username=None,applicant=None):
     return render_to_response("pages/portals/applications/cores/applicant.html",locals(), context_instance=RequestContext(request))
 
 @login_required
+@handle_permission_exception
 @core_test
 def applications(request,username=None,app_id=None):
     """
@@ -258,6 +282,7 @@ def applications(request,username=None,app_id=None):
     return render_to_response("pages/portals/applications/cores/application.html",locals(), context_instance=RequestContext(request))
 
 @login_required
+@handle_permission_exception
 @core_test
 def cgpa_filter(request,username=None,subdept_id=None,default=7.0):
     subdept=SubDept.objects.get(id=subdept_id)
@@ -270,6 +295,7 @@ def cgpa_filter(request,username=None,subdept_id=None,default=7.0):
     return redirect('portal_applications:apps.portals.applications.core.views.submissions',username=request.user,subdept_id=subdept_id)
 
 @login_required
+@handle_permission_exception
 @core_test
 def add_instructions(request, username = None,subdept_id = None):
     subdept=SubDept.objects.get(id=subdept_id)
@@ -293,6 +319,7 @@ def add_instructions(request, username = None,subdept_id = None):
     return render_to_response("pages/portals/applications/cores/instructions.html",locals(), context_instance=RequestContext(request))    
 
 @login_required
+@handle_permission_exception
 @core_test
 def instructions_all(request,username=None):
     subdepts=SubDept.objects.filter(dept=request.user.erp_profile.core_relations.all())
@@ -303,10 +330,11 @@ def instructions_all(request,username=None):
             instruction=InstructionsForm(request.POST)
             if instruction.is_valid:
                 i = None
+                # try to get an instructions object. if it DoesNotExist, create a new one.
                 try:
-                    i = Instructions.objects.get( sub_dept_id = x)
+                    i = Instructions.objects.get( sub_dept_id = x )
                     #import pdb;pdb.set_trace()
-                    i.instructions += instruction.data['instructions']
+                    i.instructions += instruction.data['instructions'] + "\n"
                 except:
                     i = instruction.save(commit=False)
                     i.sub_dept=SubDept.objects.get(id=x)
@@ -316,4 +344,4 @@ def instructions_all(request,username=None):
             else:
                 break
     i=InstructionsForm()
-    return render_to_response("pages/portals/applications/cores/instructions_all.html",locals(),context_instance=RequestContext(request))
+    return render_to_response("pages/portals/applications/cores/instructions_all.html",locals(), context_instance=RequestContext(request))

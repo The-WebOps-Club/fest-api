@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response, redirect
 from django.conf import settings
 from apps.portals.applications.account.models import Announcement
 from apps.portals.applications.account.forms import *
+from django.core.urlresolvers import reverse
 
 def home(request):
     """
@@ -26,5 +27,5 @@ def home(request):
 
     announcements = Announcement.objects.all()
     login_form = LoginForm()    
-    return render_to_response('pages/portals/applications/index.html', locals(), context_instance = RequestContext(request))
+    return redirect(reverse('portal_applications:login'))
 
