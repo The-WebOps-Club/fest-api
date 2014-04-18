@@ -150,7 +150,7 @@
 </style>
 {% endblock %} {% block extra_js %} {{ block.super }}
 <script type="text/javascript">
-	function dajax_newsfeed_pagination(data) {
+	function dajax_get_notifications(data) {
 	    if (!data.exhausted){
 	        $('#main_body_content .see_more_notifications').before(data.append_string);
 	        var $value = $('#main_body_content .current_page_notifications')
@@ -165,7 +165,7 @@
         // See more button
 		$("#main_body_content .see_more_notifications").click(function() {
 			$el = $(this)
-			Dajaxice.apps.walls.newsfeed_pagination(dajax_newsfeed_pagination, {
+			Dajaxice.apps.walls.get_notifications(dajax_get_notifications, {
                     'page':parseInt($('#main_body_content .current_page_notifications').val())+1,
             })
 		})

@@ -49,7 +49,7 @@
 {% block extra_js %} 
 {{ block.super }}
 <script type="text/javascript">
-    function dajax_wall_pagination(data){
+    function dajax_get_posts(data){
         if (!data.exhausted){
             $('#main_body_content .see_more_posts').before(data.append_string);
             var $value = $('#main_body_content .current_page_posts')
@@ -63,7 +63,7 @@
     $( document ).ready(function() {    
         // See More
         $("#main_body_content .see_more_posts").click(function() {
-            Dajaxice.apps.walls.wall_pagination(dajax_wall_pagination, {
+            Dajaxice.apps.walls.get_posts(dajax_get_posts, {
                     'page' : parseInt($('#main_body_content .current_page_posts').val())+1, 
                     'wall_id' : {{ wall.id }} 
             })

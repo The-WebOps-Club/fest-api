@@ -102,7 +102,7 @@
 </style>
 
 <script type="text/javascript">
-	function dajax_comments_pagination(data){
+	function dajax_get_comments(data){
         if (!data.exhausted) { 
         	$value = $("#post_" + data.post_id + " .current_page_comments")
         	$value.val($value.val()+1)
@@ -123,7 +123,7 @@
 		$(".see_more_comments").click(function() {
 			$el = $(this)
 			post_id = $el.closest(".post_container").data("id")
-			Dajaxice.apps.walls.comments_pagination(dajax_comments_pagination, {
+			Dajaxice.apps.walls.get_comments(dajax_get_comments, {
                     'page' : parseInt($('#post_' + post_id + ' .current_page_comments').val())+1,
                     'post_id' : post_id,
             })

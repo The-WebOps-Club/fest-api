@@ -46,13 +46,19 @@ def hello(request):
     #html_content = render_to_string("dash/task_tables/coord_you.html", query_dictionary, RequestContext(request))
     return simplejson.dumps({'message': 'hello'})
 
-
 # -------------------------------------------------------------
 # PAGINATIONS AND INFINITE SCROLLS
 @dajaxice_register
-def newsfeed_pagination(request, page, **kwargs):
+def get_notifications(request, **kwargs):
+    page = kwargs.get("page", None)
+    notification_id = kwargs.get("id", None)
+    exhausted = False
     notifications_list = Notification.objects.order_by("-timestamp")
-    items, exhausted = paginate_items(notifications_list, page=page, **kwargs)
+    if page:    
+        items, exhausted = paginate_items(notifications_list, **kwargs)
+    elif notification_id:
+        items = notification_lists.filter(id=notification_id)
+
     append_string = ""
     for item in items:
         local_context = {
@@ -68,9 +74,21 @@ def newsfeed_pagination(request, page, **kwargs):
     return json.dumps(local_context)
 
 @dajaxice_register
-def wall_pagination(request, page, wall_id, **kwargs):
-    posts_list = Post.objects.filter(wall__id = int(wall_id)).order_by('-time_updated')
-    items, exhausted = paginate_items(posts_list, page=page, **kwargs)
+def get_posts(request, **kwargs):
+    page = kwargs.get("page", None)
+    wall_id = kwargs.get("wall_id", None)
+    post_id = kwargs.get("id", None)
+    exhausted = False
+    if wall_id:
+        posts_list = Post.objects.filter(wall__id = int(wall_id)).order_by('-time_updated')
+    else:
+        posts_list = Post.objects.all().order_by('-time_updated')
+
+    if page:
+        items, exhausted = paginate_items(posts_list, **kwargs)
+    elif post_id:
+        items = posts_list.filter(id = int(post_id))
+    
     append_string = ""
     for item in items:
         local_context = {
@@ -87,14 +105,24 @@ def wall_pagination(request, page, wall_id, **kwargs):
     return json.dumps(local_context)
 
 @dajaxice_register
-def notifs_pagination(request, page, notif_type='unread', **kwargs):
+def get_notifs(request, **kwargs):
+    page = kwargs.get("page", None)
+    notif_type = kwargs.get("notif_type", None)
+    notif_id = kwargs.get("id", None)
+    exhausted = False
     if notif_type == 'unread':
         notifs_list = request.user.notifications.unread()
     elif notif_type == 'read':
         notifs_list = request.user.notifications.read()
-    elif notif_type == 'all':
+    else:    
         notifs_list = request.user.notifications.all()
-    items, exhausted = paginate_items(notifs_list, page=page, **kwargs)
+
+    if page:
+        items, exhausted = paginate_items(notifs_list, **kwargs)
+    elif notif_id:
+        items = notif_list.filter(id=notif_id)
+
+
     append_string = ""
     for item in items:
         local_context = {
@@ -108,9 +136,22 @@ def notifs_pagination(request, page, notif_type='unread', **kwargs):
     return json.dumps(local_context)
 
 @dajaxice_register
-def comments_pagination(request, page, post_id, **kwargs):
-    comments_list = Post.objects.get(id = int(post_id)).comments.order_by('-time_created')
-    items, exhausted = paginate_items(comments_list, page=page, **kwargs)
+def get_comments(request, **kwargs):
+    page = kwargs.get("page", None)
+    post_id = kwargs.get("post_id", None)
+    comment_id = kwargs.get("id", None)
+    exhausted = False
+    
+    if post_id:
+        comments_list = Post.objects.get(id = int(post_id)).comments.order_by('-time_created')
+    else:
+        comments_list = Comment.objects.all()
+    
+    if page:
+        items, exhausted = paginate_items(comments_list, **kwargs)
+    elif comment_id:
+        items = comments_list.filter(id=comment_id)
+
     append_string = ""
     items = [i for i in items][::-1]
     for item in items:
