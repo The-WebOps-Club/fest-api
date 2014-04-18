@@ -59,7 +59,7 @@ THIRD_PARTY_APPS = (
     # Search Indexer
     # 'haystack',
 )
-API_APPS =(
+API_APPS = (
     'misc',
     'apps.home', 
     'apps.users',

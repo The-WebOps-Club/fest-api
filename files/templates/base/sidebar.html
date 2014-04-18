@@ -1,55 +1,77 @@
 {% load staticfiles %}
 
-<div id='profile_tab' class='span12'>
-    <a href='#'><img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' /></a>
-    <div class='profile_name'>
-        <a href="{% url 'wall' %}" class='bold'>{{ user.get_full_name }}</a><br />
-        <a href="{% url 'profile' %}" class=''>Edit profile</a>
+<div class="" data-spy="affix">
+    <div class="row-fluid">
+        <div id='profile_tab' class='span12'>
+            <a href='#'>
+                <img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+            </a>
+            <div class='profile_name'>
+                <a href="{% url 'wall' %}" class='bold'>{{ user.get_full_name }}</a>
+                <br />
+                <a href="{% url 'profile' %}" class=''>Edit profile</a>
+            </div>
+        </div>
     </div>
-</div>
+    <div class="row-fluid">
+        <div id='favourite_links' class='span12 links'>
+            <div class='group_link_head'>FAVOURITES</div>
+            <ul class='group_link vertical'>
+                <li class="{% if current_page == 'profile' %}active{% endif %}">
+                    <a href="{% url 'profile' %}">
+                        <i class="pic-bulb"></i> Profile
+                    </a>
+                </li>
+                <li class="{% if current_page == 'newsfeed' %}active{% endif %}">
+                    <a href="{% url 'newsfeed' %}">
+                        <i class='icon-search'></i> News feed {% if user.notifications.unread.count != 0 %}
+                        <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span>{% endif %}
+                    </a>
+                </li>
+                <li class="{% if current_page == 'notifications' %}active{% endif %}">
+                    <a href="{% url 'notifications' %}">
+                        <i class='icon-search'></i> Recent posts
 
-<div id='favourite_links' class='span12 links'>
-    <div class='group_link_head'>FAVOURITES</div>
-    <ul class='group_link vertical'>
-        <li class="{% if current_page == 'profile' %}active{% endif %}"><a href="{% url 'profile' %}">
-            <i class="pic-bulb"></i> Profile
-        </a></li>
-        <li class="{% if current_page == 'newsfeed' %}active{% endif %}"><a href="{% url 'newsfeed' %}">
-            <i class='icon-search'></i> News feed
-            {% if user.notifications.unread.count != 0 %} <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span> {% endif %}
-        </a></li>
-        <li class="{% if current_page == 'notifications' %}active{% endif %}"><a href="{% url 'notifications' %}">
-            <i class='icon-search'></i> Recent posts
-            
-        </a></li>
-        <li class="{% if current_page == 'contacts' %}active{% endif %}"><a href="{% url 'contacts' %}">
-            <i class='icon-search'></i> User Contacts
-        </a></li>
-    </ul>
-</div>
+                    </a>
+                </li>
+                <li class="{% if current_page == 'contacts' %}active{% endif %}">
+                    <a href="{% url 'contacts' %}">
+                        <i class='icon-search'></i> User Contacts
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div id='page_links' class='span12 links'>
+            <div class='group_link_head'>WALLS</div>
+            <ul class='group_link vertical'>
+                <li class="{% if current_page == 'wall' %}active{% endif %}">
+                    <a href="{% url 'wall' user.erp_profile.wall.id %}">
+                        <i class='icon-search'></i> Personal Wall
+                    </a>
+                </li>
+                {% if session.role == 'coord' %}
+                <li class="{% if current_page == 'dept_wall' %}active{% endif %}">
+                    <a href="{% url 'my_wall' 'subdept' session.role_dept %}">
+                        <i class='icon-search'></i> Subdept Wall
+                    </a>
+                </li>
+                {% else %}
+                <li class="{% if current_page == 'dept_wall' %}active{% endif %}">
+                    <a href="{% url 'my_wall' 'dept' session.role_dept %}">
+                        <i class='icon-search'></i> Department Wall
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
 
-<div id='page_links' class='span12 links'>
-    <div class='group_link_head'>WALLS</div>
-    <ul class='group_link vertical'>
-        <li class="{% if current_page == 'wall' %}active{% endif %}"><a href="{% url 'wall' user.erp_profile.wall.id %}">
-            <i class='icon-search'></i> Personal Wall
-        </a></li>
-        {% if session.role == 'coord' %}
-	    	<li class="{% if current_page == 'dept_wall' %}active{% endif %}"><a href="{% url 'my_wall' 'subdept' session.role_dept %}">
-	            <i class='icon-search'></i> Subdept Wall
-	        </a></li>
-        {% else %}
-        	<li class="{% if current_page == 'dept_wall' %}active{% endif %}"><a href="{% url 'my_wall' 'dept' session.role_dept %}">
-	        	<i class='icon-search'></i> Department Wall
-	    	</a></li>
-        {% endif %}
-    </ul>
-    
-</div>
-
-<div id='portal_links' class='span12 links'>
-    <div class='group_link_head'>PORTALS</div>
-    <!-- <ul class='group_link vertical'>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div id='portal_links' class='span12 links'>
+            <div class='group_link_head'>PORTALS</div>
+            <!-- <ul class='group_link vertical'>
         <li><a href='#'>
             <i class='icon-search'></i> Events Portal
             {# <span class='label pull-right counter'>0</span> #}
@@ -63,8 +85,8 @@
             <span class='label pull-right counter loading'><i class='icon-loading'></i></span>
         </a></li>
     </ul> -->
-    <span class="muted">Coming soon ...</span>
-    
+            <span class="muted">Coming soon ...</span>
+
+        </div>
+    </div>
 </div>
-
-
