@@ -20,8 +20,8 @@
 {% block extra_js %}
 {{ block.super }}
 <script src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-    var developerKey = 'AIzaSyBTomGBXOfCPDylTCYGU6YDZrzoZqTqG9Q';
+<script type="text/javascript">
+    var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
 
     // Use the Google Loader script to load the google.picker script.
     google.setOnLoadCallback(createPicker);
@@ -31,26 +31,30 @@
     // and uploading files.
     function createPicker() {
         // Create a view to search images.
-        var view = new google.picker.View(google.picker.ViewId.DOCS);
+        view = new google.picker.View(google.picker.ViewId.DOCUMENTS)
         // view.setMimeTypes('image/png,image/jpeg');
 
         // Use DocsUploadView to upload documents to Google Drive.
-        var uploadView = new google.picker.DocsUploadView();
+        uploadView = new google.picker.DocsUploadView();
 
-        var picker = new google.picker.PickerBuilder().
-            addView(view).
-            addView(uploadView).
-            setOAuthToken('{{token}}').
-            setDeveloperKey(developerKey).
-            setCallback(pickerCallback).
-            build();
+        picker = new google.picker.PickerBuilder()
+            .addView(view)
+            .addView(uploadView)
+            .setOAuthToken('{{ token }}')
+            .setDeveloperKey(developerKey)
+            .setCallback(pickerCallback)
+            //.hideTitleBar()
+            .disableFeature(google.picker.Feature.NAV_HIDDEN)
+            .build();
         picker.setVisible(true);
     }
 
     // A simple callback implementation.
     function pickerCallback(data) {
+        console.log(data)
+        console.log(picker)
         if (data.action == google.picker.Action.PICKED) {
-            var fileId = data.docs[0].id;
+            fileId = data.docs[0].id;
             alert('The user selected: ' + fileId);
         }
     }

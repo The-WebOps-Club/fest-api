@@ -33,7 +33,7 @@ files/static-collected/*
 
 # General configs
 configs/settings.py
-configs/docs_client_secrets.json
+configs/docs_oauth2_credentials.json
 configs/google_api_credentials.json
 
 #Documentation build files

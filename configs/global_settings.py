@@ -409,6 +409,8 @@ GOOGLE_API_REDIRECT_URI = SITE_URL + 'docs/oauth2callback'
 GOOGLE_API_CREDENTIALS_FILE_PATH = os.path.abspath(os.path.join(PROJECT_PATH, "configs", "google_api_credentials.json" ) )
 GOOGLE_API_CREDENTIALS = ''
 GOOGLE_DRIVE_ROOT_FOLDER_ID = ''
+GOGOLE_API_PUBLIC_KEY = ''
+
 if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
     with open(GOOGLE_API_CREDENTIALS_FILE_PATH) as f:
         GOOGLE_API_CREDENTIALS = f.read()
