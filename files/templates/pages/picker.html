@@ -30,20 +30,7 @@
 
     // Create and render a Picker object 
     function createPicker() {
-      var docsView = new google.picker.DocsView()
-      .setIncludeFolders(true) 
-      .setParent('{{SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID}}')
-      .setSelectFolderEnabled(true);
-      var uploadView = new google.picker.DocsUploadView()
-            .setIncludeFolders(true);
-      var picker = new google.picker.PickerBuilder()
-          .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
-          .setOAuthToken('{{token}}')
-          .addView(docsView)
-          .addView(uploadView)
-          .setCallback(pickerCallback)
-          .build();
-       picker.setVisible(true);
+      
     }
 
     // A simple callback implementation.
