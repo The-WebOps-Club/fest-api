@@ -5,9 +5,9 @@
 {% block title %} {{ FEST_NAME }} {% endblock %}
 
 {% block content %}
-   
-    <div id="result"></div>
-
+   <h1>File Manager</h1>
+   <button class="btn" onclick="createPicker()">Open File Manager</button>
+<a id="doc_link" style="display:none;" href="http://example.com" class="fancybox fancybox.iframe"></a>
 {% endblock %}
 
 {% block extra_css %}
@@ -23,30 +23,27 @@
 <script type="text/javascript">
     var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
 
-    // Use the Google Loader script to load the google.picker script.
-    google.setOnLoadCallback(createPicker);
-    google.load('picker', '1');
+    // Use the Google API Loader script to load the google.picker script.
+    function loadPicker() {
+      gapi.load('picker', {'callback': createPicker});
+    }
 
-    // Create and render a Picker object for searching images
-    // and uploading files.
+    // Create and render a Picker object 
     function createPicker() {
-        // Create a view to search images.
-        view = new google.picker.View(google.picker.ViewId.DOCUMENTS)
-        // view.setMimeTypes('image/png,image/jpeg');
-
-        // Use DocsUploadView to upload documents to Google Drive.
-        uploadView = new google.picker.DocsUploadView();
-
-        picker = new google.picker.PickerBuilder()
-            .addView(view)
-            .addView(uploadView)
-            .setOAuthToken('{{ token }}')
-            .setDeveloperKey(developerKey)
-            .setCallback(pickerCallback)
-            //.hideTitleBar()
-            .disableFeature(google.picker.Feature.NAV_HIDDEN)
-            .build();
-        picker.setVisible(true);
+      var docsView = new google.picker.DocsView()
+      .setIncludeFolders(true) 
+      .setParent('{{SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID}}')
+      .setSelectFolderEnabled(true);
+      var uploadView = new google.picker.DocsUploadView()
+            .setIncludeFolders(true);
+      var picker = new google.picker.PickerBuilder()
+          .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+          .setOAuthToken('{{token}}')
+          .addView(docsView)
+          .addView(uploadView)
+          .setCallback(pickerCallback)
+          .build();
+       picker.setVisible(true);
     }
 
     // A simple callback implementation.
@@ -59,4 +56,10 @@
         }
     }
     </script>
+  </head>
+  <body>
+    <div id="result"></div>
+
+    <!-- The Google API Loader script. -->
+    <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=loadPicker"></script>
 {% endblock %}

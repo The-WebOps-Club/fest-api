@@ -30,7 +30,8 @@
     <!--<link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">-->
 
     <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
-
+    <link rel="stylesheet" href="{% static 'fancybox/source/jquery.fancybox.css' %}" type="text/css" media="screen" />
+        <script type="text/javascript" src="{% static 'fancybox/source/jquery.fancybox.pack.js' %}"></script>
     {% block extra_css %}{% endblock %} 
 
     {% if not DEBUG %}
@@ -247,6 +248,11 @@
             }
         });
 	        
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.fancybox').fancybox();
+        });
     </script>
 </body>
 
