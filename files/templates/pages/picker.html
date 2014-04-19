@@ -52,7 +52,8 @@
         console.log(picker)
         if (data.action == google.picker.Action.PICKED) {
             fileId = data.docs[0].id;
-            alert('The user selected: ' + fileId);
+            //alert('The user selected: ' + fileId);
+            window.location = "{% url 'docframe' %}?docurl="+fileId;
         }
     }
     </script>

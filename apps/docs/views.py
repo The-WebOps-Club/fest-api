@@ -116,3 +116,7 @@ def initialise_drive(request):
     for email in email_list:
         prems = drive.set_permission(my_file['id'], email, perm_type='user')
     return HttpResponse("<p>Done! Save this as GOOGLE_DRIVE_ROOT_FOLDER_ID in settings.py</p><p>" + str(file['id'])+"</p><p>Close this page</p>")
+
+# a redirect view
+def edit_file(request, *args, **kwargs):
+    return render_to_response('pages/docframe.html',{'docurl':request.GET['docurl']},RequestContext(request))
