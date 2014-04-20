@@ -1,6 +1,6 @@
 {% load staticfiles %}
 
-<div class="" data-spy="affix">
+<div class="">
     <div class="row-fluid">
         <div id='profile_tab' class='span12'>
             <a href='#'>
@@ -137,6 +137,7 @@ ul.group_link.vertical > li {
     padding : 3px 0px;
 }
 ul.group_link.vertical > li a {
+    /*padding : 0px 3px;*/
     color : black;
     width : 100%;
     display : block;
@@ -148,9 +149,23 @@ ul.group_link.vertical > li a {
     text-decoration : none;
     color : #333333;
 }
+ul.group_link.vertical > li .label {
+    /*margin-right : -10px;*/
+}
 ul.group_link.vertical > li:hover, ul.group_link.vertical > li a:hover {
     color : black;
     text-decoration : none;
     background-color : rgb(239, 242, 247);
 }
 </style>
+<script>
+$( document ).ready(function() {
+    var $win = $(window),
+        $doc = $(document);
+    $win.scroll(function(){
+        $(".sidebar").css({
+            "margin-top" : $doc.scrollTop() + "px",
+        })
+    }).scroll();
+})
+</script>
