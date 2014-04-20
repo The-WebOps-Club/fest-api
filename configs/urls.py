@@ -58,6 +58,7 @@ urlpatterns = patterns('',
     url(r'^docs/init/?$', 'apps.docs.views.initialise_drive', name='init'),
     url(r'^docs/picker/?$', 'apps.docs.views.picker', name='picker'),
     url(r'^docs/docframe/$', 'apps.docs.views.edit_file', name='docframe'),
+    url(r'^docs/drivebrowse/$', 'apps.docs.views.drivebrowse', name='drivebrowse'),
 
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),

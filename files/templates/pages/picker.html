@@ -22,40 +22,93 @@
 <script src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
     var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
+    var rootFolder = '{{SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID}}';
+    var authToken = '{{token}}'
 
-    // Use the Google API Loader script to load the google.picker script.
-    function loadPicker() {
-      gapi.load('picker', {'callback': createPicker});
-    }
+    /*$.fn.googlepicker = function( arg, root, token ){
 
-    // Create and render a Picker object 
-    function createPicker() {
-      var docsView = new google.picker.DocsView()
-      .setIncludeFolders(true) 
-      .setParent('{{SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID}}')
-      .setSelectFolderEnabled(true);
-      var uploadView = new google.picker.DocsUploadView()
-            .setIncludeFolders(true);
-      var picker = new google.picker.PickerBuilder()
-          .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
-          .setOAuthToken('{{token}}')
-          .addView(docsView)
-          .addView(uploadView)
-          .setCallback(pickerCallback)
-          .build();
-       picker.setVisible(true);
-    }
+      function loadPicker() {
+        gapi.load('picker', {'callback': createPicker});
+      }
 
+      // Create and render a Picker object 
+      function createPicker() {
+
+        var docsview = null;
+        if( arg == 'view' ){
+        docsView = new google.picker.DocsView()
+          .setIncludeFolders(true)
+          .setParent(root)
+          .setSelectFolderEnabled(true);
+        }
+
+        var uploadView = null;
+        if( arg == 'upload' ){}
+        uploadView = new google.picker.DocsUploadView()
+              .setIncludeFolders(true);
+        }
+        var picker = new google.picker.PickerBuilder()
+            .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+            .setOAuthToken(token);
+
+          if( arg == 'view' )
+            picker.addView(docsView)
+          if( arg == 'upload' )
+            picker.addView(uploadView)
+
+            picker.setCallback(pickerCallback)
+            picker.build();
+
+        picker.setVisible(true);
+      }
+      $(this).click(createPicker)
     // A simple callback implementation.
-    function pickerCallback(data) {
-        console.log(data)
-        console.log(picker)
+      function pickerCallback(data) {
+        console.log(data);
+        console.log(picker);
         if (data.action == google.picker.Action.PICKED) {
             fileId = data.docs[0].id;
             //alert('The user selected: ' + fileId);
             window.location = "{% url 'docframe' %}?docurl="+fileId;
         }
-    }
+      }
+    }*/
+
+    function loadPicker() {
+        gapi.load('picker', {'callback': createPicker});
+      }
+
+      // Create and render a Picker object 
+      function createPicker() {
+
+        var docsview = null;
+
+        docsView = new google.picker.DocsView()
+          .setIncludeFolders(true)
+          .setParent(rootFolder)
+          .setSelectFolderEnabled(true);
+
+        var uploadView = null;
+        uploadView = new google.picker.DocsUploadView()
+              .setIncludeFolders(true);
+        var picker = new google.picker.PickerBuilder()
+            .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+            .setOAuthToken(authToken).addView(docsView).addView(uploadView).setCallback(pickerCallback).build();
+
+        picker.setVisible(true);
+      }
+    // A simple callback implementation.
+      function pickerCallback(data) {
+        console.log(data);
+        console.log(picker);
+        if (data.action == google.picker.Action.PICKED) {
+            fileId = data.docs[0].id;
+            //alert('The user selected: ' + fileId);
+            window.location = "{% url 'docframe' %}?docurl="+fileId;
+        }
+      }
+    // Use the Google API Loader script to load the google.picker script.
+      
     </script>
   </head>
   <body>

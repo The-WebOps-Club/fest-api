@@ -68,6 +68,17 @@ def picker(request):
     token = get_access_token()
     return render_to_response('pages/picker.html',locals(), context_instance=global_context(request))
 
+@login_required
+def drivebrowse( request ):
+    """
+        Obtain and send an access token to the client side script.
+    """
+    PARENT_FOLDER_ID = settings.GOOGLE_DRIVE_ROOT_FOLDER_ID
+    api_key = settings.GOOGLE_API_PUBLIC_KEY
+    drive = Drive()
+    token = get_access_token()
+    return render_to_response('pages/drivebrowse.html',locals(), context_instance=global_context(request))
+
 #-------------------------------------------------------------
 # One Time actions
 @login_required
