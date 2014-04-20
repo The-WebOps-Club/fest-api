@@ -61,8 +61,8 @@
           
           $('#drivebrowse_main').html('');
           if(showPrev){
-              if(dir_id != rootFolder && files.length)
-                $('#drivebrowse_main').append('<button onclick="showDirectoryContents(\''+getFileObject(dir_id).parents[0].id+'\');">Back</button>')
+              if(dir_id != rootFolder )
+                $('#drivebrowse_main').append('<button onclick="showDirectoryContents(\''+getFileObject(dir_id).parents[0].id+'\',true);">Back</button>')
           }
           files.forEach(function(item){
             $('#drivebrowse_main').append(toHTML(item));
@@ -71,10 +71,9 @@
     }
 
     function getFileObject(fileId){
-      for(var file in allFiles){
-        if(file.id == fileId){
-          return file;
-        }
+      for(var i=0;i<allFiles.length;i++){
+        if(allFiles[i].id == fileId)
+          return allFiles[i];
       }
     }
     function getDirectoryContents( all_files, dir_id ){
@@ -185,13 +184,29 @@
       var request = gapi.client.drive.files.delete({
         'fileId': fileId
       });
-      request.execute(function(resp) { window.reload(true) });
+      request.execute(function(resp) { window.reload(true); });
     }
-
     
-    function shareFile(){
-
+    function shareFile(fileId,dest_email){
+      var body = {
+        'value': dest_email,
+        'type': 'user',
+        'role': 'writer'
+      };
+      var request = gapi.client.drive.permissions.insert({
+        'fileId': fileId,
+        'resource': body
+        });
+      request.execute(function(resp) { window.reload(true); });
     }
+
+    function shareFileMultiple(fileId,dest_emails){
+      dest_emails.forEach(function(email){
+        shareFile(fileId, email);
+      });
+    }
+
+
     // A simple callback implementation.
       /*function pickerCallback(data) {
         console.log(data);
