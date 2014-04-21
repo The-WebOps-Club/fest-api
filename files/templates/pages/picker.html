@@ -1,31 +1,18 @@
-
-{% extends 'base/base.html' %}
-{% load staticfiles %}
-
-{% block title %} {{ FEST_NAME }} {% endblock %}
-
-{% block content %}
-   <h1>File Manager</h1>
-   <button class="btn" onclick="createPicker()">Open File Manager</button>
+{% extends 'base/base.html' %} {% load staticfiles %} {% block title %} {{ FEST_NAME }} {% endblock %} {% block content %}
+<h1>File Manager</h1>
+<button class="btn" onclick="createPicker()">Open File Manager</button>
 <a id="doc_link" style="display:none;" href="http://example.com" class="fancybox fancybox.iframe"></a>
-{% endblock %}
-
-{% block extra_css %}
-{{ block.super }}
+{% endblock %} {% block extra_css %} {{ block.super }}
 <style type='text/css'>
 </style>
-{% endblock %}
-
-
-{% block extra_js %}
-{{ block.super }}
+{% endblock %} {% block extra_js %} {{ block.super }}
 <script src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
-    var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
-    var rootFolder = '{{SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID}}';
-    var authToken = '{{token}}'
+var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
+var rootFolder = '{{SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID}}';
+var authToken = '{{token}}'
 
-    /*$.fn.googlepicker = function( arg, root, token ){
+/*$.fn.googlepicker = function( arg, root, token ){
 
       function loadPicker() {
         gapi.load('picker', {'callback': createPicker});
@@ -75,55 +62,49 @@
     }*/
 
     function loadPicker() {
-<<<<<<< HEAD
-      gapi.load('picker', {'callback': createPicker});
+        gapi.load('picker', {
+            'callback': createPicker
+        });
     }
 
     // Create and render a Picker object 
-    function createPicker() {
-      
-    }
-=======
-        gapi.load('picker', {'callback': createPicker});
-      }
->>>>>>> f038db37d4c35a8284875cfc10f631123045573d
 
-      // Create and render a Picker object 
-      function createPicker() {
+    function createPicker() {
 
         var docsview = null;
 
         docsView = new google.picker.DocsView()
-          .setIncludeFolders(true)
-          .setParent(rootFolder)
-          .setSelectFolderEnabled(true);
+            .setIncludeFolders(true)
+            .setParent(rootFolder)
+            .setSelectFolderEnabled(true);
 
         var uploadView = null;
         uploadView = new google.picker.DocsUploadView()
-              .setIncludeFolders(true);
+            .setIncludeFolders(true);
         var picker = new google.picker.PickerBuilder()
             .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
             .setOAuthToken(authToken).addView(docsView).addView(uploadView).setCallback(pickerCallback).build();
 
         picker.setVisible(true);
-      }
+    }
     // A simple callback implementation.
-      function pickerCallback(data) {
+
+    function pickerCallback(data) {
         console.log(data);
         console.log(picker);
         if (data.action == google.picker.Action.PICKED) {
             fileId = data.docs[0].id;
             //alert('The user selected: ' + fileId);
-            window.location = "{% url 'docframe' %}?docurl="+fileId;
+            window.location = "{% url 'docframe' %}?docurl=" + fileId;
         }
-      }
+    }
     // Use the Google API Loader script to load the google.picker script.
-      
-    </script>
-  </head>
-  <body>
+</script>
+</head>
+
+<body>
     <div id="result"></div>
 
     <!-- The Google API Loader script. -->
     <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=loadPicker"></script>
-{% endblock %}
+    {% endblock %}
