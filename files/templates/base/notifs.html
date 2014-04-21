@@ -147,13 +147,15 @@
 				Dajaxice.apps.walls.get_notifs(dajax_get_notifs, {
 				    'page' : parseInt($('.current_page_notifs').val())+1, 
 				})
-				$el.data("clicked") = "yes"
+				$el.data("clicked", "yes")
 			})
 			e.preventDefault()
 			$(".popover_notifs #id_notifs_container_notifs").scroll(function(){
 				var $el = $(this)
 				
-				if( $el.scrollTop() >= $el.height() - $el.parent().height()){
+				if( $el.scrollTop() >= $el.prop("scrollHeight") - $el.height() ) {
+					console.log($el.scrollTop() + ", " )
+					console.log("yes")
 					$(".popover_notifs .see_more_notifs").click()
 				}
 				scrollPos = $(this).scrollTop();

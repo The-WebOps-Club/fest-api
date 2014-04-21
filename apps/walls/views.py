@@ -45,6 +45,7 @@ def wall (request, wall_id=None):
             None
     """
     # Default argument setting and checking
+    wall = None
     if wall_id == None:    
         if hasattr(request.user, "erp_profile") and hasattr(request.user.erp_profile, "wall"):
             wall_id = request.user.erp_profile.wall.id
@@ -58,9 +59,10 @@ def wall (request, wall_id=None):
             wall_id = None
         if not ( type(wall_id) is int ):
             print "wall_id :", wall_id, type(wall_id)
-            raise InvalidArgumentTypeException
-        wall = get_object_or_404(Wall, id=wall_id)
-
+            raise InvalidArgumentTypeException("`wall_id` type is wrong. Expected an integer. Got : " + str(wall_id))
+        wall = get_object_or_None(Wall, id=wall_id)
+    if not wall:
+        raise InvalidArgumentValueException("Wall with the `wall_id` " + str(wall_id) + " not found.")
     # Logic
     wall_posts = Post.objects.filter(wall = wall).order_by('-time_updated')[:5]
     # wall_notifications = request.user.notifications.unread()

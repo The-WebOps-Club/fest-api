@@ -66,8 +66,19 @@
 	z-index : 1;
 }
 .topbar {
-	position : fixed;
-	z-index : 1;
+   /*position : fixed;*/
+   z-index : 1;
+}
+.below_topbar > div {
+    padding-top : 5px;
+}
+@media (min-width: 940px) {
+    .topbar {
+	   position : fixed;
+    }
+    .below_topbar {
+        margin-top : 40px;
+    }
 }
 .topbar_searchbar button {
     

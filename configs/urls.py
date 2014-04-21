@@ -57,7 +57,8 @@ urlpatterns = patterns('',
     url(r'^docs/upload/?$', 'apps.docs.views.upload_a_file', name='upload'),
     url(r'^docs/init/?$', 'apps.docs.views.initialise_drive', name='init'),
     url(r'^docs/picker/?$', 'apps.docs.views.picker', name='picker'),
-
+    url(r'^docs/docframe/$', 'apps.docs.views.edit_file', name='docframe'),
+    url(r'^docs/drivebrowse/$', 'apps.docs.views.drivebrowse', name='drivebrowse'),
 
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),
@@ -90,6 +91,7 @@ urlpatterns = patterns('',
     # Python social auth
     url(r'', include('social.apps.django_app.urls', namespace='social')),
     
+
 )
 
 # 400 & 500

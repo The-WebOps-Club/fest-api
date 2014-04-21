@@ -68,6 +68,17 @@ def picker(request):
     token = get_access_token()
     return render_to_response('pages/picker.html',locals(), context_instance=global_context(request))
 
+@login_required
+def drivebrowse( request ):
+    """
+        Obtain and send an access token to the client side script.
+    """
+    PARENT_FOLDER_ID = settings.GOOGLE_DRIVE_ROOT_FOLDER_ID
+    api_key = settings.GOOGLE_API_PUBLIC_KEY
+    drive = Drive()
+    token = get_access_token()
+    return render_to_response('pages/drivebrowse.html',locals(), context_instance=global_context(request))
+
 #-------------------------------------------------------------
 # One Time actions
 @login_required
@@ -116,3 +127,7 @@ def initialise_drive(request):
     for email in email_list:
         prems = drive.set_permission(my_file['id'], email, perm_type='user')
     return HttpResponse("<p>Done! Save this as GOOGLE_DRIVE_ROOT_FOLDER_ID in settings.py</p><p>" + str(file['id'])+"</p><p>Close this page</p>")
+
+# a redirect view
+def edit_file(request, *args, **kwargs):
+    return render_to_response('pages/docframe.html',{'docurl':request.GET['docurl']},RequestContext(request))

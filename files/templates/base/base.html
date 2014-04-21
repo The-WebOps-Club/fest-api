@@ -69,7 +69,7 @@
     <div class="container-fluid below_topbar">
         {% block full_content %}
         <div class="row-fluid">
-            <div class="span2 offset1 sidebar" >
+            <div class="span2 offset1 sidebar fixedbar" >
                 {% block left_content %} 
                 	{% include 'base/sidebar.html' %}
                 {% endblock %}
@@ -79,9 +79,13 @@
 	            <div id="main_body_content" class="span6 main_body">
 	                {% block content %} {% endblock %}
 	            </div>
-            {% endblock %}
-            {% block rightbar %} 
-                {% include 'base/rightbar.html' %}
+            
+                <div id="rightbar" class="span2 rightbar fixedbar">
+                    {% block rightbar %} 
+                        {% include 'base/rightbar.html' %}
+                    {% endblock %}
+                </div>
+                
             {% endblock %}
         </div>
         {% endblock %}
@@ -119,39 +123,7 @@
 	            $(".settingButton").popover("hide") 
 	    }
 	        
-	    $(document).ready(function() {
-	        $(".below_topbar").click(hide_popups)
-    		$(".searchbar").click(hide_popups)
-
-            $(window).resize(function() { // Check for small screens
-                outline = $("body")
-                console.log($("body").width() + "," + $("body").height())
-                if ( outline.width() < 1000 ) {
-                    console.log("width smaller than 1000")
-                }
-            });
-    	    $(".resize_textarea").autosize()
-
-    	    goto_wall = {
-			    before_insert: function(value, $li) {
-       				console.log($li)
-       				owner_type = "user"
-       				if ( $li.data("small") == "Department" ) {
-       					owner_type = "dept"
-       				} else if ( $li.data("small") == "Subdept" ) {
-       					owner_type = "subdept"
-       				}
-       				document.location.href="/wall/" + owner_type + "/" + $li.data("id")
-       				console.log("/wall/" + owner_type + $li.data("id"))
-       				return value;
-      			},
-			}
-			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
-                setup_autocomplete_lists();
-            }
-    	})
-
-        function setup_autocomplete_lists() {
+	    function setup_autocomplete_lists() {
             if ( atwho_user_list ) {
                 atwho_user_list = $.map(atwho_user_list, function(value, i) {
                     return {"id" : value["id"], 
@@ -222,6 +194,54 @@
             $(".atwho_at_config").atwho(at_config) 
         }
 
+        $(document).ready(function() {
+            $('.fancybox').fancybox();
+	        $(".below_topbar").click(hide_popups)
+    		$(".searchbar").click(hide_popups)
+
+            $(window).resize(function() { // Check for small screens
+                outline = $("body")
+                console.log($("body").width() + "," + $("body").height())
+                if ( outline.width() < 1000 ) {
+                    console.log("width smaller than 1000")
+                }
+            });
+    	    $(".resize_textarea").autosize()
+
+    	    goto_wall = {
+			    before_insert: function(value, $li) {
+       				console.log($li)
+       				owner_type = "user"
+       				if ( $li.data("small") == "Department" ) {
+       					owner_type = "dept"
+       				} else if ( $li.data("small") == "Subdept" ) {
+       					owner_type = "subdept"
+       				}
+       				document.location.href="/wall/" + owner_type + "/" + $li.data("id")
+       				console.log("/wall/" + owner_type + $li.data("id"))
+       				return value;
+      			},
+			}
+			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
+                setup_autocomplete_lists();
+            }
+
+            var $win = $(window),
+            $doc = $(document);
+            $win.scroll(function(){
+                if ( $(document).width() > 940 ) {
+                    $(".fixedbar").css({
+                        "margin-top" : $doc.scrollTop() + "px",
+                    })
+                } else {
+                    $(".fixedbar").css({
+                        "margin-top" : $doc.scrollTop()-40 + "px",
+                    })
+                }
+            });
+    	})
+
+        
         atwho_user_list = null;
         atwho_subdept_list = null;
         atwho_dept_list = null;
@@ -248,11 +268,6 @@
             }
         });
 	        
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('.fancybox').fancybox();
-        });
     </script>
 </body>
 

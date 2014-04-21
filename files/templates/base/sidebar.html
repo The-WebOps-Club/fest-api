@@ -163,9 +163,15 @@ $( document ).ready(function() {
     var $win = $(window),
         $doc = $(document);
     $win.scroll(function(){
-        $(".sidebar").css({
-            "margin-top" : $doc.scrollTop() + "px",
-        })
-    }).scroll();
+        if ( $(document).width() > 940 ) {
+            $(".fixedbar").css({
+                "margin-top" : $doc.scrollTop() + "px",
+            })
+        } else {
+            $(".fixedbar").css({
+                "margin-top" : $doc.scrollTop()-40 + "px",
+            })
+        }
+    });
 })
 </script>
