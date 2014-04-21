@@ -8,9 +8,21 @@
 
 {% block content %}
     <h4>Docs</h4>
-    <div id='drivebrowse_main'>
+    <div id='drivebrowse_main' style='display:inline;'>
       
     </div>
+    <style>
+    .fileview{
+        width:100%;
+        text-align: center;
+        border: 2px gray solid;
+        margin-left: 7px;
+        padding-right:2px;
+        padding-left:2px;
+        height:240px;
+        border-radius:4px;
+    }
+    </style>
 <script type="text/javascript">
     var developerKey = '{{ api_key }}';
     var rootFolder = '{{SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID}}';
@@ -40,12 +52,11 @@
       // if none exists the file is a directory. leave it.
 
       if(file_type != MIME_DIRECTORY)
-        html+='<div class="col-md-3" style="width:25%;text-align:center;"><a href="'+d_url+'">'+file.title+'</a></div>';
+        html+='<div class="span4 fileview" style="text-align:center;"><img src="'+file.thumbnailLink+'" style="width:100%;height:160px"><div><img src="'+file.iconLink+'"><a href="{%url 'docframe' %}?docurl='+file.id+'">'+file.title+'</a></div><div><button onclick="deleteFile(\''+file.id+'\');">Delete</button></div><div><a href="'+d_url+'">Download</a></div></div>';
       else
-        html+='<div class="col-md-3" style="width:25%;text-align:center;"><a onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</a></div>';
+        html+='<div class="span4 col-md-3 fileview" style="text-align:center;"><img src="'+file.thumbnailLink+'" style="width:100%;height:160px"><div><img src="'+file.iconLink+'"><a onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</a></div></div>';
       return html;
     }
-
     // model preprocessor
     function showAllFiles(files){
           allFiles = files;
@@ -61,8 +72,8 @@
           
           $('#drivebrowse_main').html('');
           if(showPrev){
-              if(dir_id != rootFolder && files.length)
-                $('#drivebrowse_main').append('<button onclick="showDirectoryContents(\''+getFileObject(dir_id).parents[0].id+'\');">Back</button>')
+              if(dir_id != rootFolder )
+                $('#drivebrowse_main').append('<button onclick="showDirectoryContents(\''+getFileObject(dir_id).parents[0].id+'\',true);">Back</button>')
           }
           files.forEach(function(item){
             $('#drivebrowse_main').append(toHTML(item));
@@ -71,10 +82,9 @@
     }
 
     function getFileObject(fileId){
-      for(var file in allFiles){
-        if(file.id == fileId){
-          return file;
-        }
+      for(var i=0;i<allFiles.length;i++){
+        if(allFiles[i].id == fileId)
+          return allFiles[i];
       }
     }
     function getDirectoryContents( all_files, dir_id ){
@@ -98,7 +108,7 @@
     }
 
     function getFiles(){
-      alert('retreiving files');
+      //alert('retreiving files');
       //files_of_interest = []
       gapi.client.drive.files.list().execute(function(response){
           if(response.error){
@@ -113,7 +123,7 @@
     }
 
     function initDrive() {
-          alert('?');
+          //alert('?');
           gapi.auth.setToken({access_token:authToken,expires_in:2000}); // set the access token obtained from the server. OAuth2 automatically logs us in.
           gapi.client.setApiKey(developerKey);  //set our public api key
           gapi.client.load('drive','v2',getFiles);  // ask gapi to load API details for the drive api.
@@ -123,18 +133,18 @@
           var text = " ";
 
           var xhr2 = new XMLHttpRequest();
-          xhr2.open('POST', 'http://www.googleapis.com/drive/v2/files/');
+          xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key='+developerKey);
           xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
-          xhr2.setRequestHeader('Content-Type', 'text/json');
+          xhr2.setRequestHeader('Content-Type', 'application/json');
           xhr2.onreadystatechange = function(){
               var xhr = new XMLHttpRequest();
-              xhr.open('PUT', 'https://www.googleapis.com/upload/drive/v2/files/0B75xGGtqUve5UzhGN28tdlBmYTA?uploadType=media');
+              xhr.open('PUT', 'https://www.googleapis.com/upload/drive/v2/files/'+JSON.parse(xhr2.responseText).id+'?uploadType=media');
               xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
               xhr.setRequestHeader('Content-Type',mimetype);
               xhr.onreadystatechange = function(res){ alert(JSON.stringify(res)); }
               xhr.send(text);
             }
-          xhr2.send({'title':name,'mimeType':mimetype,'parents':[{'id':dir_id,'kind':'drive#parentReference'}]})
+          xhr2.send(JSON.stringify({'title':name,'mimeType':mimetype,'parents':[{'id':dir_id,'kind':'drive#parentReference'}]}));
     }
 
     function insertFile(fileData, callback) {
@@ -185,13 +195,28 @@
       var request = gapi.client.drive.files.delete({
         'fileId': fileId
       });
-      request.execute(function(resp) { window.reload(true) });
+      request.execute(function(resp) { window.location.reload(true); });
     }
-
     
-    function shareFile(){
-
+    function shareFile(fileId,dest_email){
+      var body = {
+        'value': dest_email,
+        'type': 'user',
+        'role': 'writer'
+      };
+      var request = gapi.client.drive.permissions.insert({
+        'fileId': fileId,
+        'resource': body
+        });
+      request.execute(function(resp) { window.location.reload(true); });
     }
+
+    function shareFileMultiple(fileId,dest_emails){
+      dest_emails.forEach(function(email){
+        shareFile(fileId, email);
+      });
+    }
+
     // A simple callback implementation.
       /*function pickerCallback(data) {
         console.log(data);
