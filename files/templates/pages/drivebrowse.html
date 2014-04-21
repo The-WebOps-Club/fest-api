@@ -14,23 +14,24 @@
     <div id='drivebrowse_main' style='display:inline;'>
       
     </div>
-
-    <div id='sharebox' data-fileid='' style="top:50%;position:absolute;width:100%;text-align:center;display:inline;background-color: rgb(59, 89, 152);z-index:3" class="popover">
+   <input id='filechooser' type=file style='display:none'></input>
+   <!--<button id='filechooser_trig' onclick='$("#filechooser").click();'>Trig</button>-->
+    <div id='sharebox' data-fileid='' style="top:50%;position:absolute;width:100%;text-align:center;display:none;background-color: rgb(59, 89, 152);z-index:3" class="popover">
       <div id="inner" style="
     margin-top: 20px;
     margin-bottom: 20px;
     margin-left: 9px;
     margin-right: 10px;
             ">
-
+            <h1 style='font-color:white;font-weight:bolder'>Share File</h1>
         <select id="select0" multiple>
         {%for u in user_list%}
           <option value='{{u.email}}'>{{u.username}}</option>
         {%endfor%}
         </select>
 
-        <button id="share" class="btn btn-primary" onclick="shareFileMultiple($('#sharebox').attr('data-fileid'),$('#sharebox').val());">Share</button>
-        <button id="close" class="btn btn-primary" onclick="$('#sharebox').css('display','none')">X</button>
+        <button id="share" class="fa fa-share fa-2x"  style='background:none;margin-left:10px' onclick="shareFileMultiple($('#sharebox').attr('data-fileid'),$('#sharebox').val());"></button>
+        <button id="close" class="fa fa-undo fa-2x" style='background:none;margin-left:10px' onclick="$('#sharebox').css('display','none')"></button>
       </div>
     </div>
 
@@ -109,6 +110,10 @@
       margin-left:5px;
       margin-right:2px;
     }
+    .driveicon{
+      margin-left:10px;
+      margin-right:10px;
+    }
     </style>
 <script type="text/javascript">
     var developerKey = '{{ api_key }}';
@@ -120,8 +125,17 @@
     var heirarchy=[];
     var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
     // view function.
+
+    function uploadFile(evt){
+      //alert(JSON.stringify(evt.target.files[0]));
+      insertFile(evt.target.files[0],currFolder,function(){
+        alert("successful");
+      });
+    }
+
     $(document).ready(function(){
       $('#select0').select2();
+      $('#filechooser').change(uploadFile);
     });
     function toHTML(file){
       var html = '';
@@ -142,20 +156,38 @@
       // if none exists the file is a directory. leave it.
 
       if(file_type != MIME_DIRECTORY)
-        html+='<div class="span4 fileview" style="text-align:center;"><img src="'+file.thumbnailLink+'" style="width:90%;height:160px;padding-top:5px"><div><img src="'+file.iconLink+'"><a href="{%url 'docframe' %}?docurl='+file.id+'">'+file.title+'</a></div><div style="text-align:center;display:inline-flex;padding-top:2px;"><button class="drive_download" onclick="window.location=\''+d_url+'\'"></button><button class="drive_share" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","'+file.id+'")\'></button><button class="drive_view"></button><button class="drive_delete" onclick=\'deleteFile("'+file.id+'");\'></button></div></div>';
+        html+='<a href="#"><div class="span4 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><img src="'+file.thumbnailLink+'" style="max-width:90%;max-height:160px;padding-top:5px"><div><img src="'+file.iconLink+'"><h6>'+file.title+'</h6></div><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-cloud-download fa-lg driveicon" onclick="window.location=\''+d_url+'\'"></button><button class="fa fa-share fa-lg driveicon" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","'+file.id+'")\'></button><button class="fa fa-eye fa-lg driveicon" onclick="window.location=\'{%url "docframe" %}?docurl='+file.id+'\'"></button><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("'+file.id+'");\'></button></div></div></a>';
       else
-        html+='<div class="span4 col-md-3 fileview" style="text-align:center;"><div class="glyphicons glyphicon folder_open" style="width:100%;height:160px"><div><img src="'+file.iconLink+'"><a onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</a></div></div>';
+        html+='<a href="#" onclick="showDirectoryContents(\''+file.id+'\',true);"><div class="span4 col-md-3 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><div style="width:100%;height:160px;text-align:center"><div class="fa fa-folder fa-4x" style="margin-top:80px"></div></div><img src="'+file.iconLink+'"><h6 onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</h6></div></a>';
       return html;
+    }
+    function addUploadTile(){
+      html = "";
+      html+='<button class="span4 fileview" onclick="$(\'#filechooser\').click();" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>UPLOAD</b></h3></button>';
+      $('#drivebrowse_main').append(html);
+    }
+    function addFolderCreateTile(dir_id){
+      html = "";
+      html+='<button class="span4 fileview" onclick="uploadEmptyFolder(\'New Folder\',\''+dir_id+'\')" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>NEW FOLDER</b></h3></button>';
+      $('#drivebrowse_main').append(html);
+    }
+    function addBackTile(dir_id){
+      html = "";
+      html+='<button class="span4 fileview" onclick="showDirectoryContents(\''+getFileObject(dir_id).parents[0].id+'\',true);" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>BACK</b></h3></button>';
+      $('#drivebrowse_main').append(html);
     }
     // model preprocessor
     function showAllFiles(files){
+          $('#drivebrowse_main').html('');
           allFiles = files;
           dir_files = getDirectoryContents( allFiles, rootFolder )
           dir_files.forEach(function(item){
             $('#drivebrowse_main').append(toHTML(item));
           });
           currFolder = rootFolder;
-          alert($('.fileview').length);
+          //alert($('.fileview').length);
+          addUploadTile();
+          addFolderCreateTile();
           //alert('calling overlay'); $('.fileview').driveOverlay();
     }
 
@@ -165,13 +197,15 @@
           $('#drivebrowse_main').html('');
           if(showPrev){
               if(dir_id != rootFolder )
-                $('#drivebrowse_main').append('<button onclick="showDirectoryContents(\''+getFileObject(dir_id).parents[0].id+'\',true);">Back</button>')
+                addBackTile(dir_id);
           }
           files.forEach(function(item){
             $('#drivebrowse_main').append(toHTML(item));
           });
           currFolder = dir_id;
           //$('.fileview').load(function(){ alert('calling overlay'); $(this).driveOverlay();});
+          addUploadTile();
+          addFolderCreateTile(dir_id);
     }
 
     function getFileObject(fileId){
@@ -239,8 +273,17 @@
             }
           xhr2.send(JSON.stringify({'title':name,'mimeType':mimetype,'parents':[{'id':dir_id,'kind':'drive#parentReference'}]}));
     }
+    function uploadEmptyFolder(name,dir_id){
+        var xhr2 = new XMLHttpRequest();
+        xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key='+developerKey);
+        xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
+        xhr2.setRequestHeader('Content-Type', 'application/json');
+        xhr2.onreadystatechange = getFiles;
+        xhr2.send(JSON.stringify({'title':name,'mimeType':MIME_DIRECTORY,'parents':[{'id':dir_id,'kind':'drive#parentReference'}]}));
 
-    function insertFile(fileData, callback) {
+    }
+
+    function insertFile(fileData, dir_id,callback) {
       const boundary = '-------314159265358979323846';
       const delimiter = "\r\n--" + boundary + "\r\n";
       const close_delim = "\r\n--" + boundary + "--";
@@ -250,8 +293,14 @@
       reader.onload = function(e) {
       var contentType = fileData.type || 'application/octet-stream';
       var metadata = {
-        'title': fileData.fileName,
-        'mimeType': contentType
+        'title': fileData.name,
+        'mimeType': contentType,
+        'parents':[
+          {
+            'id':dir_id,
+            'kind':'drive#parentReference'
+          }
+        ]
       };
 
       var base64Data = btoa(reader.result);
@@ -343,6 +392,7 @@
 <style type='text/css'>
 </style>
 <link rel='stylesheet' href='{%static "css/select2.css"%}'/>
+<link rel='stylesheet' href='{%static "fonts/font-awesome/css/font-awesome.css"%}'/>
 {% endblock %}
 
 
