@@ -7,20 +7,107 @@
 
 
 {% block content %}
+
+
+
     <h4>Docs</h4>
     <div id='drivebrowse_main' style='display:inline;'>
       
     </div>
+
+    <div id='sharebox' data-fileid='' style="top:50%;position:absolute;width:100%;text-align:center;display:inline;background-color: rgb(59, 89, 152);z-index:3" class="popover">
+      <div id="inner" style="
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 9px;
+    margin-right: 10px;
+            ">
+
+        <select id="select0" multiple>
+        {%for u in user_list%}
+          <option value='{{u.email}}'>{{u.username}}</option>
+        {%endfor%}
+        </select>
+
+        <button id="share" class="btn btn-primary" onclick="shareFileMultiple($('#sharebox').attr('data-fileid'),$('#sharebox').val());">Share</button>
+        <button id="close" class="btn btn-primary" onclick="$('#sharebox').css('display','none')">X</button>
+      </div>
+    </div>
+
     <style>
     .fileview{
         width:100%;
         text-align: center;
-        border: 2px gray solid;
+        /*border: 2px gray solid;*/
+        background-color:beige;
         margin-left: 7px;
         padding-right:2px;
         padding-left:2px;
         height:240px;
         border-radius:4px;
+    }
+    /*CSS for overlay*/
+    .drive_overlay{
+        position:absolute;
+        z-index:9999;
+        opacity:0.2;
+        background-color:rgb(200,100,150);
+    }
+
+    .drive_overlay:hover{
+        opacity:0.8;
+    }
+
+    .drive_download{
+        width:40px;
+        height:40px;
+        background-color: silver;
+        margin-left:5px;
+        margin-right:5px;
+        border-radius: 10%;
+    }
+    .drive_download:hover{
+      background-color: slategray;
+    }
+    .drive_view{
+       width:40px;
+        height:40px;
+        background-color: silver;
+        margin-left:5px;
+        margin-right:5px;
+        border-radius: 10%;
+    }
+    .drive_view:hover{
+      background-color: slategray;
+    }
+    .drive_share{
+       width:40px;
+        height:40px;
+        background-color: silver;
+        margin-left:5px;
+        margin-right:5px;
+        border-radius: 10%;
+    }
+    .drive_share:hover{
+      background-color: slategray;
+    }
+    .drive_delete{
+        width:40px;
+        height:40px;
+        background-color: silver;
+        margin-left:5px;
+        margin-right:5px;
+        border-radius: 10%;
+    }
+    .drive_delete:hover{
+      background-color: slategray;
+    }
+    .select2-choices{
+      width:250px;
+    }
+    .btn{
+      margin-left:5px;
+      margin-right:2px;
     }
     </style>
 <script type="text/javascript">
@@ -33,6 +120,9 @@
     var heirarchy=[];
     var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
     // view function.
+    $(document).ready(function(){
+      $('#select0').select2();
+    });
     function toHTML(file){
       var html = '';
       //alert(JSON.stringify(file));
@@ -52,9 +142,9 @@
       // if none exists the file is a directory. leave it.
 
       if(file_type != MIME_DIRECTORY)
-        html+='<div class="span4 fileview" style="text-align:center;"><img src="'+file.thumbnailLink+'" style="width:100%;height:160px"><div><img src="'+file.iconLink+'"><a href="{%url 'docframe' %}?docurl='+file.id+'">'+file.title+'</a></div><div><button onclick="deleteFile(\''+file.id+'\');">Delete</button></div><div><a href="'+d_url+'">Download</a></div></div>';
+        html+='<div class="span4 fileview" style="text-align:center;"><img src="'+file.thumbnailLink+'" style="width:90%;height:160px;padding-top:5px"><div><img src="'+file.iconLink+'"><a href="{%url 'docframe' %}?docurl='+file.id+'">'+file.title+'</a></div><div style="text-align:center;display:inline-flex;padding-top:2px;"><button class="drive_download" onclick="window.location=\''+d_url+'\'"></button><button class="drive_share" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","'+file.id+'")\'></button><button class="drive_view"></button><button class="drive_delete" onclick=\'deleteFile("'+file.id+'");\'></button></div></div>';
       else
-        html+='<div class="span4 col-md-3 fileview" style="text-align:center;"><img src="'+file.thumbnailLink+'" style="width:100%;height:160px"><div><img src="'+file.iconLink+'"><a onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</a></div></div>';
+        html+='<div class="span4 col-md-3 fileview" style="text-align:center;"><div class="glyphicons glyphicon folder_open" style="width:100%;height:160px"><div><img src="'+file.iconLink+'"><a onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</a></div></div>';
       return html;
     }
     // model preprocessor
@@ -65,6 +155,8 @@
             $('#drivebrowse_main').append(toHTML(item));
           });
           currFolder = rootFolder;
+          alert($('.fileview').length);
+          //alert('calling overlay'); $('.fileview').driveOverlay();
     }
 
     function showDirectoryContents(dir_id,showPrev){
@@ -79,6 +171,7 @@
             $('#drivebrowse_main').append(toHTML(item));
           });
           currFolder = dir_id;
+          //$('.fileview').load(function(){ alert('calling overlay'); $(this).driveOverlay();});
     }
 
     function getFileObject(fileId){
@@ -217,6 +310,17 @@
       });
     }
 
+    $.fn.driveOverlay = function(){
+      $(this).append('<div class="drive_overlay"></div>');
+      var c = $(this).children('.drive_overlay');
+      var rect = $(this)[0].getClientRects()[0];
+      alert(JSON.stringify(rect));
+      alert(c.length);
+      c.css('width',rect.width);
+      c.css('height',rect.height);
+      c.css('top',rect.top);
+      c.css('left',rect.left);
+    }
     // A simple callback implementation.
       /*function pickerCallback(data) {
         console.log(data);
@@ -238,6 +342,7 @@
 {{ block.super }}
 <style type='text/css'>
 </style>
+<link rel='stylesheet' href='{%static "css/select2.css"%}'/>
 {% endblock %}
 
 
@@ -245,5 +350,6 @@
 {{ block.super }}
 <script type='text/javascript'>
 </script>
+<script src='{%static "js/select2/select2.js"%}'/>
 {% endblock %}
 

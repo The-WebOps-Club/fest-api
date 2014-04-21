@@ -77,6 +77,7 @@ def drivebrowse( request ):
     api_key = settings.GOOGLE_API_PUBLIC_KEY
     drive = Drive()
     token = get_access_token()
+    user_list = User.objects.all()
     return render_to_response('pages/drivebrowse.html',locals(), context_instance=global_context(request))
 
 #-------------------------------------------------------------
