@@ -23,15 +23,29 @@
     margin-left: 9px;
     margin-right: 10px;
             ">
-            <h1 style='font-color:white;font-weight:bolder'>Share File</h1>
+            <h1 style='color:white;font-weight:bolder'>Share File</h1>
         <select id="select0" multiple>
         {%for u in user_list%}
           <option value='{{u.email}}'>{{u.username}}</option>
         {%endfor%}
         </select>
 
-        <button id="share" class="fa fa-share fa-2x"  style='background:none;margin-left:10px' onclick="shareFileMultiple($('#sharebox').attr('data-fileid'),$('#sharebox').val());"></button>
+        <button id="share" class="fa fa-share fa-2x"  style='background:none;margin-left:10px' onclick="shareFileMultiple($('#sharebox').attr('data-fileid'),$('#select0').val());"></button>
         <button id="close" class="fa fa-undo fa-2x" style='background:none;margin-left:10px' onclick="$('#sharebox').css('display','none')"></button>
+      </div>
+    </div>
+
+    <div id='renamebox' data-fileid='' style="top:50%;position:absolute;width:100%;text-align:center;display:none;background-color: rgb(59, 89, 152);z-index:4" class="popover">
+      <div id="inner" style="
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-left: 9px;
+    margin-right: 10px;
+            ">
+            <h1 style='color:white;font-weight:bolder'>Rename File To</h1>
+        <input type=text id='rename' style='width:300px'>
+        <button id="share" class="fa fa-share fa-2x"  style='background:none;margin-left:10px' onclick="renameFile($('#renamebox').attr('data-fileid'),$('#rename').val());"></button>
+        <button id="close" class="fa fa-undo fa-2x" style='background:none;margin-left:10px' onclick="$('#renamebox').css('display','none')"></button>
       </div>
     </div>
 
@@ -156,9 +170,9 @@
       // if none exists the file is a directory. leave it.
 
       if(file_type != MIME_DIRECTORY)
-        html+='<a href="#"><div class="span4 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><img src="'+file.thumbnailLink+'" style="max-width:90%;max-height:160px;padding-top:5px"><div><img src="'+file.iconLink+'"><h6>'+file.title+'</h6></div><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-cloud-download fa-lg driveicon" onclick="window.location=\''+d_url+'\'"></button><button class="fa fa-share fa-lg driveicon" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","'+file.id+'")\'></button><button class="fa fa-eye fa-lg driveicon" onclick="window.location=\'{%url "docframe" %}?docurl='+file.id+'\'"></button><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("'+file.id+'");\'></button></div></div></a>';
+        html+='<a href="#"><div class="span4 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><img src="'+file.thumbnailLink+'" style="max-width:90%;max-height:160px;padding-top:5px"><div><img src="'+file.iconLink+'"><h6>'+file.title+'</h6></div><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-cloud-download fa-lg driveicon" onclick="window.location=\''+d_url+'\'"></button><button class="fa fa-share fa-lg driveicon" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","'+file.id+'")\'></button><button class="fa fa-eye fa-lg driveicon" onclick="window.location=\'{%url "docframe" %}?docurl='+file.id+'\'"></button><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("'+file.id+'");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\''+file.id+'\')"></button></div></div></a>';
       else
-        html+='<a href="#" onclick="showDirectoryContents(\''+file.id+'\',true);"><div class="span4 col-md-3 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><div style="width:100%;height:160px;text-align:center"><div class="fa fa-folder fa-4x" style="margin-top:80px"></div></div><img src="'+file.iconLink+'"><h6 onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</h6></div></a>';
+        html+='<a href="#"><div class="span4 col-md-3 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><div style="width:100%;height:160px;text-align:center"><button class="fa fa-folder fa-4x"  onclick="showDirectoryContents(\''+file.id+'\',true);" style="margin-top:80px"></button></div><img src="'+file.iconLink+'"><h6 onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</h6><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("'+file.id+'");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\''+file.id+'\')"></button></div></div></a>';
       return html;
     }
     function addUploadTile(){
@@ -230,7 +244,9 @@
         'resource': body
       });
       request.execute(function(resp) {
+        $('#renamebox').css('display','none')
         console.log('New Title: ' + resp.title);
+        getFiles();
       });
     }
 
@@ -337,7 +353,7 @@
       var request = gapi.client.drive.files.delete({
         'fileId': fileId
       });
-      request.execute(function(resp) { window.location.reload(true); });
+      request.execute(function(resp) { getFiles(); });
     }
     
     function shareFile(fileId,dest_email){
@@ -350,10 +366,11 @@
         'fileId': fileId,
         'resource': body
         });
-      request.execute(function(resp) { window.location.reload(true); });
+      request.execute(function(resp) { getFiles(); });
     }
 
     function shareFileMultiple(fileId,dest_emails){
+      alert(JSON.stringify(dest_emails));
       dest_emails.forEach(function(email){
         shareFile(fileId, email);
       });
