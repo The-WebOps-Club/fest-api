@@ -143,6 +143,21 @@ class Post(PostInfo):
         temp = super(Post, self).save(*args, **kwargs)
         return
 
+    def add_notifications(self, notif_list):
+    	notifications_user = []
+    	notifications_subdept = []
+    	notifications_dept = []
+    	for i in notif_list:
+    		if isinstance(i, User):
+    			notifications_user.append(i)
+    		elif isinstance(i, Subdept):
+    			notifications_subdept.append(i)
+    		elif isinstance(i, Dept):
+    			notificationtypes_dept.append(i)
+    	self.notification_users.add(*notifications_user)
+    	self.notification_subdepts.add(*notifications_subdept)
+    	self.notification_depts.add(*notifications_dept)
+
     def notify_users(self):
        	users = set()
        	users.update(self.notification_users.all())

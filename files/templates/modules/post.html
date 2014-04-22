@@ -26,7 +26,7 @@
 	            {% endif %}
 	        </div>
 	        <div class="news_body">
-                {{ post.description|markdown }}
+                {{ post.description|markdown:"default" }}
             </div>
 	        <div class="news_extra"></div>
 	        <div class="news_comment_wrapper">
@@ -35,7 +35,7 @@
 	        	<div class="news_comment see_more_comments center" >
 	        		See more
 	        	</div>
-	        	{% for comment in post.comments.all|dictsortreversed:"time_created"|slice:":5" %}
+	        	{% for comment in post.comments.all|dictsortreversed:"time_created"|slice:":5" reversed %}
 	            	{% include 'modules/comment.html' %}
 	        	{% endfor %}
 	        	

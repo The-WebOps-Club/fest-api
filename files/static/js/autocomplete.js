@@ -88,7 +88,6 @@ function setup_autocomplete_lists() {
                 "<option value='" + all_list[i]['small'] + "_" + all_list[i]['id'] + "'>" + 
                 all_list[i]['name'] + 
                 "</option>")
-
     }
 
 }

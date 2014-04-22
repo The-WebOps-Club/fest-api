@@ -9,7 +9,7 @@
     </div>
     <div class="news_comment_body markdown_remove_p">
         {% if new_comment %} 
-			<form action="{% url 'create_comment' post.pk %}" method="POST">
+			<form method="POST">
 			    {% csrf_token %}
 			    <textarea 
 			    	class="span12 comment_textarea atwho_at_config resize_textarea" 
@@ -20,7 +20,7 @@
 			    
 			</form>
         {% else %}
-	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"trusted" }}
+	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"default" }}
 	        <div class="news_comment_info">
 	            {{ comment.time_created|naturaltime }} 
 	            {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
@@ -63,7 +63,7 @@
 </style>
 
 <script>
-	function dajax_new_comment(data) {
+	function dajax_create_comment(data) {
         $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
         $("#post_" + data.post_id + " .comment_textarea").removeData("clicked")
 	}
@@ -86,7 +86,7 @@
 					return
 				}
 				
-            	Dajaxice.apps.walls.create_comment(dajax_new_comment, {
+            	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
             		'post_id' : $el.data("postid"), 
             		'comment_form': $el.closest("form").serialize(true)
             	});

@@ -5,7 +5,7 @@
                 
             </select>
             <!-- <textarea class="new_post_to" placeholder="To " rows="1"></textarea> -->
-            <textarea class="new_post" placeholder="Quick Post - Not working" rows="3"></textarea>
+            <textarea class="new_post atwho_at_config  resize_textarea" placeholder="Quick Post" rows="3"></textarea>
             <a class="pull-right btn primary new_post_submit" href="javascript:void(0)"> Post </a>
        </div>
     </div>
@@ -113,12 +113,11 @@
 
 <script>
     $( document ).ready(function() {            
-        // $(".new_post_submit").click(function() {
-        //     Dajaxice.apps.walls.create_post(prepend_new_post, {
-        //         'wall_id': {{ wall.id }}, 
-        //         'post_form': $('#id_form_status').serialize(true) 
-        //     })
-        // });
+        $(".new_post_submit").click(function() {
+            Dajaxice.apps.walls.quick_post(prepend_new_post, {
+                'post_form': $('#id_form_status').serialize(true) 
+            })
+        });
 
         $('.select2').select2();
         
