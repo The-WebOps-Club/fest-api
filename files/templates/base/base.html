@@ -68,24 +68,22 @@
     <div class="container-fluid below_topbar">
         {% block full_content %}
         <div class="row-fluid">
-            <div class="span2 offset1 sidebar fixedbar" >
-                {% block left_content %} 
-                	{% include 'base/sidebar.html' %}
-                {% endblock %}
-
-            </div>
-            {% block right_content %} 
+            {% block left_content %} 
+                <div class="span2 offset1 sidebar fixedbar" >
+                    {% block sidebar %} 
+                	   {% include 'base/sidebar.html' %}
+                    {% endblock %}
+                </div>
+            
 	            <div id="main_body_content" class="span6 main_body">
 	                {% block content %} {% endblock %}
 	            </div>
-            
-                <div id="rightbar" class="span2 rightbar fixedbar">
-                    {% block rightbar %} 
-                        {% include 'base/rightbar.html' %}
-                    {% endblock %}
-                </div>
-                
             {% endblock %}
+            <div id="rightbar" class="span2 rightbar fixedbar">
+                {% block rightbar %} 
+                    {% include 'base/rightbar.html' %}
+                {% endblock %}
+            </div>
         </div>
         {% endblock %}
     </div>
@@ -126,10 +124,13 @@
     {% block extra_js %}{% endblock %}
     <script>
         function hide_popups() {
-	            $(".userButton, .messageButton, .notifButton, .settingButton").popover("hide") 
+	            $(".userButton").popover("hide") 
+	            $(".messageButton").popover("hide")
+	            $(".notifButton").popover("hide") 
+	            $(".settingButton").popover("hide") 
 	    }
 	        
-        $(document).ready(function() {
+        $('script').load(function() {
             // $('.fancybox').fancybox();
 	        $(".below_topbar").click(hide_popups)
     		$(".searchbar").click(hide_popups)
@@ -142,7 +143,7 @@
             //     }
             // });
         
-    	    // $(".resize_textarea").autosize()
+    	    $(".resize_textarea").autosize()
 			
             var $win = $(window), $doc = $(document);
             $win.scroll(function(){

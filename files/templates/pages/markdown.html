@@ -4,8 +4,7 @@
 
 {% block title %} {{ FEST_NAME }} {% endblock %}
 
-{% block content %}
-	
+{% block full_content %}
 	<div class="row-fluid">
 		<div class="span12 ">
 			<h1> Markdown usage : <small> A guide on writing stylised posts and comments </small> </h1>
@@ -85,12 +84,12 @@ or
 					<tr>
 						<td>Images</td>
 						<td>
-							![Shaastra Dice](https://www.google.co.in/images/srpr/logo1w.png)<br />
+							![Google Logo](https://www.google.co.in/images/srpr/logo1w.png)<br />
 						</td>
 						<td>
 							&lt;img <br />
 							src="https://www.google.co.in/images/srpr/logo1w.png" <br />
-							alt="Shaastra Dice"  &gt;<br />
+							alt="Google Logo"  &gt;<br />
 						</td>
 						<td>
 							{% markdown 'default' %}

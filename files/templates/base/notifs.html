@@ -134,7 +134,9 @@
 		})
 
 		$(".notifButton").click( function(e) {
-			$(".userButton, .messageButton, .settingsButton").popover("hide")
+			$(".userButton").popover("hide") 
+			$(".messageButton").popover("hide") 
+			$(".settingsButton").popover("hide")
 			$(".notifButton").popover("toggle")
 			
 			$(".popover_notifs .see_more_notifs").click( function (e) {

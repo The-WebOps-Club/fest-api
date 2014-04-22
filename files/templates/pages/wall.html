@@ -5,26 +5,27 @@
 {% block title %} {{ FEST_NAME }} {% endblock %} 
 
 {% block content %}
-    <input class="current_page_posts" type="hidden" name="current_page" value="1" />
-    
-    {% include 'modules/profile_banner.html' %}
-    <br/>
-    {% url 'create_post' wall.id as new_post_url %}
-    {% include "modules/new_post.html" %}
-    
-    <div id="new_post_placeholder" style="height : 30px;"></div>
-    
-    {% for post in wall_posts %}
-        {% include "modules/post.html" %}    
-    {% empty %}
-        <div id="empty_wall_msg" class="row-fluid huge muted">
-            <hr />
-            There are no Posts :(
+    <div class="row-fluid">
+        <input class="current_page_posts" type="hidden" name="current_page" value="1" />
+        
+        {% include 'modules/profile_banner.html' %}
+        <br/>
+        {% url 'create_post' wall.id as new_post_url %}
+        {% include "modules/new_post.html" %}
+        
+        <div id="new_post_placeholder" style="height : 30px;"></div>
+        
+        {% for post in wall_posts %}
+            {% include "modules/post.html" %}    
+        {% empty %}
+            <div id="empty_wall_msg" class="row-fluid huge muted">
+                <hr />
+                There are no Posts :(
+            </div>
+        {% endfor %}
+        <div class="row-fluid centered">
+            <div class="span12 center see_more_posts" name="see_more" href="javascript:void(0)">See more</div>
         </div>
-    {% endfor %}
-    <div class="row-fluid centered">
-        <div class="span12 center see_more_posts" name="see_more" href="javascript:void(0)">See more</div>
-    </div>
 
     </div>
 {% endblock %}
