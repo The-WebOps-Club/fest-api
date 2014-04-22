@@ -1,7 +1,10 @@
 {% load staticfiles %}
     <div class="row-fluid right_new_post">
         <div class="span12">
-            <textarea class="new_post_to" placeholder="To " rows="1"></textarea>
+            <select id="select0" class="new_post_to select2 select_all_list" multiple>
+                
+            </select>
+            <!-- <textarea class="new_post_to" placeholder="To " rows="1"></textarea> -->
             <textarea class="new_post" placeholder="Quick Post - Not working" rows="3"></textarea>
             <a class="pull-right btn primary new_post_submit" href="javascript:void(0)"> Post </a>
        </div>
@@ -117,6 +120,7 @@
         //     })
         // });
 
+        $('.select2').select2();
         
     });
 </script>

@@ -100,13 +100,13 @@
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-scrollspy.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-affix.js' %}"></script>
     
-    <!-- <script type="text/javascript" src="{% static 'js/prefixfree.min.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'js/prefixfree.min.js' %}"></script>
     
     <script type="text/javascript" src='{% static "dajax/jquery.dajax.core.js" %}'></script>
     {% load dajaxice_templatetags %} {% dajaxice_js_import %} 
     
     
-<!--     <script type="text/javascript" src='{% static "js/chosen.jquery.js" %}'></script> -->
+    <script type="text/javascript" src='{% static "js/chosen.jquery.js" %}'></script>
 
     <script src='{%static "js/select2/select2.js"%}'/>
         
@@ -114,9 +114,11 @@
     <script type="text/javascript" src='{% static "js/jquery.caret.js" %}'></script>
     <script type="text/javascript" src='{% static "js/jquery.atwho.js" %}'></script>
 
-    <!-- <script type="text/javascript" src="{% static 'fancybox/source/jquery.fancybox.pack.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'fancybox/source/jquery.fancybox.pack.js' %}"></script>
     
     <script type="text/javascript" src='{% static "js/jquery.scripts.js" %}'></script>
+
+    <script type="text/javascript" src='{% static "js/autocomplete.js" %}'></script>
 
     <link rel='stylesheet' href='{%static "css/select2.css"%}'/>
 
@@ -124,157 +126,34 @@
     {% block extra_js %}{% endblock %}
     <script>
         function hide_popups() {
-	            $(".userButton").popover("hide")
-	            $(".messageButton").popover("hide")
-	            $(".notifButton").popover("hide")   
-	            $(".settingButton").popover("hide") 
+	            $(".userButton, .messageButton, .notifButton, .settingButton").popover("hide") 
 	    }
 	        
-	    function setup_autocomplete_lists() {
-            if ( atwho_user_list ) {
-                atwho_user_list = $.map(atwho_user_list, function(value, i) {
-                    return {"id" : value["id"], 
-                        "name" : value["first_name"] + "_" + value["last_name"], 
-                        "small" : value["email"]
-                    };
-                })
-            }
-            if ( atwho_dept_list ) {
-                atwho_dept_list = $.map(atwho_dept_list, function(value, i) {
-                    return {"id" : value["id"], 
-                        "name" : value["name"], 
-                        "small":"Department"
-                    };
-                })
-            }
-            if ( atwho_subdept_list ) {
-                atwho_subdept_list = $.map(atwho_subdept_list, function(value, i) {
-                    return {"id" : value["id"], 
-                        "name" : value["name"], 
-                        "small" : "Subdept"
-                    };
-                })
-            }   
-
-            at_config = {
-                at: "@",
-                data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
-                tpl: "<li data-value='@${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-                show_the_at: true,
-                callbacks: {
-                    before_insert: function(value, $li) {
-                        console.log($li)
-                        if ( this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0 ) {
-                            this.$inputor.after("<input class='textarea_atwho_list' name='atwho_list' value='" + $li.data("small").toLowerCase() + "_" + $li.data("id") + "' type='hidden'/>")
-                        }
-                        return value;
-                    },
-                },
-            }
-            
-            $("#topbar_search_input").atwho({
-                at: "",
-                data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
-                tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-                show_the_at: false,
-                callbacks : goto_wall,
-            }).atwho({
-                at: "u:",
-                data: atwho_user_list,
-                tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-                show_the_at: false,
-                callbacks : goto_wall,
-            }).atwho({
-                at: "d:",
-                data: atwho_dept_list,
-                tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-                show_the_at: false,
-                callbacks : goto_wall,
-            }).atwho({
-                at: "s:",
-                data: atwho_subdept_list,
-                tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-                show_the_at: false,
-                callbacks : goto_wall,
-            })
-
-            $(".atwho_at_config").atwho(at_config) 
-        }
-
         $(document).ready(function() {
             // $('.fancybox').fancybox();
 	        $(".below_topbar").click(hide_popups)
     		$(".searchbar").click(hide_popups)
 
-            $(window).resize(function() { // Check for small screens
-                outline = $("body")
-                console.log($("body").width() + "," + $("body").height())
-                if ( outline.width() < 1000 ) {
-                    console.log("width smaller than 1000")
-                }
-            });
-    	    $(".resize_textarea").autosize()
-
-    	    goto_wall = {
-			    before_insert: function(value, $li) {
-       				console.log($li)
-       				owner_type = "user"
-       				if ( $li.data("small") == "Department" ) {
-       					owner_type = "dept"
-       				} else if ( $li.data("small") == "Subdept" ) {
-       					owner_type = "subdept"
-       				}
-       				document.location.href="/wall/" + owner_type + "/" + $li.data("id")
-       				console.log("/wall/" + owner_type + $li.data("id"))
-       				return value;
-      			},
-			}
-			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
-                setup_autocomplete_lists();
-            }
-
-            var $win = $(window),
-            $doc = $(document);
+            // $(window).resize(function() { // Check for small screens
+            //     $outline = $("body")
+            //     console.log($outline.width() + "," + $outline.height())
+            //     if ( $outline.width() < 1000 ) {
+            //         console.log("width smaller than 1000")
+            //     }
+            // });
+        
+    	    // $(".resize_textarea").autosize()
+			
+            var $win = $(window), $doc = $(document);
             $win.scroll(function(){
-                if ( $(document).width() > 940 ) {
-                    $(".fixedbar").css({
-                        "margin-top" : $doc.scrollTop() + "px",
-                    })
-                } else {
-                    $(".fixedbar").css({
-                        "margin-top" : $doc.scrollTop()-40 + "px",
-                    })
-                }
+                $(".fixedbar").css({
+                    "margin-top" : $doc.scrollTop() + "px",
+                })
             });
+            get_autocomplete_lists("{% static 'json/user_list.json' %}", "{% static 'json/subdept_list.json' %}", "{% static 'json/dept_list.json' %}");
+
     	})
 
-        
-        atwho_user_list = null;
-        atwho_subdept_list = null;
-        atwho_dept_list = null;
-	    // Autocomplete for Users, Dept, Subdept
-        $.getJSON("{% static 'json/user_list.json' %}", function(json) {
-            atwho_user_list = json;
-            
-			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
-                setup_autocomplete_lists();
-            }
-        });
-        $.getJSON("{% static 'json/subdept_list.json' %}", function(json) {
-            atwho_subdept_list = json;
-            
-			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
-                setup_autocomplete_lists();
-            }
-        });
-        $.getJSON("{% static 'json/dept_list.json' %}", function(json) {
-            atwho_dept_list = json;
-            
-			if ( atwho_user_list && atwho_subdept_list && atwho_dept_list && goto_wall ) {
-                setup_autocomplete_lists();
-            }
-        });
-	        
     </script>
 </body>
 

@@ -16,10 +16,8 @@
     margin-right: 10px;
             ">
         <h1 style='color:white;font-weight:bolder'>Share File</h1>
-        <select id="select0" multiple>
-            {%for u in user_list%}
-            <option value='{{u.email}}'>{{u.username}}</option>
-            {%endfor%}
+        <select id="select0" class="select2 select_all_list" multiple>
+            
         </select>
 
         <button id="share" class="fa fa-share fa-2x" style='background:none;margin-left:10px' onclick="shareFileMultiple($('#sharebox').attr('data-fileid'),$('#select0').val());"></button>
@@ -138,7 +136,7 @@ var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
     }
 
 $(document).ready(function() {
-    $('#select0').select2();
+    $('.select2').select2();
     $('#filechooser').change(uploadFile);
 });
 
