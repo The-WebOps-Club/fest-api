@@ -1,394 +1,417 @@
-
-
-{% extends 'base/base.html' %}
-{% load staticfiles %}
-
-{% block title %} {{ FEST_NAME }} {% endblock %}
-
-
-{% block content %}
+{% extends 'base/base.html' %} {% load staticfiles %} {% block title %} {{ FEST_NAME }} {% endblock %} {% block content %}
 
 
 
-    <h4>Docs</h4>
-    <div id='drivebrowse_main' style='display:inline;'>
-      
-    </div>
-   <input id='filechooser' type=file style='display:none'></input>
-   <!--<button id='filechooser_trig' onclick='$("#filechooser").click();'>Trig</button>-->
-    <div id='sharebox' data-fileid='' style="top:50%;position:absolute;width:100%;text-align:center;display:none;background-color: rgb(59, 89, 152);z-index:3" class="popover">
-      <div id="inner" style="
+<h4>Docs</h4>
+<div id='drivebrowse_main' style='display:inline;'>
+
+</div>
+<input id='filechooser' type=file style='display:none'></input>
+<!--<button id='filechooser_trig' onclick='$("#filechooser").click();'>Trig</button>-->
+<div id='sharebox' data-fileid='' style="top:50%;position:absolute;width:100%;text-align:center;display:none;background-color: rgb(59, 89, 152);z-index:3" class="popover">
+    <div id="inner" style="
     margin-top: 20px;
     margin-bottom: 20px;
     margin-left: 9px;
     margin-right: 10px;
             ">
-            <h1 style='color:white;font-weight:bolder'>Share File</h1>
+        <h1 style='color:white;font-weight:bolder'>Share File</h1>
         <select id="select0" multiple>
-        {%for u in user_list%}
-          <option value='{{u.email}}'>{{u.username}}</option>
-        {%endfor%}
+            {%for u in user_list%}
+            <option value='{{u.email}}'>{{u.username}}</option>
+            {%endfor%}
         </select>
 
-        <button id="share" class="fa fa-share fa-2x"  style='background:none;margin-left:10px' onclick="shareFileMultiple($('#sharebox').attr('data-fileid'),$('#select0').val());"></button>
+        <button id="share" class="fa fa-share fa-2x" style='background:none;margin-left:10px' onclick="shareFileMultiple($('#sharebox').attr('data-fileid'),$('#select0').val());"></button>
         <button id="close" class="fa fa-undo fa-2x" style='background:none;margin-left:10px' onclick="$('#sharebox').css('display','none')"></button>
-      </div>
     </div>
+</div>
 
-    <div id='renamebox' data-fileid='' style="top:50%;position:absolute;width:100%;text-align:center;display:none;background-color: rgb(59, 89, 152);z-index:4" class="popover">
-      <div id="inner" style="
+<div id='renamebox' data-fileid='' style="top:50%;position:absolute;width:100%;text-align:center;display:none;background-color: rgb(59, 89, 152);z-index:4" class="popover">
+    <div id="inner" style="
     margin-top: 20px;
     margin-bottom: 20px;
     margin-left: 9px;
     margin-right: 10px;
             ">
-            <h1 style='color:white;font-weight:bolder'>Rename File To</h1>
+        <h1 style='color:white;font-weight:bolder'>Rename File To</h1>
         <input type=text id='rename' style='width:300px'>
-        <button id="share" class="fa fa-share fa-2x"  style='background:none;margin-left:10px' onclick="renameFile($('#renamebox').attr('data-fileid'),$('#rename').val());"></button>
+        <button id="share" class="fa fa-share fa-2x" style='background:none;margin-left:10px' onclick="renameFile($('#renamebox').attr('data-fileid'),$('#rename').val());"></button>
         <button id="close" class="fa fa-undo fa-2x" style='background:none;margin-left:10px' onclick="$('#renamebox').css('display','none')"></button>
-      </div>
     </div>
+</div>
 
-    <style>
-    .fileview{
-        width:100%;
-        text-align: center;
-        /*border: 2px gray solid;*/
-        background-color:beige;
-        margin-left: 7px;
-        padding-right:2px;
-        padding-left:2px;
-        height:240px;
-        border-radius:4px;
-    }
-    /*CSS for overlay*/
-    .drive_overlay{
-        position:absolute;
-        z-index:9999;
-        opacity:0.2;
-        background-color:rgb(200,100,150);
-    }
-
-    .drive_overlay:hover{
-        opacity:0.8;
-    }
-
-    .drive_download{
-        width:40px;
-        height:40px;
-        background-color: silver;
-        margin-left:5px;
-        margin-right:5px;
-        border-radius: 10%;
-    }
-    .drive_download:hover{
-      background-color: slategray;
-    }
-    .drive_view{
-       width:40px;
-        height:40px;
-        background-color: silver;
-        margin-left:5px;
-        margin-right:5px;
-        border-radius: 10%;
-    }
-    .drive_view:hover{
-      background-color: slategray;
-    }
-    .drive_share{
-       width:40px;
-        height:40px;
-        background-color: silver;
-        margin-left:5px;
-        margin-right:5px;
-        border-radius: 10%;
-    }
-    .drive_share:hover{
-      background-color: slategray;
-    }
-    .drive_delete{
-        width:40px;
-        height:40px;
-        background-color: silver;
-        margin-left:5px;
-        margin-right:5px;
-        border-radius: 10%;
-    }
-    .drive_delete:hover{
-      background-color: slategray;
-    }
-    .select2-choices{
-      width:250px;
-    }
-    .btn{
-      margin-left:5px;
-      margin-right:2px;
-    }
-    .driveicon{
-      margin-left:10px;
-      margin-right:10px;
-    }
-    </style>
+<style>
+.fileview {
+    width:100%;
+    text-align: center;
+    /*border: 2px gray solid;*/
+    background-color:beige;
+    margin-left: 7px;
+    padding-right:2px;
+    padding-left:2px;
+    height:240px;
+    border-radius:4px;
+}
+/*CSS for overlay*/
+ .drive_overlay {
+    position:absolute;
+    z-index:9999;
+    opacity:0.2;
+    background-color:rgb(200, 100, 150);
+}
+.drive_overlay:hover {
+    opacity:0.8;
+}
+.drive_download {
+    width:40px;
+    height:40px;
+    background-color: silver;
+    margin-left:5px;
+    margin-right:5px;
+    border-radius: 10%;
+}
+.drive_download:hover {
+    background-color: slategray;
+}
+.drive_view {
+    width:40px;
+    height:40px;
+    background-color: silver;
+    margin-left:5px;
+    margin-right:5px;
+    border-radius: 10%;
+}
+.drive_view:hover {
+    background-color: slategray;
+}
+.drive_share {
+    width:40px;
+    height:40px;
+    background-color: silver;
+    margin-left:5px;
+    margin-right:5px;
+    border-radius: 10%;
+}
+.drive_share:hover {
+    background-color: slategray;
+}
+.drive_delete {
+    width:40px;
+    height:40px;
+    background-color: silver;
+    margin-left:5px;
+    margin-right:5px;
+    border-radius: 10%;
+}
+.drive_delete:hover {
+    background-color: slategray;
+}
+.select2-choices {
+    width:250px;
+}
+.btn {
+    margin-left:5px;
+    margin-right:2px;
+}
+.driveicon {
+    margin-left:10px;
+    margin-right:10px;
+}
+</style>
 <script type="text/javascript">
-    var developerKey = '{{ api_key }}';
-    var rootFolder = '{{SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID}}';
-    var authToken = '{{ token }}';
+var developerKey = '{{ api_key }}';
+var rootFolder = '{{SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID}}';
+var authToken = '{{ token }}';
 
-    var allFiles = null;
+var allFiles = null;
 
-    var heirarchy=[];
-    var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
-    // view function.
+var heirarchy = [];
+var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
+// view function.
 
-    function uploadFile(evt){
-      //alert(JSON.stringify(evt.target.files[0]));
-      insertFile(evt.target.files[0],currFolder,function(){
-        alert("successful");
-      });
+    function uploadFile(evt) {
+        //alert(JSON.stringify(evt.target.files[0]));
+        insertFile(evt.target.files[0], currFolder, function() {
+            alert("successful");
+        });
     }
 
-    $(document).ready(function(){
-      $('#select0').select2();
-      $('#filechooser').change(uploadFile);
-    });
-    function toHTML(file){
-      var html = '';
-      //alert(JSON.stringify(file));
-      
+$(document).ready(function() {
+    $('#select0').select2();
+    $('#filechooser').change(uploadFile);
+});
 
-      file_type = ''
-      if(file.mimeType)
+function toHTML(file) {
+    var html = '';
+    //alert(JSON.stringify(file));
+
+
+    file_type = ''
+    if (file.mimeType)
         file_type = file.mimeType;
 
 
-      // calculate the file's download url.
-      d_url = '#';// initialize the url
-      if(file.webContentLink) // for normal files, use webContentLink
+    // calculate the file's download url.
+    d_url = '#'; // initialize the url
+    if (file.webContentLink) // for normal files, use webContentLink
         d_url = file.webContentLink;
-      else if(file.exportLinks)// for google doc files, use exportLinks
+    else if (file.exportLinks) // for google doc files, use exportLinks
         d_url = file.exportLinks[Object.keys(file.exportLinks)[0]];
-      // if none exists the file is a directory. leave it.
+    // if none exists the file is a directory. leave it.
 
-      if(file_type != MIME_DIRECTORY)
-        html+='<a href="#"><div class="span4 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><img src="'+file.thumbnailLink+'" style="max-width:90%;max-height:160px;padding-top:5px"><div><img src="'+file.iconLink+'"><h6>'+file.title+'</h6></div><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-cloud-download fa-lg driveicon" onclick="window.location=\''+d_url+'\'"></button><button class="fa fa-share fa-lg driveicon" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","'+file.id+'")\'></button><button class="fa fa-eye fa-lg driveicon" onclick="window.location=\'{%url "docframe" %}?docurl='+file.id+'\'"></button><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("'+file.id+'");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\''+file.id+'\')"></button></div></div></a>';
-      else
-        html+='<a href="#"><div class="span4 col-md-3 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><div style="width:100%;height:160px;text-align:center"><button class="fa fa-folder fa-4x"  onclick="showDirectoryContents(\''+file.id+'\',true);" style="margin-top:80px"></button></div><img src="'+file.iconLink+'"><h6 onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</h6><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("'+file.id+'");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\''+file.id+'\')"></button></div></div></a>';
-      return html;
-    }
-    function addUploadTile(){
-      html = "";
-      html+='<button class="span4 fileview" onclick="$(\'#filechooser\').click();" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>UPLOAD</b></h3></button>';
-      $('#drivebrowse_main').append(html);
-    }
-    function addFolderCreateTile(dir_id){
-      html = "";
-      html+='<button class="span4 fileview" onclick="uploadEmptyFolder(\'New Folder\',\''+dir_id+'\')" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>NEW FOLDER</b></h3></button>';
-      $('#drivebrowse_main').append(html);
-    }
-    function addBackTile(dir_id){
-      html = "";
-      html+='<button class="span4 fileview" onclick="showDirectoryContents(\''+getFileObject(dir_id).parents[0].id+'\',true);" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>BACK</b></h3></button>';
-      $('#drivebrowse_main').append(html);
-    }
-    // model preprocessor
-    function showAllFiles(files){
-          $('#drivebrowse_main').html('');
-          allFiles = files;
-          dir_files = getDirectoryContents( allFiles, rootFolder )
-          dir_files.forEach(function(item){
-            $('#drivebrowse_main').append(toHTML(item));
-          });
-          currFolder = rootFolder;
-          //alert($('.fileview').length);
-          addUploadTile();
-          addFolderCreateTile();
-          //alert('calling overlay'); $('.fileview').driveOverlay();
-    }
+    if (file_type != MIME_DIRECTORY)
+        html += '<a href="#"><div class="span4 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><img src="' + file.thumbnailLink + '" style="max-width:90%;max-height:160px;padding-top:5px"><div><img src="' + file.iconLink + '"><h6>' + file.title + '</h6></div><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-cloud-download fa-lg driveicon" onclick="window.location=\'' + d_url + '\'"></button><button class="fa fa-share fa-lg driveicon" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","' + file.id + '")\'></button><button class="fa fa-eye fa-lg driveicon" onclick="window.location=\'{%url "docframe" %}?docurl=' + file.id + '\'"></button><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("' + file.id + '");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\'' + file.id + '\')"></button></div></div></a>';
+    else
+        html += '<a href="#"><div class="span4 col-md-3 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><div style="width:100%;height:160px;text-align:center"><button class="fa fa-folder fa-4x"  onclick="showDirectoryContents(\'' + file.id + '\',true);" style="margin-top:80px"></button></div><img src="' + file.iconLink + '"><h6 onclick="showDirectoryContents(\'' + file.id + '\',true);">' + file.title + '</h6><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("' + file.id + '");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\'' + file.id + '\')"></button></div></div></a>';
+    return html;
+}
 
-    function showDirectoryContents(dir_id,showPrev){
-        files = getDirectoryContents(allFiles, dir_id);
-          
-          $('#drivebrowse_main').html('');
-          if(showPrev){
-              if(dir_id != rootFolder )
-                addBackTile(dir_id);
-          }
-          files.forEach(function(item){
-            $('#drivebrowse_main').append(toHTML(item));
-          });
-          currFolder = dir_id;
-          //$('.fileview').load(function(){ alert('calling overlay'); $(this).driveOverlay();});
-          addUploadTile();
-          addFolderCreateTile(dir_id);
-    }
+function addUploadTile() {
+    html = "";
+    html += '<button class="span4 fileview" onclick="$(\'#filechooser\').click();" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>UPLOAD</b></h3></button>';
+    $('#drivebrowse_main').append(html);
+}
 
-    function getFileObject(fileId){
-      for(var i=0;i<allFiles.length;i++){
-        if(allFiles[i].id == fileId)
-          return allFiles[i];
-      }
-    }
-    function getDirectoryContents( all_files, dir_id ){
-        dir_files = []
-        all_files.forEach(function(item){
-            if(item.parents[0].id == dir_id)
-              dir_files.push(item);
-          });
-        return dir_files;
-    }
+function addFolderCreateTile(dir_id) {
+    html = "";
+    html += '<button class="span4 fileview" onclick="uploadEmptyFolder(\'New Folder\',\'' + dir_id + '\')" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>NEW FOLDER</b></h3></button>';
+    $('#drivebrowse_main').append(html);
+}
 
-    function renameFile(fileId, newTitle) {
-      var body = {'title': newTitle};
-      var request = gapi.client.drive.files.patch({
+function addBackTile(dir_id) {
+    html = "";
+    html += '<button class="span4 fileview" onclick="showDirectoryContents(\'' + getFileObject(dir_id).parents[0].id + '\',true);" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>BACK</b></h3></button>';
+    $('#drivebrowse_main').append(html);
+}
+// model preprocessor
+
+function showAllFiles(files) {
+    $('#drivebrowse_main').html('');
+    allFiles = files;
+    dir_files = getDirectoryContents(allFiles, rootFolder)
+    dir_files.forEach(function(item) {
+        $('#drivebrowse_main').append(toHTML(item));
+    });
+    currFolder = rootFolder;
+    //alert($('.fileview').length);
+    addUploadTile();
+    addFolderCreateTile();
+    //alert('calling overlay'); $('.fileview').driveOverlay();
+}
+
+function showDirectoryContents(dir_id, showPrev) {
+    files = getDirectoryContents(allFiles, dir_id);
+
+    $('#drivebrowse_main').html('');
+    if (showPrev) {
+        if (dir_id != rootFolder)
+            addBackTile(dir_id);
+    }
+    files.forEach(function(item) {
+        $('#drivebrowse_main').append(toHTML(item));
+    });
+    currFolder = dir_id;
+    //$('.fileview').load(function(){ alert('calling overlay'); $(this).driveOverlay();});
+    addUploadTile();
+    addFolderCreateTile(dir_id);
+}
+
+function getFileObject(fileId) {
+    for (var i = 0; i < allFiles.length; i++) {
+        if (allFiles[i].id == fileId)
+            return allFiles[i];
+    }
+}
+
+function getDirectoryContents(all_files, dir_id) {
+    dir_files = []
+    all_files.forEach(function(item) {
+        if (item.parents[0].id == dir_id)
+            dir_files.push(item);
+    });
+    return dir_files;
+}
+
+function renameFile(fileId, newTitle) {
+    var body = {
+        'title': newTitle
+    };
+    var request = gapi.client.drive.files.patch({
         'fileId': fileId,
         'resource': body
-      });
-      request.execute(function(resp) {
-        $('#renamebox').css('display','none')
+    });
+    request.execute(function(resp) {
+        $('#renamebox').css('display', 'none')
         console.log('New Title: ' + resp.title);
         getFiles();
-      });
-    }
+    });
+}
 
-    function getFiles(){
-      //alert('retreiving files');
-      //files_of_interest = []
-      gapi.client.drive.files.list().execute(function(response){
-          if(response.error){
-              if(response.error.code == 401)
+function getFiles() {
+    //alert('retreiving files');
+    //files_of_interest = []
+    gapi.client.drive.files.list().execute(function(response) {
+        if (response.error) {
+            if (response.error.code == 401)
                 alert('ACCESS TOKEN expired. Please refresh the page. Note that the Token is active only for around 2000 seconds.');
-              else
-                alert('Unexpected error: '+response.error.code);
-          }
-          showAllFiles(response.items);
-      });
-      
+            else
+                alert('Unexpected error: ' + response.error.code);
+        }
+        showAllFiles(response.items);
+    });
+
+}
+
+function initDrive() {
+    //alert('?');
+    gapi.auth.setToken({
+        access_token: authToken,
+        expires_in: 2000
+    }); // set the access token obtained from the server. OAuth2 automatically logs us in.
+    gapi.client.setApiKey(developerKey); //set our public api key
+    gapi.client.load('drive', 'v2', getFiles); // ask gapi to load API details for the drive api.
+}
+
+function uploadEmptyFile(mimetype, name, dir_id) {
+    var text = " ";
+
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key=' + developerKey);
+    xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
+    xhr2.setRequestHeader('Content-Type', 'application/json');
+    xhr2.onreadystatechange = function() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('PUT', 'https://www.googleapis.com/upload/drive/v2/files/' + JSON.parse(xhr2.responseText).id + '?uploadType=media');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+        xhr.setRequestHeader('Content-Type', mimetype);
+        xhr.onreadystatechange = function(res) {
+            alert(JSON.stringify(res));
+        }
+        xhr.send(text);
     }
+    xhr2.send(JSON.stringify({
+        'title': name,
+        'mimeType': mimetype,
+        'parents': [{
+            'id': dir_id,
+            'kind': 'drive#parentReference'
+        }]
+    }));
+}
 
-    function initDrive() {
-          //alert('?');
-          gapi.auth.setToken({access_token:authToken,expires_in:2000}); // set the access token obtained from the server. OAuth2 automatically logs us in.
-          gapi.client.setApiKey(developerKey);  //set our public api key
-          gapi.client.load('drive','v2',getFiles);  // ask gapi to load API details for the drive api.
-    }
+function uploadEmptyFolder(name, dir_id) {
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key=' + developerKey);
+    xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
+    xhr2.setRequestHeader('Content-Type', 'application/json');
+    xhr2.onreadystatechange = getFiles;
+    xhr2.send(JSON.stringify({
+        'title': name,
+        'mimeType': MIME_DIRECTORY,
+        'parents': [{
+            'id': dir_id,
+            'kind': 'drive#parentReference'
+        }]
+    }));
 
-    function uploadEmptyFile(mimetype,name,dir_id){
-          var text = " ";
+}
 
-          var xhr2 = new XMLHttpRequest();
-          xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key='+developerKey);
-          xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
-          xhr2.setRequestHeader('Content-Type', 'application/json');
-          xhr2.onreadystatechange = function(){
-              var xhr = new XMLHttpRequest();
-              xhr.open('PUT', 'https://www.googleapis.com/upload/drive/v2/files/'+JSON.parse(xhr2.responseText).id+'?uploadType=media');
-              xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
-              xhr.setRequestHeader('Content-Type',mimetype);
-              xhr.onreadystatechange = function(res){ alert(JSON.stringify(res)); }
-              xhr.send(text);
-            }
-          xhr2.send(JSON.stringify({'title':name,'mimeType':mimetype,'parents':[{'id':dir_id,'kind':'drive#parentReference'}]}));
-    }
-    function uploadEmptyFolder(name,dir_id){
-        var xhr2 = new XMLHttpRequest();
-        xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key='+developerKey);
-        xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
-        xhr2.setRequestHeader('Content-Type', 'application/json');
-        xhr2.onreadystatechange = getFiles;
-        xhr2.send(JSON.stringify({'title':name,'mimeType':MIME_DIRECTORY,'parents':[{'id':dir_id,'kind':'drive#parentReference'}]}));
+function insertFile(fileData, dir_id, callback) {
+    const boundary = '-------314159265358979323846';
+    const delimiter = "\r\n--" + boundary + "\r\n";
+    const close_delim = "\r\n--" + boundary + "--";
 
-    }
-
-    function insertFile(fileData, dir_id,callback) {
-      const boundary = '-------314159265358979323846';
-      const delimiter = "\r\n--" + boundary + "\r\n";
-      const close_delim = "\r\n--" + boundary + "--";
-
-      var reader = new FileReader();
-      reader.readAsBinaryString(fileData);
-      reader.onload = function(e) {
-      var contentType = fileData.type || 'application/octet-stream';
-      var metadata = {
-        'title': fileData.name,
-        'mimeType': contentType,
-        'parents':[
-          {
-            'id':dir_id,
-            'kind':'drive#parentReference'
-          }
-        ]
-      };
-
-      var base64Data = btoa(reader.result);
-      var multipartRequestBody =
-        delimiter +
-        'Content-Type: application/json\r\n\r\n' +
-        JSON.stringify(metadata) +
-        delimiter +
-        'Content-Type: ' + contentType + '\r\n' +
-        'Content-Transfer-Encoding: base64\r\n' +
-        '\r\n' +
-        base64Data +
-        close_delim;
-
-      var request = gapi.client.request({
-        'path': '/upload/drive/v2/files',
-        'method': 'POST',
-        'params': {'uploadType': 'multipart'},
-        'headers': {
-          'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
-        },
-        'body': multipartRequestBody});
-      if (!callback) {
-        callback = function(file) {
-          console.log(file)
+    var reader = new FileReader();
+    reader.readAsBinaryString(fileData);
+    reader.onload = function(e) {
+        var contentType = fileData.type || 'application/octet-stream';
+        var metadata = {
+            'title': fileData.name,
+            'mimeType': contentType,
+            'parents': [{
+                'id': dir_id,
+                'kind': 'drive#parentReference'
+            }]
         };
-      }
-      request.execute(callback);
+
+        var base64Data = btoa(reader.result);
+        var multipartRequestBody =
+            delimiter +
+            'Content-Type: application/json\r\n\r\n' +
+            JSON.stringify(metadata) +
+            delimiter +
+            'Content-Type: ' + contentType + '\r\n' +
+            'Content-Transfer-Encoding: base64\r\n' +
+            '\r\n' +
+            base64Data +
+            close_delim;
+
+        var request = gapi.client.request({
+            'path': '/upload/drive/v2/files',
+            'method': 'POST',
+            'params': {
+                'uploadType': 'multipart'
+            },
+            'headers': {
+                'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+            },
+            'body': multipartRequestBody
+        });
+        if (!callback) {
+            callback = function(file) {
+                console.log(file)
+            };
+        }
+        request.execute(callback);
     }
-  }
+}
 
 
-    function deleteFile(fileId) {
-      var request = gapi.client.drive.files.delete({
+function deleteFile(fileId) {
+    var request = gapi.client.drive.files.delete({
         'fileId': fileId
-      });
-      request.execute(function(resp) { getFiles(); });
-    }
-    
-    function shareFile(fileId,dest_email){
-      var body = {
+    });
+    request.execute(function(resp) {
+        getFiles();
+    });
+}
+
+function shareFile(fileId, dest_email) {
+    var body = {
         'value': dest_email,
         'type': 'user',
         'role': 'writer'
-      };
-      var request = gapi.client.drive.permissions.insert({
+    };
+    var request = gapi.client.drive.permissions.insert({
         'fileId': fileId,
         'resource': body
-        });
-      request.execute(function(resp) { getFiles(); });
-    }
+    });
+    request.execute(function(resp) {
+        getFiles();
+    });
+}
 
-    function shareFileMultiple(fileId,dest_emails){
-      alert(JSON.stringify(dest_emails));
-      dest_emails.forEach(function(email){
+function shareFileMultiple(fileId, dest_emails) {
+    alert(JSON.stringify(dest_emails));
+    dest_emails.forEach(function(email) {
         shareFile(fileId, email);
-      });
-    }
+    });
+}
 
-    $.fn.driveOverlay = function(){
-      $(this).append('<div class="drive_overlay"></div>');
-      var c = $(this).children('.drive_overlay');
-      var rect = $(this)[0].getClientRects()[0];
-      alert(JSON.stringify(rect));
-      alert(c.length);
-      c.css('width',rect.width);
-      c.css('height',rect.height);
-      c.css('top',rect.top);
-      c.css('left',rect.left);
-    }
-    // A simple callback implementation.
-      /*function pickerCallback(data) {
+$.fn.driveOverlay = function() {
+    $(this).append('<div class="drive_overlay"></div>');
+    var c = $(this).children('.drive_overlay');
+    var rect = $(this)[0].getClientRects()[0];
+    alert(JSON.stringify(rect));
+    alert(c.length);
+    c.css('width', rect.width);
+    c.css('height', rect.height);
+    c.css('top', rect.top);
+    c.css('left', rect.left);
+}
+// A simple callback implementation.
+/*function pickerCallback(data) {
         console.log(data);
         console.log(picker);
         if (data.action == google.picker.Action.PICKED) {
@@ -397,24 +420,15 @@
             window.location = "{% url 'docframe' %}?docurl="+fileId;
         }
       }*/
-    // Use the Google API Loader script to load the google.picker script.
-      
-    </script>
-  <script src="http://www.google.com/jsapi"></script>
+// Use the Google API Loader script to load the google.picker script.
+</script>
+<script src="http://www.google.com/jsapi"></script>
 <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=initDrive"></script>
-{% endblock %}
-
-{% block extra_css %}
-{{ block.super }}
-<link rel='stylesheet' href='{%static "fonts/font-awesome/css/font-awesome.css"%}'/>
+{% endblock %} {% block extra_css %} {{ block.super }}
+<link rel='stylesheet' href='{%static "fonts/font-awesome/css/font-awesome.css"%}' />
 <style type='text/css'>
 </style>
-{% endblock %}
-
-
-{% block extra_js %}
-{{ block.super }}
+{% endblock %} {% block extra_js %} {{ block.super }}
 <script type='text/javascript'>
 </script>
 {% endblock %}
-
