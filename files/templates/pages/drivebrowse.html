@@ -136,7 +136,6 @@
 
     var allFiles = null;
 
-    var heirarchy=[];
     var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
     // view function.
 
@@ -201,7 +200,7 @@
           currFolder = rootFolder;
           //alert($('.fileview').length);
           addUploadTile();
-          addFolderCreateTile();
+          addFolderCreateTile(rootFolder);
           //alert('calling overlay'); $('.fileview').driveOverlay();
     }
 
