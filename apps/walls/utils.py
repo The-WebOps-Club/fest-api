@@ -34,3 +34,37 @@ def paginate_items(items_list, **kwargs):
     except EmptyPage:
         exhausted = True
     return items, exhausted
+
+def parse_atwho(my_text, tags):
+    """
+        Parses through the list form atwho and gives the depts, subdepts and users
+    """
+    notification_list = []
+    link_text = '[%s](%s)'
+    for tag in tags:
+        tagged_obj = get_tag_object(tag)
+        if isinstance(tagged_obj, Dept) or isinstance(tagged_obj, Subdept):
+            link_href = reverse("wall", kwargs={"wall_id" : tagged_obj.wall.pk})
+            my_text = my_text.replace('@' + tagged_obj.name, link_text % (tagged_obj.name, link_href) )
+        else:
+            link_href = reverse("wall", kwargs={"wall_id" : tagged_dept.erp_profile.wall.pk})
+            my_text = my_text.replace('@' + tagged_obj.first_name+"_"+tagged_obj.last_name, link_text %(tagged_obj.get_full_name(), link_href) )
+        notification_list.append(tagged_obj)
+    return my_text, notification_list
+    
+def get_tag_object(tag):
+    # `tags` Gives the first and last words after splitting with underscore.
+    # First id and last is keyword (department, subdepartment and any others: email)
+    if not isinstance(tag, list) and ( isinstance(tag, basestring) ):
+        tag = tag.rsplit("_", 1)
+    print tag
+    print "---------------------------"
+    tag_id = int(tag[1])
+    key = tag[0].lower()
+    if key == "department":
+        obj = get_object_or_None(Dept, id=tag_id)
+    elif key == "subdept":
+        obj = get_object_or_None(Subdept, id=tag_id)
+    else:
+        obj = get_object_or_None(User, id=tag_id)
+    return obj

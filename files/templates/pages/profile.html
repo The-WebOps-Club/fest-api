@@ -3,9 +3,9 @@
 
 {% block title %} {{ FEST_NAME }} {% endblock %}
 
-{% block right_content %}
+{% block left_content %}
 	<input id="id_current_page" type="hidden" name="current_page" value="1" />
-	<div id="main_body_content" class="span8 main_body">
+	<div id="main_body_content" class="span8 offset1 main_body">
 		{% with wall=profile_wall %}
 			{% include 'modules/profile_banner.html' %}
 		{% endwith %}

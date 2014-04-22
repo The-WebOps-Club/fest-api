@@ -1,9 +1,15 @@
 {% load staticfiles %}
     <div class="row-fluid right_new_post">
         <div class="span12">
-            <textarea class="new_post_to" placeholder="To " rows="1"></textarea>
-            <textarea class="new_post" placeholder="Quick Post - Not working" rows="3"></textarea>
-            <a class="pull-right btn primary new_post_submit" href="javascript:void(0)"> Post </a>
+            <form method="POST" id="id_form_quick_post">
+                <select id="select0" class="new_post_to select2 select_all_list" name="new_post_to" multiple>
+                    
+                </select>
+                <!-- <textarea class="new_post_to" placeholder="To " rows="1"></textarea> -->
+                <textarea class="new_post atwho_at_config  resize_textarea" name="new_post" placeholder="Quick Post" rows="3"></textarea>
+
+                <a class="pull-right btn primary new_post_submit" href="javascript:void(0)" data-loading-text="Posting ..." data-complete-text="Posted"> Create Post </a>
+            </form>
        </div>
     </div>
     <hr />
@@ -109,14 +115,30 @@
 </style>
 
 <script>
+    function dajax_quick_post(data) {
+        $('#id_form_quick_post').removeData("clicked")
+        //$el = $("#id_form_quick_post .new_post_submit")
+        //$el.button("done")
+        //setTimeout(function() {
+        //    $el.button("reset")
+        //    $el.closest("form").find("input").val("")
+        //    $el.closest("form").find("select").val("")
+        //}, 3000)
+    }
     $( document ).ready(function() {            
-        // $(".new_post_submit").click(function() {
-        //     Dajaxice.apps.walls.create_post(prepend_new_post, {
-        //         'wall_id': {{ wall.id }}, 
-        //         'post_form': $('#id_form_status').serialize(true) 
-        //     })
-        // });
+        $("#id_form_quick_post .new_post_submit").click(function() {
+            $el = $(this)
+            if ( $('#id_form_quick_post').data("clicked") ) {
+                return
+            }
+            $('#id_form_quick_post').data("clicked", "yes")
+            Dajaxice.apps.walls.quick_post(dajax_quick_post, {
+                'post_form': $('#id_form_quick_post').serialize(true) 
+            })
+            //$el.button("loading")
+        });
 
+        $('.select2').select2();
         
     });
 </script>
