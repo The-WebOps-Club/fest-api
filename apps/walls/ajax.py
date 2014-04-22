@@ -19,7 +19,7 @@ from misc.utils import *  #Import miscellaneous functions
 
 # From Apps
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-from apps.walls.utils import paginate_items, parse_atwho
+from apps.walls.utils import paginate_items, parse_atwho, get_tag_object
 
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
@@ -207,28 +207,26 @@ def quick_post(request, post_form):
     """
         Create a new wall post
     """
-    # Initial validations
-    try:
-        wall_id = int(wall_id)
-    except ValueError:
-        print wall_id, "could not convert to int"
-        wall_id = None
-    
-    if not ( type(wall_id) is int ):
-        print "wall_id :", wall_id, type(wall_id)
-        raise InvalidArgumentTypeException("argument `wall_id` should be of type integer")
-    wall = get_object_or_404(Wall, id=int(wall_id))
-
     # create a new post
     append_string = ""
     data = deserialize_form(post_form)
+    print data
     post_text = data["new_post"]
     tags =  data.getlist("atwho_list")
     post_text, notification_list = parse_atwho(post_text, tags)
-    
-    new_post = Post.objects.create(description=post_text, wall=wall, by=request.user)
 
-    new_post.add_notifications(notification_list)
+    # Figure out where to create post !
+    to_list = data.getlist("new_post_to")
+    for i in to_list:
+        print i
+        print "---------------------------"
+        obj = get_tag_object(i)
+        if isinstance(obj, Dept) or isinstance(obj, Subdept):
+            obj_wall =  obj.wall
+        else:
+            obj_wall =  obj.erp_profile.wall
+        new_post = Post.objects.create(description=post_text, wall=obj_wall, by=request.user)
+        new_post.add_notifications(notification_list)
     
     # Render the new post
     append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance= global_context(request)) + "<hr />"
