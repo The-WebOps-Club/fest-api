@@ -30,8 +30,7 @@
     <!--<link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">-->
 
     <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'fancybox/source/jquery.fancybox.css' %}" type="text/css" media="screen" />
-        <script type="text/javascript" src="{% static 'fancybox/source/jquery.fancybox.pack.js' %}"></script>
+    <!-- <link rel="stylesheet" href="{% static 'fancybox/source/jquery.fancybox.css' %}" type="text/css" media="screen" /> -->
     {% block extra_css %}{% endblock %} 
 
     {% if not DEBUG %}
@@ -101,19 +100,27 @@
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-scrollspy.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-affix.js' %}"></script>
     
-    <script type="text/javascript" src="{% static 'js/prefixfree.min.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/prefixfree.min.js' %}"></script> -->
     
     <script type="text/javascript" src='{% static "dajax/jquery.dajax.core.js" %}'></script>
     {% load dajaxice_templatetags %} {% dajaxice_js_import %} 
     
     
-    <script type="text/javascript" src='{% static "js/chosen.jquery.js" %}'></script>
-    
+<!--     <script type="text/javascript" src='{% static "js/chosen.jquery.js" %}'></script> -->
+
+    <script src='{%static "js/select2/select2.js"%}'/>
+        
     <script type="text/javascript" src='{% static "js/jquery.autoresize.js" %}'></script>
     <script type="text/javascript" src='{% static "js/jquery.caret.js" %}'></script>
     <script type="text/javascript" src='{% static "js/jquery.atwho.js" %}'></script>
+
+    <!-- <script type="text/javascript" src="{% static 'fancybox/source/jquery.fancybox.pack.js' %}"></script> -->
     
     <script type="text/javascript" src='{% static "js/jquery.scripts.js" %}'></script>
+
+    <link rel='stylesheet' href='{%static "css/select2.css"%}'/>
+
+
     {% block extra_js %}{% endblock %}
     <script>
         function hide_popups() {
@@ -195,7 +202,7 @@
         }
 
         $(document).ready(function() {
-            $('.fancybox').fancybox();
+            // $('.fancybox').fancybox();
 	        $(".below_topbar").click(hide_popups)
     		$(".searchbar").click(hide_popups)
 
