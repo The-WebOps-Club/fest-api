@@ -135,20 +135,64 @@ var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
         });
     }
 
+function initDrive() {
+    //alert('?');
+    gapi.auth.setToken({
+        access_token: authToken,
+        expires_in: 2000
+    }); // set the access token obtained from the server. OAuth2 automatically logs us in.
+    gapi.client.setApiKey(developerKey); //set our public api key
+    gapi.client.load('drive', 'v2', getFiles); // ask gapi to load API details for the drive api.
+}
+
+function getFiles() {
+    //alert('retreiving files');
+    //files_of_interest = []
+    gapi.client.drive.files.list().execute(function(response) {
+        if (response.error) {
+            if (response.error.code == 401)
+                alert('ACCESS TOKEN expired. Please refresh the page. Note that the Token is active only for around 2000 seconds.');
+            else
+                alert('Unexpected error: ' + response.error.code);
+        }
+        showAllFiles(response.items);
+    });
+
+}
+function showAllFiles(files){
+          $('#drivebrowse_main').html('');
+          allFiles = files;
+          dir_files = getDirectoryContents( allFiles, rootFolder )
+          dir_files.forEach(function(item){
+            $('#drivebrowse_main').append(toHTML(item));
+          });
+          currFolder = rootFolder;
+          //alert($('.fileview').length);
+          addUploadTile();
+          addFolderCreateTile(rootFolder);
+          //alert('calling overlay'); $('.fileview').driveOverlay();
+}
+
+function getDirectoryContents( all_files, dir_id ){
+      dir_files = []
+      all_files.forEach(function(item){
+          if(item.parents[0].id == dir_id)
+            dir_files.push(item);
+        });
+      return dir_files;
+}
+
 $(document).ready(function() {
     $('.select2').select2();
     $('#filechooser').change(uploadFile);
 });
 
-<<<<<<< HEAD
     var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
     // view function.
-=======
+
 function toHTML(file) {
     var html = '';
     //alert(JSON.stringify(file));
->>>>>>> a34af5df73243bf70664ed8a0611186ea64935ae
-
 
     file_type = ''
     if (file.mimeType)
@@ -161,7 +205,6 @@ function toHTML(file) {
         d_url = file.webContentLink;
     else if (file.exportLinks) // for google doc files, use exportLinks
         d_url = file.exportLinks[Object.keys(file.exportLinks)[0]];
-<<<<<<< HEAD
       // if none exists the file is a directory. leave it.
 
       if(file_type != MIME_DIRECTORY)
@@ -186,20 +229,7 @@ function toHTML(file) {
       $('#drivebrowse_main').append(html);
     }
     // model preprocessor
-    function showAllFiles(files){
-          $('#drivebrowse_main').html('');
-          allFiles = files;
-          dir_files = getDirectoryContents( allFiles, rootFolder )
-          dir_files.forEach(function(item){
-            $('#drivebrowse_main').append(toHTML(item));
-          });
-          currFolder = rootFolder;
-          //alert($('.fileview').length);
-          addUploadTile();
-          addFolderCreateTile(rootFolder);
-          //alert('calling overlay'); $('.fileview').driveOverlay();
-    }
-
+    
     function showDirectoryContents(dir_id,showPrev){
         files = getDirectoryContents(allFiles, dir_id);
           
@@ -223,100 +253,12 @@ function toHTML(file) {
           return allFiles[i];
       }
     }
-    function getDirectoryContents( all_files, dir_id ){
-        dir_files = []
-        all_files.forEach(function(item){
-            if(item.parents[0].id == dir_id)
-              dir_files.push(item);
-          });
-        return dir_files;
-    }
+
+    
 
     function renameFile(fileId, newTitle) {
       var body = {'title': newTitle};
       var request = gapi.client.drive.files.patch({
-=======
-    // if none exists the file is a directory. leave it.
-
-    if (file_type != MIME_DIRECTORY)
-        html += '<a href="#"><div class="span4 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><img src="' + file.thumbnailLink + '" style="max-width:90%;max-height:160px;padding-top:5px"><div><img src="' + file.iconLink + '"><h6>' + file.title + '</h6></div><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-cloud-download fa-lg driveicon" onclick="window.location=\'' + d_url + '\'"></button><button class="fa fa-share fa-lg driveicon" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","' + file.id + '")\'></button><button class="fa fa-eye fa-lg driveicon" onclick="window.location=\'{%url "docframe" %}?docurl=' + file.id + '\'"></button><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("' + file.id + '");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\'' + file.id + '\')"></button></div></div></a>';
-    else
-        html += '<a href="#"><div class="span4 col-md-3 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><div style="width:100%;height:160px;text-align:center"><button class="fa fa-folder fa-4x"  onclick="showDirectoryContents(\'' + file.id + '\',true);" style="margin-top:80px"></button></div><img src="' + file.iconLink + '"><h6 onclick="showDirectoryContents(\'' + file.id + '\',true);">' + file.title + '</h6><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("' + file.id + '");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\'' + file.id + '\')"></button></div></div></a>';
-    return html;
-}
-
-function addUploadTile() {
-    html = "";
-    html += '<button class="span4 fileview" onclick="$(\'#filechooser\').click();" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>UPLOAD</b></h3></button>';
-    $('#drivebrowse_main').append(html);
-}
-
-function addFolderCreateTile(dir_id) {
-    html = "";
-    html += '<button class="span4 fileview" onclick="uploadEmptyFolder(\'New Folder\',\'' + dir_id + '\')" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>NEW FOLDER</b></h3></button>';
-    $('#drivebrowse_main').append(html);
-}
-
-function addBackTile(dir_id) {
-    html = "";
-    html += '<button class="span4 fileview" onclick="showDirectoryContents(\'' + getFileObject(dir_id).parents[0].id + '\',true);" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>BACK</b></h3></button>';
-    $('#drivebrowse_main').append(html);
-}
-// model preprocessor
-
-function showAllFiles(files) {
-    $('#drivebrowse_main').html('');
-    allFiles = files;
-    dir_files = getDirectoryContents(allFiles, rootFolder)
-    dir_files.forEach(function(item) {
-        $('#drivebrowse_main').append(toHTML(item));
-    });
-    currFolder = rootFolder;
-    //alert($('.fileview').length);
-    addUploadTile();
-    addFolderCreateTile();
-    //alert('calling overlay'); $('.fileview').driveOverlay();
-}
-
-function showDirectoryContents(dir_id, showPrev) {
-    files = getDirectoryContents(allFiles, dir_id);
-
-    $('#drivebrowse_main').html('');
-    if (showPrev) {
-        if (dir_id != rootFolder)
-            addBackTile(dir_id);
-    }
-    files.forEach(function(item) {
-        $('#drivebrowse_main').append(toHTML(item));
-    });
-    currFolder = dir_id;
-    //$('.fileview').load(function(){ alert('calling overlay'); $(this).driveOverlay();});
-    addUploadTile();
-    addFolderCreateTile(dir_id);
-}
-
-function getFileObject(fileId) {
-    for (var i = 0; i < allFiles.length; i++) {
-        if (allFiles[i].id == fileId)
-            return allFiles[i];
-    }
-}
-
-function getDirectoryContents(all_files, dir_id) {
-    dir_files = []
-    all_files.forEach(function(item) {
-        if (item.parents[0].id == dir_id)
-            dir_files.push(item);
-    });
-    return dir_files;
-}
-
-function renameFile(fileId, newTitle) {
-    var body = {
-        'title': newTitle
-    };
-    var request = gapi.client.drive.files.patch({
->>>>>>> a34af5df73243bf70664ed8a0611186ea64935ae
         'fileId': fileId,
         'resource': body
     });
@@ -327,34 +269,11 @@ function renameFile(fileId, newTitle) {
     });
 }
 
-function getFiles() {
-    //alert('retreiving files');
-    //files_of_interest = []
-    gapi.client.drive.files.list().execute(function(response) {
-        if (response.error) {
-            if (response.error.code == 401)
-                alert('ACCESS TOKEN expired. Please refresh the page. Note that the Token is active only for around 2000 seconds.');
-            else
-                alert('Unexpected error: ' + response.error.code);
-        }
-        showAllFiles(response.items);
-    });
 
-}
 
-function initDrive() {
-    //alert('?');
-    gapi.auth.setToken({
-        access_token: authToken,
-        expires_in: 2000
-    }); // set the access token obtained from the server. OAuth2 automatically logs us in.
-    gapi.client.setApiKey(developerKey); //set our public api key
-    gapi.client.load('drive', 'v2', getFiles); // ask gapi to load API details for the drive api.
-}
 
 function uploadEmptyFile(mimetype, name, dir_id) {
     var text = " ";
-
     var xhr2 = new XMLHttpRequest();
     xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key=' + developerKey);
     xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
