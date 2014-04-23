@@ -3,7 +3,7 @@
 
 {% block title %} {{ FEST_NAME }} {% endblock %}
 
-{% block topbar%}
+{% block topbar %}
     <div class='topbar' id='login_topbar' >
         <div class='topbar-inner' id='login_topbar_inner'>
             <div class='container-fluid'>
@@ -123,6 +123,7 @@
     .below_loginbar {
         margin-top : 100px;
     }
+    #login_topbar,
     #login_topbar_inner {
         height: 82px;
     }
@@ -166,7 +167,41 @@
     .topbar .big_brand {
         font-size : 40px;
     }
-    
+    .topbar {
+       /*position : fixed;*/
+       z-index : 1;
+    }
+    .below_topbar > div {
+        padding-top : 5px;
+    }
+    @media (min-width: 940px) {
+        .topbar {
+           position : fixed;
+        }
+        .below_topbar {
+            margin-top : 40px;
+        }
+    }
+    .topbar div > ul.nav.links li.topbar_profile a, .nav.links li.topbar_profile a {
+        padding: 0px 0px 0px 0px;
+        margin: 5px 0 0 0px;
+    }
+    .topbar div > ul.nav.links li.topbar_profile a .profile_name, .nav.links li.topbar_profile a .profile_name {
+        padding: 0px 0px 0px 0px;
+        margin: 5px 5px 0px 0px;
+        max-width: 175px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+    .topbar .profile_dp {
+        height : 23px;
+        width : 23px;
+        margin: 3px 5px 3px 3px;
+    }
+
 </style>
 {% endblock %}
 

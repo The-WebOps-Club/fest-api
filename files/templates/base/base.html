@@ -59,8 +59,10 @@
     	{% include 'base/topbar.html' %} 
 
 	    {% include "base/notifs.html" %}
-	    {% include "base/messages.html" %}
-	    {% include "base/users.html" %}
+	    {% comment %}
+	    	{% include "base/messages.html" %}
+	    	{% include "base/users.html" %}
+	    {% endcomment %}
 	    {% include "base/settings.html" %}
 
     {% endblock %}
@@ -142,8 +144,6 @@
             //         console.log("width smaller than 1000")
             //     }
             // });
-        
-    	    
 			
             var $win = $(window), $doc = $(document);
             $win.scroll(function(){
