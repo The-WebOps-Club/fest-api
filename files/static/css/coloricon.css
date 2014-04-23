@@ -1,0 +1,41 @@
+/* coloricon 4-icon sample ... add other icons to the erp as and when required. icons from img/color-icons.png */
+/* or write sass code for simplicity... */
+
+.coloricon{
+		width:14px;
+    	height:14px;
+    	margin-top:1px;
+    	background-image: url('/static/img/icons-color.png');
+    	display:inline-block;
+   		background-size:700px 175px;
+   		line-height: 14px;
+
+}
+
+.coloricon-tick{
+   	background-position-x: 700px;
+   	background-position-y: 2px;
+ }
+
+.coloricon-wall{
+   	background-position-x: -630px;
+   	background-position-y: -124px;
+ }
+ .coloricon-user-contact{
+   	background-position-x: -686px;
+   	background-position-y: -124px;
+ }
+/*
+.coloricon-tick{
+   	background-position-x: 700px;
+   	background-position-y: 4px;
+ }
+
+.coloricon-tick{
+   	background-position-x: 700px;
+   	background-position-y: 4px;
+ }
+.coloricon-tick{
+   	background-position-x: 700px;
+   	background-position-y: 4px;
+ }*/

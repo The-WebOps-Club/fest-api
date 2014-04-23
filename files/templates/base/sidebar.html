@@ -24,7 +24,7 @@
                 </li>
                 <li class="{% if current_page == 'newsfeed' %}active{% endif %}">
                     <a href="{% url 'newsfeed' %}">
-                        <i class='icon-search'></i> News feed {% if user.notifications.unread.count != 0 %}
+                        <i class='coloricon coloricon-tick'></i> News feed {% if user.notifications.unread.count != 0 %}
                         <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span>{% endif %}
                     </a>
                 </li>
@@ -36,7 +36,7 @@
                 </li>
                 <li class="{% if current_page == 'contacts' %}active{% endif %}">
                     <a href="{% url 'contacts' %}">
-                        <i class='icon-search'></i> User Contacts
+                        <i class='coloricon coloricon-user-contact'></i> User Contacts
                     </a>
                 </li>
             </ul>
@@ -48,19 +48,19 @@
             <ul class='group_link vertical'>
                 <li class="{% if current_page == 'wall' %}active{% endif %}">
                     <a href="{% url 'wall' user.erp_profile.wall.id %}">
-                        <i class='icon-search'></i> Personal Wall
+                        <i class='coloricon coloricon-wall'></i> Personal Wall
                     </a>
                 </li>
                 {% if session.role == 'coord' %}
                 <li class="{% if current_page == 'dept_wall' %}active{% endif %}">
                     <a href="{% url 'my_wall' 'subdept' session.role_dept %}">
-                        <i class='icon-search'></i> Subdept Wall
+                        <i class='coloricon coloricon-wall'></i> Subdept Wall
                     </a>
                 </li>
                 {% else %}
                 <li class="{% if current_page == 'dept_wall' %}active{% endif %}">
                     <a href="{% url 'my_wall' 'dept' session.role_dept %}">
-                        <i class='icon-search'></i> Department Wall
+                        <i class='coloricon coloricon-wall'></i> Department Wall
                     </a>
                 </li>
                 {% endif %}
