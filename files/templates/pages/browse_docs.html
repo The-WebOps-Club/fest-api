@@ -189,7 +189,6 @@ $(document).ready(function() {
 
     var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
     // view function.
-
 function toHTML(file) {
     var html = '';
     //alert(JSON.stringify(file));
@@ -254,8 +253,6 @@ function toHTML(file) {
       }
     }
 
-    
-
     function renameFile(fileId, newTitle) {
       var body = {'title': newTitle};
       var request = gapi.client.drive.files.patch({
@@ -312,7 +309,6 @@ function uploadEmptyFolder(name, dir_id) {
             'kind': 'drive#parentReference'
         }]
     }));
-
 }
 
 function insertFile(fileData, dir_id, callback) {
@@ -399,7 +395,7 @@ function shareFileMultiple(fileId, dest_emails) {
 
 $.fn.driveOverlay = function() {
     $(this).append('<div class="drive_overlay"></div>');
-    var c = $(this).children('.drive_overlay');
+    var c = $(this).children('.drive_overlay'); 
     var rect = $(this)[0].getClientRects()[0];
     alert(JSON.stringify(rect));
     alert(c.length);
