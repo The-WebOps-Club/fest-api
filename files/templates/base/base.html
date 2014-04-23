@@ -130,7 +130,7 @@
 	            $(".settingButton").popover("hide") 
 	    }
 	        
-        $('script').load(function() {
+        $( document ).ready(function() {
             // $('.fancybox').fancybox();
 	        $(".below_topbar").click(hide_popups)
     		$(".searchbar").click(hide_popups)
@@ -143,7 +143,7 @@
             //     }
             // });
         
-    	    $(".resize_textarea").autosize()
+    	    
 			
             var $win = $(window), $doc = $(document);
             $win.scroll(function(){
@@ -152,6 +152,7 @@
                 })
             });
             get_autocomplete_lists("{% static 'json/user_list.json' %}", "{% static 'json/subdept_list.json' %}", "{% static 'json/dept_list.json' %}");
+            
 
     	})
 

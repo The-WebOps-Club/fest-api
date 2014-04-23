@@ -1,3 +1,4 @@
+all_list = []
 function setup_autocomplete_lists() {
     goto_wall = {
         before_insert: function(value, $li) {
@@ -54,7 +55,7 @@ function setup_autocomplete_lists() {
             },
         },
     }
-    var all_list = atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list)
+    all_list = atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list)
     $("#topbar_search_input").atwho({
         at: "",
         data: all_list,

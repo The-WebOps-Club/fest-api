@@ -15,39 +15,25 @@
     <hr />
     <div class='row-fluid right_search'>
         <div class='contact_searchbar searchbar span12'>  
-            <input class='input' id='topbar_search_input' type='text' placeholder=' Search for stuff ...'>
+            <input class='input' id='rightbar_search_input' type='text' placeholder=' Search for stuff ...'>
             
         </div>
     </div>
     <div class="row-fluid right_data">
-        <div class="span12 righ_data_inner">
-            {% with name="aavdjbdfjvdf jdhf jdfbjdf jfdgaa" %}
-                {% include "modules/right_data_item.html" %}
-            {% endwith %}
-            {% with name="aaaa" %}
-                {% include "modules/right_data_item.html" %}
-            {% endwith %}
-            {% with name="aaaa" %}
-                {% include "modules/right_data_item.html" %}
-            {% endwith %}
-            {% with name="aaaa" %}
-                {% include "modules/right_data_item.html" %}
-            {% endwith %}
-            {% with name="aaaa" %}
-                {% include "modules/right_data_item.html" %}
-            {% endwith %}
-            {% with name="aaaa" %}
-                {% include "modules/right_data_item.html" %}
-            {% endwith %}
-            {% with name="aaaa" %}
-                {% include "modules/right_data_item.html" %}
-            {% endwith %}
-            {% with name="aaaa" %}
-                {% include "modules/right_data_item.html" %}
-            {% endwith %}
-            {% with name="aaaa" %}
-                {% include "modules/right_data_item.html" %}
-            {% endwith %}
+        <div class="span12 right_data_inner">
+            <div class="row-fluid data_item template">
+                <div class="pic">
+                    <img class="profile_dp" src="{% static 'img/temp/profile.jpg' %}">
+                </div>
+                <div class="text">
+                </div>
+            </div>
+            {% comment %}
+                For ajax loading ... use this template
+                {% with name="template" %}
+                    {% include "modules/right_data_item.html" %}
+                {% endwith %}
+            {% endcomment %}
         </div>
     </div>
     
@@ -111,7 +97,9 @@
     border: 1px solid #D4DAE8;
     margin : 0px;
 }
-
+.data_item.template {
+    display : none;
+}
 </style>
 
 <script>
@@ -124,6 +112,33 @@
         //    $el.closest("form").find("input").val("")
         //    $el.closest("form").find("select").val("")
         //}, 3000)
+    }
+    function right_search(query, data, search_key) {
+        var item, _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = data.length; _i < _len; _i++) {
+            item = data[_i];
+            if (~item[search_key].toLowerCase().indexOf(query)) {
+                _results.push(item);
+            }
+        }
+        items = _results;
+        
+        var item, _i, _len, _results;
+        if (!query) {
+            return items;
+        }
+        _results = [];
+        for (_i = 0, _len = items.length; _i < _len; _i++) {
+            item = items[_i];
+            item.atwho_order = item[search_key].toLowerCase().indexOf(query);
+            if (item.atwho_order > -1) {
+                _results.push(item);
+            }
+        }
+        return _results.sort(function(a, b) {
+            return a.atwho_order - b.atwho_order;
+        });
     }
     $( document ).ready(function() {            
         $("#id_form_quick_post .new_post_submit").click(function() {
@@ -139,6 +154,26 @@
         });
 
         $('.select2').select2();
+
+        $(".right_search .searchbar input").keyup( function (e) {
+            el = this; $el = $(el);
+            if ( !all_list ) {
+                console.log("Atwho lists not loaded yet.")
+                return
+            }
+            search_list = right_search($el.val(), all_list, "name")
+            
+            $parent = $el.closest(".rightbar").find(".right_data_inner")
+            $template = $parent.find(".template.data_item")
+            console.log($parent)
+            $parent.find(".data_item").not(".template").remove()
+            for ( var i = 0; i < Math.min(10, search_list.length); i++ ) {
+                $new_element = $template.clone().removeClass("template")
+                $new_element.find(".text").html(search_list[i].name + " <small class='muted'> " + search_list[i].small + "</small>")
+                $new_element.data("id", search_list[i].id)
+                $parent.append($new_element)
+            }
+        })
         
     });
 </script>
