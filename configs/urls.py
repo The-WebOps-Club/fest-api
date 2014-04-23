@@ -50,17 +50,19 @@ urlpatterns = patterns('',
     
     # Docs
     url(r'^docs/$', 'apps.docs.views.docs', name='docs'),
-    url(r'^docs/refresh_token$', 'apps.docs.views.get_refresh_token', name='get_refresh_token'),
-    url(r'^docs/oauth2callback/?$', 'apps.docs.views.auth_callback', name='oauth2callback'),
-    url(r'^docs/upload/?$', 'apps.docs.views.upload_a_file', name='upload'),
-    url(r'^docs/init/?$', 'apps.docs.views.initialise_drive', name='init'),
     url(r'^docs/picker/?$', 'apps.docs.views.picker', name='picker'),
-    url(r'^docs/docframe/$', 'apps.docs.views.edit_file', name='docframe'),
-    url(r'^docs/drivebrowse/$', 'apps.docs.views.drivebrowse', name='drivebrowse'),
+    url(r'^docs/view/$', 'apps.docs.views.edit_file', name='view'),
+    url(r'^docs/browse/$', 'apps.docs.views.browse', name='browse'),
+		# Internal URLS - One time use
+    url(r'^google/refresh_token$', 'apps.docs.views.google_refresh_token', name='google_refresh_token'),
+    url(r'^google/oauth2callback/?$', 'apps.docs.views.google_auth_callback', name='google_oauth2callback'),
+	url(r'^github/refresh_token$', 'apps.docs.views.github_refresh_token', name='github_refresh_token'),
+    url(r'^github/oauth2callback/?$', 'apps.docs.views.github_auth_callback', name='github_oauth2callback'),
 
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),
     url(r'^show/500/$', 'misc.views.err500',  name='err505'),
+    url(r'^setup/$', 'misc.views.setup', name='setup'),
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
