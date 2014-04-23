@@ -5,7 +5,7 @@
 
 <div {% if not new_comment %} id="comment_{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
     <div class="news_comment_left">
-        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
+        <img src="{% static 'img/temp/profile.jpg' %}" alt="{% if not new_comment %} {{ comment.by.email }} {% else %} {{ user.email }} {% endif %}" class="news_comment_profile gravatar_pic">
     </div>
     <div class="news_comment_body markdown_remove_p">
         {% if new_comment %} 
@@ -66,6 +66,7 @@
 	function dajax_create_comment(data) {
         $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
         $("#post_" + data.post_id + " .comment_textarea").removeData("clicked")
+        gravatar($(".gravatar_pic"))
 	}
 	
 	$( document ).ready(function() {

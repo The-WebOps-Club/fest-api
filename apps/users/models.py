@@ -24,6 +24,8 @@ from apps.walls.models import Wall, Post
 # Misc
 from misc.utils import *
 from misc.constants import *
+from django_gravatar.helpers import get_gravatar_url
+from social.apps.django_app.default.models import UserSocialAuth
 # Python
 import datetime
 
@@ -97,7 +99,6 @@ class UserProfile(models.Model): # The corresponding auth user
     gender             = models.CharField(max_length=1, choices=GENDER_CHOICES, default='F')
     dob                = models.DateField(null=True, blank=True)
     mobile_number      = models.CharField(max_length=15, blank=True, null=True, help_text='Please enter your current mobile number')
-    avatar             = models.ImageField("Profile Pic", upload_to="avatars/users", blank=True, null=True)
     
     # College info
     branch             = models.CharField(max_length=50, choices=BRANCH_CHOICES, help_text='Your branch of study')
@@ -137,6 +138,17 @@ class UserProfile(models.Model): # The corresponding auth user
             self.save()
         except:
             pass
+
+    def get_pic(self, big=False):
+        # fb_accts = UserSocialAuth.objects.filter(provider="facebook", user=self.user)
+        # if len(fb_accts):
+        #     url = 'http://graph.facebook.com/{0}/picture'.format(fb_accts[0].uid)
+        # else:
+        if big:
+            url = get_gravatar_url(self.user.email, size=150)
+        else:
+            url = get_gravatar_url(self.user.email, size=50)
+        return url
 
     def __unicode__(self):
         return self.user.first_name

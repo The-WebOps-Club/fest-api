@@ -23,7 +23,7 @@
         <div class="span12 right_data_inner">
             <div class="row-fluid data_item template">
                 <div class="pic">
-                    <img class="profile_dp" src="{% static 'img/temp/profile.jpg' %}">
+                    <img class="profile_dp gravatar_pic" src="" alt="">
                 </div>
                 <div class="text">
                 </div>
@@ -175,12 +175,14 @@
                 $new_element = $template.clone().removeClass("template")
                 $new_element.find(".text").html(search_list[i].name + " <small class='muted'> " + search_list[i].small + "</small>")
                 $new_element.data("id", search_list[i].id)
+                $new_element.find("img").prop("alt", search_list[i].small)
                 $parent.append($new_element)
                 $new_element.click( function() {
                     var el = this; var $el = $(el);
                     window.location.href = "/wall/user/" + $el.data("id")
                 })
             }
+            gravatar($(".gravatar_pic"))
         })
         setTimeout(function() {$(".right_search .searchbar input").keyup()}, 500)
         

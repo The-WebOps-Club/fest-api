@@ -10,7 +10,11 @@
 	{% endif %}
 	<div class="news_post span12">
 	    <div class="news_left">
-	        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_profile">
+	        {% if not notification %}
+	        	<img src="{% static 'img/temp/profile.jpg' %}" alt="{{ post.by.email }}" class="news_profile gravatar_pic">
+	        {% elif notification %}
+				<img src="{% static 'img/temp/profile.jpg' %}" alt="{{ notification.actor.email }}" class="news_profile gravatar_pic">
+	        {% endif %}
 	    </div>
 	    <div class="news_main">
 	        <div class="news_head">
@@ -113,6 +117,7 @@
         } else {
         	$("#post_" + data.post_id + " .see_more_comments").html('No more to load');
         }
+        gravatar($(".gravatar_pic"))
         
 	}
     $( document ).ready(function() {

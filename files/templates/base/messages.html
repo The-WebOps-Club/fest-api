@@ -22,7 +22,7 @@
 		{% for msg in request.user.erp_profile.wall.posts.all %}
 			<div class="message">
 				<div class="profile_pic">
-					<img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+					<img class='profile_dp gravatar_pic' src='{% static "img/temp/profile.jpg" %}' alt='{{ msg.by.email }}' />
 				</div>
 				<div class="message_body">
 					<span class="profile_name">{{ msg.by.get_full_name|default:"" }} </span>

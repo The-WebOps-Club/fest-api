@@ -4,7 +4,7 @@
     <div class="row-fluid">
         <div id='profile_tab' class='span12'>
             <a href='#'>
-                <img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+                <img class='profile_dp gravatar_pic' src='{% static "img/temp/profile.jpg" %}' alt='{{ user.email }}' />
             </a>
             <div class='profile_name'>
                 <a href="{% url 'wall' %}" class='bold'>{{ user.get_full_name }}</a>
@@ -19,18 +19,18 @@
             <ul class='group_link vertical'>
                 <li class="{% if current_page == 'profile' %}active{% endif %}">
                     <a href="{% url 'profile' %}">
-                        <i class="pic-bulb"></i> Profile
+                        <i class='icon-profile-black'></i> Profile
                     </a>
                 </li>
                 <li class="{% if current_page == 'newsfeed' %}active{% endif %}">
                     <a href="{% url 'newsfeed' %}">
-                        <i class='coloricon coloricon-tick'></i> News feed {% if user.notifications.unread.count != 0 %}
+                        <i class='icon-checklist'></i> News feed {% if user.notifications.unread.count != 0 %}
                         <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span>{% endif %}
                     </a>
                 </li>
                 <li class="{% if current_page == 'contacts' %}active{% endif %}">
                     <a href="{% url 'contacts' %}">
-                        <i class='coloricon coloricon-user-contact'></i> User Contacts
+                        <i class='icon-contact-email'></i> User Contacts
                     </a>
                 </li>
             </ul>
@@ -42,19 +42,19 @@
             <ul class='group_link vertical'>
                 <li class="{% if current_page == 'wall' %}active{% endif %}">
                     <a href="{% url 'wall' user.erp_profile.wall.id %}">
-                        <i class='coloricon coloricon-wall'></i> Personal Wall
+                        <i class='icon-profile-blue'></i> Personal Wall
                     </a>
                 </li>
                 {% if session.role == 'coord' %}
                 <li class="{% if current_page == 'dept_wall' %}active{% endif %}">
                     <a href="{% url 'my_wall' 'subdept' session.role_dept %}">
-                        <i class='coloricon coloricon-wall'></i> Subdept Wall
+                        <i class='icon-'></i> Subdept Wall
                     </a>
                 </li>
                 {% else %}
                 <li class="{% if current_page == 'dept_wall' %}active{% endif %}">
                     <a href="{% url 'my_wall' 'dept' session.role_dept %}">
-                        <i class='coloricon coloricon-wall'></i> Department Wall
+                        <i class='icon-home'></i> Department Wall
                     </a>
                 </li>
                 {% endif %}

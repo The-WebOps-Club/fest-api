@@ -8,7 +8,7 @@
         <div class="span12" id="banner_pic">
             <div id="banner_profile">
                 <a href="">
-                    <img src="{% static 'img/temp/profile_big.jpg' %}" />
+                    <img class="gravatar_pic" src="{% static 'img/temp/profile_big.jpg' %}" alt="{{ user.email }}" data-size="160"/>
                 </a>
             </div>
             <span class="banner_title">{{ wall.name }}</span>
