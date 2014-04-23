@@ -27,6 +27,7 @@
                 </div>
                 <div class="text">
                 </div>
+
             </div>
             {% comment %}
                 For ajax loading ... use this template
@@ -100,6 +101,9 @@
 .data_item.template {
     display : none;
 }
+.data_item {
+    cursor : pointer;
+}
 </style>
 
 <script>
@@ -156,24 +160,30 @@
         $('.select2').select2();
 
         $(".right_search .searchbar input").keyup( function (e) {
-            el = this; $el = $(el);
-            if ( !all_list ) {
+            var el = this; var $el = $(el);
+            if ( !atwho_user_list ) {
                 console.log("Atwho lists not loaded yet.")
                 return
             }
-            search_list = right_search($el.val(), all_list, "name")
+            search_list = right_search($el.val(), atwho_user_list, "name")
             
             $parent = $el.closest(".rightbar").find(".right_data_inner")
             $template = $parent.find(".template.data_item")
-            console.log($parent)
-            $parent.find(".data_item").not(".template").remove()
-            for ( var i = 0; i < Math.min(10, search_list.length); i++ ) {
+            
+            $parent.find(".data_item").not(".template").remove() // delete elems
+            for ( var i = 0; i < Math.min(10, search_list.length); i++ ) { // create elems again
                 $new_element = $template.clone().removeClass("template")
                 $new_element.find(".text").html(search_list[i].name + " <small class='muted'> " + search_list[i].small + "</small>")
                 $new_element.data("id", search_list[i].id)
                 $parent.append($new_element)
+                $new_element.click( function() {
+                    var el = this; var $el = $(el);
+                    window.location.href = "/wall/user/" + $el.data("id")
+                })
             }
         })
+        setTimeout(function() {$(".right_search .searchbar input").keyup()}, 500)
         
+
     });
 </script>

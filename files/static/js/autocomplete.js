@@ -1,4 +1,8 @@
 all_list = []
+atwho_user_list = [];
+atwho_subdept_list = [];
+atwho_dept_list = [];
+
 function setup_autocomplete_lists() {
     goto_wall = {
         before_insert: function(value, $li) {
