@@ -139,17 +139,16 @@ class UserProfile(models.Model): # The corresponding auth user
         except:
             pass
 
-    def get_pic(self, big=False):
-        # fb_accts = UserSocialAuth.objects.filter(provider="facebook", user=self.user)
-        # if len(fb_accts):
-        #     url = 'http://graph.facebook.com/{0}/picture'.format(fb_accts[0].uid)
-        # else:
-        if big:
-            url = get_gravatar_url(self.user.email, size=150)
-        else:
-            url = get_gravatar_url(self.user.email, size=50)
+    def get_pic(self, s=75):
+        url = get_gravatar_url(self.user.email, size=s)
         return url
 
+    def fbid(self):
+    	fb_accts = UserSocialAuth.objects.filter(provider="facebook", user=self.user)
+        if len(fb_accts):
+            return fb_accts[0].uid
+        return ""
+        
     def __unicode__(self):
         return self.user.first_name
     

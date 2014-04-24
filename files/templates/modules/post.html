@@ -8,11 +8,7 @@
 <div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container">
 	<div class="news_post span12">
 	    <div class="news_left">
-	        {% if not notification %}
-	        	<img src="{% static 'img/temp/profile.jpg' %}" alt="{{ post.by.email }}" class="news_profile gravatar_pic">
-	        {% elif notification %}
-				<img src="{% static 'img/temp/profile.jpg' %}" alt="{{ notification.actor.email }}" class="news_profile gravatar_pic">
-	        {% endif %}
+	        <img src="" alt="{% if not notification %}{{ post.by.email }}{% elif notification %}{{ notification.actor.email }}{% endif %}" class="news_profile gravatar_pic">
 	    </div>
 	    <div class="news_main">
 	        <div class="news_head">
@@ -54,10 +50,7 @@
 
 {% once post_styles_and_scripts %}
 <style>
-    .main_body {
-        background : #DDD;
-    }
-	div.news_post {
+    .news_post {
 		transition-property: background;
 		transition-duration: 0.5s;
 		transition-timing-function: linear;
@@ -65,8 +58,8 @@
 		padding:; 9px;
 		margin-top: 10px;
 		border-radius: 5px;
-		background-color: #FFF;
-	    padding : 5px;
+		padding : 5px;
+		background-color: #f9f9f9;
 		/* border-style: outset; */
 		/* border-right-color: #EEE; */
 		border-bottom: #BBB 2px solid;
@@ -74,7 +67,7 @@
 	.post_container {
 		border-radius : 5px
 	}
-	div.news_post hr {
+	.news_post hr {
 		opacity:0;
 	}
 	.news_left img.news_profile, .news_left {

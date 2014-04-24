@@ -12,7 +12,8 @@
         <br/>
         {% url 'create_post' wall.id as new_post_url %}
         {% include "modules/new_post.html" %}
-        
+    </div>
+    <div class="row-fluid post_wrapper">
         <div id="new_post_placeholder" style="height : 30px;"></div>
         
         {% for post in wall_posts %}
@@ -32,18 +33,22 @@
 
 {% block extra_css %} {{ block.super }}
 <style type="text/css">
-.see_more_posts {
-    cursor : pointer;
-    margin-top : 20px;
-    padding : 20px 20px;
-    vertical-align : middle;
-    background-color : #eee;
-    color : #3B5998;
-}
-.see_more_posts:hover {
-    background-color : #dedede;
-    color : #000;
-}
+	.news_post {
+		background-color: #f9f9f9;
+	}
+	
+	.see_more_posts {
+	    cursor : pointer;
+	    margin-top : 20px;
+	    padding : 20px 20px;
+	    vertical-align : middle;
+	    background-color : #eee;
+	    color : #3B5998;
+	}
+	.see_more_posts:hover {
+	    background-color : #dedede;
+	    color : #000;
+	}
 </style>
 {% endblock %} 
 
