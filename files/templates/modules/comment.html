@@ -5,7 +5,7 @@
 
 <div {% if not new_comment %} id="comment_{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
     <div class="news_comment_left">
-        <img src="{% static 'img/temp/profile.jpg' %}" alt="{% if not new_comment %} {{ comment.by.email }} {% else %} {{ user.email }} {% endif %}" class="news_comment_profile gravatar_pic">
+        <img src="" alt="{% if not new_comment %} {{ comment.by.email }} {% else %} {{ user.email }} {% endif %}" class="news_comment_profile gravatar_pic">
     </div>
     <div class="news_comment_body markdown_remove_p">
         {% if new_comment %} 

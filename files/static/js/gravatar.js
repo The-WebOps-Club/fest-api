@@ -202,7 +202,7 @@ var MD5 = function (string) {
 function gravatar(el, size) {
 	$el = $(el);
 	if ( ! size )
-		size = 50
+		size = 75
 	$el.each(function(i, val) {
 		$val = $(val)
 		var url = "http://gravatar.com/avatar/" + MD5($.trim($val.prop("alt"))) + "?s=" + size + "&r=g&d=identicon"
