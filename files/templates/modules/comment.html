@@ -10,18 +10,22 @@
     <div class="news_comment_body markdown_remove_p">
         {% if new_comment %} 
 			<div class="row-fluid">
-				<div class="span12">
-					<form method="POST">
+				<form method="POST">
+					<div class="span12">
 					    {% csrf_token %}
 					    <textarea 
-					    	class="comment_textarea atwho_at_config resize_textarea"
+					    	class="comment_textarea atwho_at_config resize_textarea span12"
 					    	name="comment" 
 					    	rows="1" 
 					    	data-postid="{{ post.id }}"
 					    	placeholder="Post your comment here. Ctrl+Enter to submit. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
-					    
-					</form>
-				</div>
+						<div class="span12 comment_links" style="display : none">
+							<a href="" class=""><i class=""></i></a>
+
+							<a href="javascript:void(0)" class="btn primary small post_btn">&nbsp;&nbsp;&nbsp;&nbsp;Post&nbsp;&nbsp;&nbsp;&nbsp;</a>
+						</div>
+					</div>
+				</form>
 			</div>
         {% else %}
 	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"default" }}
@@ -58,10 +62,6 @@
 	.news_comment .news_comment_body form {
 		margin : 0px;
 	}
-	.markdown_remove_p > p {
-	    display : inline;
-	    margin : 0px;
-	}
 	.news_comment .news_comment_body .news_comment_info {
 	    font-size : 11px;
 	    line-height : 13px;
@@ -77,7 +77,11 @@
 		transition: height 0.2s;
 	}
 	.comment_textarea {
-		width : 100%;
+		
+	}
+	.post_btn {
+		font-size : 15px;
+		float : right;	
 	}
 </style>
 
@@ -90,6 +94,20 @@
 	
 	$( document ).ready(function() {
 		
+		$(".post_btn").click(function() {
+			$el = $(this).closest("form").find(".comment_textarea")
+			if ( $el.data("clicked") ) {
+				return
+			}
+			
+        	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
+        		'post_id' : $el.data("postid"), 
+        		'comment_form': $el.closest("form").serialize(true)
+        	});
+        	$el.data("clicked", "yes")
+                
+		})
+
 		$(".comment_textarea")
 		.keydown(function(e) {
 			e = e || event;
@@ -102,17 +120,12 @@
         	e = e || event;
         	el = this; $el = $(this)
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
-            	if ( $el.data("clicked") ) {
-					return
-				}
-				
-            	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
-            		'post_id' : $el.data("postid"), 
-            		'comment_form': $el.closest("form").serialize(true)
-            	});
-            	$el.data("clicked", "yes")
-                e.preventDefault()
+            	$(this).closest("form").find(".post_btn").click()
+            	e.preventDefault()
             } 
+        })
+        .focus( function() {
+        	$(this).siblings(".comment_links").show()
         })
 	});
 </script>

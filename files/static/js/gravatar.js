@@ -208,9 +208,22 @@ function gravatar(el, size) {
 		var url = "http://gravatar.com/avatar/" + MD5($.trim($val.prop("alt"))) + "?s=" + size + "&r=g&d=identicon"
 		$val.prop("src", url)
 	})
-	
 }
 
+function gravatar_profile(el, size) {
+	$el = $(el);
+	if ( ! size )
+		size = 75
+	$el.each(function(i, val) {
+		$val = $(val)
+		var url = "http://gravatar.com/" + MD5($.trim($val.prop("alt")))
+		$val.click(function() {
+			window.open(url, "_blank")
+		}).css( {
+			"cursor" : "pointer",
+		})
+	})
+}
 
 $( document ).ready(function() {
 	gravatar($(".gravatar_pic"))

@@ -5,9 +5,9 @@
 <div class="row-fluid" id="banner" style="">
     <div class="span12" id="banner_wrapper">
 
-        <div class="span12" id="banner_pic">
+        <div class="span12 fb_banner_pic" id="banner_pic" >
             <div id="banner_profile">
-                <a href="">
+                <a class="gravatar_profile" data-email="{{ user.email }}">
                     <img class="gravatar_pic" src="" alt="{{ user.email }}" data-size="160"/>
                 </a>
             </div>
@@ -50,7 +50,7 @@
 <style type="text/css">
 #banner {
     background-color: white;
-    min-height : 200px;
+    min-height : 225px;
     max-height: 500px;
 }
 #banner .banner_title {
@@ -122,8 +122,20 @@
 </style>
 
 <script>
-    $( document ).ready(function() {
-        banner_url = "https://graph.facebook.com/{{ user_profile.fbid }}?fields=cover"
+    $(window).bind('load', function () {
+        banner_url = "https://graph.facebook.com/{{ user_profile.fbid|default:0 }}?fields=cover"
+        $.getJSON(banner_url, function(json) {
+            var banner_src = json["cover"]["source"],
+                offset_y = parseInt(json["cover"]["offset_y"])
+            console.log(offset_y)
+            $(".fb_banner_pic").css( {
+                "background-image" : "url(" + banner_src + ")",
+                "background-size" : "100% auto",
+                "background-repeat" : "no-repeat",
+                "width" : "100%",
+                "background-position" : "0 -" + offset_y*2 + "px",
+            })
+        });
     })
 </script>
 {% endonce %}
