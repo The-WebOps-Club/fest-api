@@ -128,7 +128,6 @@
         // Submitting Forms
         $("#new_post_wrapper .new_post_textarea").keyup(function (e) {
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
-                // $(this).submit_form()
                 // Submitting via Dajax instead
                 el = this; $el = $(this)
                 Dajaxice.apps.walls.create_post(prepend_new_post, {'wall_id':{{wall.id}}, 'post_form': $('#id_form_status').serialize(true) })

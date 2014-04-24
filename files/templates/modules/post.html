@@ -5,9 +5,7 @@
 
 {# Remember : "post" and "notification" are keywords used here #}
 
-<div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container" style="background-color:#EEE;border-radius:5px">
-	{% if forloop.counter0 %} <hr style='opacity:0'/> 
-	{% endif %}
+<div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container">
 	<div class="news_post span12">
 	    <div class="news_left">
 	        {% if not notification %}
@@ -56,23 +54,25 @@
 
 {% once post_styles_and_scripts %}
 <style>
+    .main_body {
+        background : #DDD;
+    }
 	div.news_post {
 		transition-property: background;
 		transition-duration: 0.5s;
 		transition-timing-function: linear;
 		border: 1px #DFDFDF solid;
-		padding-left: 9px;
-		padding-right: 9px;
-		padding-top: 9px;
-		padding-bottom: 9px;
+		padding:; 9px;
+		margin-top: 10px;
 		border-radius: 5px;
 		background-color: #FFF;
+	    padding : 5px;
 		/* border-style: outset; */
 		/* border-right-color: #EEE; */
 		border-bottom: #BBB 2px solid;
 	}
-	#main_body_content.row-fluid{
-		background-color: #EEE;
+	.post_container {
+		border-radius : 5px
 	}
 	div.news_post hr {
 		opacity:0;
@@ -108,7 +108,7 @@
 	    padding : 3px;
 	    line-height : 13px;
 	    font-weight : bold;
-	    background-color: #EEE;
+	    background-color: #f1f0f5;
 	    display : block;
 	    color : #3B5998;
 	    cursor : pointer;
