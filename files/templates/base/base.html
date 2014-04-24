@@ -132,6 +132,7 @@
         function on_dom_change() {
             $(".resize_textarea").autosize()
             gravatar($(".gravatar_pic"))
+            gravatar_profile($(".gravatar_profile"))
         }        
         $( document ).ready(function() {
             $(".below_topbar").click(hide_popups)
@@ -149,6 +150,7 @@
     	})
         $(window).bind('load', function () {
             $(".resize_textarea").autosize()
+            on_dom_change()
         })
     </script>
 </body>

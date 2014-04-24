@@ -203,10 +203,10 @@ $.fn.autosize = function(options) {
 
         function resize() {
             clearTimeout(timeout);
-            console.log("in resize")
+            
             timeout = setTimeout(function() {
                 var newWidth = $ta.width();
-                console.log("hi")
+                
                 if (newWidth !== width) {
                     width = newWidth;
                     adjust();
