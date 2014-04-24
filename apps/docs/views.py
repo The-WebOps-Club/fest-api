@@ -33,14 +33,7 @@ from apiclient import http, errors
 # Gen views
 @login_required
 def docs (request):
-    """
-        Uhm.
-    """
-    local_context = {
-        "folder_id" : settings.GOOGLE_DRIVE_ROOT_FOLDER_ID,
-    }
-    return render_to_response('pages/docs.html', local_context,  context_instance= global_context(request))
-
+    return redirect("apps.docs.views.browse")
 
 @login_required
 def picker(request):
@@ -50,6 +43,7 @@ def picker(request):
     PARENT_FOLDER_ID = settings.GOOGLE_DRIVE_ROOT_FOLDER_ID
     drive = Drive()
     token = Drive.get_access_token()
+    print Drive
     return render_to_response('pages/picker.html',locals(), context_instance=global_context(request))
 
 @login_required
