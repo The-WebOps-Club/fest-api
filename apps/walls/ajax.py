@@ -65,8 +65,7 @@ def get_notifications(request, **kwargs):
             'post' : item.target, 
             'notification' : item,
         }
-        append_string += "<hr />" \
-            + render_to_string('modules/post.html', local_context, context_instance= global_context(request))
+        append_string += render_to_string('modules/post.html', local_context, context_instance= global_context(request))
     local_context = {
         "append_string" : append_string,
         "exhausted" : exhausted,

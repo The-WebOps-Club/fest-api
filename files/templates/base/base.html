@@ -106,18 +106,17 @@
     {% load dajaxice_templatetags %} {% dajaxice_js_import %} 
     
     
-    <script src='{%static "js/select2/select2.js"%}'/>
+    <script src='{% static "js/select2/select2.js" %}'/>
         
-    <script type="text/javascript" src='{% static "js/jquery.autoresize.js" %}'></script>
     <script type="text/javascript" src='{% static "js/jquery.caret.js" %}'></script>
     <script type="text/javascript" src='{% static "js/jquery.atwho.js" %}'></script>
     
-    <!-- <script type="text/javascript" src='{% static "js/jquery.scripts.js" %}'></script> -->
-
     <script type="text/javascript" src='{% static "js/autocomplete.js" %}'></script>
 
     <script type="text/javascript" src='{% static "js/gravatar.js" %}'></script>
 
+    <script type="text/javascript" src='{% static "js/jquery.autosize.js" %}'></script>
+    
     <link rel='stylesheet' href='{%static "css/select2.css"%}'/>
 
 
@@ -129,7 +128,11 @@
 	            $(".notifButton").popover("hide") 
 	            $(".settingButton").popover("hide") 
 	    }
-	        
+	
+        function on_dom_change() {
+            $(".resize_textarea").autosize()
+            gravatar($(".gravatar_pic"))
+        }        
         $( document ).ready(function() {
             $(".below_topbar").click(hide_popups)
     		$(".searchbar").click(hide_popups)
@@ -144,7 +147,9 @@
             get_autocomplete_lists("{% static 'json/user_list.json' %}", "{% static 'json/subdept_list.json' %}", "{% static 'json/dept_list.json' %}");
           
     	})
-
+        $(window).bind('load', function () {
+            $(".resize_textarea").autosize()
+        })
     </script>
 </body>
 

@@ -18,7 +18,7 @@
 					    	name="comment" 
 					    	rows="1" 
 					    	data-postid="{{ post.id }}"
-					    	placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
+					    	placeholder="Post your comment here. Ctrl+Enter to submit. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
 					    
 					</form>
 				</div>
@@ -52,8 +52,11 @@
 	    font-size : 12px;
 	    line-height : 15px;
 	    margin-left : 40px;
-	    min-height : 35px;
+	    min-height : 0px;
 	    padding-right : 10px;
+	}
+	.news_comment .news_comment_body form {
+		margin : 0px;
 	}
 	.markdown_remove_p > p {
 	    display : inline;
@@ -68,10 +71,13 @@
 	.news_comment {
 
 	}
+	.resize_textarea {
+		-webkit-transition: height 0.2s;
+		-moz-transition: height 0.2s;
+		transition: height 0.2s;
+	}
 	.comment_textarea {
 		width : 100%;
-		height : 2.5em;
-		margin-bottom : 5px;
 	}
 </style>
 
@@ -79,7 +85,7 @@
 	function dajax_create_comment(data) {
         $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
         $("#post_" + data.post_id + " .comment_textarea").removeData("clicked")
-        gravatar($(".gravatar_pic"))
+        on_dom_change()
 	}
 	
 	$( document ).ready(function() {
