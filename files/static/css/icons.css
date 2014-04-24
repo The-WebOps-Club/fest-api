@@ -1,65 +1,4 @@
 /* GLYPH - ICONS */
-[class^="pic-"],
-[class*=" pic-"] {
-  	display: inline-block;
-  	width: 14px;
-	height: 14px;
-  	*margin-right: .3em;
-  	line-height: 14px;
-  	vertical-align: text-top;
- 	background-image: url("../img/iconset.jpg");
- 	background-position: 14px 14px;
- 	background-repeat: no-repeat;
-}
-.pic-mailbox {
-	background-position: -5px -7px;
-}
-.pic-bulb {
-	background-position: -25px -7px;
-}
-.pic-house {
-	background-position: -45px -7px;
-}
-.pic-blackboard {
-	background-position: -65px -7px;
-}
-.pic-camera {
-	background-position: -85px -7px;
-}
-.pic-map {
-	background-position: -105px -7px;
-}
-.pic-bag {
-	background-position: -125px -7px;
-}
-.pic-car {
-	background-position: -145px -7px;
-}
-.pic-balance {
-	background-position: -165px -7px;
-}
-.pic-alerts {
-	background-position: -185px -7px;
-}
-.pic-money {
-	background-position: -205px -7px;
-}
-.pic-pad {
-	background-position: -205px -7px;
-}
-.pic-mug {
-	background-position: -205px -7px;
-}
-.pic-brown-paper {
-	background-position: -205px -7px;
-}
-.pic-printer {
-	background-position: -205px -7px;
-}
-
-
-
-/* GLYPH - ICONS */
 [class^="icon-"],
 [class*=" icon-"] {
   display: inline-block;
@@ -97,7 +36,7 @@
 }
 
 .icon-glass {
-  background-position: 0      0;
+  background-position: 0 0;
 }
 
 .icon-music {

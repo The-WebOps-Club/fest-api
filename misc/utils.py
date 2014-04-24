@@ -32,10 +32,16 @@ def global_context(request):
         Usage : add context_instance=global_context(request) to the kwargs of the response function
     """
     from apps.users.models import Dept, Subdept
-    vals = {
+    erp_profile = request.user.erp_profile if hasattr(request.user, "erp_profile") else None
+    if hasattr(request.user, "profile"):
+        profile = request.user.profile 
+    else:
+        profile = None
+        
+    local_context = {
         'user':request.user,
-        'erp_profile':request.user.erp_profile if hasattr(request.user, "erp_profile") else None,
-        'user_profile':request.user.profile if hasattr(request.user, "profile") else None,
+        'erp_profile':erp_profile,
+        'user_profile':profile,
         'session':request.session,
         'current_path':request.get_full_path(),
         'SITE_URL':settings.SITE_URL,
@@ -48,7 +54,7 @@ def global_context(request):
         'FEST_NAME':settings.FEST_NAME,
     }
 
-    context =  RequestContext (request, vals)
+    context =  RequestContext (request, local_context)
     return context
 
 # ------------------ FORM CUSTOMIZATIONS

@@ -5,20 +5,24 @@
 
 <div {% if not new_comment %} id="comment_{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
     <div class="news_comment_left">
-        <img src="{% static 'img/temp/profile.jpg' %}" alt="" class="news_comment_profile">
+        <img src="{% static 'img/temp/profile.jpg' %}" alt="{% if not new_comment %} {{ comment.by.email }} {% else %} {{ user.email }} {% endif %}" class="news_comment_profile gravatar_pic">
     </div>
     <div class="news_comment_body markdown_remove_p">
         {% if new_comment %} 
-			<form method="POST">
-			    {% csrf_token %}
-			    <textarea 
-			    	class="span12 comment_textarea atwho_at_config resize_textarea" 
-			    	name="comment" 
-			    	cols="30" rows="1" 
-			    	data-postid="{{ post.id }}"
-			    	placeholder="Post your comment here. Ctrl+Enter for next line. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
-			    
-			</form>
+			<div class="row-fluid">
+				<div class="span12">
+					<form method="POST">
+					    {% csrf_token %}
+					    <textarea 
+					    	class="comment_textarea atwho_at_config resize_textarea"
+					    	name="comment" 
+					    	rows="1" 
+					    	data-postid="{{ post.id }}"
+					    	placeholder="Post your comment here. Ctrl+Enter to submit. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
+					    
+					</form>
+				</div>
+			</div>
         {% else %}
 	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"default" }}
 	        <div class="news_comment_info">
@@ -48,10 +52,15 @@
 	    font-size : 12px;
 	    line-height : 15px;
 	    margin-left : 40px;
-	    min-height : 35px;
+	    min-height : 0px;
+	    padding-right : 10px;
+	}
+	.news_comment .news_comment_body form {
+		margin : 0px;
 	}
 	.markdown_remove_p > p {
 	    display : inline;
+	    margin : 0px;
 	}
 	.news_comment .news_comment_body .news_comment_info {
 	    font-size : 11px;
@@ -59,13 +68,24 @@
 	    color : #666;
 	    margin-top : 5px;
 	}
+	.news_comment {
 
+	}
+	.resize_textarea {
+		-webkit-transition: height 0.2s;
+		-moz-transition: height 0.2s;
+		transition: height 0.2s;
+	}
+	.comment_textarea {
+		width : 100%;
+	}
 </style>
 
 <script>
 	function dajax_create_comment(data) {
         $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
         $("#post_" + data.post_id + " .comment_textarea").removeData("clicked")
+        on_dom_change()
 	}
 	
 	$( document ).ready(function() {

@@ -6,12 +6,14 @@
             <div class='row-fluid'>
                 <a class='brand offset1 bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
                 <ul class='nav jewels'>
+                    {% comment %}
                     <li><a href='javascript:void(0)' class='jewelButton userButton'>
                     	<!--<span class='label label-important pull-right counter'>0</span>-->
                     </a></li>
                     <li><a href='javascript:void(0)' class='jewelButton messageButton'>
                     	<!--<span class='label label-info pull-right counter'>0</span>-->
                     </a></li>
+                    {% endcomment %}
                     <li><a href='javascript:void(0)' class='jewelButton notifButton'>
                     	{% if user.notifications.unread.count != 0 %}
                     		<span class='label label-info pull-right counter'>{{ user.notifications.unread.count }}</span>
@@ -26,8 +28,8 @@
                 </ul>
                 <div class='span1 pull-right'></div>
                 <ul class='nav links pull-right'>
-                    <li class='topbar_profile'><a href="{% url 'profile' %}">
-                        <img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+                    <li class='topbar_profile'><a href="{{ user_profile.get_pic }}">
+                        <img class='profile_dp gravatar_pic' src='{% static "img/temp/profile.jpg" %}' alt="{{ user.email }}" data-size="160" />
                         <span class='profile_name'>{{ user.get_full_name }}</span>
                     </a></li>
                     <li>

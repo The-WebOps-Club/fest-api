@@ -2,9 +2,9 @@
 
 <div class="row-fluid data_item template">
     <div class="pic">
-        <img class="profile_dp" src="{% static 'img/temp/profile.jpg' %}">
+        <img class="profile_dp" src="{% static 'img/temp/profile.jpg' %}" alt="{{ email }}">
     </div>
     <div class="text">
-        {{ name }}
+        {{ name }} <small>{{email}}</small>
     </div>
 </div>

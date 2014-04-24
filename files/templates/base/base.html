@@ -26,12 +26,11 @@
 
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
     <link href="{% static 'css/jquery.atwho.css' %}" rel="stylesheet" media="screen">
-    <link href="{% static 'css/icons.css' %}" rel="stylesheet" media="screen">
-    <link href="{% static 'css/coloricon.css'%}" rel="stylesheet" media="screen">
+    
+    <link href="{% static 'css/icons-color.css'%}" rel="stylesheet" media="screen">
     <!--<link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">-->
 
     <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
-    <!-- <link rel="stylesheet" href="{% static 'fancybox/source/jquery.fancybox.css' %}" type="text/css" media="screen" /> -->
     {% block extra_css %}{% endblock %} 
 
     {% if not DEBUG %}
@@ -60,8 +59,10 @@
     	{% include 'base/topbar.html' %} 
 
 	    {% include "base/notifs.html" %}
-	    {% include "base/messages.html" %}
-	    {% include "base/users.html" %}
+	    {% comment %}
+	    	{% include "base/messages.html" %}
+	    	{% include "base/users.html" %}
+	    {% endcomment %}
 	    {% include "base/settings.html" %}
 
     {% endblock %}
@@ -76,7 +77,7 @@
                     {% endblock %}
                 </div>
             
-	            <div id="main_body_content" class="span6 main_body" style='background:#EEE'>
+	            <div id="main_body_content" class="span6 main_body">
 	                {% block content %} {% endblock %}
 	            </div>
             {% endblock %}
@@ -99,26 +100,23 @@
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-scrollspy.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-affix.js' %}"></script>
     
-    <script type="text/javascript" src="{% static 'js/prefixfree.min.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/prefixfree.min.js' %}"></script> -->
     
     <script type="text/javascript" src='{% static "dajax/jquery.dajax.core.js" %}'></script>
     {% load dajaxice_templatetags %} {% dajaxice_js_import %} 
     
     
-    <script type="text/javascript" src='{% static "js/chosen.jquery.js" %}'></script>
-
-    <script src='{%static "js/select2/select2.js"%}'/>
+    <script src='{% static "js/select2/select2.js" %}'/>
         
-    <script type="text/javascript" src='{% static "js/jquery.autoresize.js" %}'></script>
     <script type="text/javascript" src='{% static "js/jquery.caret.js" %}'></script>
     <script type="text/javascript" src='{% static "js/jquery.atwho.js" %}'></script>
-
-    <script type="text/javascript" src="{% static 'fancybox/source/jquery.fancybox.pack.js' %}"></script>
     
-    <script type="text/javascript" src='{% static "js/jquery.scripts.js" %}'></script>
-
     <script type="text/javascript" src='{% static "js/autocomplete.js" %}'></script>
 
+    <script type="text/javascript" src='{% static "js/gravatar.js" %}'></script>
+
+    <script type="text/javascript" src='{% static "js/jquery.autosize.js" %}'></script>
+    
     <link rel='stylesheet' href='{%static "css/select2.css"%}'/>
 
 
@@ -130,32 +128,28 @@
 	            $(".notifButton").popover("hide") 
 	            $(".settingButton").popover("hide") 
 	    }
-	        
-        $('script').load(function() {
-            // $('.fancybox').fancybox();
-	        $(".below_topbar").click(hide_popups)
+	
+        function on_dom_change() {
+            $(".resize_textarea").autosize()
+            gravatar($(".gravatar_pic"))
+        }        
+        $( document ).ready(function() {
+            $(".below_topbar").click(hide_popups)
     		$(".searchbar").click(hide_popups)
 
-            // $(window).resize(function() { // Check for small screens
-            //     $outline = $("body")
-            //     console.log($outline.width() + "," + $outline.height())
-            //     if ( $outline.width() < 1000 ) {
-            //         console.log("width smaller than 1000")
-            //     }
-            // });
-        
-    	    $(".resize_textarea").autosize()
-			
             var $win = $(window), $doc = $(document);
             $win.scroll(function(){
                 $(".fixedbar").css({
                     "margin-top" : $doc.scrollTop() + "px",
                 })
             });
+            
             get_autocomplete_lists("{% static 'json/user_list.json' %}", "{% static 'json/subdept_list.json' %}", "{% static 'json/dept_list.json' %}");
-
+          
     	})
-
+        $(window).bind('load', function () {
+            $(".resize_textarea").autosize()
+        })
     </script>
 </body>
 

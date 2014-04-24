@@ -1,0 +1,325 @@
+/* GLYPH - ICONS */
+[class^="icon-"],
+[class*=" icon-"] {
+    width : 16px;
+    height : 16px;
+    margin-top:1px;
+    margin-left:1px;
+    *margin-right: .3em;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-repeat: no-repeat;
+    background-image: url('/static/img/icons-glossy.png');
+    display:inline-block;
+}
+
+
+
+
+/* ----------------------------- ROW 1 ------------------------ */
+.icon-x {
+  background-position: -2px -2px;
+}
+.icon-help {
+  background-position: -22px -2px;
+}
+.icon-settings {
+  background-position: -42px -2px;
+}
+.icon-x {
+  background-position: -62px -2px;
+}
+.icon-textbox {
+  background-position: -82px -2px;
+}
+.icon-x {
+  background-position: -102px -2px;
+}
+.icon-tick {
+  background-position: -122px -2px;
+}
+.icon-x {
+  background-position: -142px -2px;
+}
+.icon-calendar {
+  background-position: -162px -2px;
+}
+.icon-stop {
+  background-position: -182px -2px;
+}
+.icon-profile-black {
+  background-position: -202px -2px;
+}
+.icon-alert {
+  background-position: -222px -2px;
+}
+.icon-page {
+  background-position: -242px -2px;
+}
+.icon-bookmark {
+  background-position: -262px -2px;
+}
+.icon-badge {
+  background-position: -282px -2px;
+}
+.icon-x {
+  background-position: -302px -2px;
+}
+.icon-piggy-bank {
+  background-position: -322px -2px;
+}
+.icon-page-2 {
+  background-position: -342px -2px;
+}
+.icon-pages {
+  background-position: -362px -2px;
+}
+.icon-graph {
+  background-position: -382px -2px;
+}
+.icon-secure {
+  background-position: -402px -2px;
+}
+.icon-contact-email {
+  background-position: -422px -2px;
+}
+.icon-mug {
+  background-position: -442px -2px;
+}
+.icon-thought {
+  background-position: -462px -2px;
+}
+.icon-folder {
+  background-position: -482px -2px;
+}
+.icon-flag {
+  background-position: -502px -2px;
+}
+.icon-x {
+  background-position: -522px -2px;
+}
+.icon-wifi {
+  background-position: -542px -2px;
+}
+.icon-apple {
+  background-position: -562px -2px;
+}
+.icon-fb {
+  background-position: -582px -2px;
+}
+.icon-message {
+  background-position: -602px -2px;
+}
+.icon-pencil {
+  background-position: -622px -2px;
+}
+.icon-heart-plus {
+  background-position: -642px -2px;
+}
+.icon-x {
+  background-position: -662px -2px;
+}
+.icon-paint {
+  background-position: -682px -2px;
+}
+.icon-x {
+  background-position: -702px -2px;
+}
+.icon-calendar-2 {
+  background-position: -722px -2px;
+}
+.icon-cabinet {
+  background-position: -742px -2px;
+}
+.icon-attach {
+  background-position: -762px -2px;
+}
+.icon-profile-2 {
+  background-position: -782px -2px;
+}
+.icon-x {
+  background-position: -802px -2px;
+}
+.icon-x {
+  background-position: -822px -2px;
+}
+.icon-x {
+  background-position: -842px -2px;
+}
+.icon-x {
+  background-position: -862px -2px;
+}
+.icon-pad {
+  background-position: -882px -2px;
+}
+.icon-todo {
+  background-position: -902px -2px;
+}
+.icon-x {
+  background-position: -922px -2px;
+}
+.icon-network {
+  background-position: -942px -2px;
+}
+.icon-x {
+  background-position: -962px -2px;
+}
+.icon-checkpost {
+  background-position: -982px -2px;
+}
+
+
+
+
+
+/* ----------------------------- ROW 2 ------------------------ */
+.icon-power-off {
+  background-position: -2px -22px;
+}
+.icon-key-hole {
+  background-position: -22px -22px;
+}
+.icon-lock {
+  background-position: -42px -22px;
+}
+.icon-x {
+  background-position: -62px -22px;
+}
+.icon-bulb {
+  background-position: -82px -22px;
+}
+.icon-temple {
+  background-position: -102px -22px;
+}
+.icon-checklist {
+  background-position: -122px -22px;
+}
+.icon-x {
+  background-position: -142px -22px;
+}
+.icon-pic {
+  background-position: -162px -22px;
+}
+.icon-home {
+  background-position: -182px -22px;
+}
+.icon-new-profile {
+  background-position: -202px -22px;
+}
+.icon-x {
+  background-position: -222px -22px;
+}
+.icon-share {
+  background-position: -242px -22px;
+}
+.icon-heart {
+  background-position: -262px -22px;
+}
+.icon-x {
+  background-position: -282px -22px;
+}
+.icon-clock {
+  background-position: -302px -22px;
+}
+.icon-x {
+  background-position: -322px -22px;
+}
+.icon-video {
+  background-position: -342px -22px;
+}
+.icon-x {
+  background-position: -362px -22px;
+}
+.icon-gear {
+  background-position: -382px -22px;
+}
+.icon-search {
+  background-position: -402px -22px;
+}
+.icon-redo {
+  background-position: -422px -22px;
+}
+.icon-x {
+  background-position: -442px -22px;
+}
+.icon-x {
+  background-position: -462px -22px;
+}
+.icon-jar {
+  background-position: -482px -22px;
+}
+.icon-x {
+  background-position: -502px -22px;
+}
+.icon-box {
+  background-position: -522px -22px;
+}
+.icon-x {
+  background-position: -542px -22px;
+}
+.icon-printer {
+  background-position: -562px -22px;
+}
+.icon-star-blue {
+  background-position: -582px -22px;
+}
+.icon-plus {
+  background-position: -602px -22px;
+}
+.icon-camera {
+  background-position: -622px -22px;
+}
+.icon-phone {
+  background-position: -642px -22px;
+}
+.icon-x {
+  background-position: -662px -22px;
+}
+.icon-pc {
+  background-position: -682px -22px;
+}
+.icon-x {
+  background-position: -702px -22px;
+}
+.icon-paypal {
+  background-position: -722px -22px;
+}
+.icon-x {
+  background-position: -742px -22px;
+}
+.icon-zoom-in {
+  background-position: -762px -22px;
+}
+.icon-globe {
+  background-position: -782px -22px;
+}
+.icon-profile-blue {
+  background-position: -802px -22px;
+}
+.icon-download {
+  background-position: -822px -22px;
+}
+.icon-twitter {
+  background-position: -842px -22px;
+}
+.icon-x {
+  background-position: -862px -22px;
+}
+.icon-x {
+  background-position: -882px -22px;
+}
+.icon-x {
+  background-position: -902px -22px;
+}
+.icon-bar-graph {
+  background-position: -922px -22px;
+}
+.icon-star {
+  background-position: -942px -22px;
+}
+.icon-x {
+  background-position: -962px -22px;
+}
+.icon-x {
+  background-position: -982px -22px;
+}

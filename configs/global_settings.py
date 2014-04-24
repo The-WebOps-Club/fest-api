@@ -58,6 +58,9 @@ THIRD_PARTY_APPS = (
 
     # Search Indexer
     # 'haystack',
+
+    # Gravatar
+    'django_gravatar',
 )
 API_APPS = (
     'misc',
@@ -330,7 +333,10 @@ SOCIAL_AUTH_PIPELINE = (
     # 'social.pipeline.user.create_user',
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
-    'social.pipeline.user.user_details'
+    'social.pipeline.user.user_details',
+    'apps.users.pipeline.save_profile_picture',
+    
+
 )
 # Social auth - backend specific
     # Google
@@ -415,3 +421,7 @@ GOGOLE_API_PUBLIC_KEY = ''
 if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
     with open(GOOGLE_API_CREDENTIALS_FILE_PATH) as f:
         GOOGLE_API_CREDENTIALS = f.read()
+
+# Gravatar
+GRAVATAR_DEFAULT_IMAGE = "identicon"
+GRAVATAR_DEFAULT_SIZE = "50"

@@ -114,11 +114,13 @@
     }
 
     // New post handler
-    function prepend_new_post(data){
+    function dajax_create_post(data){
         $("#id_new_post").val("").blur();
         $("#new_post_placeholder").after(data.append_string);
         hide_status_textarea();
         $("#empty_wall_msg").hide();
+        
+        on_dom_change()
     }
 
     $( document ).ready(function() {            
@@ -128,10 +130,9 @@
         // Submitting Forms
         $("#new_post_wrapper .new_post_textarea").keyup(function (e) {
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
-                // $(this).submit_form()
                 // Submitting via Dajax instead
                 el = this; $el = $(this)
-                Dajaxice.apps.walls.create_post(prepend_new_post, {'wall_id':{{wall.id}}, 'post_form': $('#id_form_status').serialize(true) })
+                Dajaxice.apps.walls.create_post(dajax_create_post, {'wall_id':{{wall.id}}, 'post_form': $('#id_form_status').serialize(true) })
             }
         })
         
@@ -140,7 +141,7 @@
         });
 
         $(".new_post_submit").click(function() {
-        	Dajaxice.apps.walls.create_post(prepend_new_post, {
+        	Dajaxice.apps.walls.create_post(dajax_create_post, {
         		'wall_id': {{ wall.id }}, 
         		'post_form': $('#id_form_status').serialize(true) 
         	})

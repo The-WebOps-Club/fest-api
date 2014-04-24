@@ -40,9 +40,22 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 				})
 		```
 
-3. apiclient :
-    - There is a possibility that this error will occur in ```apiclient```
-        ```ImportError: from apiclient import __version__```
-    - Fix: add ```__version__ = '1.0.2'``` to ```apiclient/__init.py```           
+3. Setup Social Accounts :
+	. FACEBOOK
+		- Add your facebook credentials (token, key) into settings
+
+	. GOOGLE
+		- Go to `{{SITE_URL}}/docs/refresh_token` to create a new refresh token.
+		- This will ask access to a Google account - use the account on which to store Docs and accept.
+		- Now this will store the refresh_token in a configs file and ask you to restrat server.
+		- Restart Server to refetch all settings.
+		- Now you can access Google Drive and Google Picker API
+		
+		- Also, add google credentials into settings
+			- Gogole Public Key
+			- Google oauth configs into configs/docs_oauth2_credentials.json
+		
+	. GITHUB
+		- Add your github credentials (token, key) into settings
     
 

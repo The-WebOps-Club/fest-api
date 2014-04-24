@@ -111,6 +111,7 @@
     	else {
         	$(".popover_notifs .see_more_notifs").html('No more to load');
     	}
+    	on_dom_change()
 	}
 	function notifs_title() {
 		return $(".notifs_title").html()
@@ -119,7 +120,7 @@
 	function notifs_content() {
 		return $(".notifs_content").html()
 	}
-		
+	
 	$( document ).ready(function() {
 		$(".notifButton").popover({
 			"animate": true,

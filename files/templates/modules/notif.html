@@ -10,7 +10,7 @@
     data-target="{{ notification.target.id }}" 
     data-wall="{{ notification.target.wall.id }}" onclick="window.location.href = '{% url 'read_notification' notification.id %}'">
     <div class="profile_pic">
-        <img class='profile_dp' src='{% static "img/temp/profile.jpg" %}' />
+        <img class='profile_dp gravatar_pic ' src='{% static "img/temp/profile.jpg" %}' alt='{{ notification.actor.email }}' />
     </div>
     <div class="notif_body">
         <span class="profile_name">{{ notification.actor.get_full_name|default:"" }} </span>
