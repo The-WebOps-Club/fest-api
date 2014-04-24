@@ -44,12 +44,14 @@
     width:100%;
     text-align: center;
     /*border: 2px gray solid;*/
-    background-color:beige;
+    background-color:#FFF;
     margin-left: 7px;
     padding-right:2px;
     padding-left:2px;
     height:240px;
-    border-radius:4px;
+    border-radius:5px;
+    border: 1px #FAFAFA solid;
+    border-bottom: 2px #BBB solid;
 }
 /*CSS for overlay*/
  .drive_overlay {
@@ -115,6 +117,18 @@
 .driveicon {
     margin-left:10px;
     margin-right:10px;
+    background:#FFF;
+}
+#main_body_content{
+    background-color: #EEE;
+}
+.thumbnail{
+    max-width:90%;
+    max-height:140px;
+    padding-top:5px;
+    min-height:140px;
+    margin-top:5px;
+    border: 1px #DDD solid;
 }
 </style>
 <script type="text/javascript">
@@ -127,37 +141,11 @@ var allFiles = null;
 var heirarchy = [];
 var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
 // view function.
-
-    function uploadFile(evt) {
+function uploadFile(evt) {
         //alert(JSON.stringify(evt.target.files[0]));
-        insertFile(evt.target.files[0], currFolder, function() {
-            alert("successful");
-        });
-    }
-
-function initDrive() {
-    //alert('?');
-    gapi.auth.setToken({
-        access_token: authToken,
-        expires_in: 2000
-    }); // set the access token obtained from the server. OAuth2 automatically logs us in.
-    gapi.client.setApiKey(developerKey); //set our public api key
-    gapi.client.load('drive', 'v2', getFiles); // ask gapi to load API details for the drive api.
-}
-
-function getFiles() {
-    //alert('retreiving files');
-    //files_of_interest = []
-    gapi.client.drive.files.list().execute(function(response) {
-        if (response.error) {
-            if (response.error.code == 401)
-                alert('ACCESS TOKEN expired. Please refresh the page. Note that the Token is active only for around 2000 seconds.');
-            else
-                alert('Unexpected error: ' + response.error.code);
-        }
-        showAllFiles(response.items);
+    insertFile(evt.target.files[0], currFolder, function() {
+        alert("successful");
     });
-
 }
 function showAllFiles(files){
           $('#drivebrowse_main').html('');
@@ -187,7 +175,18 @@ $(document).ready(function() {
     $('#filechooser').change(uploadFile);
 });
 
-    var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
+function delFile( dir_id ){
+    deleteFile( dir_id, function(){ getFiles(showAllFiles); } );
+}
+function newFolder( name, dir_id ){
+    uploadEmptyFolder( name, dir_id, function(){ getFiles(showAllFiles); });
+}
+function renameFile( name, fileid ){
+    renameFile( fileid, name, function(){ getFiles(showAllFiles); });
+}   
+function share( fileid, dest_email, access ){
+    shareFile(fileid, dest_email, 'writer',  function(){ getFiles(showAllFiles);} );
+}
     // view function.
 function toHTML(file) {
     var html = '';
@@ -207,9 +206,9 @@ function toHTML(file) {
       // if none exists the file is a directory. leave it.
 
       if(file_type != MIME_DIRECTORY)
-        html+='<a href="#"><div class="span4 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><img src="'+file.thumbnailLink+'" style="max-width:90%;max-height:160px;padding-top:5px"><div><img src="'+file.iconLink+'"><h6>'+file.title+'</h6></div><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-cloud-download fa-lg driveicon" onclick="window.location=\''+d_url+'\'"></button><button class="fa fa-share fa-lg driveicon" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","'+file.id+'")\'></button><button class="fa fa-eye fa-lg driveicon" onclick="window.location=\'{%url "docframe" %}?docurl='+file.id+'\'"></button><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("'+file.id+'");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\''+file.id+'\')"></button></div></div></a>';
+        html+='<a href="#"><div class="span4 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><img src="'+file.thumbnailLink+'" class="thumbnail"><div><img src="'+file.iconLink+'"><h6>'+file.title+'</h6></div><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-cloud-download fa-lg driveicon" onclick="window.location=\''+d_url+'\'"></button><button class="fa fa-share fa-lg driveicon" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","'+file.id+'")\'></button><button class="fa fa-eye fa-lg driveicon" onclick="window.location=\'{%url "view" %}?docurl='+file.id+'\'"></button><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("'+file.id+'");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\''+file.id+'\')"></button></div></div></a>';
       else
-        html+='<a href="#"><div class="span4 col-md-3 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><div style="width:100%;height:160px;text-align:center"><button class="fa fa-folder fa-4x"  onclick="showDirectoryContents(\''+file.id+'\',true);" style="margin-top:80px"></button></div><img src="'+file.iconLink+'"><h6 onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</h6><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("'+file.id+'");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\''+file.id+'\')"></button></div></div></a>';
+        html+='<a href="#"><div class="span4 col-md-3 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><div style="width:100%;height:160px;text-align:center"><button class="fa fa-folder fa-4x"  onclick="showDirectoryContents(\''+file.id+'\',true);" style="margin-top:80px;background-color:#FFF"></button></div><img src="'+file.iconLink+'"><h6 onclick="showDirectoryContents(\''+file.id+'\',true);">'+file.title+'</h6><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("'+file.id+'");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\''+file.id+'\')"></button></div></div></a>';
       return html;
     }
     function addUploadTile(){
@@ -253,146 +252,14 @@ function toHTML(file) {
       }
     }
 
-    function renameFile(fileId, newTitle) {
-      var body = {'title': newTitle};
-      var request = gapi.client.drive.files.patch({
-        'fileId': fileId,
-        'resource': body
-    });
-    request.execute(function(resp) {
-        $('#renamebox').css('display', 'none')
-        console.log('New Title: ' + resp.title);
-        getFiles();
-    });
+    
 }
-
-
-
-
-function uploadEmptyFile(mimetype, name, dir_id) {
-    var text = " ";
-    var xhr2 = new XMLHttpRequest();
-    xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key=' + developerKey);
-    xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
-    xhr2.setRequestHeader('Content-Type', 'application/json');
-    xhr2.onreadystatechange = function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('PUT', 'https://www.googleapis.com/upload/drive/v2/files/' + JSON.parse(xhr2.responseText).id + '?uploadType=media');
-        xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
-        xhr.setRequestHeader('Content-Type', mimetype);
-        xhr.onreadystatechange = function(res) {
-            alert(JSON.stringify(res));
-        }
-        xhr.send(text);
-    }
-    xhr2.send(JSON.stringify({
-        'title': name,
-        'mimeType': mimetype,
-        'parents': [{
-            'id': dir_id,
-            'kind': 'drive#parentReference'
-        }]
-    }));
-}
-
-function uploadEmptyFolder(name, dir_id) {
-    var xhr2 = new XMLHttpRequest();
-    xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key=' + developerKey);
-    xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
-    xhr2.setRequestHeader('Content-Type', 'application/json');
-    xhr2.onreadystatechange = getFiles;
-    xhr2.send(JSON.stringify({
-        'title': name,
-        'mimeType': MIME_DIRECTORY,
-        'parents': [{
-            'id': dir_id,
-            'kind': 'drive#parentReference'
-        }]
-    }));
-}
-
-function insertFile(fileData, dir_id, callback) {
-    const boundary = '-------314159265358979323846';
-    const delimiter = "\r\n--" + boundary + "\r\n";
-    const close_delim = "\r\n--" + boundary + "--";
-
-    var reader = new FileReader();
-    reader.readAsBinaryString(fileData);
-    reader.onload = function(e) {
-        var contentType = fileData.type || 'application/octet-stream';
-        var metadata = {
-            'title': fileData.name,
-            'mimeType': contentType,
-            'parents': [{
-                'id': dir_id,
-                'kind': 'drive#parentReference'
-            }]
-        };
-
-        var base64Data = btoa(reader.result);
-        var multipartRequestBody =
-            delimiter +
-            'Content-Type: application/json\r\n\r\n' +
-            JSON.stringify(metadata) +
-            delimiter +
-            'Content-Type: ' + contentType + '\r\n' +
-            'Content-Transfer-Encoding: base64\r\n' +
-            '\r\n' +
-            base64Data +
-            close_delim;
-
-        var request = gapi.client.request({
-            'path': '/upload/drive/v2/files',
-            'method': 'POST',
-            'params': {
-                'uploadType': 'multipart'
-            },
-            'headers': {
-                'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
-            },
-            'body': multipartRequestBody
-        });
-        if (!callback) {
-            callback = function(file) {
-                console.log(file)
-            };
-        }
-        request.execute(callback);
-    }
-}
-
-
-function deleteFile(fileId) {
-    var request = gapi.client.drive.files.delete({
-        'fileId': fileId
-    });
-    request.execute(function(resp) {
-        getFiles();
-    });
-}
-
-function shareFile(fileId, dest_email) {
-    var body = {
-        'value': dest_email,
-        'type': 'user',
-        'role': 'writer'
-    };
-    var request = gapi.client.drive.permissions.insert({
-        'fileId': fileId,
-        'resource': body
-    });
-    request.execute(function(resp) {
-        getFiles();
-    });
-}
-
 function shareFileMultiple(fileId, dest_emails) {
     alert(JSON.stringify(dest_emails));
     dest_emails.forEach(function(email) {
         shareFile(fileId, email);
     });
 }
-
 $.fn.driveOverlay = function() {
     $(this).append('<div class="drive_overlay"></div>');
     var c = $(this).children('.drive_overlay'); 
@@ -411,7 +278,7 @@ $.fn.driveOverlay = function() {
         if (data.action == google.picker.Action.PICKED) {
             fileId = data.docs[0].id;
             //alert('The user selected: ' + fileId);
-            window.location = "{% url 'docframe' %}?docurl="+fileId;
+            window.location = "{% url 'view' %}?docurl="+fileId;
         }
       }*/
 // Use the Google API Loader script to load the google.picker script.
