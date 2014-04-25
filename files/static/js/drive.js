@@ -1,0 +1,246 @@
+var defaults = {
+    "authToken": null,
+    "developerKey": null,
+    "rootFolder": null,
+},
+MIME_TYPES = {
+	"audio" : "application/vnd.google-apps.audio",
+	"doc" : "application/vnd.google-apps.document",
+	"drawing" : "application/vnd.google-apps.drawing",
+	"file" : "application/vnd.google-apps.file",
+	"folder" : "application/vnd.google-apps.folder",
+	"form" : "application/vnd.google-apps.form",
+	"fusion_table" : "application/vnd.google-apps.fusiontable",
+	"photo" : "application/vnd.google-apps.photo",
+	"slide" : "application/vnd.google-apps.presentation",
+	"app_script" : "application/vnd.google-apps.script",
+	"site" : "application/vnd.google-apps.sites",
+	"sheet" : "application/vnd.google-apps.spreadsheet",
+	"unknown" : "application/vnd.google-apps.unknown",
+	"video" : "application/vnd.google-apps.video",
+}
+var Drive = function(options) {
+
+	self = this // To use in callback functions to avoid this confusion
+
+    self.options = $.extend({}, defaults, options || {});
+    self.dir_contents = null
+
+    self.init = function() {
+        console.log("Init Drive")
+        if (!self.options.authToken || !self.options.developerKey) {
+            console.log("Auth token, DeveloperKey was invalid")
+            return
+        }
+
+        gapi.auth.setToken({
+            access_token: self.options.authToken,
+            expires_in: 2000
+        }); // set the access token obtained from the server. OAuth2 automatically logs us in.
+
+        gapi.client.setApiKey(this.options.developerKey); //set our public api key
+        gapi.client.load('drive', 'v2', self.gapi_drive_callback); // ask gapi to load API details for the drive api.
+    }
+
+    self.check_error = function(r) {
+        if (r.error) {
+            if (r.error.code == 401)
+                alert('ACCESS TOKEN expired. Please refresh the page.');
+            else
+                alert('Unexpected error: ' + response.error.code);
+        }
+    }
+
+    self.gapi_drive_callback = function() {
+    	// Default action
+    	self.get_dir_contents(self.options.rootFolder)
+    }
+
+    self.get_dir_contents = function(fid, callback) {
+        fid = fid || self.options.rootFolder
+        gapi.client.drive.children.list({
+            "folderId": fid,
+        }).execute(function(response) {
+            self.check_error(response)
+            self.dir_contents = response.items
+            $(".drive_parent").data("id", fid)
+            callback = callback || self.show_dir_contents
+            callback();
+        });
+    }
+    
+    self.get_file_meta = function(fid, callback) {
+        gapi.client.drive.files.get({
+            "fileId": fid,
+            "fields": [ "id", "title", "modifiedDate", 
+            	"mimeType", "lastModifyingUser",
+            	"thumbnail", "thumbnailLink", "iconLink"
+            ],
+        }).execute(function(response) {
+            self.check_error(response)
+            callback = callback || self.show_file
+            callback(response);
+            f = response
+        });
+    }
+
+    self.get_ids = function(t) {
+    	ids = []
+    	/*if ( t instanceof jQuery ) {
+    		for ( var i in t ) {
+    			ids.append(t[i].data("id"))
+    		}
+    	}*/
+    	if ( ! t.length ) {
+    		ids.append(t)
+    	} else {
+    		ids = t
+    	}
+    	return ids
+    }
+
+    self.move_files = function(file_details, callback) {
+    	file_details = self.get_ids(file_details)
+    	alert("Not done yet")
+    }
+    self.rename_files = function(file_details, callback) {
+    	file_details = self.get_ids(file_details)
+    	$.each(file_details, function(i,v) {
+    		gapi.client.drive.files.patch({
+		        'fileId': v.id,
+		        'resource': {
+			        'title': v.title,
+			    },
+		    }).execute(function(resp) {
+		        self.check_error(response)
+		        callback = callback || self.get_file_meta
+	            callback(fid);
+		    });
+		})
+    }
+
+	self.delete_files = function(file_details, callback) {
+    	file_details = self.get_ids(file_details)
+    	$.each(file_details, function(i,v) {
+    		gapi.client.drive.files.delete({
+		        'fileId': v.id,
+		        'resource': {
+			        'title': v.title,
+			    },
+		    }).execute(function(resp) {
+		        self.check_error(response)
+		        callback = callback || self.get_file_meta
+	            callback(fid);
+		    });
+		})
+    }
+
+    self.insert_file = function(fileData, dir_id, callback) {
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+
+        var reader = new FileReader();
+        reader.readAsBinaryString(fileData);
+        reader.onload = function(e) {
+            var contentType = fileData.type || 'application/octet-stream';
+            var metadata = {
+                'title': fileData.name,
+                'mimeType': contentType,
+                'parents': [{
+                    'id': dir_id,
+                    'kind': 'drive#parentReference'
+                }]
+            };
+
+            var base64Data = btoa(reader.result);
+            var multipartRequestBody =
+                delimiter +
+                'Content-Type: application/json\r\n\r\n' +
+                JSON.stringify(metadata) +
+                delimiter +
+                'Content-Type: ' + contentType + '\r\n' +
+                'Content-Transfer-Encoding: base64\r\n' +
+                '\r\n' +
+                base64Data +
+                close_delim;
+
+            var request = gapi.client.request({
+                'path': '/upload/drive/v2/files',
+                'method': 'POST',
+                'params': {
+                    'uploadType': 'multipart'
+                },
+                'headers': {
+                    'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+                },
+                'body': multipartRequestBody
+            });
+            if (!callback) {
+                callback = function(file) {
+                    console.log(file)
+                };
+            }
+            request.execute(callback);
+        }
+    }
+
+    /* ------------------------ DISPLAY FUNCTIONS ------------------ */
+    self.show_dir_contents = function(folder_items) {
+        folder_items = folder_items || self.dir_contents
+        $.each(folder_items, function(i, v) {
+            self.get_file_meta(v.id)
+        })
+    }
+    
+    self.show_file = function(file_data) {
+    	$el = $(".drive_list .drive_parent .template.file_template").clone()
+    		.removeClass("template").removeClass("file_template")
+        $el.data("id", file_data.id)
+        $el.find(".title").text(file_data.title)
+        if ( ! file_data.labels.viewed ) {
+        	$el.find(".title").addClass("bold")
+        }
+        $el.find(".drive_icon").prop("src", file_data.iconLink)
+        $el.find(".last_modified").text(file_data.modifiedDate)
+        
+       	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?docurl=" + $el.data("id"))
+
+        /* -- Event handlers -- */
+        self.file_events($el)
+
+        $el.show()
+        $(".drive_parent").append($el)
+    }
+
+    self.file_events = function (el) {
+    	var $el = $(el)
+    	$el.click ( function () {
+        	var $el = $(this)
+        	if ( $el.hasClass("select") ) {
+        		$el.removeClass("select")
+	        	$el.find(".drive_checkbox").removeClass("icon-tick")
+        	}
+        	else {
+        		$el.addClass("select")
+	        	$el.find(".drive_checkbox").addClass("icon-tick")
+	        }
+        })
+    }
+
+    self.show_parent = function (fid, num) {
+    	num = num | 0
+    	self.get_file_meta(fid, function(r) {
+    		if (r.parents.length) {
+    			if ( r.parents.length > num+1)
+    				num = 0
+    			self.get_dir_contents(r.parents[num].id)
+    		}
+    	})
+    }
+
+    /* Execution */
+    self.init()
+
+    return this
+}

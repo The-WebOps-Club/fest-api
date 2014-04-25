@@ -1,11 +1,68 @@
-{% extends 'base/base.html' %} {% load staticfiles %} {% block title %} {{ FEST_NAME }} {% endblock %} {% block content %}
+{% extends 'base/base.html' %} 
+{% load staticfiles %} 
 
+{% block title %} {{ FEST_NAME }} {% endblock %} 
 
+{% block content %}
+    <div class="row-fluid">
+        <div class="span12">
+            <h4>Docs </h4>
+        </div>
+    </div>
 
-<h4>Docs</h4>
-<div id='drivebrowse_main' style='display:inline;'>
+    <div class="row-fluid drive_bar">
+        <div class="span12">
+            <a class="btn drive_back"> <i class="icon-exit"></i> Back </a>
+            <a class="btn primary drive_upload"> 
+                <i class="icon-upload"></i>  Upload 
+            </a>
+            <a class="btn primary drive_share" onclick="alert('Not done yet');"> 
+                <i class="icon-share"></i> Share 
+            </a>
+            <a class="btn drive_refresh" onclick="alert('Not done yet');"> 
+                <i class="icon-refresh"></i> Refresh
+            </a>
+            <div class="pull-right">
+                <a class="btn primary drive_move">
+                    <i class="icon-folder"></i> Move 
+                </a>
+                <a class="btn primary drive_delete"> 
+                    <i class="icon-stop"></i> Delete 
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid drive_list">
+        <div class="span12">
+            <table class="zebra-striped table drive_parent" cellpadding="0" cellspacing="0">
+                <tr class="head">
+                    <th class="checkbox"> 
+                        <div class="drive_checkbox"> 
+                            <div class="border"></div> 
+                        </div>
+                    </th>
+                    <th class="title"> TITLE </th>
+                    <th class="last_modified"> LAST MODIFIED </th>
+                </tr>
+                <tr class="drive_file template file_template" style="display : none;">
+                    <td class="checkbox">
+                        <div class="drive_checkbox">
+                            <div class="border"></div>
+                        </div>
+                    </td>
+                    <td class="info">
+                        <a href="{%url 'view' %}" target="_blank">
+                            <img class="drive_icon" src="" />
+                            <span class="title"></span>
+                        </a>
+                    </td>
+                    <td class="last_modified"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
 
-</div>
 <input id='filechooser' type=file style='display:none'></input>
 <!--<button id='filechooser_trig' onclick='$("#filechooser").click();'>Trig</button>-->
 <div id='sharebox' data-fileid='' style="top:50%; position:absolute; width:100%; text-align:center; display:none; background-color: rgb(59, 89, 152); z-index:3" class="popover">
@@ -34,100 +91,53 @@
     </div>
 </div>
 
-{% endblock %} {% block extra_css %} {{ block.super }}
+{% endblock %} 
+
+{% block extra_css %} {{ block.super }}
 <style>
-.fileview {
-    width:100%;
-    text-align: center;
-    /*border: 2px gray solid;*/
-    background-color:#FFF;
-    margin-left: 7px;
-    padding-right:2px;
-    padding-left:2px;
-    height:240px;
-    border-radius:5px;
-    border: 1px #FAFAFA solid;
-    border-bottom: 2px #BBB solid;
-}
-/*CSS for overlay*/
- .drive_overlay {
-    position:absolute;
-    z-index:9999;
-    opacity:0.2;
-    background-color:rgb(200, 100, 150);
-}
-.drive_overlay:hover {
-    opacity:0.8;
-}
-.drive_download {
-    width:40px;
-    height:40px;
-    background-color: silver;
-    margin-left:5px;
-    margin-right:5px;
-    border-radius: 10%;
-}
-.drive_download:hover {
-    background-color: slategray;
-}
-.drive_view {
-    width:40px;
-    height:40px;
-    background-color: silver;
-    margin-left:5px;
-    margin-right:5px;
-    border-radius: 10%;
-}
-.drive_view:hover {
-    background-color: slategray;
-}
-.drive_share {
-    width:40px;
-    height:40px;
-    background-color: silver;
-    margin-left:5px;
-    margin-right:5px;
-    border-radius: 10%;
-}
-.drive_share:hover {
-    background-color: slategray;
-}
-.drive_delete {
-    width:40px;
-    height:40px;
-    background-color: silver;
-    margin-left:5px;
-    margin-right:5px;
-    border-radius: 10%;
-}
-.drive_delete:hover {
-    background-color: slategray;
-}
-.select2-choices {
-    width:250px;
-}
-.btn {
-    margin-left:5px;
-    margin-right:2px;
-}
-.driveicon {
-    margin-left:10px;
-    margin-right:10px;
-    background:#FFF;
-}
-#main_body_content {
-    background-color: #EEE;
-}
-.thumbnail {
-    max-width:90%;
-    max-height:140px;
-    padding-top:5px;
-    min-height:140px;
-    margin-top:5px;
-    border: 1px #DDD solid;
-}
+    .drive_file .drive_icon {
+        margin : 2px;
+        display : inline-block;
+        float : left;
+    }
+    .drive_file .info .title {
+        line-height : 20px;
+        height : 100%;
+        display : inline-block;
+    }
+    .drive_file .drive_checkbox {
+        width : 16px;
+        height : 16px;
+        z-index : 2;
+    }
+    .drive_file .drive_checkbox .border {
+        width : 10px;
+        height : 10px;
+        margin : 2px;
+        border-radius : 3px;
+        border : 1px solid #aaa;
+        z-index : 1;
+    }
+    .drive_file .drive_checkbox:hover .border {
+        border : 1px solid #000;
+    }
+    tr.drive_file.select {
+        border-left : 3px solid transparent;
+    }
+    .zebra-striped tbody tr.drive_file.select:hover td, 
+    .zebra-striped tbody tr.drive_file.select:hover th,
+    .zebra-striped tbody tr.drive_file.select td, 
+    .zebra-striped tbody tr.drive_file.select th,
+    tr.drive_file.select, tr.drive_file.select:hover {
+        background-color : rgb(255, 255, 204);
+    }
+    tr.drive_file.select, tr.drive_file.select:hover {
+        border-left : 3px solid rgb(50, 50, 255);
+    }
 </style>
-{% endblock %} {% block extra_js %} {{ block.super }}
+{% endblock %} 
+
+{% block extra_js %} {{ block.super }}
 <script type="text/javascript">
 var developerKey = '{{ api_key }}';
 var rootFolder = '{{ SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID }}';
@@ -138,33 +148,51 @@ var allFiles = null;
 var heirarchy = [];
 var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
 // view function.
+drive = null;
 
 $(document).ready(function() {
     console.log("Ready")
-    $('.select2').select2();
+    // $('.select2').select2();
     $('#filechooser').change(uploadFile);
 });
 
+function drive_callback() {
+    drive = new Drive({
+        "authToken": authToken,
+        "developerKey": developerKey,
+        "rootFolder": rootFolder,
+    })
+    init_button_bar ()
+
+}
+
+function init_button_bar() {
+    $(".drive_upload")
+    $(".drive_back").click(function() {
+        drive.show_parent($(".drive_parent").data("id"))
+    })
+    $(".drive_refresh").click(function() {
+        drive.get_dir_contents($(".drive_parent").data("id"))
+    })
+    $(".drive_delete").click(function() {
+
+        drive.delete_file(
+                $.map($(".drive_parent .drive_file.select"), function(val, i) { return { "id" : $(val).data("id") } } )
+                )
+    })
+}
+
+
+
+
+
+
+
 function uploadFile(evt) {
-    //alert(JSON.stringify(evt.target.files[0]));
+    // alert(JSON.stringify(evt.target.files[0]));
     insertFile(evt.target.files[0], currFolder, function() {
         alert("successful");
     });
-}
-
-function showAllFiles(files) {
-    $('#drivebrowse_main').html('');
-    allFiles = files;
-    dir_files = getDirectoryContents(allFiles, rootFolder)
-    dir_files.forEach(function(item) {
-
-        $('#drivebrowse_main').append(toHTML(item));
-    });
-    currFolder = rootFolder;
-    //alert($('.fileview').length);
-    addUploadTile();
-    addFolderCreateTile(rootFolder);
-    //alert('calling overlay'); $('.fileview').driveOverlay();
 }
 
 function getDirectoryContents(all_files, dir_id) {
@@ -175,12 +203,6 @@ function getDirectoryContents(all_files, dir_id) {
             dir_files.push(item);
     });
     return dir_files;
-}
-
-function delFile(dir_id) {
-    deleteFile(dir_id, function() {
-        getFiles(showAllFiles);
-    });
 }
 
 function newFolder(name, dir_id) {
@@ -243,32 +265,65 @@ function addBackTile(dir_id) {
     html += '<button class="span4 fileview" onclick="showDirectoryContents(\'' + getFileObject(dir_id).parents[0].id + '\',true);" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>BACK</b></h3></button>';
     $('#drivebrowse_main').append(html);
 }
-// model preprocessor
 
-function showDirectoryContents(dir_id, showPrev) {
-    files = getDirectoryContents(allFiles, dir_id);
 
-    $('#drivebrowse_main').html('');
-    if (showPrev) {
-        if (dir_id != rootFolder)
-            addBackTile(dir_id);
+function uploadEmptyFile(mimetype, name, dir_id) {
+    var text = " ";
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key=' + developerKey);
+    xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
+    xhr2.setRequestHeader('Content-Type', 'application/json');
+    xhr2.onreadystatechange = function() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('PUT', 'https://www.googleapis.com/upload/drive/v2/files/' + JSON.parse(xhr2.responseText).id + '?uploadType=media');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
+        xhr.setRequestHeader('Content-Type', mimetype);
+        xhr.onreadystatechange = function(res) {
+            alert(JSON.stringify(res));
+        }
+        xhr.send(text);
     }
-    files.forEach(function(item) {
-        $('#drivebrowse_main').append(toHTML(item));
+    xhr2.send(JSON.stringify({
+        'title': name,
+        'mimeType': mimetype,
+        'parents': [{
+            'id': dir_id,
+            'kind': 'drive#parentReference'
+        }]
+    }));
+}
+
+function uploadEmptyFolder(name, dir_id) {
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key=' + developerKey);
+    xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
+    xhr2.setRequestHeader('Content-Type', 'application/json');
+    xhr2.onreadystatechange = getFiles;
+    xhr2.send(JSON.stringify({
+        'title': name,
+        'mimeType': MIME_DIRECTORY,
+        'parents': [{
+            'id': dir_id,
+            'kind': 'drive#parentReference'
+        }]
+    }));
+}
+
+
+function shareFile(fileId, dest_email) {
+    var body = {
+        'value': dest_email,
+        'type': 'user',
+        'role': 'writer'
+    };
+    var request = gapi.client.drive.permissions.insert({
+        'fileId': fileId,
+        'resource': body
     });
-    currFolder = dir_id;
-    //$('.fileview').load(function(){ alert('calling overlay'); $(this).driveOverlay();});
-    addUploadTile();
-    addFolderCreateTile(dir_id);
+    request.execute(function(resp) {
+        getFiles();
+    });
 }
-
-function getFileObject(fileId) {
-    for (var i = 0; i < allFiles.length; i++) {
-        if (allFiles[i].id == fileId)
-            return allFiles[i];
-    }
-}
-
 
 function shareFileMultiple(fileId, dest_emails) {
     alert(JSON.stringify(dest_emails));
@@ -287,8 +342,14 @@ $.fn.driveOverlay = function() {
     c.css('top', rect.top);
     c.css('left', rect.left);
 }
+
+
+
 </script>
 
+<script src='{% static "js/drive.js" %}'></script>
 <script src="http://www.google.com/jsapi"></script>
-<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=initDrive"></script>
+<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=drive_callback"></script>
+<script type="text/javascript" src='{% static "js/moment.js" %}'></script>
+
 {% endblock %}

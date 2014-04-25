@@ -236,7 +236,7 @@
 .icon-search {
   background-position: -402px -22px;
 }
-.icon-redo {
+.icon-refresh {
   background-position: -422px -22px;
 }
 .icon-x {
@@ -322,4 +322,21 @@
 }
 .icon-x {
   background-position: -982px -22px;
+}
+
+
+
+
+
+
+
+
+
+
+/* ----------------------------- ROW 3 ------------------------ */
+.icon-upload {
+  background-position: -2px -42px;
+}
+.icon-exit {
+  background-position: -22px -42px;
 }
