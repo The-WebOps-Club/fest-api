@@ -6,6 +6,11 @@ from dajax.core import Dajax
 from django.template import RequestContext
 from django.template.loader import render_to_string
 
+from django.contrib.auth.models import User
+from configs import settings
+from apps.users.models import Dept, Subdept, ERPProfile
+from apps.walls.models import Wall, Post, Comment
+
 from apps.walls.utils import get_tag_object
 
 # Decorators
@@ -31,13 +36,25 @@ def hello(request):
     return json.dumps({'message': 'hello'})
 
 @dajaxice_register
-def get_phone(request, id, tag):
+def get_contact(request, id):
     """
-        Used for testing Dajaxice
+        Sends contact information about the id
     """
-    obj = get_tag_object(tag)
-    local_context = {
-    	"mobile_number" : obj.profile.mobile_number,
-    	"summer_number" : obj.erp_profile.summer_number,
-    }
+    obj = User.objects.get(id=id)
+    if isinstance(obj, User):
+        obj_profile = obj.profile
+        obj_erp_profile = obj.erp_profile
+        local_context = {
+            "id" : obj.id,
+            "email" : obj.email,
+	    	"mobile_number" : obj_profile.mobile_number,
+	    	"summer_number" : obj_erp_profile.summer_number,
+        }
+    else:
+    	local_context = {
+            "id" : "",
+            "mobile_number" : "",
+            "summer_number" : "",
+            "email" : "",
+        }
     return json.dumps(local_context)

@@ -10,20 +10,35 @@
 			<div class="head row-fluid">
 				<div class="span12">Departments</div>
 			</div>
-			<div class="template dept_template row-fluid" style="display : none;">
+			<div class="template dept_template main_template row-fluid" style="display : none;">
 				<div class="span10 info">
 					<div class="span12 clickable"><span class="name"></span></div>
 					<div class="span12 open">
-						<a href="mailto:"><i class="icon-message"> </i></a> : <input class="email" readonly value="Loading...">
+						<a href="mailto:" class="email_link"><i class="icon-message"> </i></a>
+						 : 
+						<input class="email" readonly value="Loading...">
 					</div>
 					<div class="span12 open">
-						<i class="icon-phone"> </i> : <input class="mobile_number" readonly value="Loading...">
+						<i class="icon-phone"> </i>
+						 : 
+						<input class="mobile_number" readonly value="Loading...">
 					</div>
 					<div class="span12 open">
-						<i class="icon-home"></i> : <input class="summer_mobile" readonly value="Loading...">
+						<i class="icon-home"></i> : <input class="summer_number" readonly value="Loading...">
+					</div>
+					<div class="span12 open center">
+						<a href="" class="span4 center wall_link">
+							<i class="icon-wall"></i>
+						</a>
+						<a href="" class="span4 center profile_link">
+							<i class="icon-profile-black"></i>
+						</a>
+						<a href="" class="span4 center docs_link">
+							<i class="icon-folder"></i>
+						</a>
 					</div>
 				</div>
-				<div class="span2 next">
+				<div class="span2 next clickable">
 					<i class="icon-right pull-right opacity_half opacity_full_hover"></i>
 				</div>
 			</div>
@@ -33,41 +48,11 @@
 				<div class="span12">Sub Depts</div>
 			</div>
 			<div class="template subdept_template row-fluid" style="display : none;">
-				<div class="span10 info">
-					<div class="span12 clickable"><span class="name"></span></div>
-					<div class="span12 open">
-						<a href="mailto:"><i class="icon-message"> </i></a> : <input class="email" readonly value="Loading...">
-					</div>
-					<div class="span12 open">
-						<i class="icon-phone"> </i> : <input class="mobile_number" readonly value="Loading...">
-					</div>
-					<div class="span12 open">
-						<i class="icon-home"></i> : <input class="summer_mobile" readonly value="Loading...">
-					</div>
-				</div>
-				<div class="span2 next">
-					<i class="icon-right pull-right opacity_half opacity_full_hover"></i>
-				</div>
 			</div>
     		<div class="head row-fluid">
 				<div class="span12">Users</div>
 			</div>
 			<div class="template user_template row-fluid" style="display : none;">
-				<div class="span10 info">
-					<div class="span12 clickable"><span class="name"></span></div>
-					<div class="span12 open">
-						<a href="mailto:"><i class="icon-message"> </i></a> : <input class="email" readonly value="Loading...">
-					</div>
-					<div class="span12 open">
-						<i class="icon-phone"> </i> : <input class="mobile_number" readonly value="Loading...">
-					</div>
-					<div class="span12 open">
-						<i class="icon-home"></i> : <input class="summer_mobile" readonly value="Loading...">
-					</div>
-				</div>
-				<div class="span2 next">
-					<i class="icon-right pull-right opacity_half opacity_full_hover"></i>
-				</div>
 			</div>
 		</div>
 
@@ -76,21 +61,6 @@
 				<div class="span12">Users</div>
 			</div>
 			<div class="template user_template row-fluid" style="display : none;">
-				<div class="span10 info">
-					<div class="span12 clickable"><span class="name"></span></div>
-					<div class="span12 open">
-						<a href="mailto:"><i class="icon-message"> </i></a> : <input class="email" readonly value="Loading...">
-					</div>
-					<div class="span12 open">
-						<i class="icon-phone"> </i> : <input class="mobile_number" readonly value="Loading...">
-					</div>
-					<div class="span12 open">
-						<i class="icon-home"></i> : <input class="summer_mobile" readonly value="Loading...">
-					</div>
-				</div>
-				<div class="span2">
-					<i class="icon-right pull-right opacity_half opacity_full_hover"></i>
-				</div>
 			</div>
 		</div>
     </div>
@@ -182,8 +152,16 @@
 <script type='text/javascript'>
 	user_structure = null
 
+	function set_element_info(el, local_val) {
+		var $el = $(el)
+		$el.find(".mobile_number").val(local_val["summer_number"])
+		$el.find(".summer_number").val(local_val["summer_number"])
+		
+		$el.find(".email").val(local_val["email"])
+		$el.find("a.email_link").prop("href", "mailto:" + local_val["email"])
+	}
 	function create_contact_element(i, val, $template) {
-		$el = $template.clone().removeClass("template")
+		var $el = $(".table .template.main_template").first().clone().removeClass("template")
 			.removeClass("dept_template")
 			.removeClass("subdept_template")
 			.removeClass("user_template")
@@ -199,26 +177,45 @@
 
 		$el.find(".name").text(name)
 		
-		if ( val.hasOwnProperty("email") && val["email"].indexOf("@") != -1 ) {
-			$el.find(".email").text(val["email"]).val(val["email"])
-			$el.find("a").prop("href", "mailto:" + val["email"])
+		val["id"] = i
+		if ( val.hasOwnProperty("subdepts") ) { // has to be first. As dept can have users
+			val["type"] = "subdept"
+		} else if ( val.hasOwnProperty("users")) {
+			val["type"] = "dept"
 		} else {
-			$el.find(".email").closest("div").remove()
+			val["type"] = "user"
 		}
 
-		/*if ( val["mobile_number"] ) {
-			Dajaxice.users.get_phone( function(data) {
-				$el.find(".mobile_number").text(data["mobile_number"]).val(data["summer_mobile"])
-				val["mobile_number"] = data["mobile_number"]
-				$el.find(".summer_mobile").text(data["summer_mobile"]).val(data["summer_mobile"])
-				val["summer_mobile"] = data["summer_mobile"]
-			}, {"tag" : val["small"] + "_" + val["id"]})
+		if ( val.hasOwnProperty("email") ) {
+			if ( val["type"] != "user" ) {
+				$el.find(".email").closest("div").remove()
+				$el.find(".mobile_number").closest("div").remove()
+				$el.find(".summer_number").closest("div").remove()
+			} else {
+				set_element_info($el, val)
+			}
 		} else {
-			$el.find(".mobile_number").text("Loading...").val("Loading...")
-			$el.find(".summer_mobile").text("Loading...").val("Loading...")
-		}*/
+			if ( val.hasOwnProperty("subdepts") || val.hasOwnProperty("users") )  {
+				$el.find(".email").closest("div").remove()
+				$el.find(".mobile_number").closest("div").remove()
+				$el.find(".summer_number").closest("div").remove()
+			} else {
+				Dajaxice.apps.users.get_contact( function(data) {
+					var local_val = val
+					local_val["email"] = data["email"]
+					local_val["summer_number"] = data["summer_number"]
+					local_val["mobile_number"] = data["mobile_number"]
+					set_element_info($el, local_val)
+				}, {"id" : i})
+			}
+		}
 		
+		$el.find(".wall_link").prop("href", "/wall/" + val["type"] + "/" + val["id"])
+		$el.find(".profile_link").prop("href", "/profile/" + val["type"] + "/" + val["id"])
+		$el.find(".docs_link").prop("href", "javascript:alert('not implemented')")
+
 		$el.insertBefore($template)
+		bind_show_info($el)
 		$el.show(750)
 	}
 	function remove_contact_element(i, type) {
@@ -239,8 +236,11 @@
 			})
 		}
 	}
-	function bind_show_info() {
-		$(".table .clickable").unbind("click").bind("click", function() {
+	function bind_show_info($elems) {
+		if ( ! $elems.length ) {
+			$elems = $(".table .row-fluid")
+		}
+		$elems.bind("click", function() {
 			$el = $(this).closest(".row-fluid")
 			
 			if ( $el.hasClass("is_open") ) {
@@ -269,13 +269,12 @@
 
 			$el.data("type", "dept")
 		})
-		setTimeout(bind_show_info, 100)
 	}
 	function show_subdepts(list, $template) {
 		$.each( list, function(i, val) {
 			create_contact_element(i, val, $template)
 			$el.data("type", "subdept")
-			$el.find(".next").click(function() {
+			$el.find(".clickable").click(function() {
 				var $el = $(this)
 				
 				focus_table("users")
@@ -294,21 +293,19 @@
 			})
 
 		})
-		setTimeout(bind_show_info, 100)
 	}
 	function show_users(list, $template) {
 		$.each( list, function(i, val) {
 			create_contact_element(i, val, $template)
 			$el.data("type", "user")
 		})
-		setTimeout(bind_show_info, 100)
 	}
 	function populate_contacts() {
 		$dept_el_template = $(".table_depts .row-fluid.template.dept_template")
 		
 		show_depts(user_structure, $dept_el_template)
 
-		$(".table_depts .next").click(function() {
+		$(".table_depts .clickable").click(function() {
 			var $el = $(this)
 			focus_table("subdepts")
 			$(".table_depts .row-fluid").removeClass("active")
@@ -316,6 +313,7 @@
 			remove_contact_element("subdepts")
 
 			show_subdepts(user_structure[$el.closest(".row-fluid").data("id")]["subdepts"], $(".table_subdepts .row-fluid.template.subdept_template"))
+			
 			show_users(user_structure[$el.closest(".row-fluid").data("id")]["users"], $(".table_subdepts .row-fluid.template.user_template"))
 			remove_contact_element("users")			
 		})

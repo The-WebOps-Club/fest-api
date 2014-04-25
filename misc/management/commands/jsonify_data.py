@@ -71,13 +71,13 @@ class Command(BaseCommand):
             } 
             for i in all_subdept_list
         }
-        print id_dept_structure
+
         for i in all_user_list:
             temp_user = {
                 #"id" : i["id"],
                 "first_name" : i["first_name"],
                 "last_name" : i["last_name"],
-                "email" : i["email"],
+                # "email" : i["email"],
             }
             if "coord_relations" in i.keys():
                 for j in i["coord_relations"]:
