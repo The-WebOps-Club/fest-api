@@ -28,6 +28,11 @@
                         <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span>{% endif %}
                     </a>
                 </li>
+                <li class="{% if current_page == 'docs' %}active{% endif %}">
+                    <a href="{% url 'docs' %}">
+                        <i class='icon-folder'></i> Docs
+                    </a>
+                </li>
                 <li class="{% if current_page == 'contacts' %}active{% endif %}">
                     <a href="{% url 'contacts' %}">
                         <i class='icon-contact-email'></i> User Contacts

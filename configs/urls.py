@@ -50,10 +50,9 @@ urlpatterns = patterns('',
     
     # Docs
     url(r'^docs/$', 'apps.docs.views.docs', name='docs'),
-    url(r'^docs/picker/?$', 'apps.docs.views.picker', name='picker'),
+	url(r'^docs/picker/?$', 'apps.docs.views.picker', name='picker'),
     url(r'^docs/view/$', 'apps.docs.views.edit_file', name='view'),
-    url(r'^docs/browse/$', 'apps.docs.views.browse', name='browse'),
-		# Internal URLS - One time use
+    	# Internal URLS - One time use
     url(r'^google/refresh_token$', 'apps.docs.views.google_refresh_token', name='google_refresh_token'),
     url(r'^google/oauth2callback/?$', 'apps.docs.views.google_auth_callback', name='google_oauth2callback'),
 	url(r'^github/refresh_token$', 'apps.docs.views.github_refresh_token', name='github_refresh_token'),

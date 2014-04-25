@@ -47,7 +47,8 @@ var Drive = function(options) {
             if (r.error.code == 401)
                 alert('ACCESS TOKEN expired. Please refresh the page.');
             else
-                alert('Unexpected error: ' + response.error.code);
+                alert('Unexpected error: ' + r.error.code);
+            console.log(r)
         }
     }
 
@@ -66,6 +67,13 @@ var Drive = function(options) {
             $(".drive_parent").data("id", fid)
             callback = callback || self.show_dir_contents
             callback();
+        });
+        gapi.client.drive.files.get({
+            "fileId": fid,
+            "fields": [ "id", "title", ],
+        }).execute(function(response) {
+            self.check_error(response)
+            $(".drive_parent_name").text(response.title)
         });
     }
     
@@ -91,11 +99,8 @@ var Drive = function(options) {
     			ids.append(t[i].data("id"))
     		}
     	}*/
-    	if ( ! t.length ) {
-    		ids.append(t)
-    	} else {
-    		ids = t
-    	}
+    	if ( ! t.length ) { ids.append(t) }
+    	else { ids = t }
     	return ids
     }
 
@@ -104,7 +109,7 @@ var Drive = function(options) {
     	alert("Not done yet")
     }
     self.rename_files = function(file_details, callback) {
-    	file_details = self.get_ids(file_details)
+    	//file_details = self.get_ids(file_details)
     	$.each(file_details, function(i,v) {
     		gapi.client.drive.files.patch({
 		        'fileId': v.id,
@@ -115,27 +120,27 @@ var Drive = function(options) {
 		        self.check_error(response)
 		        callback = callback || self.get_file_meta
 	            callback(fid);
+	            $(".drive_rename").prop("disabled", false).removeClass("disabled")
 		    });
 		})
     }
 
 	self.delete_files = function(file_details, callback) {
-    	file_details = self.get_ids(file_details)
+    	//file_details = self.get_ids(file_details)
+    	console.log(file_details)
     	$.each(file_details, function(i,v) {
-    		gapi.client.drive.files.delete({
-		        'fileId': v.id,
-		        'resource': {
-			        'title': v.title,
-			    },
-		    }).execute(function(resp) {
+    		gapi.client.drive.files.trash({
+		        'fileId': v.id
+		    }).execute(function(response) {
 		        self.check_error(response)
 		        callback = callback || self.get_file_meta
-	            callback(fid);
+	            callback(v.id);
+	            $(".drive_delete").prop("disabled", false).removeClass("disabled")
 		    });
 		})
     }
 
-    self.insert_file = function(fileData, dir_id, callback) {
+    self.upload_file = function(fileData, dir_id, callback) {
         const boundary = '-------314159265358979323846';
         const delimiter = "\r\n--" + boundary + "\r\n";
         const close_delim = "\r\n--" + boundary + "--";
@@ -186,14 +191,28 @@ var Drive = function(options) {
     }
 
     /* ------------------------ DISPLAY FUNCTIONS ------------------ */
-    self.show_dir_contents = function(folder_items) {
+    self.show_dir_contents = function(folder_items, clear) {
+    	clear = clear || true
         folder_items = folder_items || self.dir_contents
+        if (clear) {
+        	$(".drive_file").not(".template").remove()
+        }
         $.each(folder_items, function(i, v) {
             self.get_file_meta(v.id)
         })
+        $(".drive_refresh").prop("disabled", false).removeClass("disabled")
+        $(".drive_back").prop("disabled", false).removeClass("disabled")
     }
     
-    self.show_file = function(file_data) {
+    self.show_file = function(file_data, clear) {
+    	clear = clear || true
+    	if (clear) {
+        	$.each($(".drive_file").not(".template"), function(v, i) {
+        		var $v = $(v)
+        		if ( $v.data("id") == file_data.id )
+        			$v.remove()
+        	})
+        }
     	$el = $(".drive_list .drive_parent .template.file_template").clone()
     		.removeClass("template").removeClass("file_template")
         $el.data("id", file_data.id)
@@ -204,7 +223,17 @@ var Drive = function(options) {
         $el.find(".drive_icon").prop("src", file_data.iconLink)
         $el.find(".last_modified").text(file_data.modifiedDate)
         
-       	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?docurl=" + $el.data("id"))
+       	if ( file_data.mimeType == MIME_TYPES["folder"] ) {
+       		$el.data("folder", "yes")
+       		$el.find(".info a").prop("href", "javascript:void(0)")
+       		$el.find(".info a").click( function () {
+       			self.get_dir_contents($(this).closest(".drive_file").data("id"))
+       		})
+        } else {
+        	$el.data("folder", "no")
+        	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?docurl=" + $el.data("id"))
+        }
+        
 
         /* -- Event handlers -- */
         self.file_events($el)

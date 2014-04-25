@@ -6,22 +6,27 @@
 {% block content %}
     <div class="row-fluid">
         <div class="span12">
-            <h4>Docs </h4>
+            <h4>Docs <small class="drive_parent_title"></small></h4>
         </div>
     </div>
 
     <div class="row-fluid drive_bar">
         <div class="span12">
             <a class="btn drive_back"> <i class="icon-exit"></i> Back </a>
+            <a class="btn drive_refresh"> 
+                <i class="icon-refresh"></i>
+            </a>
+
             <a class="btn primary drive_upload"> 
                 <i class="icon-upload"></i>  Upload 
             </a>
+            <ul class="btn primary drive_create"> 
+                <i class="icon-plus"></i> Create
+            </ul>
             <a class="btn primary drive_share" onclick="alert('Not done yet');"> 
                 <i class="icon-share"></i> Share 
             </a>
-            <a class="btn drive_refresh" onclick="alert('Not done yet');"> 
-                <i class="icon-refresh"></i> Refresh
-            </a>
+
             <div class="pull-right">
                 <a class="btn primary drive_move">
                     <i class="icon-folder"></i> Move 
@@ -63,9 +68,9 @@
     </div>
     
 
-<input id='filechooser' type=file style='display:none'></input>
-<!--<button id='filechooser_trig' onclick='$("#filechooser").click();'>Trig</button>-->
-<div id='sharebox' data-fileid='' style="top:50%; position:absolute; width:100%; text-align:center; display:none; background-color: rgb(59, 89, 152); z-index:3" class="popover">
+<input id="drive_upload_chooser" type="file" style='display:none'></input>
+
+<!--<div id='sharebox' data-fileid='' style="top:50%; position:absolute; width:100%; text-align:center; display:none; background-color: rgb(59, 89, 152); z-index:3" class="popover">
     <div id="inner" style="margin-top: 20px; margin-bottom: 20px; margin-left: 9px; margin-right: 10px;">
         <h1 style='color:white;font-weight:bolder'>Share File</h1>
         <select id='select0' class="select2 select_all_list" multiple>
@@ -76,21 +81,7 @@
         <button id="close" class="fa fa-undo fa-2x" style='background:none;margin-left:10px' onclick="$('#sharebox').css('display','none')"></button>
     </div>
 </div>
-
-<div id='renamebox' data-fileid='' style="top:50%;position:absolute;width:100%;text-align:center;display:none;background-color: rgb(59, 89, 152);z-index:4" class="popover">
-    <div id="inner" style="
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 9px;
-    margin-right: 10px;
-            ">
-        <h1 style='color:white;font-weight:bolder'>Rename File To</h1>
-        <input type=text id='rename' style='width:300px'>
-        <button id="share" class="fa fa-share fa-2x" style='background:none;margin-left:10px' onclick="renameFile($('#renamebox').attr('data-fileid'),$('#rename').val());"></button>
-        <button id="close" class="fa fa-undo fa-2x" style='background:none;margin-left:10px' onclick="$('#renamebox').css('display','none')"></button>
-    </div>
-</div>
-
+-->
 {% endblock %} 
 
 {% block extra_css %} {{ block.super }}
@@ -139,7 +130,7 @@
 
 {% block extra_js %} {{ block.super }}
 <script type="text/javascript">
-var developerKey = '{{ api_key }}';
+var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
 var rootFolder = '{{ SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID }}';
 var authToken = '{{ token }}';
 
@@ -153,7 +144,7 @@ drive = null;
 $(document).ready(function() {
     console.log("Ready")
     // $('.select2').select2();
-    $('#filechooser').change(uploadFile);
+    
 });
 
 function drive_callback() {
@@ -167,20 +158,63 @@ function drive_callback() {
 }
 
 function init_button_bar() {
-    $(".drive_upload")
-    $(".drive_back").click(function() {
+    $(".drive_upload").click( function (e) {
+        //gapi.load('picker', { 'callback': upload_picker });
+        $("#drive_upload_chooser").click() 
+    });
+    $(".drive_back").click(function(e) {
+        $(this).prop("disabled", true).addClass("disabled")
         drive.show_parent($(".drive_parent").data("id"))
     })
-    $(".drive_refresh").click(function() {
+    $(".drive_refresh").click(function(e) {
+        $(this).prop("disabled", true).addClass("disabled")
         drive.get_dir_contents($(".drive_parent").data("id"))
     })
-    $(".drive_delete").click(function() {
+    $(".drive_delete").click(function(e) {
+        $(this).prop("disabled", true).addClass("disabled")
+        drive.delete_files(
+            $.map($(".drive_parent .drive_file.select"), function(val, i) { 
+                return { "id" : $(val).data("id") } 
+            })
+        )
+    })
+    $('#drive_upload_chooser').change(upload_file);
+}
 
-        drive.delete_file(
-                $.map($(".drive_parent .drive_file.select"), function(val, i) { return { "id" : $(val).data("id") } } )
-                )
+function upload_file(e) {
+    $(".drive_upload").prop("disabled", true).addClass("disabled").text("Uploading...")
+    drive.upload_file(e.target.files[0], $(".drive_parent").data("id"), function() {
+        $(".drive_upload").prop("disabled", false).removeClass("disabled").text("Upload")
+        drive.get_dir_contents()
     })
 }
+
+
+
+function upload_picker() {
+    var docsView = new google.picker.DocsView()
+        .setIncludeFolders(true)
+        .setParent($(".drive_parent").data("id"))
+        //.setSelectFolderEnabled(true);
+
+    var uploadView = new google.picker.DocsUploadView()
+        .setIncludeFolders(true);
+
+    var picker = new google.picker.PickerBuilder()
+        //.enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+        .setOAuthToken(authToken)
+        .addView(docsView).addView(uploadView)
+        .setCallback(upload_done)
+        .build();
+
+    picker.setVisible(true);
+}
+
+function upload_done(data) {
+    console.log(data)
+}
+
+
 
 
 

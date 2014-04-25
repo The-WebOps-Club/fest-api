@@ -340,3 +340,24 @@
 .icon-exit {
   background-position: -22px -42px;
 }
+.icon-refresh {
+  background-position: -42px -42px;
+}
+.icon-redo {
+  background-position: -62px -42px;
+}
+.icon-undo {
+  background-position: -82px -42px;
+}
+.icon-left {
+  background-position: -102px -42px;
+}
+.icon-right {
+  background-position: -122px -42px;
+}
+.icon-up {
+  background-position: -142px -42px;
+}
+.icon-down {
+  background-position: -162px -42px;
+}

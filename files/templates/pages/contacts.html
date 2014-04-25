@@ -6,54 +6,92 @@
 
 {% block content %}
     <div class="row-fluid">
-    	<div class="span4 animated table_depts active">
-    		<table class="zebra-striped table " cellpadding="0" cellspacing="0">
-				<tr class="head">
-					<th colspan="2">Departments</th>
-				</tr>
-				<tr class="template dept_template" style="display : none;">
-					<td>
-						<span>${name}</span>
-						<span><i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i></span>
-					</td>
-				</tr>
-			</table>
+    	<div class="span4 animated table table_depts active">
+			<div class="head row-fluid">
+				<div class="span12">Departments</div>
+			</div>
+			<div class="template dept_template row-fluid" style="display : none;">
+				<div class="span10 info">
+					<div class="span12 clickable"><span class="name"></span></div>
+					<div class="span12 open">
+						<a href="mailto:"><i class="icon-message"> </i></a> : <input class="email" readonly value="Loading...">
+					</div>
+					<div class="span12 open">
+						<i class="icon-phone"> </i> : <input class="mobile_number" readonly value="Loading...">
+					</div>
+					<div class="span12 open">
+						<i class="icon-home"></i> : <input class="summer_mobile" readonly value="Loading...">
+					</div>
+				</div>
+				<div class="span2 next">
+					<i class="icon-right pull-right opacity_half opacity_full_hover"></i>
+				</div>
+			</div>
 		</div>
-    	<div class="span4 animated table_subdepts">
-    		<table class="zebra-striped table ">
-				<tr class="head">
-					<th>Sub Depts</th>
-				</tr>
-				<tr class="template subdept_template" style="display : none;">
-					<td>
-						${name} 
-						<i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i>
-					</td>
-				</tr>
-				<tr class="head">
-					<th>Users</th>
-				</tr>
-				<tr class="template user_template" style="display : none;">
-					<td>
-						${name} 
-						<i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i>
-					</td>
-				</tr>
-			</table>
+    	<div class="span4 animated table table_subdepts">
+    		<div class="head row-fluid">
+				<div class="span12">Sub Depts</div>
+			</div>
+			<div class="template subdept_template row-fluid" style="display : none;">
+				<div class="span10 info">
+					<div class="span12 clickable"><span class="name"></span></div>
+					<div class="span12 open">
+						<a href="mailto:"><i class="icon-message"> </i></a> : <input class="email" readonly value="Loading...">
+					</div>
+					<div class="span12 open">
+						<i class="icon-phone"> </i> : <input class="mobile_number" readonly value="Loading...">
+					</div>
+					<div class="span12 open">
+						<i class="icon-home"></i> : <input class="summer_mobile" readonly value="Loading...">
+					</div>
+				</div>
+				<div class="span2 next">
+					<i class="icon-right pull-right opacity_half opacity_full_hover"></i>
+				</div>
+			</div>
+    		<div class="head row-fluid">
+				<div class="span12">Users</div>
+			</div>
+			<div class="template user_template row-fluid" style="display : none;">
+				<div class="span10 info">
+					<div class="span12 clickable"><span class="name"></span></div>
+					<div class="span12 open">
+						<a href="mailto:"><i class="icon-message"> </i></a> : <input class="email" readonly value="Loading...">
+					</div>
+					<div class="span12 open">
+						<i class="icon-phone"> </i> : <input class="mobile_number" readonly value="Loading...">
+					</div>
+					<div class="span12 open">
+						<i class="icon-home"></i> : <input class="summer_mobile" readonly value="Loading...">
+					</div>
+				</div>
+				<div class="span2 next">
+					<i class="icon-right pull-right opacity_half opacity_full_hover"></i>
+				</div>
+			</div>
 		</div>
 
-    	<div class="span4 animated table_users">
-    		<table class="zebra-striped table ">
-				<tr class="head">
-					<th>Users</th>
-				</tr>
-				<tr class="template user_template" style="display : none;">
-					<td>
-						${name} 
-						<i class="icon-arrow-right pull-right opacity_half opacity_full_hover"></i>
-					</td>
-				</tr>
-			</table>
+    	<div class="span4 animated table table_users">
+    		<div class="head row-fluid">
+				<div class="span12">Users</div>
+			</div>
+			<div class="template user_template row-fluid" style="display : none;">
+				<div class="span10 info">
+					<div class="span12 clickable"><span class="name"></span></div>
+					<div class="span12 open">
+						<a href="mailto:"><i class="icon-message"> </i></a> : <input class="email" readonly value="Loading...">
+					</div>
+					<div class="span12 open">
+						<i class="icon-phone"> </i> : <input class="mobile_number" readonly value="Loading...">
+					</div>
+					<div class="span12 open">
+						<i class="icon-home"></i> : <input class="summer_mobile" readonly value="Loading...">
+					</div>
+				</div>
+				<div class="span2">
+					<i class="icon-right pull-right opacity_half opacity_full_hover"></i>
+				</div>
+			</div>
 		</div>
     </div>
     
@@ -62,24 +100,78 @@
 {% block extra_css %}
 {{ block.super }}
 <style type='text/css'>
-td {
-   	overflow: hidden;
-  	white-space: nowrap;
+.table .row-fluid {
+	border-top: 1px solid #ddd;
 }
-.animated {
-	-webkit-transition : width 1s;
-	-moz-transition : width 1s;
-	-o-transition : width 1s;
-	-ms-transition : width 1s;
-	transition : width 1s;
+.table .row-fluid.active,
+.table .row-fluid.active > div {
+    background-color: #D9D9D9 !important;
 }
-tr:hover .opacity_half,
-tr.active .opacity_half {
+.table .row-fluid:nth-child(2n) {
+	background-color: #EEE;
+}
+.table .row-fluid .next:hover .opacity_half,
+.table .row-fluid.active .opacity_half {
     opacity : 1;
 }
-tr.active,
-tr.active > td {
-    background-color: #D9D9D9 !important;
+.table .head.row-fluid {
+	background-color: #aaa;
+	color : #fff;
+	font-weight : bold;
+	border-top: 1px solid #ddd;
+}
+.table .row-fluid > div {
+	overflow : hidden;
+   	text-overflow: ellipsis;
+  	white-space: wrap;
+    padding : 3px;
+    line-height : 24px;
+}
+.table.animated {
+	-webkit-transition : width 1s;
+	   -moz-transition : width 1s;
+	    -ms-transition : width 1s;
+	     -o-transition : width 1s;
+			transition : width 1s;
+	-webkit-transition : height 0.5s;
+	   -moz-transition : height 0.5s;
+	    -ms-transition : height 0.5s;
+	     -o-transition : height 0.5s;
+			transition : height 0.5s;
+}
+.table .next {
+	cursor : pointer;
+}
+.table .next .icon-right {
+	-webkit-transition : -webkit-transform 0.5s;
+	   -moz-transition : -moz-transform 0.5s;
+	    -ms-transition : -ms-transform 0.5s;
+	     -o-transition : -o-transform 0.5s;
+			transition : transform 0.5s;
+}
+.table .is_open .next .icon-right {
+	        transform : rotate(90deg);
+	     -o-transform : rotate(90deg);
+	    -ms-transform : rotate(90deg);
+	    moz-transform : rotate(90deg);
+	-webkit-transform : rotate(90deg);
+}
+.table .open {
+	display : none;
+	min-height : 20px;
+	line-height : 14px;
+	font-size : 12px;
+	-webkit-transition : height 1s;
+	   -moz-transition : height 1s;
+	    -ms-transition : height 1s;
+	     -o-transition : height 1s;
+			transition : height 1s;
+}
+.table .is_open .open {
+	display : block;
+}
+.table .open input {
+	width : 60%;
 }
 </style>
 {% endblock %}
@@ -96,42 +188,67 @@ tr.active > td {
 			.removeClass("subdept_template")
 			.removeClass("user_template")
 		$el.data("id", i)
-		$.each($el.find("td"), function() {
-			$el_cell = $(this)
-			
-			name = ''
-			if ( val["name"] )
-				name = val["name"]
-			else if ( val["first_name"] && val["last_name"] )
-				name = val["first_name"] + " " + val["last_name"]
-			else if ( val["first_name"] || val["last_name"] ) 
-				name = val["first_name"] || val["last_name"]
+		$el.find(".name")
+		name = ''
+		if ( val["name"] )
+			name = val["name"]
+		else if ( val["first_name"] && val["last_name"] )
+			name = val["first_name"] + " " + val["last_name"]
+		else if ( val["first_name"] || val["last_name"] ) 
+			name = val["first_name"] || val["last_name"]
 
-			$el_cell.html(
-				$el_cell.html()
-					.replace("${name}", name) 
-			)
-		})
+		$el.find(".name").text(name)
+		
+		if ( val.hasOwnProperty("email") && val["email"].indexOf("@") != -1 ) {
+			$el.find(".email").text(val["email"]).val(val["email"])
+			$el.find("a").prop("href", "mailto:" + val["email"])
+		} else {
+			$el.find(".email").closest("div").remove()
+		}
+
+		/*if ( val["mobile_number"] ) {
+			Dajaxice.users.get_phone( function(data) {
+				$el.find(".mobile_number").text(data["mobile_number"]).val(data["summer_mobile"])
+				val["mobile_number"] = data["mobile_number"]
+				$el.find(".summer_mobile").text(data["summer_mobile"]).val(data["summer_mobile"])
+				val["summer_mobile"] = data["summer_mobile"]
+			}, {"tag" : val["small"] + "_" + val["id"]})
+		} else {
+			$el.find(".mobile_number").text("Loading...").val("Loading...")
+			$el.find(".summer_mobile").text("Loading...").val("Loading...")
+		}*/
+		
 		$el.insertBefore($template)
 		$el.show(750)
 	}
 	function remove_contact_element(i, type) {
 		var excludes = ".template, .head"
 		if ( i == "all" ) {
-			$(".table_subdepts tr, .table_users tr").not(excludes).remove()
+			$(".table_subdepts tr, .table_users .row-fluid").not(excludes).remove()
 		} else if ( i == "depts" ) {
-			$(".table_depts tr").not(excludes).remove()
+			$(".table_depts .row-fluid").not(excludes).remove()
 		} else if ( i == "subdepts" ) {
-			$(".table_subdepts tr").not(excludes).remove()
+			$(".table_subdepts .row-fluid").not(excludes).remove()
 		} else if ( i == "users" ) {
-			$(".table_users tr").not(excludes).remove()
+			$(".table_users .row-fluid").not(excludes).remove()
 		} else {
-			var $all_trs = $(".table_depts tr, .table_subdepts tr, .table_users tr").not(excludes)
+			var $all_trs = $(".table_depts row-fluid, .table_subdepts row-fluid, .table_users row-fluid").not(excludes)
 			$.each($all_trs, function($el) {
 				if ( $el.data("id") == i && $el.data("type") == type )
 					$el.remove()
 			})
 		}
+	}
+	function bind_show_info() {
+		$(".table .clickable").unbind("click").bind("click", function() {
+			$el = $(this).closest(".row-fluid")
+			
+			if ( $el.hasClass("is_open") ) {
+				$el.removeClass("is_open")
+			} else {
+				$el.addClass("is_open")
+			}
+		})
 	}
 	function focus_table(type) {
 		$(".table_depts, .table_subdepts, .table_users")
@@ -152,58 +269,56 @@ tr.active > td {
 
 			$el.data("type", "dept")
 		})
+		setTimeout(bind_show_info, 100)
 	}
 	function show_subdepts(list, $template) {
 		$.each( list, function(i, val) {
 			create_contact_element(i, val, $template)
 			$el.data("type", "subdept")
-			$el.click(function() {
+			$el.find(".next").click(function() {
 				var $el = $(this)
 				
 				focus_table("users")
-				$(".table_subdepts tr ").removeClass("active")
+				$(".table_subdepts .row-fluid").removeClass("active")
 				$el.addClass("active")
 				remove_contact_element("users")
 
-				$user_el_template = $(".table_users tr.template.user_template")
+				$user_el_template = $(".table_users .row-fluid.template.user_template")
 				user_structure_subdepts = []
 				$.each(user_structure, function(i, val) {
 					//user_structure_lvl2.merge(val)
 					for ( var attrname in val["subdepts"])
 					user_structure_subdepts[attrname] = val["subdepts"][attrname];
 				})
-				show_users(user_structure_subdepts[$el.data("id")]["users"], $user_el_template)
+				show_users(user_structure_subdepts[$el.closest(".row-fluid").data("id")]["users"], $user_el_template)
 			})
+
 		})
+		setTimeout(bind_show_info, 100)
 	}
 	function show_users(list, $template) {
 		$.each( list, function(i, val) {
 			create_contact_element(i, val, $template)
 			$el.data("type", "user")
 		})
+		setTimeout(bind_show_info, 100)
 	}
 	function populate_contacts() {
-		$dept_el_template = $(".table_depts tr.template.dept_template")
+		$dept_el_template = $(".table_depts .row-fluid.template.dept_template")
 		
 		show_depts(user_structure, $dept_el_template)
 
-		$(".table_depts tr").click(function() {
+		$(".table_depts .next").click(function() {
 			var $el = $(this)
 			focus_table("subdepts")
-			$(".table_depts tr").removeClass("active")
+			$(".table_depts .row-fluid").removeClass("active")
 			$el.addClass("active")
 			remove_contact_element("subdepts")
 
-			show_subdepts(user_structure[$el.data("id")]["subdepts"], $(".table_subdepts tr.template.subdept_template"))
-			show_users(user_structure[$el.data("id")]["users"], $(".table_subdepts tr.template.user_template"))
+			show_subdepts(user_structure[$el.closest(".row-fluid").data("id")]["subdepts"], $(".table_subdepts .row-fluid.template.subdept_template"))
+			show_users(user_structure[$el.closest(".row-fluid").data("id")]["users"], $(".table_subdepts .row-fluid.template.user_template"))
+			remove_contact_element("users")			
 		})
-
-		/*$(".table_depts tr, .table_subdepts tr, .table_users tr").click(function() {
-			el = this; $el = $(el);
-			focus_table($el.closest(".table_depts, .table_subdepts, .table_users"))
-			console.log($el.closest(".table_depts, .table_subdepts, .table_users"))
-		})*/
-
 	}
 	$(document).ready(function() {
 		$.getJSON("{% static 'json/user_structure.json' %}", function(json) {
