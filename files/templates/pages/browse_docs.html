@@ -27,7 +27,7 @@
             <a class="btn primary drive_share" onclick="alert('Not done yet');"> 
                 <i class="icon-share"></i> <span class="text">Share </span>
             </a>
-            <a class="btn primary drive_move" onclick="alert('Not done yet');">
+            <a class="btn primary drive_move">
                 <i class="icon-folder"></i> <span class="text">Move </span>
             </a>
         
@@ -53,7 +53,7 @@
     </div>
     <div class="row-fluid drive_list">
         <div class="span12">
-            <table class="zebra-striped table drive_parent" cellpadding="0" cellspacing="0">
+            <table class="zebra-striped table drive_parent" {% if request.GET.id %}data-id="{{request.GET.id}}"{% endif %} cellpadding="0" cellspacing="0">
                 <tr class="head">
                     <th class="checkbox"> 
                         <div class="drive_checkbox"> 
@@ -286,10 +286,6 @@ function drive_callback() {
 }
 
 function init_button_bar() {
-    $(".drive_upload").click( function (e) {
-        //gapi.load('picker', { 'callback': upload_picker });
-        $("#drive_upload_chooser").click() 
-    });
     $(".drive_back").click(function(e) {
         $(this).prop("disabled", true).addClass("disabled")
         drive.show_parent($(".drive_parent").data("id"))
@@ -298,6 +294,14 @@ function init_button_bar() {
         $(this).prop("disabled", true).addClass("disabled")
         drive.get_dir_contents($(".drive_parent").data("id"))
     })
+    
+	$(".drive_upload").click( function (e) {
+        $("#drive_upload_chooser").click() 
+    });
+    $(".drive_move").click( function (e) {
+        gapi.load('picker', { 'callback': move_picker });
+    });
+    
     $(".drive_delete").click(function(e) {
         $(this).prop("disabled", true).addClass("disabled")
         drive.delete_files(
@@ -319,27 +323,42 @@ function upload_file(e) {
 
 
 
-function upload_picker() {
-    var docsView = new google.picker.DocsView()
+function move_picker() {
+    var folderView = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
         .setIncludeFolders(true)
-        .setParent($(".drive_parent").data("id"))
-        //.setSelectFolderEnabled(true);
-
-    var uploadView = new google.picker.DocsUploadView()
-        .setIncludeFolders(true);
+        //.setParent(drive.options.rootFolder)
+        .setSelectFolderEnabled(true);
+        //.setOwnedByMe(false)
 
     var picker = new google.picker.PickerBuilder()
-        //.enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
         .setOAuthToken(authToken)
-        .addView(docsView).addView(uploadView)
-        .setCallback(upload_done)
+        .addView(folderView)
+        //.enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+        .enableFeature(google.picker.Feature.NAV_HIDDEN)
+        .setCallback(move_picker_done)
         .build();
 
     picker.setVisible(true);
 }
 
-function upload_done(data) {
+function move_picker_done(data) {
     console.log(data)
+    f = data
+    if (data.action == google.picker.Action.PICKED) {
+        folder = data.docs[0];
+        if ( folder.mimeType != MIME_TYPES["folder"] ) {
+        	console.log("Woah there : You did not select a folder")
+        	alert("Woah there : You did not select a folder")
+        	return
+        } else {
+        	drive.move_files($.map($(".drive_parent .drive_file.select"), function(val, i) { 
+                return { "id" : $(val).data("id"),
+                	"old_parent_id": $(".drive_parent").data("id"),
+                	"new_parent_id": folder.id,
+                } 
+            }))
+        }
+    }
 }
 
 

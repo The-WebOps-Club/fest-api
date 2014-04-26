@@ -59,7 +59,7 @@ def picker(request):
 @login_required
 def edit_file(request, *args, **kwargs):
     local_context = {
-        'docurl' : request.GET['docurl'],
+        'id' : request.GET['id'],
     }
     return render_to_response('pages/view_doc.html', local_context, RequestContext(request))
 

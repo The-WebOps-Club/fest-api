@@ -35,7 +35,7 @@ var Drive = function(options) {
         })
         $(".progress_val").text(val + "%")
         if ( $.trim(val) == "100" )
-        	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;DONE LOADING")
+        	$(".progress").html	("&nbsp;&nbsp;&nbsp;&nbsp;DONE LOADING")
         else
         	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
     }	
@@ -67,11 +67,11 @@ var Drive = function(options) {
 
     self.gapi_drive_callback = function() {
     	// Default action
-    	self.get_dir_contents(self.options.rootFolder)
+    	self.get_dir_contents()
     }
 
     self.get_dir_contents = function(fid, callback) {
-        fid = fid || self.options.rootFolder
+        fid = fid || $(".drive_parent").data("id") || self.options.rootFolder
         gapi.client.drive.children.list({
             "folderId": fid,
         }).execute(function(response) {
@@ -88,7 +88,9 @@ var Drive = function(options) {
             "fields": [ "id", "title", ],
         }).execute(function(response) {
             self.check_error(response)
-            $(".drive_parent_name").text(response.title)
+            $(".drive_parent_title").text("folder : " + response.title)
+            $("title").text("Shaastra Docs - " + response.title)
+
         });
     }
     
@@ -149,9 +151,43 @@ var Drive = function(options) {
 		        'fileId': v.id
 		    }).execute(function(response) {
 		        self.check_error(response)
-		        callback = callback || self.get_file_meta
-	            callback(v.id);
+		        callback = callback || self.get_dir_contents
+	            callback();
 	            $(".drive_delete").prop("disabled", false).removeClass("disabled")
+		    });
+		})
+    }
+
+    self.move_files = function(file_details, callback) {
+
+	}
+
+    self.move_files = function(file_details, callback) {
+    	self.finish_progress = file_details.length * 2
+    	self.current_progress = 0
+    	$.each(file_details, function(i, v) {
+		    gapi.client.drive.parents.delete({
+		        'fileId': v.id,
+		        'parentId': v.old_parent_id,
+		    }).execute(function(response) {
+		        self.check_error(response)
+		        callback = callback || self.get_dir_contents
+	            callback();
+	            self.current_progress += 1;
+	            self.progress()
+	            $(".drive_move").prop("disabled", false).removeClass("disabled")
+		    });
+
+            gapi.client.drive.parents.insert({
+		        'fileId': v.id,
+		        'resource': {
+		        	"id": v.new_parent_id,
+		        }
+		    }).execute(function(response) {
+		        self.check_error(response)
+	            self.current_progress += 1;
+	            self.progress()
+	            console.log("done inserting")
 		    });
 		})
     }
@@ -231,8 +267,8 @@ var Drive = function(options) {
         			$v.remove()
         	})
         }
-    	if ( file_data.labels.trashed ) {
-        	
+    	if ( file_data.labels.trashed ) { // dont make the file
+        	return
         }
         $el = $(".drive_list .drive_parent .template.file_template").clone()
     		.removeClass("template").removeClass("file_template")
@@ -255,7 +291,7 @@ var Drive = function(options) {
        		})
         } else {
         	$el.data("folder", "no")
-        	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?docurl=" + $el.data("id"))
+        	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?id=" + $el.data("id"))
         }
         
         // Update progress
