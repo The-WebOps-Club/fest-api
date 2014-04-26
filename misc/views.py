@@ -33,4 +33,4 @@ def err500 (request, *args, **kwargs):
 def setup(request, *args, **kwargs):
     local_context = {
     }
-    return render_to_response('pages/setup.html', local_context, context_instance= global_context(request))    
+    return render_to_response('pages/setup.html', local_context, context_instance= global_context(request))

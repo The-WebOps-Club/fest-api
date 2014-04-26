@@ -19,7 +19,7 @@ from misc.utils import *  #Import miscellaneous functions
 
 # From Apps
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-from apps.walls.utils import paginate_items, parse_atwho, get_tag_object
+from apps.walls.utils import paginate_items, parse_atwho, get_tag_object, parse_atwho_file
 
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
@@ -257,7 +257,8 @@ def create_comment(request, post_id, comment_form):
         raise InvalidArgumentValueException("No Post with id `post_id` was found in the database")
 
     tags = data.getlist("atwho_list")
-    comment_text, notification_list = parse_atwho(comment_text, tags)
+    filetags = data.getlist("atwho_files")
+    comment_text, notification_list = parse_atwho(parse_atwho_file(comment_text, filetags), tags)
 
     new_comment = Comment.objects.create(description=comment_text, by=request.user)
     post.comments.add(new_comment)
