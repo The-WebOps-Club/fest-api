@@ -37,7 +37,7 @@ function get_autocomplete_file_data(url1, url2, url3) {
     }
     console.log('get file lists from google.');
     gapi.client.drive.files.list(
-        {'fields':['title','id','mimeType']}
+        {'fields':['title','id','mimeType','iconLink']}
     ).execute(function(response){
         console.log('obtained response');
         console.log(response);
@@ -51,27 +51,37 @@ function sync_autocomplete() {
     }
 }
 function setup_autocomplete_files(){
-    if( atwho_file_list_raw ){
-        atwho_file_list = $.map(atwho_file_list_raw, function(value, i){
-            return {
-                "id": value['id'],
-                "name": value['title'],
-                "small" : value['mimeType']
-            };
-        });
-    }
-
     at_config_file = {
         at: ":",
-        data: atwho_file_list,
-        tpl: "<li data-value='@${name}' data-filename='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
+        data: [],
+        tpl: "<li data-value=':${name}' data-filename='${name}' data-id='${id}' data-small='${small}' data-icon='${iconlink}'><img src='${iconlink}' style='height:12px'>${name} <small>${small}</small></li>",
         show_the_at: true,
         callbacks: {
+            remote_filter: function( query, callback ){
+                if( gapi.client && gapi.client.drive ){
+                    if( query != '' )
+                        gapi.client.drive.files.list({ 
+                            q: 'title contains \''+query+'\'',
+                            maxResults: 10
+                        }).execute(function(response){
+
+                                callback($.map(response.items, function(value, i){
+                                return {
+                                    "id": value['id'],
+                                    "name": value['title'],
+                                    "small" : value['mimeType'],
+                                    "iconlink": value['iconLink']
+
+                                }
+                            }));
+                        });
+                    }
+            },
             before_insert: function(value, $li) {
                 console.log($li);
                 console.log(value);
                 if ( this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0 ) {
-                    this.$inputor.after("<input class='textarea_atwho_list' name='atwho_files' value='" + $li.data("filename") + "_" + $li.data("id") + "' type='hidden'/>");
+                    this.$inputor.after("<input class='textarea_atwho_list' name='atwho_files' value='" + $li.data("filename") + "--@@!@@--" + $li.data("id") + "--@@!@@--" + $li.data("icon") + "' type='hidden'/>");
                 }
          console.log($li);
         return value;
@@ -133,7 +143,7 @@ function setup_autocomplete_lists() {
                 console.log($li);
 		console.log(value);
                 if ( this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0 ) {
-                    this.$inputor.after("<input class='textarea_atwho_list' name='atwho_files' value='" + $li.data("small").toLowerCase() + "_" + $li.data("id") + "' type='hidden'/>");
+                    this.$inputor.after("<input class='textarea_atwho_list' name='atwho_list' value='" + $li.data("small").toLowerCase() + "_" + $li.data("id") + "' type='hidden'/>");
                 }
 		 console.log($li);
 		return value;
