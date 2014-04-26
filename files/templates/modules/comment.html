@@ -2,6 +2,7 @@
 {% load humanize %} 
 {% load markdown_deux_tags %}
 {% load once %}
+{% load strip_first_p %}
 
 <div {% if not new_comment %} id="comment_{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
     <div class="news_comment_left">
@@ -20,7 +21,7 @@
 					    	data-postid="{{ post.id }}"
 					    	placeholder="Post your comment here. Ctrl+Enter to submit. Markdown like : *italic* **bold** etc are allowed. Examples @ {{SETTINGS.SITE_URL}}markdown"></textarea>
 						<div class="span12 comment_links" style="display : none">
-							<a href="" class=""><i class=""></i></a>
+							<!-- <a href="javascript:void(0)" class="btn attach_btn"><i class="icon-attach"></i></a> -->
 
 							<a href="javascript:void(0)" class="btn primary post_btn">&nbsp;&nbsp;&nbsp;&nbsp;Post&nbsp;&nbsp;&nbsp;&nbsp;</a>
 						</div>
@@ -28,7 +29,7 @@
 				</form>
 			</div>
         {% else %}
-	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {{ comment.description|markdown:"default" }}
+	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {% autoescape off %}{{ comment.description|markdown:"default"|strip_first_p }} {% endautoescape %}
 	        <div class="news_comment_info">
 	            {{ comment.time_created|naturaltime }} 
 	            {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
@@ -90,7 +91,7 @@
 <script>
 	function dajax_create_comment(data) {
         $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
-        $("#post_" + data.post_id + " .comment_textarea").removeData("clicked")
+        $("#post_" + data.post_id + " .post_btn").removeData("clicked")
         on_dom_change()
 	}
 	
@@ -106,8 +107,7 @@
         		'post_id' : $el.data("postid"), 
         		'comment_form': $el.closest("form").serialize(true)
         	});
-        	$el.data("clicked", "yes")
-                
+        	$el.data("clicked", "yes")   
 		})
 
 		$(".comment_textarea")

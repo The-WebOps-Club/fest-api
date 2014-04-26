@@ -284,10 +284,14 @@ function init_button_bar() {
         $("#drive_upload_chooser").click() 
     });
     $(".drive_move").click( function (e) {
+    	if ( $(".drive_parent .drive_file.select").length == 0 )
+    		return
         gapi.load('picker', { 'callback': move_picker });
     });
     
     $(".drive_delete").click(function(e) {
+    	if ( $(".drive_parent .drive_file.select").length == 0 )
+    		return
         $(this).prop("disabled", true).addClass("disabled")
         drive.delete_files(
             $.map($(".drive_parent .drive_file.select"), function(val, i) { 

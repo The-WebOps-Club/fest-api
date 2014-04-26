@@ -92,6 +92,7 @@ var Drive = function(options) {
         }).execute(function(response) {
             self.check_error(response)
             self.current_progress += 1
+            self.progress()
             callback = callback || self.show_file
             callback(response);
             f = response
@@ -206,6 +207,65 @@ var Drive = function(options) {
         }
     }
 
+    self.upload_file_resumable = function(fileData, dir_id, callback) {
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+
+        self.progress("10")
+        var reader = new FileReader();
+        reader.readAsBinaryString(fileData);
+        reader.onload = function(e) {
+        	self.progress("20")
+            var contentType = fileData.type || 'application/octet-stream';
+            var metadata = {
+                'title': fileData.name,
+                'mimeType': contentType,
+                'parents': [{
+                    'id': dir_id,
+                    'kind': 'drive#parentReference'
+                }]
+            };
+
+            var base64Data = btoa(reader.result);
+            var multipartRequestBody =
+                delimiter +
+                'Content-Type: application/json\r\n\r\n' +
+                JSON.stringify(metadata) +
+                delimiter +
+                'Content-Type: ' + contentType + '\r\n' +
+                'Content-Transfer-Encoding: base64\r\n' +
+                '\r\n' +
+                base64Data +
+                close_delim;
+            
+            self.progress("25")
+            gapi.client.request({
+                'path': '/upload/drive/v2/files',
+                'method': 'POST',
+                'params': {
+                    'uploadType': 'resumable'
+                },
+            }).execute( function (response) {
+            	console.log(response)
+            	self.uploading_file_token = response["Location"]
+
+				gapi.client.request({
+	                'path': '/upload/drive/v2/files',
+	                'method': 'PUT',
+	                'params': {
+	                    'uploadType': 'multipart',
+	                    'upload_id': self.uploading_file_token,
+	                },
+	                'headers': {
+	                    'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+	                },
+	                'body': multipartRequestBody // need to somehow send more data and splice it first ....
+	            });
+            })
+        }
+    }
+
     /* ------------------------ DISPLAY FUNCTIONS ------------------ */
     self.show_dir_contents = function(folder_items, clear) {
     	clear = clear || true
@@ -256,9 +316,6 @@ var Drive = function(options) {
         	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?id=" + $el.data("id"))
         }
         
-        // Update progress
-        self.progress()
-
         self.file_events($el)
 
         $el.show()
@@ -292,8 +349,8 @@ var Drive = function(options) {
     }
 
     self.progress = function(val) {
-    	val = val || ( self.current_progress / self.finish_progress * 100 )
-    	val
+    	val = val || ( self.current_progress / self.finish_progress * 100 ).toFixed(0);
+    	val = "" + val
     	$(".progress").css ( {
         	"width" : val + "%",
         })
