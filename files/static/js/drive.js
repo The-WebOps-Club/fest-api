@@ -28,17 +28,6 @@ var Drive = function(options) {
     self.finish_progress = 1
     self.current_progress = 0
 
-    self.progress = function(val) {
-    	val = val || ( self.current_progress / self.finish_progress * 100 )
-    	$(".progress").css ( {
-        	"width" : val + "%",
-        })
-        $(".progress_val").text(val + "%")
-        if ( $.trim(val) == "100" )
-        	$(".progress").html	("&nbsp;&nbsp;&nbsp;&nbsp;DONE LOADING")
-        else
-        	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
-    }	
     self.init = function() {
         console.log("Init Drive")
         if (!self.options.authToken || !self.options.developerKey) {
@@ -77,7 +66,6 @@ var Drive = function(options) {
         }).execute(function(response) {
             self.check_error(response)
             self.dir_contents = response.items
-            $(".drive_parent").data("id", fid)
             self.finish_progress = response.items.length
             self.current_progress = 0
             callback = callback || self.show_dir_contents
@@ -88,9 +76,7 @@ var Drive = function(options) {
             "fields": [ "id", "title", ],
         }).execute(function(response) {
             self.check_error(response)
-            $(".drive_parent_title").text("folder : " + response.title)
-            $("title").text("Shaastra Docs - " + response.title)
-
+            self.set_drive_parent(response)
         });
     }
     
@@ -122,10 +108,6 @@ var Drive = function(options) {
     	return ids
     }
 
-    self.move_files = function(file_details, callback) {
-    	file_details = self.get_ids(file_details)
-    	alert("Not done yet")
-    }
     self.rename_files = function(file_details, callback) {
     	//file_details = self.get_ids(file_details)
     	$.each(file_details, function(i,v) {
@@ -136,8 +118,8 @@ var Drive = function(options) {
 			    },
 		    }).execute(function(resp) {
 		        self.check_error(response)
-		        callback = callback || self.get_file_meta
-	            callback(fid);
+		        callback = callback || self.get_dir_contents
+	            callback();
 	            $(".drive_rename").prop("disabled", false).removeClass("disabled")
 		    });
 		})
@@ -145,7 +127,6 @@ var Drive = function(options) {
 
 	self.delete_files = function(file_details, callback) {
     	//file_details = self.get_ids(file_details)
-    	console.log(file_details)
     	$.each(file_details, function(i,v) {
     		gapi.client.drive.files.trash({
 		        'fileId': v.id
@@ -153,14 +134,9 @@ var Drive = function(options) {
 		        self.check_error(response)
 		        callback = callback || self.get_dir_contents
 	            callback();
-	            $(".drive_delete").prop("disabled", false).removeClass("disabled")
 		    });
 		})
     }
-
-    self.move_files = function(file_details, callback) {
-
-	}
 
     self.move_files = function(file_details, callback) {
     	self.finish_progress = file_details.length * 2
@@ -187,7 +163,6 @@ var Drive = function(options) {
 		        self.check_error(response)
 	            self.current_progress += 1;
 	            self.progress()
-	            console.log("done inserting")
 		    });
 		})
     }
@@ -297,7 +272,6 @@ var Drive = function(options) {
         // Update progress
         self.progress()
 
-        /* -- Event handlers -- */
         self.file_events($el)
 
         $el.show()
@@ -330,6 +304,23 @@ var Drive = function(options) {
     	})
     }
 
+    self.progress = function(val) {
+    	val = val || ( self.current_progress / self.finish_progress * 100 )
+    	$(".progress").css ( {
+        	"width" : val + "%",
+        })
+        $(".progress_val").text(val + "%")
+        if ( $.trim(val) == "100" )
+        	$(".progress").html	("&nbsp;&nbsp;&nbsp;&nbsp;DONE LOADING")
+        else
+        	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
+    }	
+
+    self.set_drive_parent = function(file_details) {
+    	$(".drive_parent_title").text("folder : " + file_details.title)
+        $("title").text("Shaastra Docs - " + file_details.title)
+        $(".drive_parent").data("id", file_details.id)
+    }
     /* Execution */
     self.init()
 

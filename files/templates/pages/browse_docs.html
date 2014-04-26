@@ -307,7 +307,10 @@ function init_button_bar() {
         drive.delete_files(
             $.map($(".drive_parent .drive_file.select"), function(val, i) { 
                 return { "id" : $(val).data("id") } 
-            })
+            }), function() {
+            	$(".drive_delete").prop("disabled", false).removeClass("disabled")
+            	drive.get_dir_contents()
+            }
         )
     })
     $('#drive_upload_chooser').change(upload_file);
