@@ -60,7 +60,7 @@
                             <div class="border"></div> 
                         </div>
                     </th>
-                    <th class="title"> TITLE </th>
+                    <th class="title "> TITLE </th>
                     <th class="last_modified"> LAST MODIFIED </th>
                 </tr>
                 <tr class="drive_file template file_template" style="display : none;">
@@ -109,6 +109,13 @@
         line-height : 20px;
         height : 100%;
         display : inline-block;
+    }
+
+    .drive_file td {
+    	overflow : hidden;
+	   	text-overflow: ellipsis;
+	  	white-space: nowrap;
+	  	margin : 0px;
     }
     .drive_file .drive_checkbox {
         width : 16px;
