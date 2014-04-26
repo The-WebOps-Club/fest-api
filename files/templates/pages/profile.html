@@ -17,7 +17,7 @@
 					
 					{% if user == showing_user %}
 						<a class="btn form_edit offset5" href="javascript:void(0)">
-							<i class="icon-pencil"></i> 
+							<i class="icon-pencil-2"></i> 
 							<span class="edit_text">Edit Profile</span>
 						</a>
 						<a class="btn primary form_input form_submit" href="javascript:void(0)"> 
@@ -238,8 +238,7 @@
 				return
 			}
 			$(".form_value").slideUp(time)
-			$(".form_edit i").removeClass("icon-user");
-			$(".form_edit i").addClass("icon-pencil");
+			$(".form_edit i").addClass("icon-profile-black").removeClass("icon-pencil-2");
 			$(".form_edit span.edit_text").html("View Profile");
 			$(".form_value").remove()
 			setTimeout(function() {
@@ -252,8 +251,7 @@
 			}
 			// $(".form_input").slideUp(time)
 			$(".form_visible").slideUp(time)
-			$(".form_edit i").removeClass("icon-pencil");
-			$(".form_edit i").addClass("icon-user");
+			$(".form_edit i").removeClass("icon-profile-black").addClass("icon-pencil-2");
 			$(".form_edit span.edit_text").html("Edit Profile");
 			$(".form_input").each(function(i, v) {
 				v = $(v)
