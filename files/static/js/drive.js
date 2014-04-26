@@ -246,7 +246,7 @@ var Drive = function(options) {
                 'params': {
                     'uploadType': 'resumable'
                 },
-            }.execute( function (response) {
+            }).execute( function (response) {
             	console.log(response)
             	self.uploading_file_token = response["Location"]
 

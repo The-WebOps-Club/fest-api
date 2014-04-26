@@ -38,7 +38,7 @@ def paginate_items(items_list, **kwargs):
 def filetag_to_url(tag):
     filename = tag.split('_')[0];
     fileid = tag.split('_')[1];
-    return reverse("view")+'?docurl='+fileid, filename; 
+    return reverse("view")+'?id='+fileid, filename; 
 
 # TODO: merge parse_atwho ad parse_atwho_file
 def parse_atwho_file( my_text, tags ):

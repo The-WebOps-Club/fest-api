@@ -38,12 +38,11 @@ def docs( request ):
     """
     drive = Drive()
     token = Drive.get_access_token()
-    user_list = User.objects.all()
     local_context = {
         "token" : token,
         "current_page" : "docs",
     }
-    return render_to_response('pages/browse_docs.html', locals(), context_instance=global_context(request))
+    return render_to_response('pages/browse_docs.html', local_context, context_instance=global_context(request))
 
 @login_required
 def picker(request):
