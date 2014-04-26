@@ -37,9 +37,7 @@ def paginate_items(items_list, **kwargs):
 
 def filetag_to_url(tag):
     # --@@!@@-- acts as a common delimiter.
-    filename = tag.split('--@@!@@--')[0];
-    fileid = tag.split('--@@!@@--')[1];
-    iconlink = tag.split('--@@!@@--')[2];
+    filename, fileid, iconlink = tag.split('--@@!@@--');
     return reverse("view")+'?id='+fileid, filename, iconlink; 
 
 # TODO: merge parse_atwho ad parse_atwho_file
@@ -48,10 +46,10 @@ def parse_atwho_file( my_text, tags ):
         Parses through the list form atwho and records file references.
     """
     notification_list = []
-    link_text = '[%s](%s)'
+    link_text = '![Doc](%s) [%s](%s)'
     for tag in tags:
-            url,filename,iconLink = filetag_to_url( tag )
-            my_text = my_text.replace(':' + filename, (link_text %('![Image](%s)' % iconLink + filename, url) ))
+            url, filename, iconLink = filetag_to_url( tag )
+            my_text = my_text.replace(':' + filename, (link_text %(iconLink, filename, url) ))
     return my_text
 
 def parse_atwho(my_text, tags, at='@' ):
@@ -59,7 +57,7 @@ def parse_atwho(my_text, tags, at='@' ):
         Parses through the list form atwho and gives the depts, subdepts and users
     """
     notification_list = []
-    link_text = '[%s](%s)'
+    link_text = '![user](/static/img/profile.png) [%s](%s)'
     for tag in tags:
         tagged_obj = get_tag_object(tag)
         if isinstance(tagged_obj, Dept) or isinstance(tagged_obj, Subdept):
