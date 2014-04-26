@@ -33,17 +33,6 @@ var Drive = function(options) {
     self.finish_progress = 1
     self.current_progress = 0
 
-    self.progress = function(val) {
-    	val = val || ( self.current_progress / self.finish_progress * 100 )
-    	$(".progress").css ( {
-        	"width" : val + "%",
-        })
-        $(".progress_val").text(val + "%")
-        if ( $.trim(val) == "100" )
-        	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;DONE LOADING")
-        else
-        	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
-    }	
     self.init = function() {
         console.log("Init Drive")
         if (!self.options.authToken || !self.options.developerKey) {
@@ -72,17 +61,16 @@ var Drive = function(options) {
 
     self.gapi_drive_callback = function() {
     	// Default action
-    	self.get_dir_contents(self.options.rootFolder)
+    	self.get_dir_contents()
     }
 
     self.get_dir_contents = function(fid, callback) {
-        fid = fid || self.options.rootFolder
+        fid = fid || $(".drive_parent").data("id") || self.options.rootFolder
         gapi.client.drive.children.list({
             "folderId": fid,
         }).execute(function(response) {
             self.check_error(response)
             self.dir_contents = response.items
-            $(".drive_parent").data("id", fid)
             self.finish_progress = response.items.length
             self.current_progress = 0
             callback = callback || self.show_dir_contents
@@ -93,7 +81,7 @@ var Drive = function(options) {
             "fields": [ "id", "title", ],
         }).execute(function(response) {
             self.check_error(response)
-            $(".drive_parent_name").text(response.title)
+            self.set_drive_parent(response)
         });
     }
     
@@ -109,25 +97,7 @@ var Drive = function(options) {
             f = response
         });
     }
-
-    self.get_ids = function(t) {
-    	ids = []
-    	/*if ( t instanceof jQuery ) {
-    		for ( var i in t ) {
-    			ids.append(t[i].data("id"))
-    		}
-    	}*/
-    	if ( ! t.length ) { ids.append(t) }
-    	else { ids = t }
-    	return ids
-    }
-
-    self.move_files = function(file_details, callback) {
-    	file_details = self.get_ids(file_details)
-    	alert("Not done yet")
-    }
     self.rename_files = function(file_details, callback) {
-    	//file_details = self.get_ids(file_details)
     	$.each(file_details, function(i,v) {
     		gapi.client.drive.files.patch({
 		        'fileId': v.id,
@@ -136,24 +106,50 @@ var Drive = function(options) {
 			    },
 		    }).execute(function(resp) {
 		        self.check_error(response)
-		        callback = callback || self.get_file_meta
-	            callback(fid);
+		        callback = callback || self.get_dir_contents
+	            callback();
 	            $(".drive_rename").prop("disabled", false).removeClass("disabled")
 		    });
 		})
     }
 
 	self.delete_files = function(file_details, callback) {
-    	//file_details = self.get_ids(file_details)
-    	console.log(file_details)
     	$.each(file_details, function(i,v) {
     		gapi.client.drive.files.trash({
 		        'fileId': v.id
 		    }).execute(function(response) {
 		        self.check_error(response)
-		        callback = callback || self.get_file_meta
-	            callback(v.id);
-	            $(".drive_delete").prop("disabled", false).removeClass("disabled")
+		        callback = callback || self.get_dir_contents
+	            callback();
+		    });
+		})
+    }
+
+    self.move_files = function(file_details, callback) {
+    	self.finish_progress = file_details.length * 2
+    	self.current_progress = 0
+    	$.each(file_details, function(i, v) {
+		    gapi.client.drive.parents.delete({
+		        'fileId': v.id,
+		        'parentId': v.old_parent_id,
+		    }).execute(function(response) {
+		        self.check_error(response)
+		        callback = callback || self.get_dir_contents
+	            callback();
+	            self.current_progress += 1;
+	            self.progress()
+	            $(".drive_move").prop("disabled", false).removeClass("disabled")
+		    });
+
+            gapi.client.drive.parents.insert({
+		        'fileId': v.id,
+		        'resource': {
+		        	"id": v.new_parent_id,
+		        }
+		    }).execute(function(response) {
+		        self.check_error(response)
+	            self.current_progress += 1;
+	            self.progress()
 		    });
 		})
     }
@@ -233,8 +229,8 @@ var Drive = function(options) {
         			$v.remove()
         	})
         }
-    	if ( file_data.labels.trashed ) {
-        	
+    	if ( file_data.labels.trashed ) { // dont make the file
+        	return
         }
         $el = $(".drive_list .drive_parent .template.file_template").clone()
     		.removeClass("template").removeClass("file_template")
@@ -257,13 +253,12 @@ var Drive = function(options) {
        		})
         } else {
         	$el.data("folder", "no")
-        	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?docurl=" + $el.data("id"))
+        	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?id=" + $el.data("id"))
         }
         
         // Update progress
         self.progress()
 
-        /* -- Event handlers -- */
         self.file_events($el)
 
         $el.show()
@@ -292,10 +287,31 @@ var Drive = function(options) {
     			if ( r.parents.length > num+1)
     				num = 0
     			self.get_dir_contents(r.parents[num].id)
-    		}
+	    		}
     	})
     }
 
+    self.progress = function(val) {
+    	val = val || ( self.current_progress / self.finish_progress * 100 )
+    	val
+    	$(".progress").css ( {
+        	"width" : val + "%",
+        })
+        $(".progress_val").text(val + "%")
+        if ( $.trim(val) == "100" ) {
+        	$(".progress").html	("&nbsp;&nbsp;&nbsp;&nbsp;DONE LOADING")
+			$(".meter").removeClass("animate")
+        } else {
+        	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
+        	$(".meter").addClass("animate")
+        }
+    }	
+
+    self.set_drive_parent = function(file_details) {
+    	$(".drive_parent_title").text("folder : " + file_details.title)
+        $("title").text("Shaastra Docs - " + file_details.title)
+        $(".drive_parent").data("id", file_details.id)
+    }
     /* Execution */
     self.init()
 
