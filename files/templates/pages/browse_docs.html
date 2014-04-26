@@ -44,7 +44,7 @@
     		<div class="progress_val"></div>
     	</div>
     	<div class="span11">
-    		<div class="meter">
+    		<div class="meter animate">
 				<span class="progress" style="width: 0%">
 					
 				</span>
@@ -189,7 +189,7 @@
 		position: relative;
 		overflow: hidden;
 	}
-	.meter > span:after, .animate > span > span {
+	.meter > span:after {
 		content: "";
 		position: absolute;
 		top: 0; left: 0; bottom: 0; right: 0;
@@ -215,6 +215,7 @@
 		z-index: 1;
 		-webkit-background-size: 50px 50px;
 		-moz-background-size: 50px 50px;
+		
 		   -webkit-border-top-right-radius: 8px;
 		-webkit-border-bottom-right-radius: 8px;
 		       -moz-border-radius-topright: 8px;
@@ -229,15 +230,10 @@
 		         border-bottom-left-radius: 20px;
 		overflow: hidden;
 	}
-
- 	.animate > span > span {
- 		webkit-animation: move 2s linear infinite;
- 	}
-		
-	.animate > span:after {
-		display: none;
+	.meter.animate > span:after {
+		-webkit-animation: move 2s linear infinite;
 	}
-
+	
 	@-webkit-keyframes move {
 	    0% {
 	       background-position: 0 0;
@@ -246,6 +242,7 @@
 	       background-position: 50px 50px;
 	    }
 	}
+		
 	.progress_val{
 		font-weight : bold;
 		line-height : 25px;
@@ -262,18 +259,7 @@ var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
 var rootFolder = '{{ SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID }}';
 var authToken = '{{ token }}';
 
-var allFiles = null;
-
-var heirarchy = [];
-var MIME_DIRECTORY = 'application/vnd.google-apps.folder'
-// view function.
 drive = null;
-
-$(document).ready(function() {
-    console.log("Ready")
-    // $('.select2').select2();
-    
-});
 
 function drive_callback() {
     drive = new Drive({
@@ -324,8 +310,6 @@ function upload_file(e) {
     })
 }
 
-
-
 function move_picker() {
     var folderView = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
         .setIncludeFolders(true)
@@ -363,172 +347,6 @@ function move_picker_done(data) {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-function uploadFile(evt) {
-    // alert(JSON.stringify(evt.target.files[0]));
-    insertFile(evt.target.files[0], currFolder, function() {
-        alert("successful");
-    });
-}
-
-function getDirectoryContents(all_files, dir_id) {
-    console.log("Get dir contents")
-    dir_files = []
-    all_files.forEach(function(item) {
-        if (item.parents[0].id == dir_id)
-            dir_files.push(item);
-    });
-    return dir_files;
-}
-
-function newFolder(name, dir_id) {
-    uploadEmptyFolder(name, dir_id, function() {
-        getFiles(showAllFiles);
-    });
-}
-
-function renameFile(name, fileid) {
-    renameFile(fileid, name, function() {
-        getFiles(showAllFiles);
-    });
-}
-
-function share(fileid, dest_email, access) {
-    shareFile(fileid, dest_email, 'writer', function() {
-        getFiles(showAllFiles);
-    });
-}
-// view function.
-
-function toHTML(file) {
-    var html = '';
-    //alert(JSON.stringify(file));
-
-    file_type = ''
-    if (file.mimeType)
-        file_type = file.mimeType;
-
-
-    // calculate the file's download url.
-    d_url = '#'; // initialize the url
-    if (file.webContentLink) // for normal files, use webContentLink
-        d_url = file.webContentLink;
-    else if (file.exportLinks) // for google doc files, use exportLinks
-        d_url = file.exportLinks[Object.keys(file.exportLinks)[0]];
-    // if none exists the file is a directory. leave it.
-
-    if (file_type != MIME_DIRECTORY)
-        html += '<a href="#"><div class="span4 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><img src="' + file.thumbnailLink + '" class="thumbnail"><div><img src="' + file.iconLink + '"><h6>' + file.title + '</h6></div><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-cloud-download fa-lg driveicon" onclick="window.location=\'' + d_url + '\'"></button><button class="fa fa-share fa-lg driveicon" onclick=\'$("#sharebox").css("display","inline").attr("data-fileid","' + file.id + '")\'></button><button class="fa fa-eye fa-lg driveicon" onclick="window.location=\'{%url "view" %}?docurl=' + file.id + '\'"></button><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("' + file.id + '");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\'' + file.id + '\')"></button></div></div></a>';
-    else
-        html += '<a href="#"><div class="span4 col-md-3 fileview" style="text-align:center;margin-top:15px;margin-left:10px"><div style="width:100%;height:160px;text-align:center"><button class="fa fa-folder fa-4x"  onclick="showDirectoryContents(\'' + file.id + '\',true);" style="margin-top:80px;background-color:#FFF"></button></div><img src="' + file.iconLink + '"><h6 onclick="showDirectoryContents(\'' + file.id + '\',true);">' + file.title + '</h6><div style="text-align:center;display:inline-flex;padding-top:5px;"><button class="fa fa-trash-o fa-lg driveicon" onclick=\'deleteFile("' + file.id + '");\'></button><button class="fa fa-edit fa-lg driveicon" onclick="$(\'#renamebox\').css(\'display\',\'inline\').attr(\'data-fileid\',\'' + file.id + '\')"></button></div></div></a>';
-    return html;
-}
-
-function addUploadTile() {
-    html = "";
-    html += '<button class="span4 fileview" onclick="$(\'#filechooser\').click();" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>UPLOAD</b></h3></button>';
-    $('#drivebrowse_main').append(html);
-}
-
-function addFolderCreateTile(dir_id) {
-    html = "";
-    html += '<button class="span4 fileview" onclick="uploadEmptyFolder(\'New Folder\',\'' + dir_id + '\')" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>NEW FOLDER</b></h3></button>';
-    $('#drivebrowse_main').append(html);
-}
-
-function addBackTile(dir_id) {
-    html = "";
-    html += '<button class="span4 fileview" onclick="showDirectoryContents(\'' + getFileObject(dir_id).parents[0].id + '\',true);" style="text-align:center;margin-top:15px;margin-left:10px"><h3><b>BACK</b></h3></button>';
-    $('#drivebrowse_main').append(html);
-}
-
-
-function uploadEmptyFile(mimetype, name, dir_id) {
-    var text = " ";
-    var xhr2 = new XMLHttpRequest();
-    xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key=' + developerKey);
-    xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
-    xhr2.setRequestHeader('Content-Type', 'application/json');
-    xhr2.onreadystatechange = function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('PUT', 'https://www.googleapis.com/upload/drive/v2/files/' + JSON.parse(xhr2.responseText).id + '?uploadType=media');
-        xhr.setRequestHeader('Authorization', 'Bearer ' + authToken);
-        xhr.setRequestHeader('Content-Type', mimetype);
-        xhr.onreadystatechange = function(res) {
-            alert(JSON.stringify(res));
-        }
-        xhr.send(text);
-    }
-    xhr2.send(JSON.stringify({
-        'title': name,
-        'mimeType': mimetype,
-        'parents': [{
-            'id': dir_id,
-            'kind': 'drive#parentReference'
-        }]
-    }));
-}
-
-function uploadEmptyFolder(name, dir_id) {
-    var xhr2 = new XMLHttpRequest();
-    xhr2.open('POST', 'https://content.googleapis.com/drive/v2/files?key=' + developerKey);
-    xhr2.setRequestHeader('Authorization', 'Bearer ' + authToken);
-    xhr2.setRequestHeader('Content-Type', 'application/json');
-    xhr2.onreadystatechange = getFiles;
-    xhr2.send(JSON.stringify({
-        'title': name,
-        'mimeType': MIME_DIRECTORY,
-        'parents': [{
-            'id': dir_id,
-            'kind': 'drive#parentReference'
-        }]
-    }));
-}
-
-
-function shareFile(fileId, dest_email) {
-    var body = {
-        'value': dest_email,
-        'type': 'user',
-        'role': 'writer'
-    };
-    var request = gapi.client.drive.permissions.insert({
-        'fileId': fileId,
-        'resource': body
-    });
-    request.execute(function(resp) {
-        getFiles();
-    });
-}
-
-function shareFileMultiple(fileId, dest_emails) {
-    alert(JSON.stringify(dest_emails));
-    dest_emails.forEach(function(email) {
-        shareFile(fileId, email);
-    });
-}
-$.fn.driveOverlay = function() {
-    $(this).append('<div class="drive_overlay"></div>');
-    var c = $(this).children('.drive_overlay');
-    var rect = $(this)[0].getClientRects()[0];
-    alert(JSON.stringify(rect));
-    alert(c.length);
-    c.css('width', rect.width);
-    c.css('height', rect.height);
-    c.css('top', rect.top);
-    c.css('left', rect.left);
-}
-
-
-
 </script>
 
 <script src='{% static "js/drive.js" %}'></script>

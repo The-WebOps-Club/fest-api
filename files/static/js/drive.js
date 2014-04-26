@@ -95,21 +95,7 @@ var Drive = function(options) {
             f = response
         });
     }
-
-    self.get_ids = function(t) {
-    	ids = []
-    	/*if ( t instanceof jQuery ) {
-    		for ( var i in t ) {
-    			ids.append(t[i].data("id"))
-    		}
-    	}*/
-    	if ( ! t.length ) { ids.append(t) }
-    	else { ids = t }
-    	return ids
-    }
-
     self.rename_files = function(file_details, callback) {
-    	//file_details = self.get_ids(file_details)
     	$.each(file_details, function(i,v) {
     		gapi.client.drive.files.patch({
 		        'fileId': v.id,
@@ -126,7 +112,6 @@ var Drive = function(options) {
     }
 
 	self.delete_files = function(file_details, callback) {
-    	//file_details = self.get_ids(file_details)
     	$.each(file_details, function(i,v) {
     		gapi.client.drive.files.trash({
 		        'fileId': v.id
@@ -300,20 +285,24 @@ var Drive = function(options) {
     			if ( r.parents.length > num+1)
     				num = 0
     			self.get_dir_contents(r.parents[num].id)
-    		}
+	    		}
     	})
     }
 
     self.progress = function(val) {
     	val = val || ( self.current_progress / self.finish_progress * 100 )
+    	val
     	$(".progress").css ( {
         	"width" : val + "%",
         })
         $(".progress_val").text(val + "%")
-        if ( $.trim(val) == "100" )
+        if ( $.trim(val) == "100" ) {
         	$(".progress").html	("&nbsp;&nbsp;&nbsp;&nbsp;DONE LOADING")
-        else
+			$(".meter").removeClass("animate")
+        } else {
         	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
+        	$(".meter").addClass("animate")
+        }
     }	
 
     self.set_drive_parent = function(file_details) {
