@@ -78,8 +78,14 @@
     width: 12px;
 }
 /* Generic styles */
- .bold {
+.bold {
     font-weight : 800;
+}
+.strike {
+    text-decoration: line-through;
+}
+.underline {
+    text-decoration: underline;
 }
 .black {
     color : black;
@@ -265,3 +271,4 @@ form .clearfix.success .input-prepend .add-on, form .clearfix.success .input-app
     -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
 }
+

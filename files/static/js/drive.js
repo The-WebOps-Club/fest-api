@@ -25,7 +25,20 @@ var Drive = function(options) {
 
     self.options = $.extend({}, defaults, options || {});
     self.dir_contents = null
+    self.finish_progress = 1
+    self.current_progress = 0
 
+    self.progress = function(val) {
+    	val = val || ( self.current_progress / self.finish_progress * 100 )
+    	$(".progress").css ( {
+        	"width" : val + "%",
+        })
+        $(".progress_val").text(val + "%")
+        if ( $.trim(val) == "100" )
+        	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;DONE LOADING")
+        else
+        	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
+    }	
     self.init = function() {
         console.log("Init Drive")
         if (!self.options.authToken || !self.options.developerKey) {
@@ -65,6 +78,8 @@ var Drive = function(options) {
             self.check_error(response)
             self.dir_contents = response.items
             $(".drive_parent").data("id", fid)
+            self.finish_progress = response.items.length
+            self.current_progress = 0
             callback = callback || self.show_dir_contents
             callback();
         });
@@ -86,6 +101,7 @@ var Drive = function(options) {
             ],
         }).execute(function(response) {
             self.check_error(response)
+            self.current_progress += 1
             callback = callback || self.show_file
             callback(response);
             f = response
@@ -145,9 +161,11 @@ var Drive = function(options) {
         const delimiter = "\r\n--" + boundary + "\r\n";
         const close_delim = "\r\n--" + boundary + "--";
 
+        self.progress("10")
         var reader = new FileReader();
         reader.readAsBinaryString(fileData);
         reader.onload = function(e) {
+        	self.progress("20")
             var contentType = fileData.type || 'application/octet-stream';
             var metadata = {
                 'title': fileData.name,
@@ -169,7 +187,7 @@ var Drive = function(options) {
                 '\r\n' +
                 base64Data +
                 close_delim;
-
+            self.progress("25")
             var request = gapi.client.request({
                 'path': '/upload/drive/v2/files',
                 'method': 'POST',
@@ -186,7 +204,7 @@ var Drive = function(options) {
                     console.log(file)
                 };
             }
-            request.execute(callback);
+            request.execute(function(file) { self.progress("100"); callback(file) });
         }
     }
 
@@ -213,12 +231,18 @@ var Drive = function(options) {
         			$v.remove()
         	})
         }
-    	$el = $(".drive_list .drive_parent .template.file_template").clone()
+    	if ( file_data.labels.trashed ) {
+        	
+        }
+        $el = $(".drive_list .drive_parent .template.file_template").clone()
     		.removeClass("template").removeClass("file_template")
         $el.data("id", file_data.id)
         $el.find(".title").text(file_data.title)
         if ( ! file_data.labels.viewed ) {
         	$el.find(".title").addClass("bold")
+        } else if ( file_data.labels.trashed ) {
+        	$el.find(".title").addClass("strike")
+        	$el.find(".title").prepend("<i class='icon-trash drive_icon'></i>")
         }
         $el.find(".drive_icon").prop("src", file_data.iconLink)
         $el.find(".last_modified").text(file_data.modifiedDate)
@@ -234,6 +258,8 @@ var Drive = function(options) {
         	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?docurl=" + $el.data("id"))
         }
         
+        // Update progress
+        self.progress()
 
         /* -- Event handlers -- */
         self.file_events($el)

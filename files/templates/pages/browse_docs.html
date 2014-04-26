@@ -12,30 +12,44 @@
 
     <div class="row-fluid drive_bar">
         <div class="span12">
-            <a class="btn drive_back"> <i class="icon-exit"></i> Back </a>
+            <a class="btn drive_back"> <i class="icon-left"></i> </a>
             <a class="btn drive_refresh"> 
                 <i class="icon-refresh"></i>
             </a>
-
+            &nbsp;&nbsp;&nbsp;&nbsp;
             <a class="btn primary drive_upload"> 
-                <i class="icon-upload"></i>  Upload 
+                <i class="icon-upload"></i>  <span class="text">Upload </span>
             </a>
-            <ul class="btn primary drive_create"> 
-                <i class="icon-plus"></i> Create
-            </ul>
+            
+            <a class="btn primary drive_create" onclick="alert('Not done yet');"> 
+                <i class="icon-plus"></i> <span class="text">Create </span>
+            </a>
             <a class="btn primary drive_share" onclick="alert('Not done yet');"> 
-                <i class="icon-share"></i> Share 
+                <i class="icon-share"></i> <span class="text">Share </span>
             </a>
-
+            <a class="btn primary drive_move" onclick="alert('Not done yet');">
+                <i class="icon-folder"></i> <span class="text">Move </span>
+            </a>
+        
+			&nbsp;
             <div class="pull-right">
-                <a class="btn primary drive_move">
-                    <i class="icon-folder"></i> Move 
-                </a>
                 <a class="btn primary drive_delete"> 
-                    <i class="icon-stop"></i> Delete 
+                    <i class="icon-trash"></i> <span class="text">Delete </span>
                 </a>
             </div>
         </div>
+    </div>
+    <div class="row-fluid">
+    	<div class="span1">
+    		<div class="progress_val"></div>
+    	</div>
+    	<div class="span11">
+    		<div class="meter">
+				<span class="progress" style="width: 0%">
+					
+				</span>
+			</div>
+    	</div>
     </div>
     <div class="row-fluid drive_list">
         <div class="span12">
@@ -125,6 +139,120 @@
     tr.drive_file.select, tr.drive_file.select:hover {
         border-left : 3px solid rgb(50, 50, 255);
     }
+
+    /* ------------- PROGRESS BAR ------------- */
+	.meter { 
+		height: 15px;  /* Can be anything */
+		position: relative;
+		background: #fff;
+		border : 1px solid blue;
+		margin : 5px;
+		-moz-border-radius: 25px;
+		-webkit-border-radius: 25px;
+		border-radius: 25px;
+		padding: 2px;
+		-webkit-box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3);
+		-moz-box-shadow   : inset 0 -1px 1px rgba(255,255,255,0.3);
+		box-shadow        : inset 0 -1px 1px rgba(255,255,255,0.3);
+	}
+	.meter > span {
+		line-height : 15px;
+		font-size : 10px;
+		font-weight : bold;
+		color : white;
+		display: block;
+		height: 100%;
+		   -webkit-border-top-right-radius: 8px;
+		-webkit-border-bottom-right-radius: 8px;
+		       -moz-border-radius-topright: 8px;
+		    -moz-border-radius-bottomright: 8px;
+		           border-top-right-radius: 8px;
+		        border-bottom-right-radius: 8px;
+		    -webkit-border-top-left-radius: 20px;
+		 -webkit-border-bottom-left-radius: 20px;
+		        -moz-border-radius-topleft: 20px;
+		     -moz-border-radius-bottomleft: 20px;
+		            border-top-left-radius: 20px;
+		         border-bottom-left-radius: 20px;
+		background-color: #3b5998;
+		background-image: -moz-linear-gradient(top, #3d390a, #3b5998);
+		background-image: -webkit-linear-gradient(#3d390a, #3b5998); 
+		-webkit-box-shadow: 
+		  inset 0 2px 9px  rgba(255,255,255,0.3),
+		  inset 0 -2px 6px rgba(0,0,0,0.4);
+		-moz-box-shadow: 
+		  inset 0 2px 9px  rgba(255,255,255,0.3),
+		  inset 0 -2px 6px rgba(0,0,0,0.4);
+		box-shadow: 
+		  inset 0 2px 9px  rgba(255,255,255,0.3),
+		  inset 0 -2px 6px rgba(0,0,0,0.4);
+		position: relative;
+		overflow: hidden;
+	}
+	.meter > span:after, .animate > span > span {
+		content: "";
+		position: absolute;
+		top: 0; left: 0; bottom: 0; right: 0;
+		background-image: 
+		   -webkit-gradient(linear, 0 0, 100% 100%, 
+		      color-stop(.25, rgba(255, 255, 255, .2)), 
+		      color-stop(.25, transparent), color-stop(.5, transparent), 
+		      color-stop(.5, rgba(255, 255, 255, .2)), 
+		      color-stop(.75, rgba(255, 255, 255, .2)), 
+		      color-stop(.75, transparent), to(transparent)
+		   );
+		background-image: 
+			-moz-linear-gradient(
+			  -45deg, 
+		      rgba(255, 255, 255, .2) 25%, 
+		      transparent 25%, 
+		      transparent 50%, 
+		      rgba(255, 255, 255, .2) 50%, 
+		      rgba(255, 255, 255, .2) 75%, 
+		      transparent 75%, 
+		      transparent
+		   );
+		z-index: 1;
+		-webkit-background-size: 50px 50px;
+		-moz-background-size: 50px 50px;
+		   -webkit-border-top-right-radius: 8px;
+		-webkit-border-bottom-right-radius: 8px;
+		       -moz-border-radius-topright: 8px;
+		    -moz-border-radius-bottomright: 8px;
+		           border-top-right-radius: 8px;
+		        border-bottom-right-radius: 8px;
+		    -webkit-border-top-left-radius: 20px;
+		 -webkit-border-bottom-left-radius: 20px;
+		        -moz-border-radius-topleft: 20px;
+		     -moz-border-radius-bottomleft: 20px;
+		            border-top-left-radius: 20px;
+		         border-bottom-left-radius: 20px;
+		overflow: hidden;
+	}
+
+ 	.animate > span > span {
+ 		webkit-animation: move 2s linear infinite;
+ 	}
+		
+	.animate > span:after {
+		display: none;
+	}
+
+	@-webkit-keyframes move {
+	    0% {
+	       background-position: 0 0;
+	    }
+	    100% {
+	       background-position: 50px 50px;
+	    }
+	}
+	.progress_val{
+		font-weight : bold;
+		line-height : 25px;
+		font-size : 11px;
+		padding: 2px;
+		
+	}
 </style>
 {% endblock %} 
 
@@ -182,9 +310,9 @@ function init_button_bar() {
 }
 
 function upload_file(e) {
-    $(".drive_upload").prop("disabled", true).addClass("disabled").text("Uploading...")
+    $(".drive_upload").prop("disabled", true).addClass("disabled").find(".text").text("Uploading...")
     drive.upload_file(e.target.files[0], $(".drive_parent").data("id"), function() {
-        $(".drive_upload").prop("disabled", false).removeClass("disabled").text("Upload")
+        $(".drive_upload").prop("disabled", false).removeClass("disabled").find(".text").text("Upload")
         drive.get_dir_contents()
     })
 }
