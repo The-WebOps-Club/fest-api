@@ -85,3 +85,10 @@ def get_tag_object(tag):
     else:
         obj = get_object_or_None(User, id=tag_id)
     return obj
+
+def notification_query():
+    post_set = set()
+    post_set.update(Notification.objects.values_list("target_object_id", flat=True))
+    
+
+    return Notification.objects.order_by("-timestamp")
