@@ -18,7 +18,12 @@ MIME_TYPES = {
 	"sheet" : "application/vnd.google-apps.spreadsheet",
 	"unknown" : "application/vnd.google-apps.unknown",
 	"video" : "application/vnd.google-apps.video",
-}
+},STANDARD_META_LIST = 	[ "id", "title", "modifiedDate", 	// to allow other modules to take advantage of the drive function.
+        "mimeType", "lastModifyingUser",
+        "thumbnail", "thumbnailLink", "iconLink"
+]
+
+
 var Drive = function(options) {
 
 	self = this // To use in callback functions to avoid this confusion
@@ -92,13 +97,10 @@ var Drive = function(options) {
         });
     }
     
-    self.get_file_meta = function(fid, callback) {
+    self.get_file_meta = function(fid, callback ) {
         gapi.client.drive.files.get({
             "fileId": fid,
-            "fields": [ "id", "title", "modifiedDate", 
-            	"mimeType", "lastModifyingUser",
-            	"thumbnail", "thumbnailLink", "iconLink"
-            ],
+            "fields": STANDARD_META_LIST ,
         }).execute(function(response) {
             self.check_error(response)
             self.current_progress += 1

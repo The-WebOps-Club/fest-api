@@ -2,7 +2,84 @@ all_list = []
 atwho_user_list = [];
 atwho_subdept_list = [];
 atwho_dept_list = [];
+atwho_file_list =  [];
+atwho_file_list_raw = [];
 
+function get_autocomplete_lists(url1, url2, url3) {
+    atwho_user_list = null;
+    atwho_subdept_list = null;
+    atwho_dept_list = null;
+
+    // Autocomplete for Users, Dept, Subdept
+    $.getJSON(url1, function(json) {
+        atwho_user_list = json;
+        
+		sync_autocomplete();
+    });
+    $.getJSON(url2, function(json) {
+        atwho_subdept_list = json;
+        
+		sync_autocomplete();
+    });
+    $.getJSON(url3, function(json) {
+        atwho_dept_list = json;
+        
+		sync_autocomplete();
+    });
+
+    
+}
+
+function get_autocomplete_file_data(url1, url2, url3) {
+    if( !gapi.client.drive ){
+        atwho_file_list = null;
+        return;
+    }
+    console.log('get file lists from google.');
+    gapi.client.drive.files.list(
+        {'fields':['title','id','mimeType']}
+    ).execute(function(response){
+        console.log('obtained response');
+        console.log(response);
+        atwho_file_list_raw = response.items;
+        setup_autocomplete_files();
+    });
+}
+function sync_autocomplete() {
+    if ( atwho_user_list && atwho_subdept_list && atwho_dept_list ) {
+        setup_autocomplete_lists();
+    }
+}
+function setup_autocomplete_files(){
+    if( atwho_file_list_raw ){
+        atwho_file_list = $.map(atwho_file_list_raw, function(value, i){
+            return {
+                "id": value['id'],
+                "name": value['title'],
+                "small" : value['mimeType']
+            };
+        });
+    }
+
+    at_config_file = {
+        at: ":",
+        data: atwho_file_list,
+        tpl: "<li data-value='@${name}' data-filename='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
+        show_the_at: true,
+        callbacks: {
+            before_insert: function(value, $li) {
+                console.log($li);
+                console.log(value);
+                if ( this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0 ) {
+                    this.$inputor.after("<input class='textarea_atwho_list' name='atwho_files' value='" + $li.data("filename") + "_" + $li.data("id") + "' type='hidden'/>");
+                }
+         console.log($li);
+        return value;
+            },
+        },
+    }
+    $('.atwho_at_config').atwho(at_config_file);
+}
 function setup_autocomplete_lists() {
     goto_wall = {
         before_insert: function(value, $li) {
@@ -44,6 +121,8 @@ function setup_autocomplete_lists() {
         })
     }   
 
+    
+
     at_config = {
         at: "@",
         data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
@@ -51,14 +130,30 @@ function setup_autocomplete_lists() {
         show_the_at: true,
         callbacks: {
             before_insert: function(value, $li) {
-                console.log($li)
+                console.log($li);
+		console.log(value);
                 if ( this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0 ) {
-                    this.$inputor.after("<input class='textarea_atwho_list' name='atwho_list' value='" + $li.data("small").toLowerCase() + "_" + $li.data("id") + "' type='hidden'/>")
+                    this.$inputor.after("<input class='textarea_atwho_list' name='atwho_files' value='" + $li.data("small").toLowerCase() + "_" + $li.data("id") + "' type='hidden'/>");
                 }
-                return value;
+		 console.log($li);
+		return value;
+		/*
+	    	var owner_type = "user";
+	    	if ( $li.data("small") == "Department" ) {
+               		owner_type = "dept";
+	        } else if ( $li.data("small") == "Subdept" ) {
+        		owner_type = "subdept";
+	        }
+
+           	var dest_url = "/wall/" + owner_type + "/" + $li.data("id")
+	    	console.log("/wall/" + owner_type + $li.data("id"))
+	        return "<a href='"+dest_url+ "'>"+value+"</a>";
+                */
             },
         },
     }
+
+    
     all_list = atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list)
     $("#topbar_search_input").atwho({
         at: "",
@@ -86,7 +181,7 @@ function setup_autocomplete_lists() {
         callbacks : goto_wall,
     })
 
-    $(".atwho_at_config").atwho(at_config) 
+    $(".atwho_at_config").atwho(at_config);
 
     for ( var i in all_list ) {
         $(".select_all_list").append(
@@ -97,33 +192,6 @@ function setup_autocomplete_lists() {
 
 }
 
-function sync_autocomplete() {
-    if ( atwho_user_list && atwho_subdept_list && atwho_dept_list ) {
-        setup_autocomplete_lists();
-    }
-}
 
 
-function get_autocomplete_lists(url1, url2, url3) {
-    atwho_user_list = null;
-    atwho_subdept_list = null;
-    atwho_dept_list = null;
-
-    // Autocomplete for Users, Dept, Subdept
-    $.getJSON(url1, function(json) {
-        atwho_user_list = json;
-        
-		sync_autocomplete();
-    });
-    $.getJSON(url2, function(json) {
-        atwho_subdept_list = json;
-        
-		sync_autocomplete();
-    });
-    $.getJSON(url3, function(json) {
-        atwho_dept_list = json;
-        
-		sync_autocomplete();
-    });
-}
 
