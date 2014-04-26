@@ -57,6 +57,14 @@ class Dept(models.Model):
         ret.update( self.coords(), self.supercoords(), self.cores() )
         return list(ret)
 
+    def profile_pic(self):
+        temp = settings.MEDIA_URL + "profile/dept/dp/" + self.id
+        return temp
+    def banner_pic(self):
+        temp = settings.MEDIA_URL + "profile/dept/banner/" + self.id
+        return temp
+    
+    
 
 class Subdept(models.Model):
     """ 
@@ -85,6 +93,13 @@ class Subdept(models.Model):
         ret = set()
         ret.update( self.coords(), self.supercoords(), self.cores() )
         return list(ret)
+
+    def profile_pic(self):
+        temp = settings.MEDIA_URL + "profile/subdept/dp/" + self.id
+        return temp
+    def banner_pic(self):
+        temp = settings.MEDIA_URL + "profile/subdept/banner/" + self.id
+        return temp
 
 class UserProfile(models.Model): # The corresponding auth user
     """

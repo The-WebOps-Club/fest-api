@@ -48,7 +48,6 @@ def login_user(request):
             - Authenticates and logs in a django.contrib.auth.User
 
     """
-    current_page = "profile"# Default argument setting and checking
     if request.user.is_authenticated(): # Check if user is already logged in
         if hasattr(request.session, "role"):
             return redirect("apps.home.views.home")
@@ -200,6 +199,7 @@ def profile(request, user_id=None):
         "erp_profile_form" : erp_profile_form,
         "profile_wall" : erp_profile.wall,
         "read_only" : read_only,
+        "showing_user" : user_form.instance,
         "HOSTEL_CHOICES" : [i[0] for i in HOSTEL_CHOICES],
         "BRANCH_CHOICES" : [i[0] for i in BRANCH_CHOICES],
     }

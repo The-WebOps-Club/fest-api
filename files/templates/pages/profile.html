@@ -15,13 +15,21 @@
 				<div class="profile_head">
 					About 
 					
-					<a class="btn form_edit offset7" href="javascript:void(0)"><i class="icon-pencil"></i> <span class="edit_text">Edit Profile</span></a>
-					<a class="btn primary form_input form_submit" href="javascript:void(0)"> Save Changes</a>
-					
+					{% if user == showing_user %}
+						<a class="btn form_edit offset5" href="javascript:void(0)">
+							<i class="icon-pencil"></i> 
+							<span class="edit_text">Edit Profile</span>
+						</a>
+						<a class="btn primary form_input form_submit" href="javascript:void(0)"> 
+							Save Changes
+						</a>
+					{% endif %}
 				</div>
 				<div class="profile_body">
+					{% if user == showing_user %}
 					<form method="POST" enctype="multipart/form-data" class="form_profile" id="profile_form">
 						{% csrf_token %}	
+					{% endif %}
 						<div class="profile_left span6">
 							<div class="profile_section ">
 								<!-- Basic Info -->
@@ -129,12 +137,7 @@
 								</div>
 							</div>
 						</div>
-							
-						<div class="profile_right span12">
-
-						</div>
-
-					</form>
+					{% if user == showing_user %}</form>{% endif %}
 				</div>
 			</div>
 		</div>
@@ -342,15 +345,8 @@
 	       	data: {% autoescape off %}{{ BRANCH_CHOICES }}{% endautoescape %},
 	      	tpl: "<li data-value='${name}'> ${name} </li>",
 		})
-		{% if user != user_form.instance %}
-			//$(".form_edit").remove()
-			//$(".form_input").remove()
-		{% else %}
-			$(".form_edit").click( function () {
-				flip_form_profile("toggle", 200);
-			})
-		{% endif %}
 
+		
 		var form_errors_exist = false
 		{% for k, v in user_form.errors.items %}
 			form_errors_exist = true
@@ -379,9 +375,23 @@
 				"placement" : "below",
 			})
 		{% endfor %}
+		
+		
 		if ( ! form_errors_exist ) {
-			flip_form_profile("hide")
+			flip_form_profile("hide") // Show view mode if no errors
 		}
+
+		{% if user != showing_user %}
+			$(".form_edit").remove()
+			$(".form_input").remove()
+			$(".form_visible").remove()
+		{% else %}
+			$(".form_edit").click( function () {
+				flip_form_profile("toggle", 200);
+			})
+		{% endif %}
+		
+
 	})
 </script>
 {% endblock %}
