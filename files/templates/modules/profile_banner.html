@@ -153,7 +153,7 @@
     	// user_form comes from profile page
     	var fbid = null
     	{% if showing_user %}
-			{% if showing_user.profile.fbid %}
+			{% if showing_user.profile %}
 				fbid = $.trim("{{ showing_user.profile.fbid }}")
 			{% else %}
 				var banner_src = "{{ showing_user.banner_pic }}"

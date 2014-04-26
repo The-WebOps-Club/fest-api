@@ -70,7 +70,7 @@ def wall (request, wall_id=None):
     local_context = {
     	"current_page" : "wall",
         "wall" : wall,
-        "showing_user" : wall.parent,
+        "showing_user" : wall.parent.user,
         "wall_posts" : wall_posts,
     }
     if request.user.erp_profile.wall == wall:
