@@ -13,6 +13,17 @@
 			<div class="template dept_template main_template row-fluid" style="display : none;">
 				<div class="span10 info">
 					<div class="span12 clickable"><span class="name"></span></div>
+					<div class="span12 open center">
+						<a href="" class="span4 center wall_link">
+							<i class="icon-wall"></i>
+						</a>
+						<a href="" class="span4 center profile_link">
+							<i class="icon-profile-black"></i>
+						</a>
+						<a href="" class="span4 center docs_link">
+							<i class="icon-folder"></i>
+						</a>
+					</div>
 					<div class="span12 open">
 						<a href="mailto:" class="email_link"><i class="icon-message"> </i></a>
 						 : 
@@ -25,17 +36,6 @@
 					</div>
 					<div class="span12 open">
 						<i class="icon-home"></i> : <input class="summer_number" readonly value="Loading...">
-					</div>
-					<div class="span12 open center">
-						<a href="" class="span4 center wall_link">
-							<i class="icon-wall"></i>
-						</a>
-						<a href="" class="span4 center profile_link">
-							<i class="icon-profile-black"></i>
-						</a>
-						<a href="" class="span4 center docs_link">
-							<i class="icon-folder"></i>
-						</a>
 					</div>
 				</div>
 				<div class="span2 next clickable">
@@ -109,7 +109,7 @@
 	     -o-transition : height 0.5s;
 			transition : height 0.5s;
 }
-.table .next {
+.table .clickable {
 	cursor : pointer;
 }
 .table .next .icon-right {
@@ -217,6 +217,7 @@
 		$el.insertBefore($template)
 		bind_show_info($el)
 		$el.show(750)
+		return $el
 	}
 	function remove_contact_element(i, type) {
 		var excludes = ".template, .head"
@@ -241,7 +242,7 @@
 			$elems = $(".table .row-fluid")
 		}
 		$elems.bind("click", function() {
-			$el = $(this).closest(".row-fluid")
+			var $el = $(this).closest(".row-fluid")
 			
 			if ( $el.hasClass("is_open") ) {
 				$el.removeClass("is_open")
@@ -265,14 +266,15 @@
 	}
 	function show_depts(list, $template) {
 		$.each( list, function(i, val) {
-			create_contact_element(i, val, $template)
+			var $el = create_contact_element(i, val, $template)
 
 			$el.data("type", "dept")
 		})
 	}
 	function show_subdepts(list, $template) {
 		$.each( list, function(i, val) {
-			create_contact_element(i, val, $template)
+			var $el = create_contact_element(i, val, $template)
+			console.log($el)
 			$el.data("type", "subdept")
 			$el.find(".clickable").click(function() {
 				var $el = $(this)
@@ -291,12 +293,11 @@
 				})
 				show_users(user_structure_subdepts[$el.closest(".row-fluid").data("id")]["users"], $user_el_template)
 			})
-
 		})
 	}
 	function show_users(list, $template) {
 		$.each( list, function(i, val) {
-			create_contact_element(i, val, $template)
+			var $el = create_contact_element(i, val, $template)
 			$el.data("type", "user")
 		})
 	}
