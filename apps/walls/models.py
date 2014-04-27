@@ -31,7 +31,7 @@ class Wall(models.Model):
     """
     
     # Basic information
-    name                = models.CharField(max_length=60, unique=True)
+    name                = models.CharField(max_length=60)
     
     # Relations with other models
     # Owners can view all the posts and make posts, For a department they are the Department Junta

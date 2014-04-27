@@ -190,7 +190,6 @@ def profile(request, user_id=None):
             # print erp_profile_form.errors
             pass
     
-    print [unicode(i) for i in user_profile_form.fields['dob'].input_formats]
     # Return
     local_context = {
         "current_page" : "profile",

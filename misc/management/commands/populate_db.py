@@ -48,7 +48,7 @@ class Command(BaseCommand):
                     if len(row) != 4:
                         print "[ERROR] Expected 4 rows."
                         continue
-                        
+
                     self.stdout.write(">>> Processing ... row " + str(i) + " : " + str(row))
                     temp = User()
                     temp_erp_profile = ERPProfile()
@@ -56,19 +56,11 @@ class Command(BaseCommand):
                     print i, row
                     
                     email = row[0].strip() # User Email
+                    fn = row[1].strip() # User Email
+                    ln = row[2].strip() # User Email
                     core = [i.strip('"') for i in row[1].strip().split(",")] # Core Departments
                     sc = [i.strip('"') for i in row[2].strip().split(",")] # SuperCoord Departments
                     coord = [i.strip('"') for i in row[3].strip().split(",")] # Coord Departments
-
-                    if User.objects.filter(username=email).count() == 0:
-                        temp.email = email
-                        temp.username = email
-                    else:
-                        temp = User.objects.get(username=email)
-                        self.stdout.write(">>> [WARNING] username " + email + " already exists.")
-
-                    password = User.objects.make_random_password()
-                    temp.set_password(password)
 
                     try :
                         validate_email(email)
@@ -76,15 +68,33 @@ class Command(BaseCommand):
                         self.stdout.write("[INVALID] E-Mail (according to django) : " + str(email))
                     temp.email = email
 
+                    if fn and fn != "":
+                        temp.first_name = fn
+                    else:
+                        self.stdout.write("[INVALID] First name `" + fn + "` is invalid")
+
+                    if ln and ln != "":
+                        temp.last_name = ln
+                    else:
+                        self.stdout.write("[INVALID] Last name `" + ln + "` is invalid")
+
+                    if User.objects.filter(username=email).count() != 0:
+                        temp = User.objects.get(username=email) # Flush all prev data and reset
+                        self.stdout.write(">>> [WARNING] username " + email + " already exists.")
+
+                    password = User.objects.make_random_password()
+                    temp.set_password(password)
+
                     if commit :
-                        mail.send(
-                            [temp.email], settings.DEFAULT_FROM_EMAIL, 
+                        mail.send( [temp.email], 
+                            settings.DEFAULT_FROM_EMAIL, 
                             template='welcome.email',
-                                context={ 
+                            context={ 
                                 'user' : temp,
                                 'password' : password,
-                                'SITE_URL' : settings.SITE_URL,                                 },
-                                headers = {},
+                                'SITE_URL' : settings.SITE_URL,                                 
+                            },
+                            headers = {},
                         )
                         # print "Error : The email id", e.user.email, "was not found. UserProfile id : ", e.id
                         temp.save()
