@@ -3,12 +3,19 @@
 <html lang="en">
 
 <head>
-    <meta name="application-name" content="{{FEST_NAME}} Website">
-    <meta name="author" content="{{FEST_NAME}} WebOps Team">
-    <meta name="description" content="{% block descriptionmeta %} {% endblock %}">
-    <meta name="keywords" content="">
+<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="iitm, team, robocon, robotics, auto, autonomous, bot, manual, iit, madras, mit, pune, abu, dd, doordarshan, india, chennai, shaastra, iitmadras, 2015">
+    <meta name="description" content="Shaastra - ERP. The gateway to administrating Shaastra ( techfest of IIT Madras ) with ease.">
+    <meta name="author" content="Abdeali JK">
 
+    <meta property="og:title" content="Shaastra ERP | 2015">
+    <meta property="og:type" content="Techfest">
+    <meta property="og:url" content="http://erp.shaastra.org">
+    <meta property="og:image" content="static/img/logo/logo_blue.png">
+    <meta property="og:site_name" content="Shaastra ERP | 2015">
+    <meta property="og:description" content="Shaastra - ERP. The gateway to administrating Shaastra ( techfest of IIT Madras ) with ease.">
+    
     <title>{% block title %} {{ FEST_NAME }} {% endblock %}</title>
 
     {% if DEBUG %}
@@ -31,6 +38,9 @@
     <!--<link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">-->
 
     <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
+
+    <link rel="shortcut icon" href="{% static 'img/fest_pics/favicon.ico' %}">
+    
     {% block extra_css %}{% endblock %} 
 
     {% if not DEBUG %}

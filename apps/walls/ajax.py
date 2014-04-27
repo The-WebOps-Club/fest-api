@@ -53,9 +53,21 @@ def get_notifications(request, **kwargs):
     page = kwargs.get("page", None)
     notification_id = kwargs.get("id", None)
     exhausted = False
-    notifications_list = Notification.objects.order_by("-timestamp")
+    max_items = kwargs.get("max_items", 5)
+    notifications_list = Notification.objects.all()
     if page:    
-        items, exhausted = paginate_items(notifications_list, **kwargs)
+        items = Notification.objects.raw("""
+            SELECT a.* 
+            FROM notifications_notification a 
+            WHERE NOT EXISTS (
+                SELECT 1 
+                FROM notifications_notification 
+                WHERE target_object_id = a.target_object_id 
+                    AND timestamp > a.timestamp
+            ) 
+            GROUP BY a.target_object_id
+            ORDER BY a.timestamp DESC
+            LIMIT """ + str((page-1)*max_items) + "," + str(page*max_items))
     elif notification_id:
         items = notification_lists.filter(id=notification_id)
 
@@ -120,7 +132,6 @@ def get_notifs(request, **kwargs):
         items, exhausted = paginate_items(notifs_list, **kwargs)
     elif notif_id:
         items = notif_list.filter(id=notif_id)
-
 
     append_string = ""
     for item in items:

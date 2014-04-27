@@ -303,7 +303,11 @@ var Drive = function(options) {
         	$el.find(".title").prepend("<i class='icon-trash drive_icon'></i>")
         }
         $el.find(".drive_icon").prop("src", file_data.iconLink)
-        $el.find(".last_modified").text(file_data.modifiedDate)
+        if ( moment ) 
+        	last_mod = moment.duration(moment(file_data.modifiedDate)-moment()).humanize(true)
+        else 
+       		last_mod = file_data.modifiedDate
+       	$el.find(".last_modified").text(last_mod)
         
        	if ( file_data.mimeType == MIME_TYPES["folder"] ) {
        		$el.data("folder", "yes")

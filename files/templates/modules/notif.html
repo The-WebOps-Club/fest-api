@@ -3,7 +3,7 @@
 {% load humanize %}
 {% load once %}
 
-<div class="notif {% if notification.unread %}unread{% endif %}" 
+<div class="notif {% if notification.unread and notification.public %}unread{% endif %}" 
     data-actor="{{ notification.actor.id }}" 
     data-recipient="{{ notification.recipient.id }}"
     data-action-object="{{ notification.action_object.id }}" 

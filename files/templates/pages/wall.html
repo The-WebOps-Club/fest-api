@@ -49,6 +49,21 @@
 	    background-color : #dedede;
 	    color : #000;
 	}
+    div.news_comment_body p a {
+        text-decoration: none;
+        border: 1px #AAA solid;
+        background-color: #FFF;
+        border-radius: 5px;
+        padding-right: 3px;
+        padding-left: 3px;
+        padding-top: 2px;
+    }
+    div.news_comment_body p a img{
+        height:12px;
+    }
+    div.news_comment_body p a:hover {
+        background-color:#CCC;
+    }
 </style>
 {% endblock %} 
 
@@ -104,8 +119,10 @@ var authToken = '{{ token }}';
             expires_in: 2000
         }); // set the access token obtained from the server. OAuth2 automatically logs us in.
         gapi.client.setApiKey(developerKey); //set our public api key
-        gapi.client.load('drive', 'v2', get_autocomplete_file_data ); // ask gapi to load API details for the drive api.
+        gapi.client.load('drive', 'v2', setup_autocomplete_files ); // ask gapi to load API details for the drive api.
     }
 </script>
 <script type='text/javascript' src='https://apis.google.com/js/client.js?onload=initDrive'></script>
+
+
 {% endblock %}

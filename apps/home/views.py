@@ -40,10 +40,23 @@ def home (request, *args, **kwargs):
 @login_required
 def newsfeed(request): 
     user = request.user
+    notifications_list = Notification.objects.raw("""
+        SELECT a.* 
+        FROM notifications_notification a 
+        WHERE NOT EXISTS (
+            SELECT 1 
+            FROM notifications_notification 
+            WHERE target_object_id = a.target_object_id 
+                AND timestamp > a.timestamp
+        ) 
+        GROUP BY a.target_object_id
+        ORDER BY a.timestamp DESC
+        LIMIT 5
+    """)
+    print [i for i in notifications_list]
     local_context = {
         "current_page" : "newsfeed",
-        "notifications" : Notification.objects.order_by("-timestamp")[:5],
-#        "notifications" : user.notifications.unread(),
+        "notifications" : notifications_list,
     }
     return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 
@@ -56,17 +69,36 @@ def portals(request):
 
 @login_required
 def notifications(request):
+    notifications_list = Notification.objects.raw("""
+        SELECT a.* 
+        FROM notifications_notification a 
+        WHERE NOT EXISTS (
+            SELECT 1 
+            FROM notifications_notification 
+            WHERE target_object_id = a.target_object_id 
+                AND timestamp < a.timestamp
+        ) 
+        GROUP BY a.target_object_id
+        ORDER BY a.timestamp
+    """)
+    print [i for i in notifications_list]
     local_context = {
         "current_page" : "notifications",
         #"posts" : Post.objects.order_by("-comments__time_updated", "-time_updated"),
-        "notifications" : request.user.notifications.all(),
+        # "notifications" : request.user.notifications.all(),
+        "notifications" : notifications_list,
     }
     return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 
 @login_required
 def read_notification(request, notif_id):
+    user = request.user
     if notif_id == "all":
-        request.user.notifications.mark_all_as_read()
+        all_notifs = user.notifications
+        for i in all_notifs:
+            i.public = False
+            i.save()
+        all_notifs.mark_all_as_read()
         return redirect(reverse("newsfeed"))
     
     try:
@@ -78,7 +110,7 @@ def read_notification(request, notif_id):
         print "notif_id :", notif_id, type(wall_id)
         raise InvalidArgumentTypeException
     try:
-        notif = request.user.notifications.get(id = notif_id)
+        notif = user.notifications.get(id = notif_id)
     except Notification.DoesNotExist:
         raise InvalidArgumentValueException
 

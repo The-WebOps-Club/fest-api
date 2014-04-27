@@ -36,9 +36,9 @@ def paginate_items(items_list, **kwargs):
     return items, exhausted
 
 def filetag_to_url(tag):
-    filename = tag.split('_')[0];
-    fileid = tag.split('_')[1];
-    return reverse("view")+'?id='+fileid, filename; 
+    # --@@!@@-- acts as a common delimiter.
+    filename, fileid, iconlink = tag.split('--@@!@@--');
+    return reverse("view")+'?id='+fileid, filename, iconlink; 
 
 # TODO: merge parse_atwho ad parse_atwho_file
 def parse_atwho_file( my_text, tags ):
@@ -46,10 +46,10 @@ def parse_atwho_file( my_text, tags ):
         Parses through the list form atwho and records file references.
     """
     notification_list = []
-    link_text = '[%s](%s)'
+    link_text = '![Doc](%s) [%s](%s)'
     for tag in tags:
-            url,filename = filetag_to_url( tag )
-            my_text = my_text.replace('@' + filename, link_text %(filename, url) )
+            url, filename, iconLink = filetag_to_url( tag )
+            my_text = my_text.replace(':' + filename, (link_text %(iconLink, filename, url) ))
     return my_text
 
 def parse_atwho(my_text, tags, at='@' ):
@@ -57,14 +57,14 @@ def parse_atwho(my_text, tags, at='@' ):
         Parses through the list form atwho and gives the depts, subdepts and users
     """
     notification_list = []
-    link_text = '[%s](%s)'
+    link_text = '![user](/static/img/profile.png) [%s](%s)'
     for tag in tags:
         tagged_obj = get_tag_object(tag)
         if isinstance(tagged_obj, Dept) or isinstance(tagged_obj, Subdept):
             link_href = reverse("wall", kwargs={"wall_id" : tagged_obj.wall.pk})
             my_text = my_text.replace(at + tagged_obj.name, link_text % (tagged_obj.name, link_href) )
         else:
-            link_href = reverse("wall", kwargs={"wall_id" : tagged_dept.erp_profile.wall.pk})
+            link_href = reverse("wall", kwargs={"wall_id" : tagged_obj.erp_profile.wall.pk})
             my_text = my_text.replace(at + tagged_obj.first_name+"_"+tagged_obj.last_name, link_text %(tagged_obj.get_full_name(), link_href) )
         notification_list.append(tagged_obj)
     return my_text, notification_list
@@ -85,3 +85,10 @@ def get_tag_object(tag):
     else:
         obj = get_object_or_None(User, id=tag_id)
     return obj
+
+def notification_query():
+    post_set = set()
+    post_set.update(Notification.objects.values_list("target_object_id", flat=True))
+    
+
+    return Notification.objects.order_by("-timestamp")
