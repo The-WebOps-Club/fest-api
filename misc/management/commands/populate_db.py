@@ -58,9 +58,9 @@ class Command(BaseCommand):
                     email = row[0].strip() # User Email
                     fn = row[1].strip() # User Email
                     ln = row[2].strip() # User Email
-                    core = [i.strip('"') for i in row[1].strip().split(",")] # Core Departments
-                    sc = [i.strip('"') for i in row[2].strip().split(",")] # SuperCoord Departments
-                    coord = [i.strip('"') for i in row[3].strip().split(",")] # Coord Departments
+                    core = [i.strip('"') for i in row[3].strip().split(":")] # Core Departments
+                    sc = [i.strip('"') for i in row[4].strip().split(":")] # SuperCoord Departments
+                    coord = [i.strip('"') for i in row[5].strip().split(":")] # Coord Departments
 
                     try :
                         validate_email(email)
