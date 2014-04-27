@@ -60,7 +60,9 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
     
 
 4. Setup Database Appropriately :
+	. Management command `basic_setup` is used to populate some data - Colleges from Shaastra 2014 (optional)
+	. Management command `update_email_templates` is used to update email templates and store onto the database for Django Post office (optional)
 	. Management command `populate_db` can be used to get dummy data
 	. Management command `jsonify_data` is used by atwho for data. Autogenerates some json objects which are easy to use
-	. Management command `basic_setup` is used to populate some data - Colleges from Shaastra 2014 (optional)
+	
 	. 
