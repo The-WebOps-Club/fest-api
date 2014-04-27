@@ -36,10 +36,10 @@ def docs( request ):
     """
         Obtain and send an access token to the client side script.
     """
-    drive = Drive()
-    token = Drive.get_access_token()
+    #drive = Drive()
+    #token = Drive.get_access_token()
     local_context = {
-        "token" : token,
+        #"token" : token,
         "current_page" : "docs",
     }
     return render_to_response('pages/browse_docs.html', local_context, context_instance=global_context(request))

@@ -53,7 +53,7 @@ def newsfeed(request):
         ORDER BY a.timestamp DESC
         LIMIT 5
     """)
-    print [i for i in notifications_list]
+    
     local_context = {
         "current_page" : "newsfeed",
         "notifications" : notifications_list,

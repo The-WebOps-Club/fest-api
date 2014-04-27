@@ -72,14 +72,26 @@ function setup_autocomplete_files() {
                             q: 'title contains \'' + query + '\'',
                             maxResults: 5
                         }).execute(function(response) {
-                            callback($.map(response.items, function(value, i) {
-                                return {
-                                    "id": value['id'],
-                                    "name": value['title'],
-                                    "small": value['mimeType'],
-                                    "iconlink": value['iconLink']
-                                }
-                            }));
+                            if ( response.items.length == 0 ) {
+                                callback($.map(response.items, function(value, i) {
+                                    return {
+                                        "id": "",
+                                        "name": "No files found !",
+                                        "small": "",
+                                        "iconlink": "/static/img/loading-dice.gif",
+                                    }
+                                }));
+                            }
+                            else {
+                                callback($.map(response.items, function(value, i) {
+                                    return {
+                                        "id": value['id'],
+                                        "name": value['title'],
+                                        "small": value['mimeType'],
+                                        "iconlink": value['iconLink'],
+                                    }
+                                }));
+                            }
                         });
                     } else {
                         callback([{
@@ -92,12 +104,9 @@ function setup_autocomplete_files() {
                 }
             },
             before_insert: function(value, $li) {
-                console.log($li);
-                console.log(value);
                 if (this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0) {
                     this.$inputor.after("<input class='textarea_atwho_list' name='atwho_files' value='" + $li.data("filename") + "--@@!@@--" + $li.data("id") + "--@@!@@--" + $li.data("icon") + "' type='hidden'/>");
                 }
-                console.log($li);
                 return value;
             },
         },

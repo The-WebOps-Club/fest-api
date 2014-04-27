@@ -12,6 +12,7 @@ from django.conf import settings
 from misc.strings import *  #Import miscellaneous functions
 from misc.exceptions import *  #Import miscellaneous functions
 from misc.decorators import *  #Import miscellaneous functions
+from apps.docs.utils import Drive, Github
 # Models
 from django.db import models
 from django.contrib.auth.models import User, Group
@@ -37,13 +38,15 @@ def global_context(request):
         profile = request.user.profile 
     else:
         profile = None
-        
+    drive = Drive()
+    token = Drive.get_access_token()
     local_context = {
         'user':request.user,
         'erp_profile':erp_profile,
         'user_profile':profile,
         'session':request.session,
         'current_path':request.get_full_path(),
+        'google_access_token' : token,
         'SITE_URL':settings.SITE_URL,
         'MEDIA_URL':settings.MEDIA_URL,
         'MEDIA_ROOT':settings.MEDIA_ROOT,

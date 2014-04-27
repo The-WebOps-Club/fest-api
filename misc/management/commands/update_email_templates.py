@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError, NoArgsCommand
-from bloodline_server import settings
+from django.conf import settings
 
 #Email stuff
 from django.template.loader import get_template
@@ -15,7 +15,7 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
         # Get the list of files in the email templates folder.
-        email_root_path = settings.EMAILS_ROOT
+        email_root_path = settings.EMAIL_ROOT
         email_templates = [t for t in os.listdir(email_root_path) if t.endswith('.html')]
 
         # Get current templates from the database
@@ -32,7 +32,7 @@ class Command(NoArgsCommand):
                 self.stdout.write('Skipping %s - cannot find the template!' % template.name)
                 continue
             self.stdout.write('Updating %s' % template.name)
-            this_email_template = open(email_root_path + this_email_template_name, 'r').read()
+            this_email_template = open(os.path.join(email_root_path, this_email_template_name), 'r').read()
 
             #Update content
             template.html_content = this_email_template
@@ -41,7 +41,7 @@ class Command(NoArgsCommand):
                 l.setString(l.getString() + u'( ' + l['href'] + ' )')
             template.content = strip_tags(str(soup)) #<---- Note: We can do soup.prettify() here instead of str(soup)
             #Update subject
-            template.subject = open(email_root_path + this_email_template_name.replace('.html','.subject'), 'r').read()
+            template.subject = open(os.path.join(email_root_path, this_email_template_name).replace('.html','.subject'), 'r').read()
 
             template.save()
 
@@ -49,13 +49,13 @@ class Command(NoArgsCommand):
 
         for template in new_templates:
             #Read the template:
-            content = open(email_root_path + template,'r').read()
+            content = open(os.path.join(email_root_path, template),'r').read()
 
             new_template = EmailTemplate()
 
             new_template.name = template.replace('.html','.email')
             new_template.description = new_template.name.replace('.', ' ')
-            new_template.subject = open(email_root_path + template.replace('.html','.subject'),'r').read()
+            new_template.subject = open(os.path.join(email_root_path, template).replace('.html','.subject'),'r').read()
             new_template.html_content = content
             soup = BeautifulSoup.BeautifulSoup(content)
             for l in soup.findAll('a'):
