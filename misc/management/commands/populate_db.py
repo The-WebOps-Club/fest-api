@@ -44,6 +44,11 @@ class Command(BaseCommand):
                 for i, row in enumerate(csvreader):
                     if i == 0 :
                         continue
+
+                    if len(row) != 4:
+                        print "[ERROR] Expected 4 rows."
+                        continue
+                        
                     self.stdout.write(">>> Processing ... row " + str(i) + " : " + str(row))
                     temp = User()
                     temp_erp_profile = ERPProfile()
@@ -55,13 +60,15 @@ class Command(BaseCommand):
                     sc = [i.strip('"') for i in row[2].strip().split(",")] # SuperCoord Departments
                     coord = [i.strip('"') for i in row[3].strip().split(",")] # Coord Departments
 
-                    password = User.objects.make_random_password()
-                    temp.set_password(password)
                     if User.objects.filter(username=email).count() == 0:
                         temp.email = email
                         temp.username = email
                     else:
+                        temp = User.objects.get(username=email)
                         self.stdout.write(">>> [WARNING] username " + email + " already exists.")
+
+                    password = User.objects.make_random_password()
+                    temp.set_password(password)
 
                     try :
                         validate_email(email)
