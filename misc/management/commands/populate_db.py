@@ -81,7 +81,7 @@ class Command(BaseCommand):
                         )
                         # print "Error : The email id", e.user.email, "was not found. UserProfile id : ", e.id
                         temp.save()
-                        temp_erp_profile, created_it = ERPProfile.objects.get_or_create(user=user)
+                        temp_erp_profile, created_it = ERPProfile.objects.get_or_create(user=temp)
 
                     for i in core:
                         if i == "" or not i:

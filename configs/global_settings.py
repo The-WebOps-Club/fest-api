@@ -213,6 +213,10 @@ LOGGING = {
 # ---------------------------------------------------
 # Post Office
 EMAIL_BACKEND = 'post_office.EmailBackend'
+POST_OFFICE = {
+    'BATCH_SIZE': 100
+}
+# Required cron job: * * * * * (/usr/bin/python manage.py send_queued_mail >> send_mail.log 2>&1)
 
 # ---------------------------------------------------
 # Python Social Auth

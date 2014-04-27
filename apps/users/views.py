@@ -71,8 +71,8 @@ def login_user(request):
             if user is not None:
                 if user.is_active:
                     login(request, user) # Logs in the User
-                    if ( not hasattr(user, "erp_profile") ): # No erp_profile ! Ask them to fill up forms
-                        return HttpResponseRedirect(reverse("profile")) # Redirect to home page    
+                    #if ( not hasattr(user, "erp_profile") ): # No erp_profile ! Ask them to fill up forms
+                    #    return HttpResponseRedirect(reverse("profile")) # Redirect to home page    
                     return HttpResponseRedirect(reverse("identity")) # Redirect to home page
                 else:
                     login_form.errors.update( {
