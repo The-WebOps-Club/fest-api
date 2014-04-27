@@ -46,15 +46,13 @@ class Command(BaseCommand):
                         continue
 
                     if len(row) != 6:
-                        print "[ERROR] Expected 4 rows."
+                        print "[ERROR] Expected 6 rows."
                         continue
 
                     self.stdout.write(">>> Processing ... row " + str(i) + " : " + str(row))
                     temp = User()
                     temp_erp_profile = ERPProfile()
 
-                    print i, row
-                    
                     email = row[0].strip() # User Email
                     fn = row[1].strip() # User Email
                     ln = row[2].strip() # User Email
@@ -62,12 +60,15 @@ class Command(BaseCommand):
                     sc = [i.strip('"') for i in row[4].strip().split(":")] # SuperCoord Departments
                     coord = [i.strip('"') for i in row[5].strip().split(":")] # Coord Departments
 
-                    try :
-                        validate_email(email)
-                    except ValidationError:
-                        self.stdout.write("[INVALID] E-Mail (according to django) : " + str(email))
-                    temp.email = email
-
+                    if fn and fn != "":
+                        try:
+                            validate_email(email)
+                        except ValidationError:
+                            self.stdout.write("[INVALID] E-Mail (according to django) : " + str(email))
+                        temp.email = email
+                    else:
+                        self.stdout.write("[INVALID] E-Mail `" + email + "` is invalid")
+                        
                     if fn and fn != "":
                         temp.first_name = fn
                     else:
@@ -86,17 +87,18 @@ class Command(BaseCommand):
                     temp.set_password(password)
 
                     if commit :
-                        mail.send( [temp.email], 
-                            settings.DEFAULT_FROM_EMAIL, 
-                            template='welcome.email',
-                            context={ 
-                                'user' : temp,
-                                'password' : password,
-                                'SITE_URL' : settings.SITE_URL,                                 
-                            },
-                            headers = {},
-                        )
-                        # print "Error : The email id", e.user.email, "was not found. UserProfile id : ", e.id
+                        if settings.SEND_EMAIL:
+                            mail.send( [temp.email], 
+                                settings.DEFAULT_FROM_EMAIL, 
+                                template='welcome.email',
+                                context={ 
+                                    'user' : temp,
+                                    'password' : password,
+                                    'SITE_URL' : settings.SITE_URL,                                 
+                                },
+                                headers = {},
+                            )
+                            # print "Error : The email id", e.user.email, "was not found. UserProfile id : ", e.id
                         temp.save()
                         temp_erp_profile, created_it = ERPProfile.objects.get_or_create(user=temp)
 

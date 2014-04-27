@@ -204,7 +204,7 @@ class ERPProfile(models.Model):
 
     @property
     def name(self):
-        return self.user.get_full_name() or self.user.username
+        return self.user.get_full_name()
 
     def get_name(self):
         if self.nickname:
