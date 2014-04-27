@@ -66,9 +66,10 @@ class Command(BaseCommand):
                         except ValidationError:
                             self.stdout.write("[INVALID] E-Mail (according to django) : " + str(email))
                         temp.email = email
+                        temp.username = email
                     else:
                         self.stdout.write("[INVALID] E-Mail `" + email + "` is invalid")
-                        
+
                     if fn and fn != "":
                         temp.first_name = fn
                     else:
