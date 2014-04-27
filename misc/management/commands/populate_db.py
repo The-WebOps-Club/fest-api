@@ -45,11 +45,12 @@ class Command(BaseCommand):
                     if i == 0 :
                         continue
 
+                    self.stdout.write(">>> Processing ... row " + str(i) + " : " + str(row))
+                    
                     if len(row) != 6:
                         print "[ERROR] Expected 6 rows."
                         continue
 
-                    self.stdout.write(">>> Processing ... row " + str(i) + " : " + str(row))
                     temp = User()
                     temp_erp_profile = ERPProfile()
 
@@ -82,7 +83,7 @@ class Command(BaseCommand):
 
                     if User.objects.filter(username=email).count() != 0:
                         temp = User.objects.get(username=email) # Flush all prev data and reset
-                        self.stdout.write(">>> [WARNING] username " + email + " already exists.")
+                        self.stdout.write("[WARNING] username " + email + " already exists.")
 
                     password = User.objects.make_random_password()
                     temp.set_password(password)

@@ -132,11 +132,12 @@ function setup_autocomplete_lists() {
 
     if (atwho_user_list) {
         atwho_user_list = $.map(atwho_user_list, function(value, i) {
-            return {
-                "id": value["id"],
-                "name": value["first_name"] + "_" + value["last_name"],
-                "small": value["email"]
-            };
+            if (value["first_name"] + "_" + value["last_name"] != "_" ) // To make sure no blank users are taken. eg : superusers
+                return {
+                    "id": value["id"],
+                    "name": value["first_name"] + "_" + value["last_name"],
+                    "small": value["email"]
+                };
         })
     }
     if (atwho_dept_list) {
