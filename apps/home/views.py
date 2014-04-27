@@ -17,6 +17,8 @@ from notifications.models import Notification
 from django.templatetags.static import static
 # Python
 import os
+# Docs for attachments
+from apps.docs.utils import Drive, Github
 
 @login_required
 def home (request, *args, **kwargs):
@@ -40,10 +42,13 @@ def home (request, *args, **kwargs):
 @login_required
 def newsfeed(request): 
     user = request.user
+    drive = Drive()
+    token = Drive.get_access_token()
     local_context = {
         "current_page" : "newsfeed",
         "notifications" : Notification.objects.order_by("-timestamp")[:5],
 #        "notifications" : user.notifications.unread(),
+        "token" : token,
     }
     return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 

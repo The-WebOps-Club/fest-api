@@ -66,20 +66,35 @@ function setup_autocomplete_files() {
                     "small": "",
                     "iconlink": "/static/img/loading-dice.gif",
                 }]);
-                if (gapi.client && gapi.client.drive) {
+                /* check if gapi is loaded, authorized and linked with drive*/
+                if ( gapi && gapi.client && gapi.client.drive) {
                     if (query != '') {
                         gapi.client.drive.files.list({
                             q: 'title contains \'' + query + '\'',
                             maxResults: 5
                         }).execute(function(response) {
-                            callback($.map(response.items, function(value, i) {
-                                return {
-                                    "id": value['id'],
-                                    "name": value['title'],
-                                    "small": value['mimeType'],
-                                    "iconlink": value['iconLink']
-                                }
-                            }));
+                            console.log( response.items );
+                            console.log( "Is undefined "+(response.items==undefined));
+                            if( response.items != undefined )
+                                callback($.map(response.items, function(value, i) {
+                                    return {
+                                        "id": value['id'],
+                                        "name": value['title'],
+                                        "small": value['mimeType'],
+                                        "iconlink": value['iconLink']
+                                    }
+                                }));
+                            else{
+                                console.log('no results received');
+                                console.log(callback);
+                                callback([{
+                                    "id": "SOMETHING",
+                                    "name": "No Results",
+                                    "small": "something",
+                                    "iconlink": "/static/img/loading-dice.gif",
+                                }]);
+                                console.log('callback called');
+                            }
                         });
                     } else {
                         callback([{

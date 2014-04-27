@@ -155,6 +155,9 @@
 </style>
 {% endblock %} {% block extra_js %} {{ block.super }}
 <script type="text/javascript">
+	var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
+	var rootFolder = '{{ SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID }}';
+	var authToken = '{{ token }}';
 	function dajax_get_notifications(data) {
 	    if (!data.exhausted){
 	        $('#main_body_content .see_more_notifications').before(data.append_string);
@@ -183,5 +186,15 @@
 		    }	
 		}).scroll();
 	})
+	 function initDrive( ){
+        console.log('initializing drive')
+        gapi.auth.setToken({
+            access_token: authToken,
+            expires_in: 2000
+        }); // set the access token obtained from the server. OAuth2 automatically logs us in.
+        gapi.client.setApiKey(developerKey); //set our public api key
+        gapi.client.load('drive', 'v2', setup_autocomplete_files ); // ask gapi to load API details for the drive api.
+    }
 </script>
+<script type='text/javascript' src='https://apis.google.com/js/client.js?onload=initDrive'></script>
 {% endblock %}
