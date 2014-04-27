@@ -144,6 +144,7 @@ class Post(PostInfo):
         return
 
     def add_notifications(self, notif_list):
+        from apps.users.models import Dept, Subdept
     	notifications_user = []
     	notifications_subdept = []
     	notifications_dept = []
