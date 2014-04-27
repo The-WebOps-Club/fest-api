@@ -45,7 +45,7 @@ class Command(BaseCommand):
                     if i == 0 :
                         continue
 
-                    if len(row) != 4:
+                    if len(row) != 6:
                         print "[ERROR] Expected 4 rows."
                         continue
 
