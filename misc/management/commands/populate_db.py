@@ -55,11 +55,11 @@ class Command(BaseCommand):
                     sc = [i.strip('"') for i in row[2].strip().split(",")] # SuperCoord Departments
                     coord = [i.strip('"') for i in row[3].strip().split(",")] # Coord Departments
 
+                    password = User.objects.make_random_password()
+                    temp.set_password(password)
                     if User.objects.filter(username=email).count() == 0:
                         temp.email = email
                         temp.username = email
-                        password = User.objects.make_random_password()
-                        temp.set_password(password)
                     else:
                         self.stdout.write(">>> [WARNING] username " + email + " already exists.")
 
