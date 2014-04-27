@@ -71,19 +71,19 @@ class Command(BaseCommand):
 
                     if commit :
                         temp.save()
-                        # try:
-                        #     mail.send(
-                        #         [temp.email], settings.DEFAULT_FROM_EMAIL, 
-                        #         template='welcome.email',
-                        #         context={ 
-                        #             'user' : temp,
-                        #             'password' : password,
-                        #             'SITE_URL' : settings.SITE_URL, 
-                        #         },
-                        #         headers = {},
-                        #     )
-                        # except SMTPRecipientsRefused:
-                        #     print "Error : The email id", e.user.email, "was not found. UserProfile id : ", e.id
+                        try:
+                            mail.send(
+                                [temp.email], settings.DEFAULT_FROM_EMAIL, 
+                                template='welcome.email',
+                                context={ 
+                                    'user' : temp,
+                                    'password' : password,
+                                    'SITE_URL' : settings.SITE_URL, 
+                                },
+                                headers = {},
+                            )
+                        except SMTPRecipientsRefused:
+                            print "Error : The email id", e.user.email, "was not found. UserProfile id : ", e.id
 
                         temp_erp_profile, created_it = ERPProfile.objects.get_or_create(user=user)
 
