@@ -104,6 +104,14 @@ def associate(request):
     }
     return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
 
+def first_login_required(request):
+    local_context = {
+        "current_page" : "login",
+        "FEST_NAME" : settings.FEST_NAME,
+        "SETTINGS" : settings,
+    }
+    return render_to_response("errors/login_required.html", local_context, context_instance=RequestContext (request))
+    
 @login_required
 def profile(request, user_id=None):
     """ 

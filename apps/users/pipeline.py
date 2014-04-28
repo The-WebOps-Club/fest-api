@@ -1,5 +1,6 @@
 # Django
 from django.conf import settings
+from django.template.context import Context, RequestContext
 from django.shortcuts import render_to_response, redirect, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
 from django.core.files.base import ContentFile
@@ -25,8 +26,8 @@ def require_email(strategy, details, user=None, is_new=False, *args, **kwargs):
         else:
             return redirect('require_email')
 
+@partial
 def save_profile_picture(strategy, user, response, details, is_new=False, *args, **kwargs):
-
     if strategy.backend.name == 'facebook':
         url = 'http://graph.facebook.com/{0}/picture'.format(response['id'])
         print url
@@ -35,7 +36,8 @@ def save_profile_picture(strategy, user, response, details, is_new=False, *args,
         profile.fb_id
         #profile.save()
 
-def create_user(strategy, details, response, uid, user=None, *args, **kwargs):
+def check_existing_user(strategy, details, response, uid, user=None, *args, **kwargs):
     if user:
         return {'is_new': False}
-	return redirect('require_email')    
+    return redirect('apps.users.views.first_login_required')
+
