@@ -179,7 +179,7 @@
                 $parent.append($new_element)
                 $new_element.click( function() {
                     var el = this; var $el = $(el);
-                    window.location.href = "/wall/user/" + $el.data("id")
+                    window.location.href = site_url + "/wall/user/" + $el.data("id")
                 })
             }
             on_dom_change()

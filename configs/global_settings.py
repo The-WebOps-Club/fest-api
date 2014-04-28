@@ -61,6 +61,9 @@ THIRD_PARTY_APPS = (
 
     # Gravatar
     'django_gravatar',
+
+    # compressor
+    'compressor',
 )
 API_APPS = (
     'misc',
@@ -79,6 +82,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'django.contrib.staticfiles.finders.DefaultStorageFinder',
     'dajaxice.finders.DajaxiceFinder',
+    'compressor.finders.CompressorFinder',
 )
 MIDDLEWARE_CLASSES = (
     'annoying.middlewares.StaticServe',

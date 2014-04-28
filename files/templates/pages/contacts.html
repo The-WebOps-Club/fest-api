@@ -210,7 +210,7 @@
 			}
 		}
 		
-		$el.find(".wall_link").prop("href", "/wall/" + val["type"] + "/" + val["id"])
+		$el.find(".wall_link").prop("href", site_url + "/wall/" + val["type"] + "/" + val["id"])
 		$el.find(".profile_link").prop("href", "/profile/" + val["type"] + "/" + val["id"])
 		$el.find(".docs_link").prop("href", "javascript:alert('not implemented')")
 
