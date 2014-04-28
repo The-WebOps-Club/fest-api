@@ -66,7 +66,7 @@ class Wall(models.Model):
         return temp
     
     def add_notifications(self, notif_list):
-        from apps.users.models import Dept, Subdept
+        from apps.users.models import ERPProfile, Dept, Subdept
         notifications_user = []
         notifications_subdept = []
         notifications_dept = []
@@ -78,7 +78,7 @@ class Wall(models.Model):
             elif isinstance(i, Subdept):
                 notifications_subdept.append(i)
             elif isinstance(i, Dept):
-                notificationtypes_dept.append(i)
+                notifications_dept.append(i)
         self.notification_users.add(*notifications_user)
         self.notification_subdepts.add(*notifications_subdept)
         self.notification_depts.add(*notifications_dept)
@@ -187,7 +187,7 @@ class Post(PostInfo):
         return
 
     def add_notifications(self, notif_list):
-        from apps.users.models import Dept, Subdept
+        from apps.users.models import ERPProfile, Dept, Subdept
         notifications_user = []
         notifications_subdept = []
         notifications_dept = []
@@ -199,7 +199,7 @@ class Post(PostInfo):
             elif isinstance(i, Subdept):
                 notifications_subdept.append(i)
             elif isinstance(i, Dept):
-                notificationtypes_dept.append(i)
+                notifications_dept.append(i)
         self.notification_users.add(*notifications_user)
         self.notification_subdepts.add(*notifications_subdept)
         self.notification_depts.add(*notifications_dept)

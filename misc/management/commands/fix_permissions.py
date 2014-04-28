@@ -12,11 +12,12 @@ class Command(BaseCommand):
     def handle(self, arg=None, **options):
 
         total = Wall.objects.count()
-
+        count = 0
         for w in Wall.objects.all():
             w_parent = w.parent
             w.add_notifications([w_parent])
+            count += 1
             print "Done : ", count, "of", total
 
-        self.stdout.write("Everyone can access everything.")
+        self.stdout.write("Everyone can access their own walls.")
 
