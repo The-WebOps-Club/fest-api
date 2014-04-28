@@ -60,6 +60,7 @@ class Dept(models.Model):
     def profile_pic(self):
         temp = settings.MEDIA_URL + "profile/dept/dp/" + self.id
         return temp
+    
     def banner_pic(self):
         temp = settings.MEDIA_URL + "profile/dept/banner/" + self.id
         return temp

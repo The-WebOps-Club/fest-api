@@ -94,7 +94,7 @@ def notifications(request):
 def read_notification(request, notif_id):
     user = request.user
     if notif_id == "all":
-        all_notifs = user.notifications
+        all_notifs = user.notifications.unread()
         for i in all_notifs:
             i.public = False
             i.save()

@@ -154,11 +154,14 @@
 
 	function set_element_info(el, local_val) {
 		var $el = $(el)
-		$el.find(".mobile_number").val(local_val["summer_number"])
+		$el.find(".mobile_number").val(local_val["mobile_number"])
 		$el.find(".summer_number").val(local_val["summer_number"])
 		
 		$el.find(".email").val(local_val["email"])
 		$el.find("a.email_link").prop("href", "mailto:" + local_val["email"])
+
+		$el.find(".profile_link").prop("href", site_url + "profile/" + val["type"] + "/" + val["id"]).show()
+		
 	}
 	function create_contact_element(i, val, $template) {
 		var $el = $(".table .template.main_template").first().clone().removeClass("template")
@@ -191,6 +194,7 @@
 				$el.find(".email").closest("div").remove()
 				$el.find(".mobile_number").closest("div").remove()
 				$el.find(".summer_number").closest("div").remove()
+				$el.find(".profile_link").hide()
 			} else {
 				set_element_info($el, val)
 			}
@@ -199,6 +203,7 @@
 				$el.find(".email").closest("div").remove()
 				$el.find(".mobile_number").closest("div").remove()
 				$el.find(".summer_number").closest("div").remove()
+				$el.find(".profile_link").hide()
 			} else {
 				Dajaxice.apps.users.get_contact( function(data) {
 					var local_val = val
@@ -210,9 +215,9 @@
 			}
 		}
 		
-		$el.find(".wall_link").prop("href", site_url + "/wall/" + val["type"] + "/" + val["id"])
-		$el.find(".profile_link").prop("href", "/profile/" + val["type"] + "/" + val["id"])
-		$el.find(".docs_link").prop("href", "javascript:alert('not implemented')")
+		$el.find(".wall_link").prop("href", site_url + "wall/" + val["type"] + "/" + val["id"])
+		$el.find(".profile_link").prop("href", site_url + "profile/" + val["id"])
+		$el.find(".docs_link").prop("href", site_url + "docs/")
 
 		$el.insertBefore($template)
 		bind_show_info($el)
