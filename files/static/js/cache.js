@@ -6,120 +6,167 @@
 */
 
 var FileMetaCache = function(){
-	self = this;
-	// set variables to null
-	self.files = null;
-	self.lastUpdated = null;
-	self.fileIds = null;
+	// SINGLETON pattern.
+	fmc = this;
 
-	self.prototype.initCache = function(){
-		if(localStorage.files != undefined)
-			self.files = localStorage.files;
-			self.fileIds = localStorage.fileIds;
-			self.lastUpdated = localStorage.lastUpdated;
-		else
-			self.files = [];
-			self.lastUpdated = null;
-			self.fileIds = [];
+	// set variables to null.
+	this.files = [];
+	this.lastUpdated = null;
+	this.fileIds = [];
+
+	this.initCache = function(){
+		if(localStorage.files != undefined){
+			this.files = JSON.parse(localStorage.files);
+			this.fileIds = JSON.parse(localStorage.fileIds);
+			this.lastUpdated = JSON.parse(localStorage.lastUpdated);
+		}
+		else{
+			this.files = [];
+			this.lastUpdated = null;
+			this.fileIds = [];
+		}
 	}
+
 
 	// cache files using the date parameter
-	self.prototype.cacheFiles = function( datetime ){
-		localStorage.files = self.files;
-		localStorage.fileIds = self.fileIds;
-		localStorage.lastUpdated = datetime;
+	this.cacheFiles = function( datetime ){
+		localStorage.files = JSON.stringify(this.files);
+		localStorage.fileIds = JSON.stringify(this.fileIds);
+		localStorage.lastUpdated = JSON.stringify(datetime);
 	}
 
-	self.prototype.syncFiles = function(){
-		self.files = localStorage.files;
-		self.fileIds = localStorage.fileIds;
-		self.lastUpdated = localStorage.lastUpdated;
+	this.syncFiles = function(){
+		this.files = JSON.parse(localStorage.files);
+		this.fileIds = JSON.parse(localStorage.fileIds);
+		this.lastUpdated = JSON.parse(localStorage.lastUpdated);
 	}
 
-	self.prototype.pushFiles = function( fileList ){
+	this.pushFiles = function( fileList ){
+
 		fileList.forEach(function(e){
-			if( self.fileIds.indexOf(e.id) == -1 ){
-				self.files[ self.fileIds.indexOf( e.id) ] = e;
+			if( fmc.fileIds.indexOf(e.id) != -1 ){
+				fmc.files[ fmc.fileIds.indexOf( e.id) ] = e;
 			}
 			else{
-				self.files.push(e);
-				self.fileIds.push(e.id);
+				fmc.files.push(e);
+				fmc.fileIds.push(e.id);
 			}
 		});
 	}
-	self.prototype.getCacheDate = function(){
-		return localStorage.lastUpdated;
-	}
+
 }
 
 var DriveFileRetreival = function(){
 
-	self = this;
+	this.cache = new FileMetaCache();
 
-	self.cache = FileMetaCache();
-
-	self.prototype.init = function(){
-		self.cache.initCache();
+	this.init = function(){
+		this.cache.initCache();
 	}
 
-	self.prototype.loadByDir = function( folderId, callback, datetime ){
-		if(!self.cache.lastUpdated)
-			q = 'modifiedDate >= \''+self.cache.lastUpdated.toISOString()+'\'';
-		else
-			q=null;
+	dfr = this;	// set local context for all functions decalred within this block to prevent confusion. Using self raises some weird issues.
 
-		gapi.client.drive.children.list({
+	/*
+	*	folderId: ID of the folder to retreive.
+	*	callbacks:  
+	*/
+	this.loadByDir = function( folderId, callbacks, datetime ){
+		query = {
             "folderId": folderId,
-            "q":q,
-        }).execute(function(response) {
+            "q":'modifiedDate >= \''+new Date(this.cache.lastUpdated).toISOString()+'\''
+        };
+		if(this.cache.lastUpdated != null)
+			query.q = 'modifiedDate >= \''+new Date(this.cache.lastUpdated).toISOString()+'\'';
 
-            self.cache.pushFiles( response.items );
-            self.cache.cacheFiles( datetime );
-
-            var cachedFiles = [];
-            self.cache.files.forEach(function(item){
+		gapi.client.drive.children.list(query).execute(function(response) {
+			var cachedFiles = [];
+			dfr.cache.files.forEach(function( item ){
             	if( item.parents[0].id == folderId ) 
             		cachedFiles.push( item );
             });
 
-            callback( response.items.concat( cachedFiles ) );
+			totalResponse = response;
 
+			if( response.items == undefined ){
+				totalResponse.items = cachedFiles;
+            	callbacks['finish']( totalResponse );
+            	return;
+			}
+            properResponse = [];
+            itemCount = response.items.length;
+            itemsLoaded = 0;
+
+            
+
+            response.items.forEach(function( item ){
+            	if( item.kind == 'drive#childReference' ){
+            		console.log('need to get more data. for ');
+            		console.log(item);
+					gapi.client.drive.files.get({fileId:item.id}).execute(function( response ){
+						properResponse.push( response );
+						console.log('GOT:')
+						console.log( response );
+						itemsLoaded++;
+						callbacks['metaload']( response, itemCount, itemsLoaded );
+
+						if( itemCount == itemsLoaded ){
+							// Do push and cache after all items are loaded.
+							dfr.cache.pushFiles( properResponse );
+            				dfr.cache.cacheFiles( datetime );
+            				dfr.cache.syncFiles( );
+            				totalResponse.items = properResponse.concat( cachedFiles );
+            				callbacks['finish']( totalResponse );
+						}
+
+					});
+				}
+				else
+				{
+					properResponse.push(item);
+				}
+
+            });
         });
 	}
 
-	self.prototype.loadAllBG = function( callbacks, stepSize ){
+	this.cacheExists = function(){
+		return (this.cache.lastUpdated == null);
+	}
+
+	//Background loading functions.
+	this.loadAllBG = function( callbacks, stepSize ){
 		var numFilesLoaded = 0;
 		gapi.client.drive.files.list({
             "maxResults":stepSize,
         }).execute(function loadNext( response ) {
-            self.cache.pushFiles( response.items );
+            this.cache.pushFiles( response.items );
             
             if( response.items )
             	numFilesLoaded += response.items.length;
-            	callbacks['progress'](numFilesLoaded);
+            	callbacks['progress']( numFilesLoaded );
 
             if( response.pageToken ){
             	gapi.client.drive.files.list({
             	"pageToken":response.pageToken,
-            	}).execute(loadNext);
+            	}).execute( loadNext );
 
             }else{
-            	self.cache.cacheFiles( callbacks['datetime']() );
+            	this.cache.cacheFiles( callbacks['datetime']() );
             	callbacks['finish']();
             }
 
         });
 
 	}
-	self.prototype.loadChangesBG = function( callback, datetime ){
+	this.loadChangesBG = function( callback, datetime ){
 
-		q = 'modifiedDate >= \''+self.cache.lastUpdated.toISOString()+'\'';
+		q = 'modifiedDate >= \''+this.cache.lastUpdated.toISOString()+'\'';
 
 		gapi.client.drive.files.list({
             "q":q,
         }).execute(function(response) {
-            self.cache.pushFiles( response.items );	// store on 'floating' list.
-            self.cache.cacheFiles( datetime );	// cache to local machine with a timestamp.
+            this.cache.pushFiles( response.items );	// store on 'floating' list.
+            this.cache.cacheFiles( datetime );	// cache to local machine with a timestamp.
         });
 
 	}

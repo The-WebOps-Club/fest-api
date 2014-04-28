@@ -23,19 +23,25 @@ MIME_TYPES = {
         "thumbnail", "thumbnailLink", "iconLink"
 ]
 
+// Load required files from googleapis. DO NOT call any of the other functions before this.
 
-var Drive = function(options) {
+
+var Drive = function( options ) {
 
 	self = this // To use in callback functions to avoid this confusion
 
-    self.options = $.extend({}, defaults, options || {});
+    //self.options = $.extend({}, defaults, options || {});
+    console.log( options );
+    self.filesystem = new DriveFileRetreival();
+    self.options = options
     self.dir_contents = null
     self.finish_progress = 1
     self.current_progress = 0
+    
 
     self.init = function() {
         console.log("Init Drive")
-        if (!self.options.authToken || !self.options.developerKey) {
+        if ((self.options.authToken == undefined) || (self.options.developerKey == undefined)) {
             console.log("Auth token, DeveloperKey was invalid")
             return
         }
@@ -45,8 +51,9 @@ var Drive = function(options) {
             expires_in: 2000
         }); // set the access token obtained from the server. OAuth2 automatically logs us in.
 
-        gapi.client.setApiKey(this.options.developerKey); //set our public api key
+        gapi.client.setApiKey(self.options.developerKey); //set our public api key
         gapi.client.load('drive', 'v2', self.gapi_drive_callback); // ask gapi to load API details for the drive api.
+        self.filesystem.init();
     }
 
     self.check_error = function(r) {
@@ -66,7 +73,7 @@ var Drive = function(options) {
 
     self.get_dir_contents = function(fid, callback) {
         fid = fid || $(".drive_parent").data("id") || self.options.rootFolder
-        gapi.client.drive.children.list({
+        /*gapi.client.drive.children.list({
             "folderId": fid,
         }).execute(function(response) {
             self.check_error(response)
@@ -75,7 +82,21 @@ var Drive = function(options) {
             self.current_progress = 0
             callback = callback || self.show_dir_contents
             callback();
-        });
+        });*/
+    
+        // filesystem loads changes and merges with existing objects.
+        self.filesystem.loadByDir( fid, {finish:function(response) {
+                self.check_error(response)
+                self.dir_contents = response.items
+                self.finish_progress = response.items.length
+                self.current_progress = 0
+                callback = callback || self.show_dir_contents
+                callback();
+            },
+            metaload: function(response){ console.log(response) },
+
+        }, new Date() );
+
         gapi.client.drive.files.get({
             "fileId": fid,
             "fields": [ "id", "title", ],
@@ -83,6 +104,7 @@ var Drive = function(options) {
             self.check_error(response)
             self.set_drive_parent(response)
         });
+
     }
     
     self.get_file_meta = function(fid, callback ) {
@@ -274,7 +296,8 @@ var Drive = function(options) {
         	$(".drive_file").not(".template").remove()
         }
         $.each(folder_items, function(i, v) {
-            self.get_file_meta(v.id)
+            callback = self.show_file
+            callback( v );
         })
         $(".drive_refresh").prop("disabled", false).removeClass("disabled")
         $(".drive_back").prop("disabled", false).removeClass("disabled")
