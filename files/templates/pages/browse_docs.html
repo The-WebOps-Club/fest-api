@@ -71,7 +71,7 @@
                 <th class="title ">TITLE</th>
                 <th class="last_modified">LAST MODIFIED</th>
             </tr>
-            <tr class="drive_file template file_template" style="display : none;" draggable>
+            <tr class="drive_file template file_template" style="display : none;" draggable="true">
                 <td class="checkbox">
                     <div class="drive_checkbox">
                         <div class="border"></div>
@@ -246,11 +246,35 @@ var authToken = '{{ google_access_token }}';
 
 drive = null;
 
+function setup_file_events(el) {
+    var $el = $(el)
+    //Select file
+    $el.click ( function () {
+        var $el = $(this)
+        if ( $el.hasClass("select") ) {
+            $el.removeClass("select")
+            $el.find(".drive_checkbox").removeClass("icon-tick")
+        }
+        else {
+            $el.addClass("select")
+            $el.find(".drive_checkbox").addClass("icon-tick")
+        }
+    })
+    // Move file around
+    $el.bind("dragstart", function(e) {
+        var $el = $(this)
+        e = e.originalEvent
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.dropEffect = 'move';
+        e.dataTransfer.setData("Text", $el.data("id"))
+    }) 
+}
 function drive_callback() {
     drive = new Drive({
         "authToken": authToken,
         "developerKey": developerKey,
         "rootFolder": rootFolder,
+        "fileAddCallback": setup_file_events,
     })
     init_button_bar()
 }
@@ -293,23 +317,23 @@ function init_button_bar() {
     })
     $('#drive_upload_chooser').change(upload_file);
 
-    // Upload drag n drop
-    var $holder = $('.drive_list'),
-        state = document.getElementById('status');
+    // Upload drag n drop - from my comp
+    var $holder = $('.drive_parent')
 
-    if (typeof window.FileReader === 'undefined') {
+    /*if (typeof window.FileReader === 'undefined') {
         $(".drive_messages").append("Ouch, no drag and drop feature :(");
     } else {
         $(".drive_messages").append("Drag and Drop files to upload to this folder !");
-    }
+    }*/
 
     $holder.bind("dragenter dragover", function(e) {
         e = e.originalEvent
         var $drive_file = $(e.target).closest(".drive_file")
         if ( $drive_file.data("folder") != "yes" ) {
-            $drive_file = $(".drive_list")
+            $(".drive_parent").addClass("ondrag")
+        } else {
+            $drive_file.addClass("ondrag")
         }
-        $drive_file.addClass("ondrag")
         
         return false;
     });
@@ -317,43 +341,55 @@ function init_button_bar() {
         e = e.originalEvent
         var $drive_file = $(e.target).closest(".drive_file")
         if ( $drive_file.data("folder") != "yes" ) {
-            $drive_file = $(".drive_list")
+            $(".drive_parent").removeClass("ondrag")
+        } else {
+            $drive_file.removeClass("ondrag")
         }
-        $drive_file.removeClass("ondrag")
         
         return false;
     });
     $holder.bind("drop", function(e) {
         e.preventDefault();
-        e = e.originalEvent
-        var $drive_file = $(e.target).closest(".drive_file")
-        if ( $drive_file.data("folder") != "yes" ) {
-            $drive_file = $(".drive_list").removeClass("ondrag")
-        }
-        $drive_file.removeClass("ondrag")
         //e.stopPropagation();
         //e.originalEvent.preventDefault();
         //e.originalEvent.stopPropagation();
-        e.$drag_folder = $drive_file
-        console.log(e)
-        upload_file(e, "drag")
+        e = e.originalEvent
+        var $drive_file = $(e.target).closest(".drive_file")
+        if ( $drive_file.data("folder") != "yes" ) {
+            if ( e.dataTransfer.getData("Text") ) // move fail
+                return
+            $drive_file = $(".drive_parent")
+        } else {
+            $drive_file.removeClass("ondrag")
+            if ( e.dataTransfer.getData("Text") )
+                move_files([ { "id" : e.dataTransfer.getData("Text") } ], { "id" : $drive_file.data("id") })
+                return
+        }
+        
+        // Upload file !
+        if ( ! e.dataTransfer.getData("Text") )
+            e.$drag_folder = $drive_file 
+            upload_file(e, "drag")
+    
         return false;
     });
 }
 
 function upload_file(e, drag) {
     $(".drive_upload").prop("disabled", true).addClass("disabled").find(".text").text("Uploading...")
-
+    var files_data = "", to_folder = ""
     if ( drag == "drag" ) {
-        var files_data = e.dataTransfer.files
-        var to_folder = e.$drag_folder.data("id")
+        files_data = e.dataTransfer.files
+        to_folder = e.$drag_folder.data("id")
     } else {
-        var files_data = e.target.files
-        var to_folder = $(".drive_parent").data("id")
+        files_data = e.target.files
+        to_folder = $(".drive_parent").data("id")
     }
-    
-    if ( files_data.length > 1)
-        alert("Only 1 file at a time ! Uploading the first file ...")
+    console.log(to_folder)
+    if ( files_data.length > 1) {
+        alert("Only 1 file at a time !")
+        return
+    }
     drive.upload_file(files_data[0], to_folder, function() {
         $(".drive_upload").prop("disabled", false).removeClass("disabled").find(".text").text("Upload")
         drive.get_dir_contents()
@@ -378,25 +414,34 @@ function move_picker() {
     picker.setVisible(true);
 }
 
-function move_picker_done(data) {
-    console.log(data)
+function move_picker_done(data, not_picker) {
     f = data
-    if (data.action == google.picker.Action.PICKED) {
+    if ( not_picker || data.action == google.picker.Action.PICKED) {
         folder = data.docs[0];
         if (folder.mimeType != MIME_TYPES["folder"]) {
             console.log("Woah there : You did not select a folder")
             alert("Woah there : You did not select a folder")
             return
         } else {
-            drive.move_files($.map($(".drive_parent .drive_file.select"), function(val, i) {
-                return {
-                    "id": $(val).data("id"),
-                    "old_parent_id": $(".drive_parent").data("id"),
-                    "new_parent_id": folder.id,
-                }
-            }))
+            move_files($.map(
+                $(".drive_parent .drive_file.select"), function(val, i) {
+                return {"id" : $(val).data("id")};
+            }), folder)
         }
     }
+}
+
+function move_files (elems, next_folder) {
+    console.log(elems);
+    console.log(next_folder)
+    drive.move_files($.map(elems, function(val, i) {
+        console.log(next_folder)
+        return {
+            "id": val.id,
+            "old_parent_id": $(".drive_parent").data("id"),
+            "new_parent_id": next_folder.id,
+        }
+    }))
 }
 </script>
 

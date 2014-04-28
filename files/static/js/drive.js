@@ -2,6 +2,7 @@ var defaults = {
     "authToken": null,
     "developerKey": null,
     "rootFolder": null,
+    "fileAddCallback": function(el) {},
 },
 MIME_TYPES = {
 	"audio" : "application/vnd.google-apps.audio",
@@ -129,6 +130,7 @@ var Drive = function(options) {
     self.move_files = function(file_details, callback) {
     	self.finish_progress = file_details.length * 2
     	self.current_progress = 0
+        console.log(file_details)
     	$.each(file_details, function(i, v) {
 		    gapi.client.drive.parents.delete({
 		        'fileId': v.id,
@@ -145,7 +147,7 @@ var Drive = function(options) {
             gapi.client.drive.parents.insert({
 		        'fileId': v.id,
 		        'resource': {
-		        	"id": v.new_parent_id,
+		        	'id': v.new_parent_id,
 		        }
 		    }).execute(function(response) {
 		        self.check_error(response)
@@ -320,25 +322,10 @@ var Drive = function(options) {
         	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?id=" + $el.data("id"))
         }
         
-        self.file_events($el)
+        self.options.fileAddCallback($el)
 
         $el.show()
         $(".drive_parent").append($el)
-    }
-
-    self.file_events = function (el) {
-    	var $el = $(el)
-    	$el.click ( function () {
-        	var $el = $(this)
-        	if ( $el.hasClass("select") ) {
-        		$el.removeClass("select")
-	        	$el.find(".drive_checkbox").removeClass("icon-tick")
-        	}
-        	else {
-        		$el.addClass("select")
-	        	$el.find(".drive_checkbox").addClass("icon-tick")
-	        }
-        })
     }
 
     self.show_parent = function (fid, num) {

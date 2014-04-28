@@ -1,5 +1,6 @@
-<!DOCTYPE html>{% load staticfiles %}
-
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load compress %}
 <html lang="en">
 
 <head>
@@ -23,7 +24,8 @@
             localStorage.clear(); /* kill cache */
         </script>
     {% endif %}
-
+    
+    {% compress css %}
     <!-- Include stylesheets here -->
     <link href="{% static 'css/erp-bootstrap.css' %}" rel="stylesheet" media="screen">
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
@@ -36,13 +38,17 @@
     
     <link href="{% static 'css/icons-color.css'%}" rel="stylesheet" media="screen">
     <!--<link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">-->
+    {% endcompress %}
 
+    {% compress js %}
     <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
+    {% endcompress %}
 
     <link rel="shortcut icon" href="{% static 'img/fest_pics/favicon.ico' %}">
     
-    {% block extra_css %}{% endblock %} 
+    {% compress css %}{% block extra_css %}{% endblock %} {% endcompress %}
 
+    {% compress js %}
     {% if not DEBUG %}
     <script type="text/javascript">
         (function(i, s, o, g, r, a, m) {
@@ -61,6 +67,7 @@
         //ga("send", "pageview");
     </script>
     {% endif %}
+    {% endcompress %}
 </head>
 
 <body>
@@ -101,6 +108,7 @@
     </div>
 
 
+    {% compress js %}
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-twipsy.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-alerts.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-buttons.js' %}"></script>
@@ -126,10 +134,13 @@
     <script type="text/javascript" src='{% static "js/gravatar.js" %}'></script>
 
     <script type="text/javascript" src='{% static "js/jquery.autosize.js" %}'></script>
-    
+    {% endcompress %}
+
+    {% compress css %}
     <link rel='stylesheet' href='{%static "css/select2.css"%}'/>
+    {% endcompress %}
 
-
+    {% compress js %}
     {% block extra_js %}{% endblock %}
     <script>
     	site_url = "{{ SITE_URL }}"
@@ -166,6 +177,7 @@
             on_dom_change()
         })
     </script>
+    {% endcompress %}
 </body>
 
 </html>
