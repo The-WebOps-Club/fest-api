@@ -385,7 +385,7 @@ function upload_file(e, drag) {
         files_data = e.target.files
         to_folder = $(".drive_parent").data("id")
     }
-    console.log(to_folder)
+    
     if ( files_data.length > 1) {
         alert("Only 1 file at a time !")
         return
@@ -432,8 +432,6 @@ function move_picker_done(data, not_picker) {
 }
 
 function move_files (elems, next_folder) {
-    console.log(elems);
-    console.log(next_folder)
     drive.move_files($.map(elems, function(val, i) {
         console.log(next_folder)
         return {

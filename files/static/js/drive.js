@@ -130,7 +130,7 @@ var Drive = function(options) {
     self.move_files = function(file_details, callback) {
     	self.finish_progress = file_details.length * 2
     	self.current_progress = 0
-        console.log(file_details)
+        
     	$.each(file_details, function(i, v) {
 		    gapi.client.drive.parents.delete({
 		        'fileId': v.id,

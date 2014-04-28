@@ -69,14 +69,17 @@ def parse_atwho(my_text, tags, at='@' ):
             icon_link = static("img/subdept.png")
         else:
             alt_text = "User"
-            icon_link = static("img/user.png")
+            if tagged_obj.profile.gender == "F":
+                icon_link = static("img/user-female.png")
+            else:
+                icon_link = static("img/user-male.png")
 
         if isinstance(tagged_obj, Dept) or isinstance(tagged_obj, Subdept):
             link_href = reverse("wall", kwargs={"wall_id" : tagged_obj.wall.pk})
             my_text = my_text.replace(at + tagged_obj.name, link_text % (alt_text, icon_link, tagged_obj.name, link_href) )
         else:
             link_href = reverse("wall", kwargs={"wall_id" : tagged_obj.erp_profile.wall.pk})
-            my_text = my_text.replace(at + tagged_obj.first_name+"_"+tagged_obj.last_name, link_text %(alt_text, icon_link, tagged_obj.get_full_name(), link_href) )
+            my_text = my_text.replace(at + tagged_obj.first_name+" "+tagged_obj.last_name, link_text %(alt_text, icon_link, tagged_obj.get_full_name(), link_href) )
         notification_list.append(tagged_obj)
     return my_text, notification_list
     
