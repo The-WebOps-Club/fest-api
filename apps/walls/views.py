@@ -64,6 +64,7 @@ def wall (request, wall_id=None):
     # Logic
     wall_posts = Post.objects.filter(wall = wall).order_by('-time_updated')[:5]
     wall_parent = wall.parent
+
     local_context = {
     	"current_page" : "wall",
         "wall" : wall,

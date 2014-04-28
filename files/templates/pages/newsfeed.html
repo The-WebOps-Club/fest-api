@@ -168,6 +168,7 @@
 	        $('#main_body_content .see_more_notifications').html('No more to load');
 	    }
 	    on_dom_change()
+
 	}
 
 	$( document ).ready(function() {    
@@ -194,9 +195,9 @@
         gapi.auth.setToken({
             access_token: authToken,
             expires_in: 2000
-        });
-        gapi.client.setApiKey(developerKey);
-        gapi.client.load('drive', 'v2', setup_autocomplete_files );
+        }); // set the access token obtained from the server. OAuth2 automatically logs us in.
+        gapi.client.setApiKey(developerKey); //set our public api key
+        gapi.client.load('drive', 'v2', setup_autocomplete_files ); // ask gapi to load API details for the drive api.
     }
 </script>
 <script type='text/javascript' src='https://apis.google.com/js/client.js?onload=initDrive'></script>

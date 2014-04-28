@@ -63,7 +63,8 @@ function setup_autocomplete_files() {
                     "small": "",
                     "iconlink": "/static/img/loading-dice.gif",
                 }]);
-                if (gapi.client && gapi.client.drive) {
+                /* check if gapi is loaded, authorized and linked with drive*/
+                if ( gapi && gapi.client && gapi.client.drive) {
                     if (query != '') {
                         gapi.client.drive.files.list({
                             q: 'title contains \'' + query + '\'',
