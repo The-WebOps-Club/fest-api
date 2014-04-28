@@ -128,10 +128,10 @@ function setup_autocomplete_lists() {
 
     if (atwho_user_list) {
         atwho_user_list = $.map(atwho_user_list, function(value, i) {
-            if (value["first_name"] + "_" + value["last_name"] != "_" ) // To make sure no blank users are taken. eg : superusers
+            if (value["first_name"] + " " + value["last_name"] != " " ) // To make sure no blank users are taken. eg : superusers
                 return {
                     "id": value["id"],
-                    "name": value["first_name"] + "_" + value["last_name"],
+                    "name": value["first_name"] + " " + value["last_name"],
                     "small": value["email"]
                 };
         })
@@ -154,8 +154,6 @@ function setup_autocomplete_lists() {
             };
         })
     }
-
-
 
     at_config = {
         at: "@",
@@ -223,5 +221,5 @@ function setup_autocomplete_lists() {
             all_list[i]['name'] +
             "</option>")
     }
-
+    $(".right_search .searchbar input").keyup()
 }

@@ -297,7 +297,7 @@ var Drive = function(options) {
         $el.data("id", file_data.id)
         $el.find(".title").text(file_data.title)
         if ( ! file_data.labels.viewed ) {
-        	$el.find(".title").addClass("bold")
+        	//$el.find(".title").addClass("bold") // This viewswed is for fest-api acct. Not other junta
         } else if ( file_data.labels.trashed ) {
         	$el.find(".title").addClass("strike")
         	$el.find(".title").prepend("<i class='icon-trash drive_icon'></i>")

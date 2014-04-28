@@ -902,7 +902,8 @@
         if (should_start_with_space) {
           flag = '(?:^|\\s)' + flag;
         }
-        regexp = new RegExp(flag + '([A-Za-z0-9_\+\-]*)$|' + flag + '([^\\x00-\\xff]*)$', 'gi');
+        allowed_regexp = "([A-Za-z0-9 _\+\-]*)"
+        regexp = new RegExp(flag + allowed_regexp + '$|' + flag + '([^\\x00-\\xff]*)$', 'gi');
         match = regexp.exec(subtext);
         if (match) {
           return match[2] || match[1];
@@ -1043,7 +1044,8 @@
       start_with_space: true,
       limit: 5,
       max_len: 20,
-      display_timeout: 300
+      display_timeout: 300,
+      single_word: false,
     };
   });
 

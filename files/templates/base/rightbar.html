@@ -8,7 +8,7 @@
                 <!-- <textarea class="new_post_to" placeholder="To " rows="1"></textarea> -->
                 <textarea class="new_post atwho_at_config  resize_textarea" name="new_post" placeholder="Quick Post" rows="3"></textarea>
 
-                <a class="pull-right btn primary new_post_submit" href="javascript:void(0)" data-loading-text="Posting ..." data-complete-text="Posted"> Create Post </a>
+                <a class="pull-right btn primary new_post_submit" href="javascript:void(0)" data-loading-text="Posting ..." data-complete-text="Posted"> Quick Post </a>
             </form>
        </div>
     </div>
@@ -161,11 +161,11 @@
 
         $(".right_search .searchbar input").keyup( function (e) {
             var el = this; var $el = $(el);
-            if ( !atwho_user_list ) {
+            if ( !all_list ) {
                 console.log("Atwho lists not loaded yet.")
                 return
             }
-            search_list = right_search($el.val(), atwho_user_list, "name")
+            search_list = right_search($el.val(), all_list, "name")
             
             $parent = $el.closest(".rightbar").find(".right_data_inner")
             $template = $parent.find(".template.data_item")
@@ -183,9 +183,6 @@
                 })
             }
             on_dom_change()
-        })
-        setTimeout(function() {$(".right_search .searchbar input").keyup()}, 500)
-        
-
+        }).keyup()
     });
 </script>
