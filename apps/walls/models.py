@@ -18,6 +18,8 @@ from django.core.signals import request_finished
 # View functions
 # Misc
 from misc.utils import *
+from annoying.functions import get_object_or_None
+import notifications
 # Python
 import random
 
@@ -111,6 +113,31 @@ class Comment(PostInfo):
     class Meta:
         get_latest_by = 'time_created'
 
+    def send_notif(self, notif_list=None):
+        # Had to do this because signals refuse to work.
+        parent_post = self.parent_post.first()
+        parent_wall = parent_post.wall
+        if not notif_list:
+            notif_list  = parent_post.notify_users() # Get post notifs
+            notif_list.update(parent_wall.notify_users()) # Get my wall notifs
+        for recipient in notif_list:
+            # Check if receipient already has notif on this parent_post
+            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=parent_post.id)
+            if curr_notif:
+                curr_notif.mark_as_read()
+            by = self.by
+            # Now create a new unread notif
+            if recipient != by:
+                notifications.notify.send(
+                    sender=by, # The model who wrote the post - USER
+                    recipient=recipient, # The model who sees the post - USER
+                    verb='has commented on', # verb
+                    action_object=self, # the model on which something happened - POST
+                    target=parent_post, # The model which got affected - POST
+                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+                )
+
+
 
 class Post(PostInfo):
     """
@@ -137,13 +164,13 @@ class Post(PostInfo):
         """
             An extended save method to handle   
                 - M2M associated with the model
-                - Add all the 
+                - Add all the   
         """
         
         temp = super(Post, self).save(*args, **kwargs)
         return
 
-    def add_notifications(self, notif_list):
+    def add_notifications(self, notif_list, send_notif=False):
         from apps.users.models import Dept, Subdept
     	notifications_user = []
     	notifications_subdept = []
@@ -158,6 +185,29 @@ class Post(PostInfo):
     	self.notification_users.add(*notifications_user)
     	self.notification_subdepts.add(*notifications_subdept)
     	self.notification_depts.add(*notifications_dept)
+
+    def send_notif(self, notif_list=None):
+        # Had to do this because signals refuse to work.
+        if not notif_list:
+            notif_list  = self.notify_users() # Get my notifs
+            notif_list.update(self.wall.notify_users()) # Get my wall notifs
+        for recipient in notif_list:
+            # Check if receipient already has notif on this post
+            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=self.id)
+            if curr_notif:
+                curr_notif.mark_as_read()
+            by = self.by
+            if recipient != by:
+                notifications.notify.send(
+                    sender=by, # The model who wrote the post - USER
+                    recipient=recipient, # The model who sees the post - USER
+                    verb='has posted on', # verb
+                    action_object=self, # the model on which something happened - POST
+                    target=self, # The model which got affected - POST
+                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+                )
+
+
 
     def notify_users(self):
        	users = set()

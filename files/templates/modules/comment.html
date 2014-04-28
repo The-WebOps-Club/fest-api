@@ -109,8 +109,8 @@
 	function dajax_create_comment(data) {
         $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
 
-        $("#post_" + data.post_id + " .post_btn").removeClass("disabled").prop("disabled", false).removeData("clicked")
-        $("#post_" + data.post_id + " .comment_textarea").prop("disabled", false)
+        $("#post_" + data.post_id + " .comment_textarea").removeClass("disabled").prop("disabled", false).removeData("clicked")
+        $("#post_" + data.post_id + " .post_btn").removeClass("disabled").prop("disabled", false)
 
         $("#post_" + data.post_id + " .comment_textarea").val("")
         $("#post_" + data.post_id + " .textarea_atwho_list").remove()
@@ -120,7 +120,8 @@
 	$( document ).ready(function() {
 		
 		$(".post_btn").click(function() {
-			$el = $(this).closest("form").find(".comment_textarea")
+			$el_form = $(this).closest("form")
+			$el = $el_form.find(".comment_textarea")
 			if ( $el.data("clicked") )
 				return
         	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
@@ -128,7 +129,7 @@
         		'comment_form': $el.closest("form").serialize(true)
         	});
         	$el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
-        	$el.closest("form").find(".comment_textarea")
+        	$el_form.find(".post_btn").addClass("disabled").prop("disabled", true)
 		})
 
 		$(".comment_textarea")
