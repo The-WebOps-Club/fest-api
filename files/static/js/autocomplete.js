@@ -13,17 +13,14 @@ function get_autocomplete_lists(url1, url2, url3) {
     // Autocomplete for Users, Dept, Subdept
     $.getJSON(url1, function(json) {
         atwho_user_list = json;
-
         sync_autocomplete();
     });
     $.getJSON(url2, function(json) {
         atwho_subdept_list = json;
-
         sync_autocomplete();
     });
     $.getJSON(url3, function(json) {
         atwho_dept_list = json;
-
         sync_autocomplete();
     });
 
@@ -124,8 +121,7 @@ function setup_autocomplete_lists() {
             } else if ($li.data("small") == "Subdept") {
                 owner_type = "subdept"
             }
-            document.location.href = "/wall/" + owner_type + "/" + $li.data("id")
-            console.log("/wall/" + owner_type + $li.data("id"))
+            document.location.href = site_url + "wall/" + owner_type + "/" + $li.data("id")
             return value;
         },
     }
