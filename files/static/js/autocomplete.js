@@ -13,17 +13,14 @@ function get_autocomplete_lists(url1, url2, url3) {
     // Autocomplete for Users, Dept, Subdept
     $.getJSON(url1, function(json) {
         atwho_user_list = json;
-
         sync_autocomplete();
     });
     $.getJSON(url2, function(json) {
         atwho_subdept_list = json;
-
         sync_autocomplete();
     });
     $.getJSON(url3, function(json) {
         atwho_dept_list = json;
-
         sync_autocomplete();
     });
 
@@ -73,27 +70,25 @@ function setup_autocomplete_files() {
                             q: 'title contains \'' + query + '\'',
                             maxResults: 5
                         }).execute(function(response) {
-                            console.log( response.items );
-                            console.log( "Is undefined "+(response.items==undefined));
-                            if( response.items != undefined )
+                            if ( response.items.length == 0 ) {
+                                callback($.map(response.items, function(value, i) {
+                                    return {
+                                        "id": "",
+                                        "name": "No files found !",
+                                        "small": "",
+                                        "iconlink": "/static/img/loading-dice.gif",
+                                    }
+                                }));
+                            }
+                            else {
                                 callback($.map(response.items, function(value, i) {
                                     return {
                                         "id": value['id'],
                                         "name": value['title'],
                                         "small": value['mimeType'],
-                                        "iconlink": value['iconLink']
+                                        "iconlink": value['iconLink'],
                                     }
                                 }));
-                            else{
-                                console.log('no results received');
-                                console.log(callback);
-                                callback([{
-                                    "id": "SOMETHING",
-                                    "name": "No Results",
-                                    "small": "something",
-                                    "iconlink": "/static/img/loading-dice.gif",
-                                }]);
-                                console.log('callback called');
                             }
                         });
                     } else {
@@ -107,12 +102,9 @@ function setup_autocomplete_files() {
                 }
             },
             before_insert: function(value, $li) {
-                console.log($li);
-                console.log(value);
                 if (this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0) {
                     this.$inputor.after("<input class='textarea_atwho_list' name='atwho_files' value='" + $li.data("filename") + "--@@!@@--" + $li.data("id") + "--@@!@@--" + $li.data("icon") + "' type='hidden'/>");
                 }
-                console.log($li);
                 return value;
             },
         },
@@ -130,19 +122,19 @@ function setup_autocomplete_lists() {
             } else if ($li.data("small") == "Subdept") {
                 owner_type = "subdept"
             }
-            document.location.href = "/wall/" + owner_type + "/" + $li.data("id")
-            console.log("/wall/" + owner_type + $li.data("id"))
+            document.location.href = site_url + "wall/" + owner_type + "/" + $li.data("id")
             return value;
         },
     }
 
     if (atwho_user_list) {
         atwho_user_list = $.map(atwho_user_list, function(value, i) {
-            return {
-                "id": value["id"],
-                "name": value["first_name"] + "_" + value["last_name"],
-                "small": value["email"]
-            };
+            if (value["first_name"] + "_" + value["last_name"] != "_" ) // To make sure no blank users are taken. eg : superusers
+                return {
+                    "id": value["id"],
+                    "name": value["first_name"] + "_" + value["last_name"],
+                    "small": value["email"]
+                };
         })
     }
     if (atwho_dept_list) {

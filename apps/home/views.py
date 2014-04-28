@@ -58,7 +58,7 @@ def newsfeed(request):
         ORDER BY a.timestamp DESC
         LIMIT 5
     """)
-    print [i for i in notifications_list]
+    
     local_context = {
         "current_page" : "newsfeed",
         "notifications" : notifications_list,
@@ -100,7 +100,7 @@ def notifications(request):
 def read_notification(request, notif_id):
     user = request.user
     if notif_id == "all":
-        all_notifs = user.notifications
+        all_notifs = user.notifications.unread()
         for i in all_notifs:
             i.public = False
             i.save()

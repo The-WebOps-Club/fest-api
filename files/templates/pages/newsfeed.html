@@ -157,7 +157,7 @@
 <script type="text/javascript">
 	var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
 	var rootFolder = '{{ SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID }}';
-	var authToken = '{{ token }}';
+	var authToken = '{{ google_access_token }}';
 	function dajax_get_notifications(data) {
 	    if (!data.exhausted){
 	        $('#main_body_content .see_more_notifications').before(data.append_string).removeData("clicked");
@@ -168,6 +168,7 @@
 	        $('#main_body_content .see_more_notifications').html('No more to load');
 	    }
 	    on_dom_change()
+
 	}
 
 	$( document ).ready(function() {    
@@ -189,7 +190,7 @@
 		    }	
 		}).scroll();
 	})
-	 function initDrive( ){
+	function initDrive( ){
         console.log('initializing drive')
         gapi.auth.setToken({
             access_token: authToken,

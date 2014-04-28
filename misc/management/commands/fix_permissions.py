@@ -11,20 +11,13 @@ class Command(BaseCommand):
 
     def handle(self, arg=None, **options):
 
-        total = Wall.objects.count() + Post.objects.count()
+        total = Wall.objects.count()
+        count = 0
         for w in Wall.objects.all():
-            w.notification_users.add(*User.objects.all())
-            w.owners.add(*User.objects.all())
-            w.visible_to.add(*User.objects.all())
+            w_parent = w.parent
+            w.add_notifications([w_parent])
             count += 1
             print "Done : ", count, "of", total
 
-        for p in Post.objects.all():
-            p.notification_users.add(*User.objects.all())
-            p.visible_to.add(*User.objects.all())
-            p.is_public = True
-            count += 1
-            print "Done : ", count, "of", total
-            
-        self.stdout.write("Everyone can access everything.")
+        self.stdout.write("Everyone can access their own walls.")
 

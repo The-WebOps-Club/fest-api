@@ -60,6 +60,7 @@ class Dept(models.Model):
     def profile_pic(self):
         temp = settings.MEDIA_URL + "profile/dept/dp/" + self.id
         return temp
+    
     def banner_pic(self):
         temp = settings.MEDIA_URL + "profile/dept/banner/" + self.id
         return temp
@@ -164,6 +165,11 @@ class UserProfile(models.Model): # The corresponding auth user
             return fb_accts[0].uid
         return ""
         
+    def incomplete(self):
+        self_user = self.user
+        return self_user.get_full_name() and self.mobile_number and \
+            self_user.email
+
     def __unicode__(self):
         return self.user.first_name
     
@@ -200,7 +206,7 @@ class ERPProfile(models.Model):
     @property
     def name(self):
         return self.user.get_full_name()
-    
+
     def get_name(self):
         if self.nickname:
             return self.nickname
@@ -209,6 +215,11 @@ class ERPProfile(models.Model):
         
     def __unicode__(self):
         return self.get_name()
+
+    def incomplete(self):
+        return self.user.get_full_name() and self.user.email and \
+            self_user.email
+
     
     # Methods to check for position/role
     def is_coord(self, request):

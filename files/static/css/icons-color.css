@@ -9,7 +9,7 @@
     line-height: 14px;
     vertical-align: text-top;
     background-repeat: no-repeat;
-    background-image: url('/static/img/icons-glossy.png');
+    background-image: url('../img/icons-glossy.png');
     display:inline-block;
 }
 
@@ -379,5 +379,10 @@
 .icon-trash {
   background-position: -282px -42px;
 }
+.icon-group {
+  background-position: -302px -42px;
+}
+
+
 
 

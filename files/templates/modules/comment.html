@@ -29,7 +29,7 @@
 				</form>
 			</div>
         {% else %}
-	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : {% autoescape off %}{{ comment.description|markdown:"default"|strip_first_p }} {% endautoescape %}
+	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : <span class="comment_text">{% autoescape off %}{{ comment.description|markdown:"default"|strip_first_p }} {% endautoescape %}</span>
 	        <div class="news_comment_info">
 	            {{ comment.time_created|naturaltime }} 
 	            {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
@@ -86,14 +86,31 @@
 		font-size: 13px;
 		float : right;	
 	}
+/*
+    .news_comment_body .comment_text a {
+        text-decoration: none;
+        border: 1px #AAA solid;
+        background-color: #FFF;
+        border-radius: 5px;
+        padding-right: 3px;
+        padding-left: 3px;
+        padding-top: 2px;
+    }
+    .news_comment_body .comment_text img{
+        height : 14px;
+        width : 14px;
+    }
+    .news_comment_body .comment_text a:hover {
+        background-color:#CCC;
+    }*/
 </style>
 
 <script>
 	function dajax_create_comment(data) {
         $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
 
-        $("#post_" + data.post_id + " .post_btn").removeClass("disabled").prop("disabled", false).removeData("clicked")
-        $("#post_" + data.post_id + " .comment_textarea").prop("disabled", false)
+        $("#post_" + data.post_id + " .comment_textarea").removeClass("disabled").prop("disabled", false).removeData("clicked")
+        $("#post_" + data.post_id + " .post_btn").removeClass("disabled").prop("disabled", false)
 
         $("#post_" + data.post_id + " .comment_textarea").val("")
         $("#post_" + data.post_id + " .textarea_atwho_list").remove()
@@ -103,7 +120,8 @@
 	$( document ).ready(function() {
 		
 		$(".post_btn").click(function() {
-			$el = $(this).closest("form").find(".comment_textarea")
+			$el_form = $(this).closest("form")
+			$el = $el_form.find(".comment_textarea")
 			if ( $el.data("clicked") )
 				return
         	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
@@ -111,7 +129,7 @@
         		'comment_form': $el.closest("form").serialize(true)
         	});
         	$el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
-        	$el.closest("form").find(".comment_textarea")
+        	$el_form.find(".post_btn").addClass("disabled").prop("disabled", true)
 		})
 
 		$(".comment_textarea")

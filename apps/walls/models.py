@@ -18,6 +18,8 @@ from django.core.signals import request_finished
 # View functions
 # Misc
 from misc.utils import *
+from annoying.functions import get_object_or_None
+import notifications
 # Python
 import random
 
@@ -31,15 +33,12 @@ class Wall(models.Model):
     """
     
     # Basic information
-    name                = models.CharField(max_length=60, unique=True)
+    name                 = models.CharField(max_length=60)
     
     # Relations with other models
-    # Owners can view all the posts and make posts, For a department they are the Department Junta
-    owners              = models.ManyToManyField(User, null=True, blank=True, related_name='walls')
-    # People who get notifications about this wall
-    notification_users  = models.ManyToManyField(User, null=True, blank=True, related_name='notified_wall')
-    # People who can see a wall
-    visible_to          = models.ManyToManyField(User, null=True, blank=True, related_name='visible_wall')
+    notification_users   = models.ManyToManyField(User, null=True, blank=True, related_name='notified_wall')
+    notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_wall')
+    notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_wall')
     
     # Analytics
 
@@ -57,18 +56,40 @@ class Wall(models.Model):
     @property
     def parent(self):
         temp = None
-        if hasattr(self, "person"):
-            return self.person
-        elif hasattr(self, "subdept"):
+        if hasattr(self, "person"): # User
+            return self.person.user
+        elif hasattr(self, "subdept"): # Subdept
             return self.subdept
-        elif hasattr(self, "dept"):
+        elif hasattr(self, "dept"): # Dept
             return self.dept
         print "No parent found"
         return temp
     
+    def add_notifications(self, notif_list):
+        from apps.users.models import ERPProfile, Dept, Subdept
+        notifications_user = []
+        notifications_subdept = []
+        notifications_dept = []
+        for i in notif_list: # Adding to lists so addition to db can be done in batch
+            if isinstance(i, User):
+                notifications_user.append(i)
+            elif isinstance(i, ERPProfile):
+                notifications_user.append(i.user)
+            elif isinstance(i, Subdept):
+                notifications_subdept.append(i)
+            elif isinstance(i, Dept):
+                notifications_dept.append(i)
+        self.notification_users.add(*notifications_user)
+        self.notification_subdepts.add(*notifications_subdept)
+        self.notification_depts.add(*notifications_dept)
+
     def notify_users(self):
         users = set()
         users.update(self.notification_users.all())
+        for dept in self.notification_depts.all():
+            users.update(dept.related_users())
+        for sub_dept in self.notification_subdepts.all():
+            users.update(sub_dept.related_users())
         return users
     
     def __unicode__(self):
@@ -111,6 +132,31 @@ class Comment(PostInfo):
     class Meta:
         get_latest_by = 'time_created'
 
+    def send_notif(self, notif_list=None):
+        # Had to do this because signals refuse to work.
+        parent_post = self.parent_post.first()
+        parent_wall = parent_post.wall
+        if not notif_list:
+            notif_list  = parent_post.notify_users() # Get post notifs
+            notif_list.update(parent_wall.notify_users()) # Get my wall notifs
+        for recipient in notif_list:
+            # Check if receipient already has notif on this parent_post
+            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=parent_post.id)
+            if curr_notif:
+                curr_notif.mark_as_read()
+            by = self.by
+            # Now create a new unread notif
+            if recipient != by:
+                notifications.notify.send(
+                    sender=by, # The model who wrote the post - USER
+                    recipient=recipient, # The model who sees the post - USER
+                    verb='has commented on', # verb
+                    action_object=self, # the model on which something happened - POST
+                    target=parent_post, # The model which got affected - POST
+                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+                )
+
+
 
 class Post(PostInfo):
     """
@@ -121,12 +167,9 @@ class Post(PostInfo):
     
     # Relations with other models - Users
     notification_users  = models.ManyToManyField(User, null=True, blank=True, related_name='notified_post')
-    visible_to          = models.ManyToManyField(User, null=True, blank=True, related_name='visible_post')
-    
-    # Dept and Sub-dept
     notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_post')
     notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_post')
-
+    
     is_public           = models.BooleanField(default=True)
     
     # Relations with other models - Comments
@@ -137,36 +180,60 @@ class Post(PostInfo):
         """
             An extended save method to handle   
                 - M2M associated with the model
-                - Add all the 
+                - Add all the   
         """
         
         temp = super(Post, self).save(*args, **kwargs)
         return
 
     def add_notifications(self, notif_list):
-        from apps.users.models import Dept, Subdept
-    	notifications_user = []
-    	notifications_subdept = []
-    	notifications_dept = []
-    	for i in notif_list:
-    		if isinstance(i, User):
-    			notifications_user.append(i)
-    		elif isinstance(i, Subdept):
-    			notifications_subdept.append(i)
-    		elif isinstance(i, Dept):
-    			notificationtypes_dept.append(i)
-    	self.notification_users.add(*notifications_user)
-    	self.notification_subdepts.add(*notifications_subdept)
-    	self.notification_depts.add(*notifications_dept)
+        from apps.users.models import ERPProfile, Dept, Subdept
+        notifications_user = []
+        notifications_subdept = []
+        notifications_dept = []
+        for i in notif_list:
+            if isinstance(i, User):
+                notifications_user.append(i)
+            elif isinstance(i, ERPProfile):
+                notifications_user.append(i.user)
+            elif isinstance(i, Subdept):
+                notifications_subdept.append(i)
+            elif isinstance(i, Dept):
+                notifications_dept.append(i)
+        self.notification_users.add(*notifications_user)
+        self.notification_subdepts.add(*notifications_subdept)
+        self.notification_depts.add(*notifications_dept)
 
     def notify_users(self):
-       	users = set()
-       	users.update(self.notification_users.all())
-       	for dept in self.notification_depts.all():
+        users = set()
+        users.update(self.notification_users.all())
+        for dept in self.notification_depts.all():
             users.update(dept.related_users())
         for sub_dept in self.notification_subdepts.all():
             users.update(sub_dept.related_users())
         return users
-    	
+
+    def send_notif(self, notif_list=None):
+        # Had to do this because signals refuse to work.
+        if not notif_list:
+            notif_list  = self.notify_users() # Get my notifs
+            notif_list.update(self.wall.notify_users()) # Get my wall notifs
+        for recipient in notif_list:
+            # Check if receipient already has notif on this post
+            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=self.id)
+            if curr_notif:
+                curr_notif.mark_as_read()
+            by = self.by
+            if recipient != by:
+                notifications.notify.send(
+                    sender=by, # The model who wrote the post - USER
+                    recipient=recipient, # The model who sees the post - USER
+                    verb='has posted on', # verb
+                    action_object=self, # the model on which something happened - POST
+                    target=self, # The model which got affected - POST
+                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+                )
+
+        
     class Meta:
         get_latest_by = 'time_created'

@@ -13,8 +13,6 @@ from misc.utils import *  #Import miscellaneous functions
 from django.contrib.auth.models import User
 from apps.walls.models import Wall, Post, Comment
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-# Docs for attachments
-from apps.docs.utils import Drive, Github
 # View functions
 # Misc
 from django.templatetags.static import static
@@ -65,14 +63,13 @@ def wall (request, wall_id=None):
         raise InvalidArgumentValueException("Wall with the `wall_id` " + str(wall_id) + " not found.")
     # Logic
     wall_posts = Post.objects.filter(wall = wall).order_by('-time_updated')[:5]
-    # wall_notifications = request.user.notifications.unread()
-    
+    wall_parent = wall.parent
+
     local_context = {
     	"current_page" : "wall",
         "wall" : wall,
-        "showing_user" : wall.parent.user,
+        "showing_user" : wall.parent,
         "wall_posts" : wall_posts,
-        "token" : token,
     }
     if request.user.erp_profile.wall == wall:
         local_context["current_page"] = "wall"

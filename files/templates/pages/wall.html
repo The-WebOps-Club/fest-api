@@ -49,21 +49,6 @@
 	    background-color : #dedede;
 	    color : #000;
 	}
-    div.news_comment_body p a {
-        text-decoration: none;
-        border: 1px #AAA solid;
-        background-color: #FFF;
-        border-radius: 5px;
-        padding-right: 3px;
-        padding-left: 3px;
-        padding-top: 2px;
-    }
-    div.news_comment_body p a img{
-        height:12px;
-    }
-    div.news_comment_body p a:hover {
-        background-color:#CCC;
-    }
 </style>
 {% endblock %} 
 
@@ -72,7 +57,7 @@
 <script type="text/javascript">
 var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
 var rootFolder = '{{ SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID }}';
-var authToken = '{{ token }}';
+var authToken = '{{ google_access_token }}';
 
     function dajax_get_posts(data){
         if (!data.exhausted){
@@ -123,6 +108,4 @@ var authToken = '{{ token }}';
     }
 </script>
 <script type='text/javascript' src='https://apis.google.com/js/client.js?onload=initDrive'></script>
-
-
 {% endblock %}
