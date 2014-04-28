@@ -318,7 +318,7 @@ function init_button_bar() {
     $('#drive_upload_chooser').change(upload_file);
 
     // Upload drag n drop - from my comp
-    var $holder = $('.drive_parent')
+    var $holder = $('.drive_parent').add(".drive_back")
 
     /*if (typeof window.FileReader === 'undefined') {
         $(".drive_messages").append("Ouch, no drag and drop feature :(");
@@ -328,23 +328,27 @@ function init_button_bar() {
 
     $holder.bind("dragenter dragover", function(e) {
         e = e.originalEvent
-        var $drive_file = $(e.target).closest(".drive_file")
-        if ( $drive_file.data("folder") != "yes" ) {
-            $(".drive_parent").addClass("ondrag")
-        } else {
-            $drive_file.addClass("ondrag")
+        var $target = $(e.target)
+        console.log($target[0])
+        f = $target
+        var $drive_file = $target.closest(".drive_file")
+        var $drive_back = $target.closest(".drive_back")
+
+        if ( $drive_file.length && $drive_file.data("folder") != "yes" ) {
+            console.log($drive_file.length)
+            $drive_file = $(".drive_parent")
+        } else if ( $drive_back.length ) {
+            console.log($drive_back)
+            $drive_file = $drive_back    
         }
-        
+        $drive_file.addClass("ondrag")
         return false;
     });
     $holder.bind("dragleave dragout", function(e) {
         e = e.originalEvent
-        var $drive_file = $(e.target).closest(".drive_file")
-        if ( $drive_file.data("folder") != "yes" ) {
-            $(".drive_parent").removeClass("ondrag")
-        } else {
-            $drive_file.removeClass("ondrag")
-        }
+        var $target = $(e.target)
+        var $drive_file = $(".ondrag")
+        $drive_file.removeClass("ondrag")
         
         return false;
     });
@@ -354,25 +358,26 @@ function init_button_bar() {
         //e.originalEvent.preventDefault();
         //e.originalEvent.stopPropagation();
         e = e.originalEvent
-        var $drive_file = $(e.target).closest(".drive_file")
-        if ( $drive_file.data("folder") != "yes" ) {
-            if ( e.dataTransfer.getData("Text") ) // move fail
-                return
-            $drive_file = $(".drive_parent")
-        } else {
-            $drive_file.removeClass("ondrag")
-            if ( e.dataTransfer.getData("Text") )
-                move_files([ { "id" : e.dataTransfer.getData("Text") } ], { "id" : $drive_file.data("id") })
-                return
-        }
+        var $drive_file = $(".ondrag")
+        $drive_file.removeClass("ondrag")
         
-        // Upload file !
-        if ( ! e.dataTransfer.getData("Text") )
+        if ( e.dataTransfer.getData("Text") ) { // move fail
+            if ( $drive_file.hasClass("drive_file") || $drive_file.hasClass("drive_back") )
+                move_files([ { "id" : e.dataTransfer.getData("Text") } ], { "id" : $drive_file.data("id") })
+        } else {
             e.$drag_folder = $drive_file 
             upload_file(e, "drag")
-    
+        }
         return false;
     });
+    $(".drive_back").bind("dragstart", function(e) {
+        var $el = $(this)
+        e = e.originalEvent
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.dropEffect = 'move';
+        e.dataTransfer.setData("Text", $el.data("id"))
+    }) 
+
 }
 
 function upload_file(e, drag) {

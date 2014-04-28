@@ -329,7 +329,7 @@ var Drive = function(options) {
     }
 
     self.show_parent = function (fid, num) {
-    	num = num | 0
+    	num = num || 0
     	self.get_file_meta(fid, function(r) {
     		if (r.parents.length) {
     			if ( r.parents.length > num+1)
@@ -360,6 +360,7 @@ var Drive = function(options) {
             .data("folder", "yes").data("id", file_details.id)
         $("title").text("Shaastra Docs - " + file_details.title)
         $(".drive_parent").data("id", file_details.id).data("folder", "yes")
+   		$(".drive_back").data("id", file_details.parents[0].id)
     }
     /* Execution */
     self.init()

@@ -23,8 +23,6 @@ function get_autocomplete_lists(url1, url2, url3) {
         atwho_dept_list = json;
         sync_autocomplete();
     });
-
-
 }
 
 function get_autocomplete_file_data(url1, url2, url3) {
