@@ -205,7 +205,7 @@ def create_post(request, wall_id, post_form):
 
     new_post = Post.objects.create(description=post_text, wall=wall, by=request.user)
 
-    new_post.add_notifications(notification_list, send_notif=True)
+    new_post.add_notifications(notification_list)
     new_post.send_notif()
     
     # Render the new post
@@ -237,7 +237,7 @@ def quick_post(request, post_form):
         else:
             obj_wall =  obj.erp_profile.wall
         new_post = Post.objects.create(description=post_text, wall=obj_wall, by=request.user)
-        new_post.add_notifications(notification_list, send_notif=True)
+        new_post.add_notifications(notification_list)
         new_post.send_notif()
     # Render the new post
     append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance= global_context(request)) + "<hr />"
@@ -275,7 +275,7 @@ def create_comment(request, post_id, comment_form):
     new_comment = Comment.objects.create(description=comment_text, by=request.user)
     post.comments.add(new_comment)
     
-    post.add_notifications(notification_list, send_notif=True)
+    post.add_notifications(notification_list)
     new_comment.send_notif() # Send notifs now, as all notif personnel are added
     # Render the new comment
     local_context = {

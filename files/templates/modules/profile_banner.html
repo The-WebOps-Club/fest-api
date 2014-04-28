@@ -34,7 +34,7 @@
             </div>
             {% if wall.person %}
                 <div class="banner_item">
-                    <a href="{% url 'profile' wall.parent.user.id %}" class="banner_link {% if current_page == 'profile' %}active{% endif %} ">
+                    <a href="{% url 'profile' wall.parent.id %}" class="banner_link {% if current_page == 'profile' %}active{% endif %} ">
                         Profile
                     </a>
                     <i class="selection_caret"></i>

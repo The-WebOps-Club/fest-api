@@ -1,0 +1,395 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+{% block title %} {{ FEST_NAME }} {% endblock %}
+
+{% block left_content %}
+	<input id="id_current_page" type="hidden" name="current_page" value="1" />
+	<div id="main_body_content" class="span8 offset1 main_body">
+		{% with wall=profile_wall %}
+			{% include 'modules/profile_banner.html' %}
+		{% endwith %}
+		
+		<div class="row-fluid profile_wrapper">
+			<div class="span12">
+				<div class="profile_head">
+					About 
+					
+					{% if user == showing_user %}
+						<a class="btn form_edit offset5" href="javascript:void(0)">
+							<i class="icon-pencil-2"></i> 
+							<span class="edit_text">Edit Profile</span>
+						</a>
+						<a class="btn primary form_input form_submit" href="javascript:void(0)"> 
+							Save Changes
+						</a>
+					{% endif %}
+				</div>
+				<div class="profile_body">
+					{% if user == showing_user %}
+					<form method="POST" enctype="multipart/form-data" class="form_profile" id="profile_form">
+						{% csrf_token %}	
+					{% endif %}
+						<div class="profile_left span6">
+							<div class="profile_section ">
+								<!-- Basic Info -->
+								<div class="profile_section_head">Basic Info</div>
+								<div class="row-fluid">
+									<label class="form_label span4" for="id_name">Name:</label>
+									<label class="hide" for="id_first_name">First name:</label>
+									<input id="id_first_name" maxlength="30" name="first_name" type="text" class="form_input form_visible input-medium" value="{{ user_form.first_name.value|default_if_none:'' }}">
+								
+									<label class="hide" for="id_last_name">Last name:</label>
+									<input id="id_last_name" maxlength="30" name="last_name" type="text" class="form_input form_visible input-medium" value="{{ user_form.last_name.value|default_if_none:'' }}">
+								</div>
+								
+								<div class="row-fluid">
+									<label class="span4 form_label " for="id_nickname">Nickname:</label>
+									<input id="id_nickname" name="nickname"  class="form_input form_visible input-medium" value="{{ erp_profile_form.nickname.value|default_if_none:'' }}">
+								</div>
+
+								<div class="row-fluid">
+									<label class="span4 form_label " for="id_gender">Gender:</label>
+									<span class="form_visible label_input label {% if user_profile_form.gender.value == 'M' %}active{% endif %}">M</span>&nbsp;
+									<span class="form_visible label_input label {% if user_profile_form.gender.value == 'F' %}active{% endif%}">F</span>
+									<input id="id_gender" name="gender"  class="label_input_hidden form_input hide" type="text" value="{{ user_profile_form.gender.value|default_if_none:'' }}">
+								</div>
+
+								<div class="row-fluid">
+									<label class="span4" for="id_dob">Date of Birth:</label> 
+
+									<input id="id_dob" name="dob" type="text"  class="date_picker form_visible form_input" value="{{ user_profile_form.dob.value|default_if_none:'' }}">	
+									
+								</div>
+							</div>
+
+							
+							<div class="profile_section">
+								<!-- Contact Info -->
+								<div class="profile_section_head">Contact Info</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_mobile_number">Mobile number:</label> 
+									<input id="id_mobile_number" maxlength="10" name="mobile_number" type="text" pattern="[0-9]*" class="form_input form_visible only_number" value="{{ user_profile_form.mobile_number.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_summer_number">Summer number:</label> 
+									<input id="id_summer_number" maxlength="10" pattern="[0-9]*" name="summer_number" type="text" class="form_input form_visible only_number"value="{{ erp_profile_form.summer_number.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_email">Email address:</label>
+									<input id="id_email" maxlength="75" name="email" type="email" class="form_input form_visible" value="{{ user_form.email.value|default_if_none:'' }}">
+								</div>
+							</div>
+							
+						</div>
+						<div class="profile_right span6">
+							<div class="profile_section">
+								<div class="row-fluid">
+									<!-- College Info -->
+									<div class="profile_section_head">College Info</div>
+									<label class="span4 form_label" for="id_college">College:</label> 
+									<input id="id_college" name="college" type="text" disabled="disabled" class="form_input form_visible" value="{{ user_profile.college }}" autocomplete="off">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_college_roll">College Roll:</label> 
+									<input id="id_college_roll" name="college_roll" type="text" class="form_input form_visible" value="{{ user_profile_form.college_roll.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_branch">Branch:</label> 
+									<input id="id_branch" name="branch" type="text" class="form_input form_visible" value="{{ user_profile_form.branch.value|default_if_none:'' }}" autocomplete="off">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_room_no">Room no:</label> 
+									<input id="id_room_no" name="room_no" type="text" class="form_input form_visible only_number" value="{{ erp_profile_form.room_no.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_hostel">Hostel:</label> 
+									<input id="id_hostel" name="hostel" class="form_input form_visible" value="{{ erp_profile_form.hostel.value|default_if_none:'' }}" autocomplete="off">
+								</div>
+							</div>
+							
+
+							<div class="profile_section">
+								<div class="row-fluid">
+									<!-- Holiday Info -->
+									<div class="profile_section_head">Accomodation Info</div>
+									<label class="span4 form_label" for="id_summer_stay">Summer stay:</label> 
+									<input id="id_summer_stay" maxlength="30" name="summer_stay" type="text" class="form_input form_visible date_range_picker" value="{{ erp_profile_form.summer_stay.value|default_if_none:'' }}">
+									{% if not erp_profile_form.summer_stay2.value %} <a href="javascript:void(0)" class="add_another_field form_visible">and</a>{% endif %}
+									<input id="id_summer_stay2" maxlength="30" name="summer_stay2" type="text" class="form_input {% if erp_profile_form.summer_stay2.value %} form_visible {% else %} hide {% endif %} date_range_picker" value="{{ erp_profile_form.summer_stay2.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_winter_stay">Winter stay:</label> 
+									<input id="id_winter_stay" maxlength="30" name="winter_stay" type="text" class="form_input form_visible date_range_picker" value="{{ erp_profile_form.winter_stay.value|default_if_none:'' }}">
+									{% if not erp_profile_form.winter_stay2.value %} <a href="javascript:void(0)" class="add_another_field form_visible">and</a>{% endif %}
+									<input id="id_winter_stay2" maxlength="30" name="winter_stay2" type="text" class="form_input {% if erp_profile_form.winter_stay2.value %} form_visible {% else %} hide {% endif %} date_range_picker" value="{{ erp_profile_form.winter_stay2.value|default_if_none:'' }}">
+								</div>
+								<div class="row-fluid">
+									<label class="span4 form_label" for="id_want_accomodation">Want accomodation: </label> 
+									<span class="form_visible label_input label {% if user_profile_form.want_accomodation.value %}active{% endif %}">YES</span>&nbsp;
+									<span class="form_visible label_input label {% if not user_profile_form.want_accomodation.value %}active{% endif%}">NO</span>
+									
+									<input id="id_want_accomodation" name="want_accomodation" class="label_input_hidden form_input hide"  type="checkbox" 
+										{% if user_profile_form.want_accomodation.value %}
+											checked=true
+										{% endif %}
+									>
+								</div>
+							</div>
+						</div>
+					{% if user == showing_user %}</form>{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="row-fluid profile_wrapper">
+			<div class="span12">
+				<div class="profile_head">Shaastra Relations</div>
+				<div class="profile_body">
+
+				</div>
+			</div>
+		</div>
+		<div class="row-fluid profile_wrapper">
+			<div class="span12">
+				<div class="profile_head">Media Relations</div>
+				<div class="profile_body">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<link href="{% static 'css/daterangepicker.css' %}" rel="stylesheet" media="screen">
+<style type='text/css'>
+	.profile_wrapper {
+		background: #FFF;
+		border: 1px solid #D3D6DB;
+		margin-top : 10px;
+	}
+	.profile_wrapper .profile_head {
+		padding-top: 20px;
+		padding-bottom: 30px;
+		padding-left: 20px;
+		font-weight: bold;
+		font-size: 25px;
+		background-color: #F6F7F8;
+		border-bottom: 1px solid #D3D6DB;
+	}
+	.profile_wrapper .profile_body {
+		padding: 10px;
+	}
+	.profile_wrapper .profile_left {
+		border-right: 1px solid #ddd;
+		padding-left: 10px;
+	}
+	.profile_wrapper .profile_right {
+		/*border-left: 1px solid #ddd;*/
+		padding-right: 10px;
+	}
+	.profile_wrapper .profile_section {
+		padding: 10px;
+		border-bottom: 1px solid #ddd;
+	}
+	.profile_wrapper .profile_section > div {
+		padding-bottom: 3px;
+	}
+	.profile_wrapper .profile_left > div:last-child,
+	.profile_wrapper .profile_right > div:last-child {
+		border-bottom: 0px solid #D3D6DB;
+	}
+	.profile_wrapper .profile_section .profile_section_head {
+		padding: 10px;
+		font-size : 1.3em;
+		font-weight : bold;
+	}
+	.form_value {
+		display : inline-block;
+	}
+	.form_submit {
+
+	}
+	.label_input {
+		font-size : 11px;
+		padding : 2px 5px;
+		cursor : pointer;  
+	}
+	.label_input.active {
+		background-color: #DD3C10;
+		border : 2px solid black;
+	}
+</style>
+{% endblock %}
+
+
+{% block extra_js %}
+{{ block.super }}
+<script type="text/javascript" src='{% static "js/moment.js" %}'></script>
+<script type="text/javascript" src='{% static "js/daterangepicker.js" %}'></script>
+<script type='text/javascript'>
+	function flip_form_profile(arg, time) {
+		if ( ! time ) { time = 0; }
+		if ( arg == "show" || arg == "toggle" ) {	
+			if ( $(".form_value").length == 0 ) {
+				// If toggle, check if already shown and hide.
+				if (arg == "toggle") flip_form_profile("hide",time)
+				return
+			}
+			$(".form_value").slideUp(time)
+			$(".form_edit i").addClass("icon-profile-black").removeClass("icon-pencil-2");
+			$(".form_edit span.edit_text").html("View Profile");
+			$(".form_value").remove()
+			setTimeout(function() {
+				// $(".form_input").slideDown(time)
+				$(".form_visible").slideDown(time)
+			}, time)
+		} else if ( arg == "hide" ) {
+			if ( $(".form_value").length ) {
+				return
+			}
+			// $(".form_input").slideUp(time)
+			$(".form_visible").slideUp(time)
+			$(".form_edit i").removeClass("icon-profile-black").addClass("icon-pencil-2");
+			$(".form_edit span.edit_text").html("Edit Profile");
+			$(".form_input").each(function(i, v) {
+				v = $(v)
+				v.after("<div class=\"form_value\"></div>")
+				c = v.next()
+				if ( v.prop("tagName") == "SELECT" ) {
+					c.html(v.find(":selected").text());
+				} else if ( v.hasClass("label_input_hidden") ) {
+					c.html(v.parent().find(".label_input.active").text());
+				} else if ( v.prop("tagName") == "INPUT" ) {
+					c.html(v.val());
+				} else {
+					console.log("Invalid tag found : ")
+					console.log(v);
+				}
+				c.hide()
+			})
+			setTimeout(function() {
+				$(".form_value").show()
+			}, time)
+			
+		} else {
+			// console.log("Arg can only be 'show' or 'hide'")
+		}
+	}
+	function add_another_field() {
+		el = this
+		$el = $(el)
+		$el_input2 = $el.parent().find("input").last().slideDown(500)
+		$el.remove()
+	}
+
+	$( document ).ready(function() {    
+		$("input.only_number").keydown(function(e){ 	
+			// Allow: backspace, delete, tab, escape, enter .. Ctrl+A .. home, end, left, right
+			if( $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+				(e.keyCode == 65 && e.ctrlKey === true) || 
+				(e.keyCode >= 35 && e.keyCode <= 39)) {
+					 return;
+			}
+			// Ensure that it is a number and stop the keypress
+			if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+				e.preventDefault();
+			}
+		})
+		
+		$(".date_range_picker").dateRangePicker({
+		    startDate: false,
+		    endDate: false,
+		});
+		$(".date_picker").dateRangePicker({
+		    minDays: 1,
+		    maxDays: 1,
+		    singleDate: true,
+		});
+		$(".add_another_field").click(add_another_field)
+		$(".form_submit").click( function () {
+			$(".form_profile").submit()
+		})
+		$(".form_input").keydown( function (e) {
+			if ( e.keyCode == 13 )
+				$(this).closest("form").submit()
+		})
+
+		$(".label_input").click(function() {
+			$this = $(this)
+			$this.parent().find(".label_input").removeClass("active")
+			$this.addClass("active")
+			$this_input = $this.parent().find(".label_input_hidden")
+			if ( $this_input.attr("type") == "text" ) {
+				$this_input.val($.trim($this.text()));
+			}
+			else if ( $this_input.attr("type") == "checkbox" ) {
+				if ( $.trim($this.text().toLowerCase()) == "yes" ) {
+					$this_input.prop("checked", true)
+				} else {
+					$this_input.prop("checked", false)
+				}
+			}
+		})
+
+		$("#id_hostel").atwho({
+	        at: "",
+	       	data: {% autoescape off %}{{ HOSTEL_CHOICES }}{% endautoescape %},
+	      	tpl: "<li data-value='${name}'> ${name} </li>",
+		})
+		$("#id_branch").atwho({
+	        at: "",
+	       	data: {% autoescape off %}{{ BRANCH_CHOICES }}{% endautoescape %},
+	      	tpl: "<li data-value='${name}'> ${name} </li>",
+		})
+
+		
+		var form_errors_exist = false
+		{% for k, v in user_form.errors.items %}
+			form_errors_exist = true
+			$("form#profile_form #id_{{ k }}").addClass("error")
+											.popover({
+				"title" : function() { return "Error" },
+				"content" : function() { return "{% for i in v %} {{i}} {% endfor %}" },
+				"placement" : "below",
+			})
+		{% endfor %}
+		{% for k, v in user_profile_form.errors.items %}
+			form_errors_exist = true
+			$("form#profile_form #id_{{ k }}").addClass("error")
+											.popover({
+				"title" : function() { return "Error" },
+				"content" : function() { return "{% for i in v %} {{i}} {% endfor %}" },
+				"placement" : "below",
+			})
+		{% endfor %}
+		{% for k, v in erp_profile_form.errors.items %}
+			form_errors_exist = true
+			$("form#profile_form #id_{{ k }}").addClass("error")
+											.popover({
+				"title" : function() { return "Error" },
+				"content" : function() { return "{% for i in v %} {{i}} {% endfor %}" },
+				"placement" : "below",
+			})
+		{% endfor %}
+		
+		
+		if ( ! form_errors_exist ) {
+			flip_form_profile("hide") // Show view mode if no errors
+		}
+
+		{% if user != showing_user %}
+			$(".form_edit").remove()
+			$(".form_input").remove()
+			$(".form_visible").remove()
+		{% else %}
+			$(".form_edit").click( function () {
+				flip_form_profile("toggle", 200);
+			})
+		{% endif %}
+		
+
+	})
+</script>
+{% endblock %}
