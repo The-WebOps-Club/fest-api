@@ -370,8 +370,9 @@ var Drive = function(options) {
 
     self.set_drive_parent = function(file_details) {
     	$(".drive_parent_title").text("folder : " + file_details.title)
+            .data("folder", "yes").data("id", file_details.id)
         $("title").text("Shaastra Docs - " + file_details.title)
-        $(".drive_parent").data("id", file_details.id)
+        $(".drive_parent").data("id", file_details.id).data("folder", "yes")
     }
     /* Execution */
     self.init()

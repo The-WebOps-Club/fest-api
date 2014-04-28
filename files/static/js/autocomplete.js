@@ -160,6 +160,7 @@ function setup_autocomplete_lists() {
         data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
         tpl: "<li data-value='@${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
         show_the_at: true,
+        max_len: 20,
         callbacks: {
             before_insert: function(value, $li) {
                 console.log($li);
