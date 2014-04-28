@@ -8,13 +8,13 @@
 	<input type="hidden" name="current_page" class="current_page_notifications" value="1" />
 	
 	{% url 'create_post' user.erp_profile.wall.id as new_post_url %}
-	    <div class="post_wrapper">
-	    	{% for notification in notifications %}
-				{% with post=notification.target %}
-					{% include "modules/post.html" %}
-			    {% endwith %}
-			{% endfor %}
-		</div>
+    <div class="post_wrapper">
+    	{% for notification in notifications %}
+			{% with post=notification.target %}
+				{% include "modules/post.html" %}
+		    {% endwith %}
+		{% endfor %}
+	</div>
 	
 	<div class="row-fluid centered">
 		<div class="span12 center see_more_notifications" name="see_more" href="javascript:void(0)">See more</div>
@@ -160,7 +160,7 @@
 	var authToken = '{{ token }}';
 	function dajax_get_notifications(data) {
 	    if (!data.exhausted){
-	        $('#main_body_content .see_more_notifications').before(data.append_string);
+	        $('#main_body_content .see_more_notifications').before(data.append_string).removeData("clicked");
 	        var $value = $('#main_body_content .current_page_notifications')
 	        $value.val( parseInt($value.val()) + 1 );
 	    }
@@ -174,9 +174,12 @@
         // See more button
 		$("#main_body_content .see_more_notifications").click(function() {
 			$el = $(this)
+			if ( $el.data("clicked") )
+				return
 			Dajaxice.apps.walls.get_notifications(dajax_get_notifications, {
                     'page':parseInt($('#main_body_content .current_page_notifications').val())+1,
             })
+            $el.data("clicked", "yes")
 		})
 		
 		// Inifinite scroll

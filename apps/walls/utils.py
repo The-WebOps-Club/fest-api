@@ -40,7 +40,7 @@ def filetag_to_url(tag):
     filename, fileid, iconlink = tag.split('--@@!@@--');
     return reverse("view")+'?id='+fileid, filename, iconlink; 
 
-# TODO: merge parse_atwho ad parse_atwho_file
+# TODO: merge parse_atwho and parse_atwho_file
 def parse_atwho_file( my_text, tags ):
     """
         Parses through the list form atwho and records file references.

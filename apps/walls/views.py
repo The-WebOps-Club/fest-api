@@ -66,8 +66,7 @@ def wall (request, wall_id=None):
     # Logic
     wall_posts = Post.objects.filter(wall = wall).order_by('-time_updated')[:5]
     # wall_notifications = request.user.notifications.unread()
-    drive = Drive()
-    token = Drive.get_access_token()
+    
     local_context = {
     	"current_page" : "wall",
         "wall" : wall,
