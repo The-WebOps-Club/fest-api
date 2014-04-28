@@ -34,3 +34,8 @@ def save_profile_picture(strategy, user, response, details, is_new=False, *args,
         profile = user.profile
         profile.fb_id
         #profile.save()
+
+def create_user(strategy, details, response, uid, user=None, *args, **kwargs):
+    if user:
+        return {'is_new': False}
+	return redirect('require_email')    

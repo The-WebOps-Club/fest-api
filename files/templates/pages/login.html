@@ -60,39 +60,41 @@
         <div class='span5 offset'>
             <div class='row-fluid'>
                 <div class='span8 offset2'>
-                    <p>
-                        {% if current_page == "login" %}
-                            <h3 class="center"> Hello ! Use these to login easily</h3>
-                            <br /><br />
-                            <div class="center muted"> You need to associate these account first ... </div>
-                        {% elif current_page == "associate" %}
-                            <h3 class="center"> You've logged in but ... </h3>
-                            <br />
-                            <div class="center muted"> 
-                                You can use these accounts to login easily
-                                {% if facebook_association == 0 %}
-                                <br /><br />
-                                <span class="" style="color : red;">
-                                We need to take your <span class="bold">facebook</span> credentials to manage your ERP account.</span>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-                        <br />
-                        <a class='zocial facebook full_width' 
-                         {% if facebook_association == 0 %} style="border : 2px solid red" {% endif %}
-                         href="{% url 'social:begin' 'facebook' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Facebook</a>
-                        <br />
-                        <a class='zocial google full_width' href="{% url 'social:begin' 'google-oauth2' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Google</a>
-                        <br />
-                        <a class="zocial twitter full_width" href="{% url 'social:begin' 'twitter' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Twitter</a>
-                        <br />
-                        {% if current_page == "associate" %}
-                            <br /><br />
-                            <div class="bold center">OR</div>
-                            <br />
-                            <a class="zocial logout full_width" href="{% url 'logout' %}">Sign Out</a>
-                        {% endif %}
-                    </p>
+                    {% block right_login_content %}
+	                    <p>
+	                        {% if current_page == "login" %}
+	                            <h3 class="center"> Hello ! Use these to login easily</h3>
+	                            <br /><br />
+	                            <div class="center muted"> You need to associate these account first ... </div>
+	                        {% elif current_page == "associate" %}
+	                            <h3 class="center"> You've logged in but ... </h3>
+	                            <br />
+	                            <div class="center muted"> 
+	                                You can use these accounts to login easily
+	                                {% if facebook_association == 0 %}
+	                                <br /><br />
+	                                <span class="" style="color : red;">
+	                                We need to take your <span class="bold">facebook</span> credentials to manage your ERP account.</span>
+	                                {% endif %}
+	                            </div>
+	                        {% endif %}
+	                        <br />
+	                        <a class='zocial facebook full_width' 
+	                         {% if facebook_association == 0 %} style="border : 2px solid red" {% endif %}
+	                         href="{% url 'social:begin' 'facebook' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Facebook</a>
+	                        <br />
+	                        <a class='zocial google full_width' href="{% url 'social:begin' 'google-oauth2' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Google</a>
+	                        <br />
+	                        <a class="zocial twitter full_width" href="{% url 'social:begin' 'twitter' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Twitter</a>
+	                        <br />
+	                        {% if current_page == "associate" %}
+	                            <br /><br />
+	                            <div class="bold center">OR</div>
+	                            <br />
+	                            <a class="zocial logout full_width" href="{% url 'logout' %}">Sign Out</a>
+	                        {% endif %}
+	                    </p>
+	                {% endif %}
                 </div>
             </div>
             <!-- <div class='row-fluid'>
