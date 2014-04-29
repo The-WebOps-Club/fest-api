@@ -4,7 +4,7 @@
 <html lang="en">
 
 <head>
-<meta charset="utf-8">
+	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="iitm, team, robocon, robotics, auto, autonomous, bot, manual, iit, madras, mit, pune, abu, dd, doordarshan, india, chennai, shaastra, iitmadras, 2015">
     <meta name="description" content="Shaastra - ERP. The gateway to administrating Shaastra ( techfest of IIT Madras ) with ease.">
@@ -131,7 +131,7 @@
     
     <script type="text/javascript" src='{% static "js/autocomplete.js" %}'></script>
 
-    <script type="text/javascript" src='{% static "js/gravatar.js" %}'></script>
+    <!--<script type="text/javascript" src='{% static "js/gravatar.js" %}'></script>-->
 
     <script type="text/javascript" src='{% static "js/jquery.autosize.js" %}'></script>
     {% endcompress %}
@@ -146,6 +146,38 @@
     	site_url = "{{ SITE_URL }}"
     	static_url = "{{ STATIC_URL }}"
 
+		function display_pic(el, size) {
+			$el = $(el)
+			$.each($el, function(i, v) {
+				var $v = $(v)
+				var fbid = $.trim($v.data("fbid"))
+				var size = size || $v.data("size") || 60
+				if ( fbid.length > 2  ) {
+					var pic_src = "http://graph.facebook.com/" + fbid +  "/picture?height=" + size + "&width=" + size;
+			        $v.prop("src", pic_src);
+
+				} else {
+					if ( ! $v.data("id") || ! atwho_user_list ) {
+						// As some places have these in templates
+						return
+					} else {
+						Dajaxice.apps.users.get_info(function(data) {
+					    	var $v = $(v);
+
+					    	if ( ! data["fbid"] ) {
+					    		data["fbid"] = "Shaastra"
+					    	}
+
+					    	var pic_src = "http://graph.facebook.com/" + data["fbid"] +  "/picture?height=" + size + "&width=" + size;
+					       	$v.prop("src", pic_src);
+					        //var filter_users = $.grep(atwho_user_list, function(a) { return a.id == data["id"] } )
+							//filter_users[0].fbid = data["fbid"];
+							$v.data("fbid", data["fbid"])
+						}, {"id" : $v.data("id") } )
+					}
+				}
+			})
+		}
         function hide_popups() {
 	            $(".userButton").popover("hide") 
 	            $(".messageButton").popover("hide")
@@ -155,8 +187,11 @@
 	
         function on_dom_change() {
             $(".resize_textarea").autosize()
-            gravatar($(".gravatar_pic"))
-            gravatar_profile($(".gravatar_profile"))
+            display_pic($(".display_pic"))
+            if ( ! ( typeof at_config_file === "undefined" ) )
+            	$('.atwho_at_config').atwho(at_config_file)
+            if ( ! ( typeof at_config === "undefined" ) )
+            	$('.atwho_at_config').atwho(at_config)
         }        
         $( document ).ready(function() {
             $(".below_topbar").click(hide_popups)

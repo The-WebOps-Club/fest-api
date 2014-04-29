@@ -8,26 +8,28 @@
         <div class="span12 fb_banner_pic" id="banner_pic" >
             <div class="banner_title">{{ wall.name }}</div>
             <div id="banner_profile">
-                <a class="gravatar_profile" data-email="{{ user.email }}">
-                    <img {% if showing_user %}
-	                    	{% if showing_user.email %}
-	                    		class="gravatar_pic" 
-	                    		src="" 
-	                    		alt="{{ showing_user.email }}"
-	                    	{% else %}
-	                    		src="{{ showing_user.profile_pic }}" 
-	                    	{% endif %}
+                <img {% if showing_user %}
+                    	{% if showing_user.email %}
+                    		class="display_pic" 
+                    		src="" 
+                    		alt="{{ showing_user.email }}"
+                    		data-id="{{ showing_user.id }}"
+                    		data-fbid="{{ showing_user.profile.fbid }}"
                     	{% else %}
-	                    	class="gravatar_pic" 
-	                    	src="" 
-	                    	alt="{{ user.email }}"
-                    	{% endif %} data-size="160"/>
-                </a>
+                    		src="{{ showing_user.profile_pic }}" 
+                    	{% endif %}
+                	{% else %}
+                    	class="display_pic" 
+                    	src="" 
+                    	alt="{{ user.email }}"
+                    	data-id="{{ user.id }}"
+                    	data-fbid="{{ user_profile.fbid }}"
+                	{% endif %} data-size="160"/>
             </div>
         </div>
         <div class="span12" id="banner_bar">
             <div class="banner_item">
-                <a href="{% url 'wall' wall.id %}" class="banner_link {% if current_page == 'wall' %}active{% endif %}">
+                <a href="{% url 'wall' wall.id %}" class="banner_link {% if current_page == 'wall' %}active{% endif %}" target="_blank">
                     Wall
                 </a>
                 <i class="selection_caret"></i>
@@ -41,7 +43,7 @@
                 </div>
             {% endif %}
             <div class="banner_item">
-                <a href="{% url 'docs' %}" class="banner_link {% if current_page == 'docs' %}active{% endif %} ">
+                <a href="{% url 'docs' %}" class="banner_link {% if current_page == 'docs' %}active{% endif %} " target="_blank">
                     Docs
                 </a>
                 <i class="selection_caret"></i>

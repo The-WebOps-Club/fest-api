@@ -85,6 +85,12 @@
                 </td>
                 <td class="last_modified"></td>
             </tr>
+            <tr class="empty_dir" style="display : none; height : 400px">
+                <td colspan='3'>
+                	<span  class="huge muted">No files. :(</span>
+                	<h1 class="muted">Drop files here to upload them</h1>    
+                </td>
+            </tr>
         </table>
     </div>
 </div>
@@ -437,14 +443,18 @@ function move_picker_done(data, not_picker) {
 }
 
 function move_files (elems, next_folder) {
-    drive.move_files($.map(elems, function(val, i) {
-        console.log(next_folder)
+	var new_elems = $.map(elems, function(val, i) {
+		if ( next_folder.id == $(".drive_parent").data("id") || next_folder.id == val.id ) {
+			return null
+		}
         return {
             "id": val.id,
             "old_parent_id": $(".drive_parent").data("id"),
             "new_parent_id": next_folder.id,
         }
-    }))
+    })
+    if ( new_elems.length )
+		drive.move_files(new_elems)
 }
 </script>
 

@@ -1,14 +1,14 @@
 {% load staticfiles %}
-    <div class="row-fluid right_new_post">
+    <div class="row-fluid right_quick_post">
         <div class="span12">
             <form method="POST" id="id_form_quick_post">
-                <select id="select0" class="new_post_to select2 select_all_list" name="new_post_to" multiple>
+                <select id="select0" class="quick_post_to select2 select_all_list" name="quick_post_to" multiple>
                     
                 </select>
-                <!-- <textarea class="new_post_to" placeholder="To " rows="1"></textarea> -->
-                <textarea class="new_post atwho_at_config  resize_textarea" name="new_post" placeholder="Quick Post" rows="3"></textarea>
+                <!-- <textarea class="quick_post_to" placeholder="To " rows="1"></textarea> -->
+                <textarea class="quick_post atwho_at_config  resize_textarea qucick_post_textarea" name="quick_post" placeholder="Quick Post" rows="3"></textarea>
 
-                <a class="pull-right btn primary new_post_submit" href="javascript:void(0)" data-loading-text="Posting ..." data-complete-text="Posted"> Quick Post </a>
+                <a class="pull-right btn primary quick_post_submit" href="javascript:void(0)"> Quick Post </a>
             </form>
        </div>
     </div>
@@ -22,12 +22,13 @@
     <div class="row-fluid right_data">
         <div class="span12 right_data_inner">
             <div class="row-fluid data_item template">
-                <div class="pic">
-                    <img class="profile_dp gravatar_pic" src="" alt="">
-                </div>
-                <div class="text">
-                </div>
-
+            	<a href="javascript:void(0)" class="link_no_style link">
+	                <div class="pic">
+	                    <img class="profile_dp display_pic" src="">
+	                </div>
+	                <div class="text">
+	                </div>
+	            </a>
             </div>
             {% comment %}
                 For ajax loading ... use this template
@@ -40,17 +41,17 @@
     
 
 <style>
-.rightbar .right_new_post {
+.rightbar .right_quick_post {
 }
-.rightbar .right_new_post .new_post_to {
+.rightbar .right_quick_post .quick_post_to {
     width : 100%;
     margin : 0.5em;
 }
-.rightbar .right_new_post .new_post {
+.rightbar .right_quick_post .quick_post {
     width : 100%;    
     margin : 0.5em;
 }
-.rightbar .right_new_post .new_post_submit {
+.rightbar .right_quick_post .quick_post_submit {
     padding : 0.5em 2em;
 
 }
@@ -108,14 +109,11 @@
 
 <script>
     function dajax_quick_post(data) {
-        $('#id_form_quick_post').removeData("clicked")
-        //$el = $("#id_form_quick_post .new_post_submit")
-        //$el.button("done")
-        //setTimeout(function() {
-        //    $el.button("reset")
-        //    $el.closest("form").find("input").val("")
-        //    $el.closest("form").find("select").val("")
-        //}, 3000)
+    	var $el = $(".quick_post_submit")
+    	var $el_form = $el.closest("form")
+        $el.removeData("clicked").prop("disabled", false).removeClass("disabled")
+        $el_form.find("textarea").prop("disabled", false).removeClass("disabled").val()
+        $el_form.find("input").prop("disabled", false).removeClass("disabled").val()
     }
     function right_search(query, data, search_key) {
         var item, _i, _len, _results;
@@ -145,16 +143,18 @@
         });
     }
     $( document ).ready(function() {            
-        $("#id_form_quick_post .new_post_submit").click(function() {
-            $el = $(this)
-            if ( $('#id_form_quick_post').data("clicked") ) {
+        $(".quick_post_submit").click(function() {
+            var $el = $(this)
+            var $el_form = $el.closest("form")
+            if ( $el.data("clicked") ) {
                 return
             }
-            $('#id_form_quick_post').data("clicked", "yes")
             Dajaxice.apps.walls.quick_post(dajax_quick_post, {
-                'post_form': $('#id_form_quick_post').serialize(true) 
+                'post_form': $el_form.serialize(true) 
             })
-            //$el.button("loading")
+            $el.data("clicked", "yes").prop("disabled", true).addClass("disabled")
+            $el_form.find("textarea").prop("disabled", true).addClass("disabled")
+            $el_form.find("input").prop("disabled", true).addClass("disabled")
         });
 
         $('.select2').select2();
@@ -174,14 +174,16 @@
             for ( var i = 0; i < Math.min(10, search_list.length); i++ ) { // create elems again
                 $new_element = $template.clone().removeClass("template")
                 $new_element.find(".text").html(search_list[i].name + " <small class='muted'> " + search_list[i].small + "</small>")
-                $new_element.data("id", search_list[i].id)
-                $new_element.find("img").prop("alt", search_list[i].small)
+                $new_element.find(".display_pic").data("id", search_list[i].id)
+                
                 $parent.append($new_element)
-                $new_element.click( function() {
-                    var el = this; var $el = $(el);
-                    window.location.href = site_url + "wall/user/" + $el.data("id")
-                })
-            }
+
+                $new_element.data("id", search_list[i].id)
+                $new_element.find(".link").prop("href", site_url + "wall/user/" + $el.data("id"))
+                
+                
+                
+	        }
             on_dom_change()
         }).keyup()
     });

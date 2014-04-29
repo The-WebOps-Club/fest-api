@@ -6,7 +6,7 @@
 
 <div {% if not new_comment %} id="comment_{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
     <div class="news_comment_left">
-        <img src="" alt="{% if not new_comment %} {{ comment.by.email }} {% else %} {{ user.email }} {% endif %}" class="news_comment_profile gravatar_pic">
+        <img src="" data-id="{% if not new_comment %} {{ comment.by.id }} {% else %} {{ user.id }} {% endif %}" data-fbid="{% if not new_comment %} {{ comment.by.profile.fbid }} {% else %} {{ user_profile.fbid }} {% endif %}" class="news_comment_profile display_pic">
     </div>
     <div class="news_comment_body markdown_remove_p">
         {% if new_comment %} 
@@ -29,7 +29,7 @@
 				</form>
 			</div>
         {% else %}
-	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : <span class="comment_text">{% autoescape off %}{{ comment.description|markdown:"default"|strip_first_p }} {% endautoescape %}</span>
+	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : <span class="comment_text">{% autoescape off %}{{ comment.description|markdown:"my_default"|strip_first_p }} {% endautoescape %}</span>
 	        <div class="news_comment_info">
 	            {{ comment.time_created|naturaltime }} 
 	            {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}

@@ -44,6 +44,7 @@ function get_autocomplete_file_data(url1, url2, url3) {
 function sync_autocomplete() {
     if (atwho_user_list && atwho_subdept_list && atwho_dept_list) {
         setup_autocomplete_lists();
+        on_dom_change()
     }
 }
 
@@ -68,6 +69,15 @@ function setup_autocomplete_files() {
                             q: 'title contains \'' + query + '\'',
                             maxResults: 5
                         }).execute(function(response) {
+  							if ( ! response.items ) {
+  								callback([{
+				                    "id": "",
+				                    "name": "Cannot connect to google. Please check your connection",
+				                    "small": "",
+				                    "iconlink": site_url + "static/img/loading-dice.gif",
+				                }]);
+  								return 
+  							}
                             if ( response.items.length == 0 ) {
                                 callback($.map(response.items, function(value, i) {
                                     return {
@@ -169,18 +179,6 @@ function setup_autocomplete_lists() {
                 }
                 console.log($li);
                 return value;
-                /*
-            var owner_type = "user";
-            if ( $li.data("small") == "Department" ) {
-                    owner_type = "dept";
-            } else if ( $li.data("small") == "Subdept" ) {
-                owner_type = "subdept";
-            }
-
-            var dest_url = "/wall/" + owner_type + "/" + $li.data("id")
-            console.log("/wall/" + owner_type + $li.data("id"))
-            return "<a href='"+dest_url+ "'>"+value+"</a>";
-                */
             },
         },
     }

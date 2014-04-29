@@ -72,9 +72,13 @@ var Drive = function(options) {
         }).execute(function(response) {
             self.check_error(response)
             self.dir_contents = response.items
-            self.finish_progress = response.items.length
-            self.current_progress = 0
-            callback = callback || self.show_dir_contents
+            if ( response.items.length ) {
+                self.finish_progress = response.items.length
+                self.current_progress = 0
+                callback = callback || self.show_dir_contents
+            } else {
+                callback = callback || self.show_empty_dir
+            }
             callback();
         });
         gapi.client.drive.files.get({
@@ -132,29 +136,28 @@ var Drive = function(options) {
     	self.current_progress = 0
         
     	$.each(file_details, function(i, v) {
-		    gapi.client.drive.parents.delete({
-		        'fileId': v.id,
-		        'parentId': v.old_parent_id,
-		    }).execute(function(response) {
-		        self.check_error(response)
-		        callback = callback || self.get_dir_contents
-	            callback();
-	            self.current_progress += 1;
-	            self.progress()
-	            $(".drive_move").prop("disabled", false).removeClass("disabled")
-		    });
-
-            gapi.client.drive.parents.insert({
-		        'fileId': v.id,
-		        'resource': {
-		        	'id': v.new_parent_id,
-		        }
-		    }).execute(function(response) {
-		        self.check_error(response)
-	            self.current_progress += 1;
-	            self.progress()
-		    });
-		})
+		    gapi.client.drive.parents.insert({
+                'fileId': v.id,
+                'resource': {
+                    'id': v.new_parent_id,
+                }
+            }).execute(function(response) {
+                gapi.client.drive.parents.delete({
+                    'fileId': v.id,
+                    'parentId': v.old_parent_id,
+                }).execute(function(response) {
+                    self.check_error(response)
+                    callback = callback || self.get_dir_contents
+                    callback();
+                    self.current_progress += 1;
+                    self.progress()
+                    $(".drive_move").prop("disabled", false).removeClass("disabled")
+                });
+                self.check_error(response)
+                self.current_progress += 1;
+                self.progress()
+            });
+        })
     }
 
     self.upload_file = function(fileData, dir_id, callback) {
@@ -274,10 +277,16 @@ var Drive = function(options) {
         folder_items = folder_items || self.dir_contents
         if (clear) {
         	$(".drive_file").not(".template").remove()
+            $(".empty_dir").hide()
         }
         $.each(folder_items, function(i, v) {
             self.get_file_meta(v.id)
         })
+        $(".drive_refresh").prop("disabled", false).removeClass("disabled")
+        $(".drive_back").prop("disabled", false).removeClass("disabled")
+        self.progress()
+    }
+    self.show_empty_dir = function(folder_items, clear) {
         $(".drive_refresh").prop("disabled", false).removeClass("disabled")
         $(".drive_back").prop("disabled", false).removeClass("disabled")
     }
@@ -326,6 +335,7 @@ var Drive = function(options) {
 
         $el.show()
         $(".drive_parent").append($el)
+        self.progress()
     }
 
     self.show_parent = function (fid, num) {
@@ -353,6 +363,12 @@ var Drive = function(options) {
         	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
         	$(".meter").addClass("animate")
         }
+        if ( $(".drive_file").not(".template").length )  {
+            $(".empty_dir").hide()
+        }
+        else {
+            $(".empty_dir").show()
+        }
     }	
 
     self.set_drive_parent = function(file_details) {
@@ -360,7 +376,11 @@ var Drive = function(options) {
             .data("folder", "yes").data("id", file_details.id)
         $("title").text("Shaastra Docs - " + file_details.title)
         $(".drive_parent").data("id", file_details.id).data("folder", "yes")
-   		$(".drive_back").data("id", file_details.parents[0].id)
+   		if ( file_details.parents && file_details.parents.length )
+            $(".drive_back").removeClass("disabled").prop("disabled", false)
+                            .data("id", file_details.parents[0].id)
+        else
+            $(".drive_back").addClass("disabled").prop("disabled", true)
     }
     /* Execution */
     self.init()

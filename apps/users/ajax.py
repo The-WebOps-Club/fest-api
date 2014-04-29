@@ -12,7 +12,7 @@ from apps.users.models import Dept, Subdept, ERPProfile
 from apps.walls.models import Wall, Post, Comment
 
 from apps.walls.utils import get_tag_object
-
+from annoying.functions import get_object_or_None
 # Decorators
 from django.contrib.auth.decorators import login_required, user_passes_test
 import json
@@ -40,7 +40,7 @@ def get_contact(request, id):
     """
         Sends contact information about the id
     """
-    obj = User.objects.get(id=id)
+    obj = get_object_or_None(User, id=int(id))
     if isinstance(obj, User):
         obj_profile = obj.profile
         obj_erp_profile = obj.erp_profile
@@ -56,5 +56,25 @@ def get_contact(request, id):
             "mobile_number" : "",
             "summer_number" : "",
             "email" : "",
+        }
+    return json.dumps(local_context)
+
+@dajaxice_register
+def get_info(request, id):
+    """
+        Sends contact information about the id
+    """
+    obj = get_object_or_None(User, id=int(id))
+    if isinstance(obj, User):
+        obj_profile = obj.profile
+        obj_erp_profile = obj.erp_profile
+        local_context = {
+            "id" : obj.id,
+            "fbid" : obj_profile.fbid,
+        }
+    else:
+    	local_context = {
+            "id" : "",
+            "fbid" : "",
         }
     return json.dumps(local_context)

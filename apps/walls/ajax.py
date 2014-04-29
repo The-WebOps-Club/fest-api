@@ -222,12 +222,12 @@ def quick_post(request, post_form):
     append_string = ""
     data = deserialize_form(post_form)
     print data
-    post_text = data["new_post"]
+    post_text = data["quick_post"]
     tags =  data.getlist("atwho_list")
     post_text, notification_list = parse_atwho(post_text, tags)
 
     # Figure out where to create post !
-    to_list = data.getlist("new_post_to")
+    to_list = data.getlist("quick_post_to")
     for i in to_list:
         print i
         print "---------------------------"

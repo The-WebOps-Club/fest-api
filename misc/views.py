@@ -21,14 +21,14 @@ def err404 (request, *args, **kwargs):
         "current_page" : "err404",
         "messages" : ["hi", "bye"],
     }
-    return render_to_response('base/404.html', local_context, context_instance= global_context(request))
+    return render_to_response('errors/404.html', local_context, context_instance= global_context(request))
     
 def err500 (request, *args, **kwargs):
     local_context = {
         "current_page" : "err404",
         "messages" : ["hi", "bye"],
     }
-    return render_to_response('base/500.html', local_context, context_instance= global_context(request))
+    return render_to_response('errors/500.html', local_context, context_instance= global_context(request))
 
 def setup(request, *args, **kwargs):
     local_context = {
