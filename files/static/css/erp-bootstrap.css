@@ -2927,7 +2927,7 @@ button.btn::-moz-focus-inner, input[type=submit].btn::-moz-focus-inner {
   height: 0;
 }
 .popover {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
