@@ -44,6 +44,7 @@ function get_autocomplete_file_data(url1, url2, url3) {
 function sync_autocomplete() {
     if (atwho_user_list && atwho_subdept_list && atwho_dept_list) {
         setup_autocomplete_lists();
+        on_dom_change()
     }
 }
 

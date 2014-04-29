@@ -153,26 +153,28 @@
 				var fbid = $.trim($v.data("fbid"))
 				var size = size || $v.data("size") || 60
 				if ( fbid.length > 2  ) {
-					
 					var pic_src = "http://graph.facebook.com/" + fbid +  "/picture?height=" + size + "&width=" + size;
 			        $v.prop("src", pic_src);
 
 				} else {
+					if ( ! $v.data("id") || ! atwho_user_list ) {
+						// As some places have these in templates
+						return
+					} else {
+						Dajaxice.apps.users.get_info(function(data) {
+					    	var $v = $(v);
 
-					console.log($v.data("id"))
+					    	if ( ! data["fbid"] ) {
+					    		data["fbid"] = "Shaastra"
+					    	}
 
-					Dajaxice.apps.users.get_info(function(data) {
-				    	var $v = $(v);
-
-				    	if ( ! data["fbid"] ) {
-				    		data["fbid"] = "Shaastra"
-				    	}
-				    	var pic_src = "http://graph.facebook.com/" + data["fbid"] +  "/picture?height=" + size + "&width=" + size;
-				       	$v.prop("src", pic_src);
-				        var filter_users = $.grep(atwho_user_list, function(a) { return a.id == data["id"] } )
-						filter_users[0].fbid = data["fbid"];
-					}, {"id" : $v.data("id") } )
-
+					    	var pic_src = "http://graph.facebook.com/" + data["fbid"] +  "/picture?height=" + size + "&width=" + size;
+					       	$v.prop("src", pic_src);
+					        //var filter_users = $.grep(atwho_user_list, function(a) { return a.id == data["id"] } )
+							//filter_users[0].fbid = data["fbid"];
+							$v.data("fbid", data["fbid"])
+						}, {"id" : $v.data("id") } )
+					}
 				}
 			})
 		}
