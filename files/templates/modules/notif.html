@@ -8,19 +8,21 @@
     data-recipient="{{ notification.recipient.id }}"
     data-action-object="{{ notification.action_object.id }}" 
     data-target="{{ notification.target.id }}" 
-    data-wall="{{ notification.target.wall.id }}" onclick="window.location.href = '{% url 'read_notification' notification.id %}'">
-    <div class="profile_pic">
-        <img class='profile_dp display_pic ' src="" alt='{{ notification.actor.email }}' data-id='{{ notification.actor.id }}' data-fbid='{{ notification.actor.profile.id }}' />
-    </div>
-    <div class="notif_body">
-        <span class="profile_name">{{ notification.actor.get_full_name|default:"" }} </span>
-        {{ notification.verb|default:"" }} <span class="bold">{{ notification.target.wall|default:"" }}</span> 
-        <br />
-        {% autoescape off %} 
-        {{ notification.action_object.description|truncatechars:100|markdown:"default" }} 
-        {% endautoescape %}
-    </div>
-    <div class="notif_foot">
-        {{ notification.timestamp|naturaltime }}
-    </div>
+    data-wall="{{ notification.target.wall.id }}">
+    <a href="{% url 'read_notification' notification.id %}" class="link_no_style">
+	    <div class="profile_pic">
+	        <img class='profile_dp display_pic ' src="" alt='{{ notification.actor.email }}' data-id='{{ notification.actor.id }}' data-fbid='{{ notification.actor.profile.id }}' />
+	    </div>
+	    <div class="notif_body">
+	        <span class="profile_name">{{ notification.actor.get_full_name|default:"" }} </span>
+	        {{ notification.verb|default:"" }} <span class="bold">{{ notification.target.wall|default:"" }}</span> 
+	        <br />
+	        {% autoescape off %} 
+	        {{ notification.action_object.description|truncatechars:100|markdown:"default" }} 
+	        {% endautoescape %}
+	    </div>
+	    <div class="notif_foot">
+	        {{ notification.timestamp|naturaltime }}
+	    </div>
+    </a>
 </div>

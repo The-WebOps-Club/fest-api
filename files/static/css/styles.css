@@ -112,7 +112,14 @@
 .affix {
   position: fixed;
 }
-
+.link_no_style {
+	color : inherit;
+	text-decoration : inherit;
+}
+.link_no_style:hover {
+	color : inherit;
+	text-decoration : inherit;
+}
 
 /* Specific Template styles */
 
