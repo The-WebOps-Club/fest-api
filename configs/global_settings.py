@@ -1,4 +1,4 @@
-import os, sys, django, random
+import os, sys, django, random, re
 gettext = lambda s: s
 
 
@@ -401,7 +401,7 @@ SOCIAL_AUTH_YAHOO_CONSUMER_SECRET        = ''
 # ---------------------------------------------------
 # Django markdown deux
 MARKDOWN_DEUX_STYLES = {
-    "default": {
+    "internal_default": {
         "extras": {
             "code-friendly": None,
             "cuddled-lists": True,
@@ -412,6 +412,39 @@ MARKDOWN_DEUX_STYLES = {
         "extras": {
             "code-friendly": None,
             "cuddled-lists": True,
+        },
+        "safe_mode": False,
+    },
+    "my_default": {
+    	"link_patterns": [
+            # Transform into links
+            # (re.compile(r"recipe\s+#?(\d+)\b", re.I), r"http://code.activestate.com/recipes/\1/"),
+            
+            # Proper link Original : (re.compile(r"""(?i)\b(?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?])""", re.I), r"dddd<\1>"),
+            # Customized :
+            # (re.compile(r"""(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/))((?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\)){1,10})(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?])""", re.I), r"<\1\2...>")
+
+            # Render copied links as links
+			(re.compile(r"^(http://\S+)", re.I), r"\1"),
+            (re.compile(r"\s(http://\S+)", re.I), r" \1"),
+            (re.compile(r"^(https://\S+)", re.I), r" \1"),
+            (re.compile(r"\s(https://\S+)", re.I), r" \1"),
+            (re.compile(r"^(www\.\S+)", re.I), r" \1"),
+            (re.compile(r"\s(www\.\S+)", re.I), r" \1"),
+
+        ],
+        "extras": {
+            "code-friendly": None, # For coding pros
+            "cuddled-lists": None, # Dont convert lists
+            "demote-headers": 3, #
+            "fenced-code-blocks": None, # For coding pros
+            "footnotes" : None, # too complicated to use
+            "header-ids" : None, # No hashtag links required
+            "pyshell" : None, # python on erp -_-
+            "smarty-pants" : True, # gen
+            "wiki-tables" : None, # high funda - too complicated
+            "link-patterns" : None,
+            
         },
         "safe_mode": False,
     },

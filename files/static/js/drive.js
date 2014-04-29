@@ -360,7 +360,11 @@ var Drive = function(options) {
             .data("folder", "yes").data("id", file_details.id)
         $("title").text("Shaastra Docs - " + file_details.title)
         $(".drive_parent").data("id", file_details.id).data("folder", "yes")
-   		$(".drive_back").data("id", file_details.parents[0].id)
+   		if ( file_details.parents && file_details.parents.length )
+            $(".drive_back").removeClass("disabled").prop("disabled", false)
+                            .data("id", file_details.parents[0].id)
+        else
+            $(".drive_back").addClass("disabled").prop("disabled", true)
     }
     /* Execution */
     self.init()

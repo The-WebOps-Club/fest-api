@@ -38,6 +38,7 @@ def global_context(request):
         profile = request.user.profile 
     else:
         profile = None
+    token = ""
     drive = Drive()
     token = Drive.get_access_token()
     local_context = {
