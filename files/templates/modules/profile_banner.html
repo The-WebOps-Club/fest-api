@@ -169,7 +169,10 @@
 		{% endif %}
 
     	if ( ! fbid || fbid == "" ) {
-    		fbid = "Shaastra"
+    		fbid = "{{FEST_NAME}}"
+            if (fbid=="Saarang"){
+                fbid="saarangiitm"
+            }
     	}
         banner_url = "https://graph.facebook.com/" + fbid + "?fields=cover"
         $.getJSON(banner_url, function(json) {

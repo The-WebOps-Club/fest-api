@@ -104,7 +104,7 @@ class Subdept(models.Model):
 
 class UserProfile(models.Model): # The corresponding auth user
     """
-        The model is a basic model for any user who will come into Shaastra.
+        The model is a basic model for any user who will come into Fest.
         
         It handles the basic 
     
