@@ -8,7 +8,18 @@
 <div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container">
 	<div class="news_post span12">
 	    <div class="news_left">
-	        <img src="" alt="{% if not notification %}{{ post.by.email }}{% elif notification %}{{ notification.actor.email }}{% endif %}" class="news_profile gravatar_pic">
+	        <img src="" 
+	        	{% if not notification %}
+		        	alt="{{ post.by.email }}"
+		        	data-id="{{ post.by.id }}"
+		        	data-fbid="{{ post.by.profile.id }}"
+	        	{% elif notification %}
+
+		        	alt="{{ notification.actor.email }}"
+		        	data-id="{{ notification.actor.id }}"
+		        	data-fbid="{{ notification.actor.profile.fbid }}"
+		        {% endif %}
+	        class="news_profile display_pic">
 	    </div>
 	    <div class="news_main">
 	        <div class="news_head">

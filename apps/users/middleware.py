@@ -4,7 +4,7 @@ from social.exceptions import SocialAuthBaseException, \
     AuthCanceled, AuthUnknownError, AuthAlreadyAssociated, \
     AuthForbidden
 
-class SocialAuthExceptionMiddleware(SocialAuthExceptionMiddleware):
+class CustomSocialAuthExceptionMiddleware(SocialAuthExceptionMiddleware):
     def process_exception(self, request, exception):
         self.strategy = getattr(request, 'social_strategy', None)
         if self.strategy is None or self.raise_exception(request, exception):
@@ -19,3 +19,12 @@ class SocialAuthExceptionMiddleware(SocialAuthExceptionMiddleware):
             return redirect('misc.views.err404', kwargs={'messages':['Ouchie. Social', message]})
 
         raise exception
+
+    def raise_exception(self, request, exception):
+        return self.strategy.setting('RAISE_EXCEPTIONS', settings.DEBUG)
+
+    def get_message(self, request, exception):
+        return six.text_type(exception)
+
+    def get_redirect_uri(self, request, exception):
+        return self.strategy.setting('LOGIN_ERROR_URL')

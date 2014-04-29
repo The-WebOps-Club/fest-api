@@ -4,7 +4,7 @@
     <div class="row-fluid">
         <div id='profile_tab' class='span12'>
             <a href='#'>
-                <img class='profile_dp gravatar_pic' src='' alt='{{ user.email }}' />
+                <img class='profile_dp display_pic' src='' alt='{{ user.email }}' data-id='{{ user.id }}' data-fbid='{{ user_profile.fbid }}' />
             </a>
             <div class='profile_name'>
                 <a href="{% url 'wall' %}" class='bold'>{{ user.get_full_name }}</a>

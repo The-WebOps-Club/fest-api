@@ -159,6 +159,7 @@ class UserProfile(models.Model): # The corresponding auth user
         url = get_gravatar_url(self.user.email, size=s)
         return url
 
+    @property
     def fbid(self):
     	fb_accts = UserSocialAuth.objects.filter(provider="facebook", user=self.user)
         if len(fb_accts):

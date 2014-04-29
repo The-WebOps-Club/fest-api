@@ -23,7 +23,7 @@
         <div class="span12 right_data_inner">
             <div class="row-fluid data_item template">
                 <div class="pic">
-                    <img class="profile_dp gravatar_pic" src="" alt="">
+                    <img class="profile_dp display_pic" src="">
                 </div>
                 <div class="text">
                 </div>
@@ -175,13 +175,15 @@
                 $new_element = $template.clone().removeClass("template")
                 $new_element.find(".text").html(search_list[i].name + " <small class='muted'> " + search_list[i].small + "</small>")
                 $new_element.data("id", search_list[i].id)
-                $new_element.find("img").prop("alt", search_list[i].small)
+                $new_element.find(".display_pic").data("id", search_list[i].id)
+                
                 $parent.append($new_element)
                 $new_element.click( function() {
                     var el = this; var $el = $(el);
                     window.location.href = site_url + "wall/user/" + $el.data("id")
                 })
-            }
+                
+	        }
             on_dom_change()
         }).keyup()
     });
