@@ -142,24 +142,22 @@ var Drive = function(options) {
                     'id': v.new_parent_id,
                 }
             }).execute(function(response) {
+                gapi.client.drive.parents.delete({
+                    'fileId': v.id,
+                    'parentId': v.old_parent_id,
+                }).execute(function(response) {
+                    self.check_error(response)
+                    callback = callback || self.get_dir_contents
+                    callback();
+                    self.current_progress += 1;
+                    self.progress()
+                    $(".drive_move").prop("disabled", false).removeClass("disabled")
+                });
                 self.check_error(response)
                 self.current_progress += 1;
                 self.progress()
-                gapi.client.drive.parents.delete({
-    		        'fileId': v.id,
-    		        'parentId': v.old_parent_id,
-    		    }).execute(function(response) {
-    		        self.check_error(response)
-    		        callback = callback || self.get_dir_contents
-    	            callback();
-    	            self.current_progress += 1;
-    	            self.progress()
-    	            $(".drive_move").prop("disabled", false).removeClass("disabled")
-    		    });
             });
-
-            
-		})
+        })
     }
 
     self.upload_file = function(fileData, dir_id, callback) {
@@ -286,22 +284,9 @@ var Drive = function(options) {
         })
         $(".drive_refresh").prop("disabled", false).removeClass("disabled")
         $(".drive_back").prop("disabled", false).removeClass("disabled")
+        self.progress()
     }
     self.show_empty_dir = function(folder_items, clear) {
-
-        $el = $(".drive_parent .template.file_template").clone()
-        $el[0].className = "" // remove all classes
-        $el.css( {
-            "height" : "200px"
-        })
-        $el.children().remove()
-        $el.append("<h1 class='muted'>No files.</h1>")
-
-        self.options.fileAddCallback($el)
-
-        $el.show()
-        $(".drive_parent").append($el)
-        
         $(".drive_refresh").prop("disabled", false).removeClass("disabled")
         $(".drive_back").prop("disabled", false).removeClass("disabled")
     }
@@ -350,6 +335,7 @@ var Drive = function(options) {
 
         $el.show()
         $(".drive_parent").append($el)
+        self.progress()
     }
 
     self.show_parent = function (fid, num) {
@@ -379,10 +365,8 @@ var Drive = function(options) {
         }
         if ( $(".drive_file").not(".template").length )  {
             $(".empty_dir").hide()
-            console.log("hidden")
         }
         else {
-            console.log("shown")
             $(".empty_dir").show()
         }
     }	
