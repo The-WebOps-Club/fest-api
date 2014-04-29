@@ -72,9 +72,13 @@ var Drive = function(options) {
         }).execute(function(response) {
             self.check_error(response)
             self.dir_contents = response.items
-            self.finish_progress = response.items.length
-            self.current_progress = 0
-            callback = callback || self.show_dir_contents
+            if ( response.items.length ) {
+                self.finish_progress = response.items.length
+                self.current_progress = 0
+                callback = callback || self.show_dir_contents
+            } else {
+                callback = callback || self.show_empty_dir
+            }
             callback();
         });
         gapi.client.drive.files.get({
@@ -274,10 +278,29 @@ var Drive = function(options) {
         folder_items = folder_items || self.dir_contents
         if (clear) {
         	$(".drive_file").not(".template").remove()
+            $(".empty_dir").hide()
         }
         $.each(folder_items, function(i, v) {
             self.get_file_meta(v.id)
         })
+        $(".drive_refresh").prop("disabled", false).removeClass("disabled")
+        $(".drive_back").prop("disabled", false).removeClass("disabled")
+    }
+    self.show_empty_dir = function(folder_items, clear) {
+
+        $el = $(".drive_parent .template.file_template").clone()
+        $el[0].className = "" // remove all classes
+        $el.css( {
+            "height" : "200px"
+        })
+        $el.children().remove()
+        $el.append("<h1 class='muted'>No files.</h1>")
+
+        self.options.fileAddCallback($el)
+
+        $el.show()
+        $(".drive_parent").append($el)
+        
         $(".drive_refresh").prop("disabled", false).removeClass("disabled")
         $(".drive_back").prop("disabled", false).removeClass("disabled")
     }
@@ -352,6 +375,14 @@ var Drive = function(options) {
         } else {
         	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
         	$(".meter").addClass("animate")
+        }
+        if ( $(".drive_file").not(".template").length )  {
+            $(".empty_dir").hide()
+            console.log("hidden")
+        }
+        else {
+            console.log("shown")
+            $(".empty_dir").show()
         }
     }	
 
