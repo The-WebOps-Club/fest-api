@@ -188,6 +188,10 @@
         function on_dom_change() {
             $(".resize_textarea").autosize()
             display_pic($(".display_pic"))
+            if ( ! ( typeof at_config_file === "undefined" ) )
+            	$('.atwho_at_config').atwho(at_config_file)
+            if ( ! ( typeof at_config === "undefined" ) )
+            	$('.atwho_at_config').atwho(at_config)
         }        
         $( document ).ready(function() {
             $(".below_topbar").click(hide_popups)
