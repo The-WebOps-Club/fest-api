@@ -84,7 +84,7 @@ see <https://github.com/trentm/python-markdown2/wiki/Extras> for details):
 
 __version_info__ = (2, 2, 1)
 __version__ = '.'.join(map(str, __version_info__))
-__author__ = "Trent Mick edited by AbdealiJK"
+__author__ = "Trent Mick"
 
 import os
 import sys
@@ -222,8 +222,8 @@ class Markdown(object):
                 extras = dict([(e, None) for e in extras])
             self.extras.update(extras)
         assert isinstance(self.extras, dict)
-        #if "toc" in self.extras and not "header-ids" in self.extras:
-        #    self.extras["header-ids"] = None   # "toc" implies "header-ids"
+        if "toc" in self.extras and not "header-ids" in self.extras:
+            self.extras["header-ids"] = None   # "toc" implies "header-ids"
         self._instance_extras = self.extras.copy()
 
         self.link_patterns = link_patterns

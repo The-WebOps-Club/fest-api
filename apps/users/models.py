@@ -24,7 +24,7 @@ from apps.walls.models import Wall, Post
 # Misc
 from misc.utils import *
 from misc.constants import *
-from django_gravatar.helpers import get_gravatar_url
+
 from social.apps.django_app.default.models import UserSocialAuth
 # Python
 import datetime
@@ -156,7 +156,7 @@ class UserProfile(models.Model): # The corresponding auth user
             pass
 
     def get_pic(self, s=75):
-        url = get_gravatar_url(self.user.email, size=s)
+        url = "graph.facebook.com" + self.fbid + "/picture"
         return url
 
     @property

@@ -206,6 +206,9 @@ def create_post(request, wall_id, post_form):
     new_post = Post.objects.create(description=post_text, wall=wall, by=request.user)
 
     new_post.add_notifications(notification_list)
+    new_post.add_notifications(wall.parent)
+    new_post.add_notifications(wall.parent)
+
     new_post.send_notif()
     
     # Render the new post

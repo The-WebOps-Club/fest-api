@@ -112,6 +112,26 @@
 -->
 {% endblock %} {% block extra_css %} {{ block.super }}
 <style>
+table.table.drive_parent {
+    table-layout: fixed;
+    width : 100%;
+}
+.drive_file .checkbox {
+    width : 20px;
+}
+.drive_file .drive_checkbox {
+    width : 16px;
+    height : 16px;
+    z-index : 2;
+}
+.drive_file .drive_checkbox .border {
+    width : 10px;
+    height : 10px;
+    margin : 2px;
+    border-radius : 3px;
+    border : 1px solid #aaa;
+    z-index : 1;
+}
 .drive_file .drive_icon {
     margin : 2px;
     display : inline-block;
@@ -127,19 +147,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     margin : 0px;
-}
-.drive_file .drive_checkbox {
-    width : 16px;
-    height : 16px;
-    z-index : 2;
-}
-.drive_file .drive_checkbox .border {
-    width : 10px;
-    height : 10px;
-    margin : 2px;
-    border-radius : 3px;
-    border : 1px solid #aaa;
-    z-index : 1;
 }
 .ondrag {
     border : 3px dashed #888;
