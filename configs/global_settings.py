@@ -53,14 +53,8 @@ THIRD_PARTY_APPS = (
     # Social Auth Login
     'social.apps.django_app.default',
 
-    # Markdown for text area candy
-    'markdown_deux',
-
     # Search Indexer
     # 'haystack',
-
-    # Gravatar
-    'django_gravatar',
 
     # compressor
     'compressor',
@@ -399,8 +393,8 @@ SOCIAL_AUTH_YAHOO_CONSUMER_KEY           = ''
 SOCIAL_AUTH_YAHOO_CONSUMER_SECRET        = ''
 
 # ---------------------------------------------------
-# Django markdown deux
-MARKDOWN_DEUX_STYLES = {
+# Django markdown
+MARKDOWN_STYLES = {
     "internal_default": {
         "extras": {
             "code-friendly": None,
@@ -427,9 +421,9 @@ MARKDOWN_DEUX_STYLES = {
             # Render copied links as links
 			(re.compile(r"^(http://\S+)", re.I), r"\1"),
             (re.compile(r"\s(http://\S+)", re.I), r" \1"),
-            (re.compile(r"^(https://\S+)", re.I), r" \1"),
+            (re.compile(r"^(https://\S+)", re.I), r"\1"),
             (re.compile(r"\s(https://\S+)", re.I), r" \1"),
-            (re.compile(r"^(www\.\S+)", re.I), r" \1"),
+            (re.compile(r"^(www\.\S+)", re.I), r"\1"),
             (re.compile(r"\s(www\.\S+)", re.I), r" \1"),
 
         ],
@@ -449,8 +443,9 @@ MARKDOWN_DEUX_STYLES = {
         "safe_mode": False,
     },
 }
-MARKDOWN_DEUX_HELP_URL = "http://daringfireball.net/projects/markdown/syntax"
 
+# --------------------------------------------------
+# GOOGLE DRIVE DOCS
 GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
 GOOGLE_API_PUBLIC_KEY = ''
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'google/oauth2callback'
@@ -462,7 +457,3 @@ GOGOLE_API_PUBLIC_KEY = ''
 if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
     with open(GOOGLE_API_CREDENTIALS_FILE_PATH) as f:
         GOOGLE_API_CREDENTIALS = f.read()
-
-# Gravatar
-GRAVATAR_DEFAULT_IMAGE = "identicon"
-GRAVATAR_DEFAULT_SIZE = "50"

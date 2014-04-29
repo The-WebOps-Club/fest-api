@@ -1,5 +1,5 @@
 {% load staticfiles %} 
-{% load markdown_deux_tags %}
+{% load markdown_tags %}
 {% load humanize %}
 {% load once %}
 
@@ -18,7 +18,7 @@
 	        {{ notification.verb|default:"" }} <span class="bold">{{ notification.target.wall|default:"" }}</span> 
 	        <br />
 	        {% autoescape off %} 
-	        {{ notification.action_object.description|truncatechars:100|markdown:"default" }} 
+	        {{ notification.action_object.description|markdown:"my_default" }} 
 	        {% endautoescape %}
 	    </div>
 	    <div class="notif_foot">

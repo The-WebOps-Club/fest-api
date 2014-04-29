@@ -39,7 +39,6 @@ urlpatterns = patterns('',
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'), # Shows newsfeed for a user
     url(r'^notifications/$', 'apps.home.views.notifications', name='notifications'), # Shows all notifications for a user
     url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
-    url(r'^markdown/$', 'apps.home.views.markdown', name='markdown'), # Shows markdown page
     
     # Notification
 	url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page

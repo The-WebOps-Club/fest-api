@@ -113,7 +113,8 @@
     	var $el_form = $el.closest("form")
         $el.removeData("clicked").prop("disabled", false).removeClass("disabled")
         $el_form.find("textarea").prop("disabled", false).removeClass("disabled").val()
-        $el_form.find("input").prop("disabled", false).removeClass("disabled").val()
+        $el_form.find("input").prop("disabled", false).removeClass("disabled").val("")
+        $el_form.find(".select2-search-choice-close").click()
     }
     function right_search(query, data, search_key) {
         var item, _i, _len, _results;
