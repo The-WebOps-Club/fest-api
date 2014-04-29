@@ -136,28 +136,29 @@ var Drive = function(options) {
     	self.current_progress = 0
         
     	$.each(file_details, function(i, v) {
-		    gapi.client.drive.parents.delete({
-		        'fileId': v.id,
-		        'parentId': v.old_parent_id,
-		    }).execute(function(response) {
-		        self.check_error(response)
-		        callback = callback || self.get_dir_contents
-	            callback();
-	            self.current_progress += 1;
-	            self.progress()
-	            $(".drive_move").prop("disabled", false).removeClass("disabled")
-		    });
+		    gapi.client.drive.parents.insert({
+                'fileId': v.id,
+                'resource': {
+                    'id': v.new_parent_id,
+                }
+            }).execute(function(response) {
+                self.check_error(response)
+                self.current_progress += 1;
+                self.progress()
+                gapi.client.drive.parents.delete({
+    		        'fileId': v.id,
+    		        'parentId': v.old_parent_id,
+    		    }).execute(function(response) {
+    		        self.check_error(response)
+    		        callback = callback || self.get_dir_contents
+    	            callback();
+    	            self.current_progress += 1;
+    	            self.progress()
+    	            $(".drive_move").prop("disabled", false).removeClass("disabled")
+    		    });
+            });
 
-            gapi.client.drive.parents.insert({
-		        'fileId': v.id,
-		        'resource': {
-		        	'id': v.new_parent_id,
-		        }
-		    }).execute(function(response) {
-		        self.check_error(response)
-	            self.current_progress += 1;
-	            self.progress()
-		    });
+            
 		})
     }
 
