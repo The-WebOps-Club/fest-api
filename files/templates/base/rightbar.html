@@ -149,13 +149,12 @@
             if ( $el.data("clicked") ) {
                 return
             }
-            $el.data("clicked", "yes").prop("disabled", true).addClass("disabled")
-            $el_form.find("textarea").prop("disabled", true).addClass("disabled")
-            $el_form.find("input").prop("disabled", true).addClass("disabled")
             Dajaxice.apps.walls.quick_post(dajax_quick_post, {
                 'post_form': $el_form.serialize(true) 
             })
-            //$el.button("loading")
+            $el.data("clicked", "yes").prop("disabled", true).addClass("disabled")
+            $el_form.find("textarea").prop("disabled", true).addClass("disabled")
+            $el_form.find("input").prop("disabled", true).addClass("disabled")
         });
 
         $('.select2').select2();
