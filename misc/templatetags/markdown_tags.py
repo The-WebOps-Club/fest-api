@@ -23,20 +23,20 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
     def setup(self):
         super(CustomRenderer, self).setup()
 
-    def image(self, link, title, alt):
-        print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        print link, title, alt
-        for key, val in VIDEO_SOURCES.items():
-          match = re.match(val["re"], link)
-          if match and match.group(key):
-            video_id = match.group(key)
-            return self.make_iframe(video_id.strip(), key, alt, title)
-        return u"<img src='{0}' alt='{1}' title='{2}'/>".format(link, alt, title)
+    # def image(self, link, title, alt):
+    #     print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+    #     print link, title, alt
+    #     for key, val in VIDEO_SOURCES.items():
+    #       match = re.match(val["re"], link)
+    #       if match and match.group(key):
+    #         video_id = match.group(key)
+    #         return self.make_iframe(video_id.strip(), key, alt, title)
+    #     return u"<img src='{0}' alt='{1}' title='{2}'/>".format(link, alt, title)
  
-    def make_iframe(self, id, video_type, alt, title):
-        url = VIDEO_SOURCES[video_type]["embed"] % id
-        return u"<iframe class='{2}' src='{0}' alt='{1}' title='{3}' allowfullscreen></iframe>" \
-            .format(url, alt, video_type, title)
+    # def make_iframe(self, id, video_type, alt, title):
+    #     url = VIDEO_SOURCES[video_type]["embed"] % id
+    #     return u"<iframe class='{2}' src='{0}' alt='{1}' title='{3}' allowfullscreen></iframe>" \
+    #         .format(url, alt, video_type, title)
 
     def block_code(self, text, lang):
         s = ''
