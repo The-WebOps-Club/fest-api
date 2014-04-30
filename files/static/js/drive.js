@@ -213,59 +213,42 @@ var Drive = function(options) {
     }
 
     self.upload_file_resumable = function(fileData, dir_id, callback) {
-        const boundary = '-------314159265358979323846';
-        const delimiter = "\r\n--" + boundary + "\r\n";
-        const close_delim = "\r\n--" + boundary + "--";
-
-        self.progress("10")
         var reader = new FileReader();
         reader.readAsBinaryString(fileData);
+        // NOTE : Currently it creates a broken file in no parent. UNUSABLE RIGHT NOW
         reader.onload = function(e) {
-        	self.progress("20")
-            var contentType = fileData.type || 'application/octet-stream';
-            var metadata = {
-                'title': fileData.name,
-                'mimeType': contentType,
-                'parents': [{
-                    'id': dir_id,
-                    'kind': 'drive#parentReference'
-                }]
-            };
-
-            var base64Data = btoa(reader.result);
-            var multipartRequestBody =
-                delimiter +
-                'Content-Type: application/json\r\n\r\n' +
-                JSON.stringify(metadata) +
-                delimiter +
-                'Content-Type: ' + contentType + '\r\n' +
-                'Content-Transfer-Encoding: base64\r\n' +
-                '\r\n' +
-                base64Data +
-                close_delim;
             
-            self.progress("25")
             gapi.client.request({
                 'path': '/upload/drive/v2/files',
                 'method': 'POST',
                 'params': {
                     'uploadType': 'resumable'
                 },
-            }).execute( function (response) {
-            	console.log(response)
-            	self.uploading_file_token = response["Location"]
+                'headers': {
+                    'X-Upload-Content-Type': fileData.type
+                },
+                'body': {       
+                    "title": fileData.name, 
+                    "mimeType": fileData.type,
+                    "Content-Lenght": fileData.size,
+                }
+            }).execute( function (response, raw_response) {
+            	raw_response = JSON.parse(raw_response)
+
+                self.uploading_file_token = GetURLParameter(raw_response.gapi.data.headers.location, "upload_id")
 
 				gapi.client.request({
 	                'path': '/upload/drive/v2/files',
 	                'method': 'PUT',
 	                'params': {
-	                    'uploadType': 'multipart',
+	                    'uploadType': 'resumable',
 	                    'upload_id': self.uploading_file_token,
 	                },
 	                'headers': {
-	                    'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+	                    'Content-Length': fileData.size,
+                        'Content-Type': fileData.type
 	                },
-	                'body': multipartRequestBody // need to somehow send more data and splice it first ....
+	                'body': reader.result
 	            });
             })
         }
@@ -287,6 +270,7 @@ var Drive = function(options) {
         self.progress()
     }
     self.show_empty_dir = function(folder_items, clear) {
+        $(".empty_dir").show()
         $(".drive_refresh").prop("disabled", false).removeClass("disabled")
         $(".drive_back").prop("disabled", false).removeClass("disabled")
     }
@@ -363,12 +347,6 @@ var Drive = function(options) {
         	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
         	$(".meter").addClass("animate")
         }
-        if ( $(".drive_file").not(".template").length )  {
-            $(".empty_dir").hide()
-        }
-        else {
-            $(".empty_dir").show()
-        }
     }	
 
     self.set_drive_parent = function(file_details) {
@@ -387,3 +365,16 @@ var Drive = function(options) {
 
     return this
 }
+
+function GetURLParameter(sURL, sParam) {
+    var sPageURL = sURL.split("?")[1];
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) 
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) 
+        {
+            return sParameterName[1];
+        }
+    }
+}​

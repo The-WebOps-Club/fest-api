@@ -171,10 +171,6 @@
 label {
     vertical-align: middle;
 }
-hr {
-    border-color : #DDD;
-    margin : 20px 0px;
-}
 .popover {
     z-index : 99999;
 }
@@ -279,3 +275,33 @@ form .clearfix.success .input-prepend .add-on, form .clearfix.success .input-app
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
 }
 
+
+/* ------ VIDOE ------------ */
+.video_comment .left {
+    padding-right : 20px;
+}
+.video_comment .right {
+}
+.video_comment .right .title {
+    overflow : hidden;
+    text-overflow : ellipsis;
+    white-space : nowrap;
+    height : 20px;
+    width : 100%;
+    line-height : 20px;
+    font-size : 14px;
+    margin-bottom : 10px;
+}
+.video_comment .right .desc {
+    overflow : hidden;
+    text-overflow : ellipsis;
+    /*white-space : nowrap;*/
+    width : 100%;
+    max-height :70px;
+    
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical; 
+
+    text-overflow: -o-ellipsis-lastline;
+}

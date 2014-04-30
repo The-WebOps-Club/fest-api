@@ -196,7 +196,7 @@ class Command(BaseCommand):
                 self.stdout.write("Created users for Dept %s." % (dept))
 
             user, created_it = User.objects.get_or_create(username='root')
-            user.email = settings.GOOGLE_API_USER_EMAIL
+            user.email = "root@festapi.com"
             user.set_password(pass_key)
             user.first_name = "root"
             user.last_name = "root"
