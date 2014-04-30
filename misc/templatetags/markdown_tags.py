@@ -39,10 +39,10 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
             / codespan(str code)
             / double_emphasis(str text)
             / emphasis(str text)
-            image(str link, str title, str alt_text)
+            / image(str link, str title, str alt_text)
             / linebreak()
-            link(str link, str title, str content)
-            raw_html(str raw_html)
+            / link(str link, str title, str content)
+            / raw_html(str raw_html)
             / triple_emphasis(str text)
             / strikethrough(str text)
             / superscript(str text)
@@ -66,7 +66,7 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
 
     def header(self, text, level) :
         return "<p>" + text + "</p>"
-    
+
     def autolink(self, link, is_email):
         my_html = ''
         if is_email :

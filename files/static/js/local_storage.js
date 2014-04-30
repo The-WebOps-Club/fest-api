@@ -5,7 +5,7 @@ function get_fbid_or_null( id ){
 		return
 	
 	user_id = "user_" + id
-	console.log(id + "... " + localStorage[user_id])
+	// console.log(id + "... " + localStorage[user_id])
 	if ( ! localStorage[user_id] )
 		return
 

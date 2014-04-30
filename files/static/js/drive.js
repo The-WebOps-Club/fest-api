@@ -160,6 +160,58 @@ var Drive = function(options) {
         })
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     self.upload_file = function(fileData, dir_id, callback) {
         const boundary = '-------314159265358979323846';
         const delimiter = "\r\n--" + boundary + "\r\n";
@@ -169,7 +221,7 @@ var Drive = function(options) {
         var reader = new FileReader();
         reader.readAsBinaryString(fileData);
         reader.onload = function(e) {
-        	self.progress("20")
+            self.progress("20")
             var contentType = fileData.type || 'application/octet-stream';
             var metadata = {
                 'title': fileData.name,
@@ -203,11 +255,7 @@ var Drive = function(options) {
                 },
                 'body': multipartRequestBody
             });
-            if (!callback) {
-                callback = function(file) {
-                    console.log(file)
-                };
-            }
+            callback = callback || function(file) { console.log(file) };
             request.execute(function(file) { self.progress("100"); callback(file) });
         }
     }
@@ -233,33 +281,33 @@ var Drive = function(options) {
                     "Content-Lenght": fileData.size,
                 }
             }).execute( function (response, raw_response) {
-            	raw_response = JSON.parse(raw_response)
+                raw_response = JSON.parse(raw_response)
 
                 self.uploading_file_token = GetURLParameter(raw_response.gapi.data.headers.location, "upload_id")
 
-				gapi.client.request({
-	                'path': '/upload/drive/v2/files',
-	                'method': 'PUT',
-	                'params': {
-	                    'uploadType': 'resumable',
-	                    'upload_id': self.uploading_file_token,
-	                },
-	                'headers': {
-	                    'Content-Length': fileData.size,
+                gapi.client.request({
+                    'path': '/upload/drive/v2/files',
+                    'method': 'PUT',
+                    'params': {
+                        'uploadType': 'resumable',
+                        'upload_id': self.uploading_file_token,
+                    },
+                    'headers': {
+                        'Content-Length': fileData.size,
                         'Content-Type': fileData.type
-	                },
-	                'body': reader.result
-	            });
+                    },
+                    'body': reader.result
+                });
             })
         }
     }
 
     /* ------------------------ DISPLAY FUNCTIONS ------------------ */
     self.show_dir_contents = function(folder_items, clear) {
-    	clear = clear || true
+        clear = clear || true
         folder_items = folder_items || self.dir_contents
         if (clear) {
-        	$(".drive_file").not(".template").remove()
+            $(".drive_file").not(".template").remove()
             $(".empty_dir").hide()
         }
         $.each(folder_items, function(i, v) {
@@ -275,95 +323,6 @@ var Drive = function(options) {
         $(".drive_back").prop("disabled", false).removeClass("disabled")
     }
     
-    self.show_file = function(file_data, clear) {
-    	clear = clear || true
-    	if (clear) {
-        	$.each($(".drive_file").not(".template"), function(v, i) {
-        		var $v = $(v)
-        		if ( $v.data("id") == file_data.id )
-        			$v.remove()
-        	})
-        }
-    	if ( file_data.labels.trashed ) { // dont make the file
-        	return
-        }
-        $el = $(".drive_list .drive_parent .template.file_template").clone()
-    		.removeClass("template").removeClass("file_template")
-        $el.data("id", file_data.id)
-        $el.find(".title").text(file_data.title)
-        if ( ! file_data.labels.viewed ) {
-        	//$el.find(".title").addClass("bold") // This viewswed is for fest-api acct. Not other junta
-        } else if ( file_data.labels.trashed ) {
-        	$el.find(".title").addClass("strike")
-        	$el.find(".title").prepend("<i class='icon-trash drive_icon'></i>")
-        }
-        $el.find(".drive_icon").prop("src", file_data.iconLink)
-        if ( moment ) 
-        	last_mod = moment.duration(moment(file_data.modifiedDate)-moment()).humanize(true)
-        else 
-       		last_mod = file_data.modifiedDate
-       	$el.find(".last_modified").text(last_mod)
-        
-       	if ( file_data.mimeType == MIME_TYPES["folder"] ) {
-       		$el.data("folder", "yes")
-       		$el.find(".info a").prop("href", "javascript:void(0)")
-       		$el.find(".info a").click( function () {
-       			self.get_dir_contents($(this).closest(".drive_file").data("id"))
-       		})
-        } else {
-        	$el.data("folder", "no")
-        	$el.find(".info a").prop("href", $el.find(".info a").prop("href") + "?id=" + $el.data("id"))
-        }
-        
-        self.options.fileAddCallback($el)
-
-        $el.show()
-        $(".drive_parent").append($el)
-        self.progress()
-    }
-
-    self.show_parent = function (fid, num) {
-    	num = num || 0
-    	self.get_file_meta(fid, function(r) {
-    		if (r.parents.length) {
-    			if ( r.parents.length > num+1)
-    				num = 0
-    			self.get_dir_contents(r.parents[num].id)
-	    		}
-    	})
-    }
-
-    self.progress = function(val) {
-    	val = val || ( self.current_progress / self.finish_progress * 100 ).toFixed(0);
-    	val = "" + val
-    	$(".progress").css ( {
-        	"width" : val + "%",
-        })
-        $(".progress_val").text(val + "%")
-        if ( $.trim(val) == "100" ) {
-        	$(".progress").html	("&nbsp;&nbsp;&nbsp;&nbsp;DONE LOADING")
-			$(".meter").removeClass("animate")
-        } else {
-        	$(".progress").html("&nbsp;&nbsp;&nbsp;&nbsp;LOADING ...")
-        	$(".meter").addClass("animate")
-        }
-    }	
-
-    self.set_drive_parent = function(file_details) {
-    	$(".drive_parent_title").text("folder : " + file_details.title)
-            .data("folder", "yes").data("id", file_details.id)
-        $("title").text("Shaastra Docs - " + file_details.title)
-        $(".drive_parent").data("id", file_details.id).data("folder", "yes")
-   		if ( file_details.parents && file_details.parents.length )
-            $(".drive_back").removeClass("disabled").prop("disabled", false)
-                            .data("id", file_details.parents[0].id)
-        else
-            $(".drive_back").addClass("disabled").prop("disabled", true)
-    }
-    /* Execution */
-    self.init()
-
-    return this
 }
 
 function GetURLParameter(sURL, sParam) {
