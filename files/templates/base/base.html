@@ -149,7 +149,6 @@
             if ( service == "youtube" ) {
                 var url = "http://gdata.youtube.com/feeds/api/videos/" + id + "?v=2&alt=jsonc"
                 $.getJSON(url, function(json) {
-                    console.log(json)
                     my_json = json
                     $v.find(".left").append("<img src='" + json.data.thumbnail.sqDefault + "' width='100%' height='auto' />")
                     $v.find(".right").append("<h5 class='title'>" + json.data.title + "</h5>")
@@ -218,6 +217,8 @@
             	$('.atwho_at_config').atwho(at_config_file)
             if ( ! ( typeof at_config === "undefined" ) )
             	$('.atwho_at_config').atwho(at_config)
+            if ( ! ( typeof emoji_config === "undefined" ) )
+                $('.atwho_at_config').atwho(emoji_config)
             $.each($(".video_comment.video_render"),show_video_preview)
         }        
         $( document ).ready(function() {
