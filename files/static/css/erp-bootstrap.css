@@ -1069,7 +1069,7 @@ ol {
 }
 li {
   line-height: 14px;
-  color: #666666;
+  /*color: #666666;*/
 }
 ul.unstyled {
   list-style: none;
