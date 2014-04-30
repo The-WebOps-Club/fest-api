@@ -25,6 +25,8 @@ urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # FEST-API APPS
     url(r'^$', 'apps.home.views.home', name='home'),
+    url(r'^markdown$', 'apps.home.views.markdown', name='markdown'),
+    
 
     # Users
     url(r'^login/$', 'apps.users.views.login_user', name='login'), # Logs user in

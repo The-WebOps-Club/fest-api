@@ -19,36 +19,32 @@
     
     <title>{% block title %} {{ FEST_NAME }} {% endblock %}</title>
 
-    {% if DEBUG %}
-        <script>
-            localStorage.clear(); /* kill cache */
-        </script>
-    {% endif %}
-    
     {% compress css %}
     <!-- Include stylesheets here -->
     <link href="{% static 'css/erp-bootstrap.css' %}" rel="stylesheet" media="screen">
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
     <link href="{% static 'css/jquery.atwho.css' %}" rel="stylesheet" media="screen">
     
     <link href="{% static 'css/icons-color.css'%}" rel="stylesheet" media="screen">
-    <!--<link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">-->
+    <link rel='stylesheet' href='{%static "css/select2.css"%}' media="screen"/>
+
+
+    {% block extra_css %} {% endblock %}
     {% endcompress %}
 
-    {% compress js %}
-    <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
-    {% endcompress %}
-
+    
     <link rel="shortcut icon" href="{% static 'img/fest_pics/favicon.ico' %}">
     
-    {% compress css %}{% block extra_css %}{% endblock %} {% endcompress %}
+    
+    {% compress js %} 
+    <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
+        <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+            <!--[if lt IE 9]>
+                  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+       <![endif]-->
 
-    {% compress js %}
+    {% endcompress %}
+   
     {% if not DEBUG %}
     <script type="text/javascript">
         (function(i, s, o, g, r, a, m) {
@@ -67,7 +63,7 @@
         //ga("send", "pageview");
     </script>
     {% endif %}
-    {% endcompress %}
+   
 </head>
 
 <body>
@@ -107,7 +103,6 @@
         {% endblock %}
     </div>
 
-
     {% compress js %}
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-twipsy.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-alerts.js' %}"></script>
@@ -134,30 +129,59 @@
     <!--<script type="text/javascript" src='{% static "js/gravatar.js" %}'></script>-->
 
     <script type="text/javascript" src='{% static "js/jquery.autosize.js" %}'></script>
+    <script type="text/javascript" src='{% static "js/local_storage.js" %}'></script>
     {% endcompress %}
 
-    {% compress css %}
-    <link rel='stylesheet' href='{%static "css/select2.css"%}'/>
-    {% endcompress %}
-
-    {% compress js %}
     {% block extra_js %}{% endblock %}
     <script>
     	site_url = "{{ SITE_URL }}"
     	static_url = "{{ STATIC_URL }}"
+        function truncate(string, l){
+            if (string.length > l)
+                return string.substring(0, l)+'...';
+            else
+                return string;
+        };
+		function show_video_preview(i, v) {
+            var $v = $(v)
+            var service = $v.data("service")
+            var id = $v.data("video-id")
+            if ( service == "youtube" ) {
+                var url = "http://gdata.youtube.com/feeds/api/videos/" + id + "?v=2&alt=jsonc"
+                $.getJSON(url, function(json) {
+                    console.log(json)
+                    my_json = json
+                    $v.find(".left").append("<img src='" + json.data.thumbnail.sqDefault + "' width='100%' height='auto' />")
+                    $v.find(".right").append("<h5 class='title'>" + json.data.title + "</h5>")
+                        .append("<p class='desc'>" + json.data.description + "</p>")
+                });
+    
+            } else if ( service == "vimeo") {
 
-		function display_pic(el, size) {
+            }
+            $v.removeClass("video_render")
+        }
+
+        function display_pic(el, size) {
 			$el = $(el)
 			$.each($el, function(i, v) {
 				var $v = $(v)
+                var id = $.trim($v.data("id"))
 				var fbid = $.trim($v.data("fbid"))
 				var size = size || $v.data("size") || 60
-				if ( fbid.length > 2  ) {
+                if ( ! id )
+                    return
+
+                if( fbid.length < 2 )
+                    fbid = get_fbid_or_null(id);
+
+				if( fbid && fbid.length > 2 ) {
 					var pic_src = "http://graph.facebook.com/" + fbid +  "/picture?height=" + size + "&width=" + size;
 			        $v.prop("src", pic_src);
 
 				} else {
-					if ( ! $v.data("id") || ! atwho_user_list ) {
+
+					if ( ! atwho_user_list ) {
 						// As some places have these in templates
 						return
 					} else {
@@ -173,6 +197,8 @@
 					        //var filter_users = $.grep(atwho_user_list, function(a) { return a.id == data["id"] } )
 							//filter_users[0].fbid = data["fbid"];
 							$v.data("fbid", data["fbid"])
+                            push_fbid(data['id'], data['fbid']);
+
 						}, {"id" : $v.data("id") } )
 					}
 				}
@@ -192,6 +218,7 @@
             	$('.atwho_at_config').atwho(at_config_file)
             if ( ! ( typeof at_config === "undefined" ) )
             	$('.atwho_at_config').atwho(at_config)
+            $.each($(".video_comment.video_render"),show_video_preview)
         }        
         $( document ).ready(function() {
             $(".below_topbar").click(hide_popups)
@@ -212,7 +239,8 @@
             on_dom_change()
         })
     </script>
-    {% endcompress %}
+    
+
 </body>
 
 </html>

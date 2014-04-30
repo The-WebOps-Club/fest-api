@@ -35,7 +35,9 @@
 	            {% endif %}
 	        </div>
 	        <div class="news_body">
+	        {% autoescape off %}
                 {{ post.description|markdown:"my_default" }}
+	        {% endautoescape %}
             </div>
 	        <div class="news_extra"></div>
 	        <div class="news_comment_wrapper">
@@ -77,9 +79,6 @@
 	}
 	.post_container {
 		border-radius : 5px
-	}
-	.news_post hr {
-		opacity:0;
 	}
 	.news_left img.news_profile, .news_left {
 	    float:left;

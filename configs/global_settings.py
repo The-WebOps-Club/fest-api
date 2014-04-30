@@ -56,8 +56,11 @@ THIRD_PARTY_APPS = (
     # Search Indexer
     # 'haystack',
 
-    # compressor
+    # compressor - Easy to use minifier and cache system
     'compressor',
+
+    # Celery - task scheduling
+    # 'djcelery',
 )
 API_APPS = (
     'misc',
@@ -443,6 +446,14 @@ MARKDOWN_STYLES = {
         "safe_mode": False,
     },
 }
+# -------------------------------------------------
+# COmpressor
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.cssmin.CSSMinFilter'
+]
+COMPRESS_JS_FILTERS = [
+    'compressor.filters.jsmin.JSMinFilter'
+]
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS

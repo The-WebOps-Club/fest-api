@@ -8,7 +8,7 @@
     <div class="news_comment_left">
         <img src="" data-id="{% if not new_comment %} {{ comment.by.id }} {% else %} {{ user.id }} {% endif %}" data-fbid="{% if not new_comment %} {{ comment.by.profile.fbid }} {% else %} {{ user_profile.fbid }} {% endif %}" class="news_comment_profile display_pic">
     </div>
-    <div class="news_comment_body markdown_remove_p">
+    <div class="news_comment_body">
         {% if new_comment %} 
 			<div class="row-fluid">
 				<form method="POST">
@@ -29,11 +29,23 @@
 				</form>
 			</div>
         {% else %}
-	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : <span class="comment_text">{% autoescape off %}{{ comment.description|markdown:"my_default" }} {% endautoescape %}</span>
-	        <div class="news_comment_info">
-	            {{ comment.time_created|naturaltime }} 
-	            {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
+	        <div class="">
+		        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> 
+		        <span class="news_comment_info">
+		            {% if comment.time_updated == comment.time_created %}
+		            	commented {{ comment.time_created|naturaltime }} 
+		            {% else %}
+		            	edited {{ comment.time_updated|naturaltime }}
+		            {% endif %}
+		        </span>
 	        </div>
+	        
+	        <div class="comment_text">
+		        {% autoescape off %}
+		        	{{ comment.description|markdown:"my_default" }} 
+		        {% endautoescape %}
+	        </div>
+	        
        	{% endif %}
     </div>
 </div>
