@@ -6,11 +6,12 @@ function get_fbid_or_null( id ){
 	
 	user_id = "user_" + id
 	console.log(id + "... " + localStorage[user_id])
+	if ( ! localStorage[user_id] )
+		return
+
 	user_id_data = JSON.parse(localStorage[user_id])
 	if( user_id_data.fbid )
 		return user_id_data.fbid
-	else
-		return null;
 }
 function push_fbid( id, fbid ){
 	if (!localStorage)
