@@ -29,11 +29,20 @@
 				</form>
 			</div>
         {% else %}
-	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> : <span class="comment_text">{% autoescape off %}{{ comment.description|markdown:"my_default" }} {% endautoescape %}</span>
-	        <div class="news_comment_info">
-	            {{ comment.time_created|naturaltime }} 
-	            {% if comment.time_updated != comment.time_created %}edited {{ comment.time_updated|naturaltime }}{% endif %}
-	        </div>
+	        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> 
+	        <span class="news_comment_info">
+	        	commented {{ comment.time_created|naturaltime }} 
+	            {% if comment.time_updated != comment.time_created %}
+	            	edited {{ comment.time_updated|naturaltime }}
+	            {% endif %}
+	        </span>
+	        
+	        <p class="comment_text">
+	        {% autoescape off %}
+	        	{{ comment.description|markdown:"my_default" }} 
+	        {% endautoescape %}
+	        </p>
+	        
        	{% endif %}
     </div>
 </div>

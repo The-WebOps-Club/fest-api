@@ -56,8 +56,11 @@ THIRD_PARTY_APPS = (
     # Search Indexer
     # 'haystack',
 
-    # compressor
+    # compressor - Easy to use minifier and cache system
     'compressor',
+
+    # Celery - task scheduling
+    # 'djcelery',
 )
 API_APPS = (
     'misc',

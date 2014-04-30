@@ -1,7 +1,7 @@
 from django import template
 from django.utils.safestring import mark_safe
 from django.utils.encoding import force_unicode
-import misc.markdown as markdown_render
+import misc.markdown_testing as markdown_render
 from django.conf import settings
 
 register = template.Library()
