@@ -134,6 +134,7 @@
     <!--<script type="text/javascript" src='{% static "js/gravatar.js" %}'></script>-->
 
     <script type="text/javascript" src='{% static "js/jquery.autosize.js" %}'></script>
+    <script type="text/javascript" src='{% static "js/local_storage.js" %}'></script>
     {% endcompress %}
 
     {% compress css %}
@@ -152,11 +153,15 @@
 				var $v = $(v)
 				var fbid = $.trim($v.data("fbid"))
 				var size = size || $v.data("size") || 60
-				if ( fbid.length > 2  ) {
+                if( fbid.length > 2 )
+                    fbid = get_fbid_or_null($.trim($v.data('id')));
+
+				if ( fbid.length != null  ) {
 					var pic_src = "http://graph.facebook.com/" + fbid +  "/picture?height=" + size + "&width=" + size;
 			        $v.prop("src", pic_src);
 
 				} else {
+
 					if ( ! $v.data("id") || ! atwho_user_list ) {
 						// As some places have these in templates
 						return
@@ -173,6 +178,8 @@
 					        //var filter_users = $.grep(atwho_user_list, function(a) { return a.id == data["id"] } )
 							//filter_users[0].fbid = data["fbid"];
 							$v.data("fbid", data["fbid"])
+                            push_fbid($.trim($v.data('id')),data['fbid']);
+
 						}, {"id" : $v.data("id") } )
 					}
 				}
