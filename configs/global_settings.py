@@ -446,6 +446,14 @@ MARKDOWN_STYLES = {
         "safe_mode": False,
     },
 }
+# -------------------------------------------------
+# COmpressor
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.cssmin.CSSMinFilter'
+]
+COMPRESS_JS_FILTERS = [
+    'compressor.filters.jsmin.JSMinFilter'
+]
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS
