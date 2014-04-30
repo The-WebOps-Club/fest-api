@@ -70,12 +70,12 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
     def autolink(self, link, is_email):
         my_html = ''
         if is_email :
-            print link
+            # print link
             preview = ""
             short_link = (link[:40] + '..') if len(link) > 40 else link
             my_html = "<a href='mailto:" + link + "'>" + short_link + "</a>" + preview
         else :    
-            print link
+            # print link
             preview = ""
             for key, val in VIDEO_SOURCES.items():
                 match = re.match(val["re"], link)
@@ -86,7 +86,7 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
                         </div></div></a>""" % (link, key, video_id)
                 short_link = (link[:40] + '...') if len(link) > 40 else link
             my_html = "<a href='" + link + "'>" + short_link + "</a>" + preview
-            print my_html
+            # print my_html
         return my_html
 
     # def image(self, link, title, alt):
