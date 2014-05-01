@@ -93,7 +93,13 @@ var Drive = function( options ) {
                 callback = callback || self.show_dir_contents
                 callback();
             },
-            metaload: function(response){ console.log(response) },
+            cached: function(response){ 
+                self.finish_progress = response.length;
+                self.current_progress = 0;
+                self.dir_contents = response.items;
+                callback = self.show_dir_contents;
+                callback();
+            },
 
         }, new Date() );
 
@@ -107,18 +113,15 @@ var Drive = function( options ) {
 
     }
     
-    self.get_file_meta = function(fid, callback ) {
-        gapi.client.drive.files.get({
-            "fileId": fid,
-            "fields": STANDARD_META_LIST ,
-        }).execute(function(response) {
+    self.get_file_meta = function(fid, callbacks ) {
+        self.filesystem.loadByFile( fid ,{finish:function(response) {
             self.check_error(response)
             self.current_progress += 1
             self.progress()
-            callback = callback || self.show_file
+            callback = callbacks['finish'] || self.show_file
             callback(response);
             f = response
-        });
+        },cached:callbacks['cached']}, new Date(), false);
     }
     self.rename_files = function(file_details, callback) {
     	$.each(file_details, function(i,v) {
@@ -296,8 +299,11 @@ var Drive = function( options ) {
         	$(".drive_file").not(".template").remove()
         }
         $.each(folder_items, function(i, v) {
-            callback = self.show_file
-            callback( v );
+                self.get_file_meta( v.id, {finish:function( filemeta ){
+                    callback = self.show_file
+                    callback( filemeta );
+                },cached:function( filemeta ){}
+            });
         })
         $(".drive_refresh").prop("disabled", false).removeClass("disabled")
         $(".drive_back").prop("disabled", false).removeClass("disabled")
@@ -366,18 +372,31 @@ var Drive = function( options ) {
 
     self.show_parent = function (fid, num) {
     	num = num | 0
-    	self.get_file_meta(fid, function(r) {
+
+        self.finish_progress = 1;
+        self.current_progress = 0;
+        self.progress();
+
+    	self.get_file_meta(fid,{finish:function(r) {
     		if (r.parents.length) {
     			if ( r.parents.length > num+1)
     				num = 0
     			self.get_dir_contents(r.parents[num].id)
 	    		}
-    	})
+    	},cached:function(r){
+            if (r.parents.length) {
+                if ( r.parents.length > num+1)
+                    num = 0
+                self.get_dir_contents(r.parents[num].id)
+                }
+        }},new Date(), true);
     }
 
     self.progress = function(val) {
+
     	val = val || ( self.current_progress / self.finish_progress * 100 ).toFixed(0);
     	val = "" + val
+        //console.log('progress set');
     	$(".progress").css ( {
         	"width" : val + "%",
         })

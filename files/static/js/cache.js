@@ -18,31 +18,53 @@ var ContextController = function(){
 
 	this.initCache = function( contextNumber, contextType ){
 		this.contextNumber = contextNumber;
-		if(localStorage.contexts[ contextNumber ] != undefined){
+		var storage = {};
+		storage.contexts = []
+		storage.num_contexts = 0;
+		if(localStorage.contexts != undefined )
+			storage.contexts = JSON.parse(localStorage.contexts);
+		if(localStorage.num_contexts != undefined )
+			storage.num_contexts = parseInt(localStorage.num_contexts);
+
+		console.log(storage);
+		if(storage.contexts[ contextNumber ] != undefined){
 			// TODO at some point.... optimize this code to have a single write and single read.
-			this.files = JSON.parse( localStorage.contexts[contextNumber].files );
-			this.fileIds = JSON.parse( localStorage.contexts[contextNumber].fileIds );
-			this.lastUpdated = JSON.parse( localStorage.contexts[contextNumber].lastUpdated );
-			this.contextType = JSON.parse( localStorage.contexts[contextNumber].contextType );
-			this.staticdata = JSON.parse( localStorage.contexts[contextNumber].staticdata );
+			this.files = JSON.parse( storage.contexts[this.contextNumber].files );
+			this.fileIds = JSON.parse( storage.contexts[this.contextNumber].fileIds );
+			this.lastUpdated = new Date( storage.contexts[this.contextNumber].lastUpdated );
+			this.contextType = storage.contexts[this.contextNumber].contextType;
+			this.staticdata = JSON.parse( storage.contexts[this.contextNumber].staticdata );
 		}
 		else{
 			this.files = [];
 			this.lastUpdated = null;
 			this.fileIds = [];
 			this.contextType = contextType || 'context#unknown'
-			this.contextNumber = localStorage.contexts.length;
+			this.contextNumber = storage.num_contexts;
+			storage.num_contexts ++;
+			localStorage.num_contexts = storage.num_contexts.toString();
 		}
 	}
 
 
 	// cache files using the date parameter
 	this.cacheFiles = function( datetime ){
-		localStorage.contexts[contextNumber].files = JSON.stringify(this.files);
-		localStorage.contexts[contextNumber].fileIds = JSON.stringify(this.fileIds);
-		localStorage.contexts[contextNumber].lastUpdated = JSON.stringify(datetime);
-		localStorage.contexts[contextNumber].contextType = JSON.stringify(this.contextType);
-		localStorage.contexts[contextNumber].staticdata = JSON.stringify(this.staticdata)
+		storage = []
+		if(localStorage.contexts !=undefined)
+			storage.contexts = JSON.parse(localStorage.contexts);
+		else
+			storage.contexts = [];
+
+		if( storage.contexts[this.contextNumber] == undefined ) storage.contexts[this.contextNumber] = {};
+		this.lastUpdated = datetime;
+		console.log('caching: '+this.contextNumber);
+		storage.contexts[this.contextNumber].files = JSON.stringify(this.files);
+		storage.contexts[this.contextNumber].fileIds = JSON.stringify(this.fileIds);
+		storage.contexts[this.contextNumber].lastUpdated = datetime.toISOString();
+		storage.contexts[this.contextNumber].contextType = this.contextType;
+		storage.contexts[this.contextNumber].staticdata = JSON.stringify(this.staticdata)
+		localStorage.contexts = JSON.stringify(storage.contexts);
+
 	}
 
 	this.pushStatic = function( staticdata ){
@@ -55,17 +77,18 @@ var ContextController = function(){
 	}
 
 	this.syncFiles = function(){
-		this.files = JSON.parse( localStorage.contexts[contextNumber].files );
-		this.fileIds = JSON.parse( localStorage.contexts[contextNumber].fileIds );
-		this.lastUpdated = JSON.parse( localStorage.contexts[contextNumber].lastUpdated );
-		this.contextType = JSON.parse( localStorage.contexts[contextNumber].contextType );
-		this.staticdata = JSON.parse( localStorage.contexts[contextNumber].staticdata );
+		localStorage.contexts = JSON.parse(localStorage.contexts);
+		this.files = JSON.parse( localStorage.contexts[this.contextNumber].files );
+		this.fileIds = JSON.parse( localStorage.contexts[this.contextNumber].fileIds );
+		this.lastUpdated = new Date( localStorage.contexts[this.contextNumber].lastUpdated );
+		this.contextType = localStorage.contexts[this.contextNumber].contextType ;
+		this.staticdata = JSON.parse( localStorage.contexts[this.contextNumber].staticdata );
 	}
 
 	this.pushFiles = function( fileList ){
 		fileList.forEach(function(e){
 			if( cobj.fileIds.indexOf(e.id) != -1 ){
-				cobj.files[ fmc.fileIds.indexOf( e.id) ] = e;
+				cobj.files[ cobj.fileIds.indexOf(e.id) ] = e;
 			}
 			else{
 				cobj.files.push(e);
@@ -90,18 +113,29 @@ var FileMetaCache = function(){
 	this.byall = { };
 
 	this.init = function(){
-		for( var i = 0; i<localStorage.num_contexts; i++ );
-			cc = new ContextController( );
-			cc.initCache( i );
-			this.controllers.push( cc )
+		console.log(localStorage.num_contexts);
+		var i = 0;
+		var max = localStorage.num_contexts;
+		for( i = 0; i<parseInt(max); i++ ){
+			controller = new ContextController( );
+			controller.initCache( i );
+			console.log('initialized cache: '+i );
+			this.controllers.push( controller );
 			if( controller.contextType == 'context#bydir' ) 
 				this.bydir[controller.staticdata.dirid] = controller;
-			else if( controller.contextType == 'context#byfile' ) 
-				this.byfile[controller.staticdata.fileid] = controller;
+			else if( controller.contextType == 'context#byfile' ) {
+				this.byfile[controller.fileIds[0]] = controller;
+				console.log('found a file');
+			}
 			else if( controller.contextType == 'context#byall' ) 
 				this.byall['global'] = controller;
 
+			console.log('created controller for cache: ');
+			console.log(controller);
+			//break;
 		}
+		console.log('caches obtained: ');
+		console.log(this.controllers);
 	}
 }
 
@@ -122,29 +156,29 @@ var DriveFileRetreival = function(){
 	*		finish: called after changes are retreived from the server.
 	*/
 	this.loadByDir = function( folderId, callbacks, datetime ){
-		query = {
+		var query = {
             "folderId": folderId,
             //"q":'modifiedDate >= \''+new Date(this.cache.lastUpdated).toISOString()+'\''
         };
+
         var dir_cache = this.cache.bydir[folderId];
+        console.log(this.cache);
 		if( dir_cache != undefined ){
 			query.q = 'modifiedDate >= \''+new Date(dir_cache.lastUpdated).toISOString()+'\'';
-			callbacks['cached']( dir_cache.files )
+			callbacks['cached']( {items:dir_cache.files} )
 		}else{
 			var cc = new ContextController();
-			cc.initCache( -1, 'cache#bydir');
+			cc.initCache( -1, 'context#bydir');
+			cc.staticdata.dirid = folderId;
 			dfr.cache.bydir[folderId] = cc;
 			dfr.cache.controllers.push(cc);
 			dir_cache = cc;
 		}
-		gapi.client.drive.children.list(query).execute(function(response) {
-			var cachedFiles = [];
-			dir_cache.files.forEach(function( item ){
-            	if( item.parents[0].id == folderId ) 
-            		cachedFiles.push( item );
-            });
 
-			//totalResponse = response;
+		console.log('QUERYING FOLDER: ');
+		console.log(query);
+		gapi.client.drive.children.list(query).execute(function(response) {
+			var cachedFiles = dir_cache.files;
 
 
 			if( response.items == undefined ){
@@ -152,52 +186,29 @@ var DriveFileRetreival = function(){
             	callbacks['finish']( response );
             	return;
 			}
-			// Possible incosistency if dir_cache is not accessed by address.
+			// Possible inconsistency if dir_cache is not accessed by address.
 			dfr.cache.bydir[folderId].pushFiles( response.items );
 			response.items.forEach(function(item){
+				console.log('DFR for:'+item.id);
+				console.log(dfr.cache.byfile[item.id]);
+
 				if( dfr.cache.byfile[item.id] != undefined )
 					dfr.cache.byfile[item.id].staticdata.changed = true;
 				else{
 					var cc = new ContextController();
-					cc.initCache( -1, 'cache#byfile');
+					console.log('Controller not found creating new.');
+					cc.initCache( -1, 'context#byfile');
 					dfr.cache.byfile[item.id] = cc;
 					dfr.cache.controllers.push(cc);
-					dfr.cache.byfile[item.id].fileIds.push(item.id);
-					dfr.cache.byfile[item.id].staticdata.changed = true;
+					//dfr.cache.byfile[item.id].fileIds.push(item.id);
+					dfr.cache.byfile[item.id].staticdata.changed = true;	// notify the file that it has changed.
 				}
 			});
 
-			dfr.cache.bydir[folderId].cacheFiles( new Date() ); 
+			dfr.cache.bydir[folderId].cacheFiles( new Date() );
             response.items = dfr.cache.bydir[folderId].files;
             callbacks['finish']( response );
-            /*response.items.forEach(function( item ){
-            	if( item.kind == 'drive#childReference' ){
-            		console.log('need to get more data. for ');
-            		console.log(item);
-					gapi.client.drive.files.get({fileId:item.id}).execute(function( response ){
-						properResponse.push( response );
-						console.log('GOT:')
-						console.log( response );
-						itemsLoaded++;
-						callbacks['metaload']( response, itemCount, itemsLoaded );
-
-						if( itemCount == itemsLoaded ){
-							// Do push and cache after all items are loaded.
-							dfr.cache.pushFiles( properResponse );
-            				dfr.cache.cacheFiles( datetime );
-            				dfr.cache.syncFiles( );
-            				totalResponse.items = properResponse.concat( cachedFiles );
-            				callbacks['finish']( totalResponse );
-						}
-
-					});
-				}
-				else
-				{
-					properResponse.push(item);
-				}
-
-            });*/
+            
         });
 	}
 
@@ -207,27 +218,26 @@ var DriveFileRetreival = function(){
             //"q":'modifiedDate >= \''+new Date(this.cache.lastUpdated).toISOString()+'\''
         };
         var file_cache = this.cache.byfile[fileId];
+        console.log('FILE:')
+        console.log(file_cache);
 
 		if( file_cache != undefined )
 			callbacks['cached']( file_cache.files[0] )
 		else{
 			var cc = new ContextController();
-			cc.initCache( -1, 'cache#byfile');
-			dfr.cache.byfile[fileid] = cc;
+			cc.initCache( -1, 'context#byfile');
+			dfr.cache.byfile[fileId] = cc;
 			dfr.cache.controllers.push(cc);
-			dfr.cache.byfile[fileid].fileIds.push(fileid);
+			//dfr.cache.byfile[fileid].fileIds.push(fileid);
 			dfr.cache.byfile[fileid].staticdata.changed = true;
-			file_cache = dfr.cache.byfile[fileid];
+			file_cache = dfr.cache.byfile[fileId];
 		}
 
 		if( refresh_changes || file_cache.staticdata.changed )
-			gapi.client.drive.files.get(query).execute(function(response) 
-				if( response.items == undefined ){
-            		callbacks['finish']( response );
-            		return;
-				}
-			// Possible incosistency if dir_cache is not accessed by address.
-				dfr.cache.bydir[folderId].pushFiles( response.items );
+			gapi.client.drive.files.get(query).execute(function(response){
+				dfr.cache.byfile[fileId].staticdata.changed = false;
+				dfr.cache.byfile[fileId].pushFiles( [response] );
+				dfr.cache.byfile[fileId].cacheFiles( new Date() );
             	callbacks['finish']( response );
         	});
 		else
