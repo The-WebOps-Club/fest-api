@@ -39,8 +39,8 @@ def global_context(request):
     else:
         profile = None
     token = ""
-#    drive = Drive()
-#    token = Drive.get_access_token()
+    drive = Drive()
+    token = Drive.get_access_token()
     local_context = {
         'user':request.user,
         'erp_profile':erp_profile,
