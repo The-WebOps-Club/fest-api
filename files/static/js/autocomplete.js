@@ -248,8 +248,8 @@ function setup_autocomplete_lists() {
     // }
 
     $(".atwho_at_config").atwho(at_config)
-    if ( emoticon_config )
-        $(".atwho_at_config").atwho(emoticon_config);
+    // if ( emoticon_config )
+    //     $(".atwho_at_config").atwho(emoticon_config);
 
     for (var i in all_list) {
         $(".select_all_list").append(
