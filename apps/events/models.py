@@ -1,7 +1,7 @@
 """
     Handles all models related to events :
-        - Event : Information about an event in shaastra
-        - Tab : Information about an event tab in shaastra
+        - Event : Information about an event in Fest
+        - Tab : Information about an event tab in Fest
 
 """
 # Django
