@@ -50,7 +50,7 @@ def parse_atwho_file( my_text, tags ):
     link_text = '![Doc](%s) [%s](%s)'
     for tag in tags:
             url, filename, iconLink = filetag_to_url( tag )
-            my_text = my_text.replace(':' + filename, (link_text %(iconLink, filename, url) ))
+            my_text = my_text.replace('#' + filename, (link_text %(iconLink, filename, url) ))
     return my_text
 
 def parse_atwho(my_text, tags, at='@' ):
