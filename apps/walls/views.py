@@ -71,10 +71,6 @@ def wall (request, wall_id=None):
         "showing_user" : wall.parent,
         "wall_posts" : wall_posts,
     }
-    if request.user.erp_profile.wall == wall:
-        local_context["current_page"] = "wall"
-    elif request.session["role_dept"] == wall.id:
-        local_context["current_page"] = "dept_wall"
     return render_to_response('pages/wall.html', local_context, context_instance= global_context(request))
 
 def my_wall(request, owner_type, owner_id):
