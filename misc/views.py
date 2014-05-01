@@ -14,21 +14,23 @@ from django.contrib.auth.models import User
 from django.templatetags.static import static
 # Python
 import os
+import random
 
 def err404 (request, *args, **kwargs):
-    print kwargs
+    num = random.randint(1, 12)
     local_context = {
-        "current_page" : "err404",
-        "messages" : ["hi", "bye"],
+        "SITE_URL"  : settings.SITE_URL,
+        "num" : num,
     }
-    return render_to_response('errors/404.html', local_context, context_instance= global_context(request))
+    return render_to_response('errors/404.html', local_context, context_instance=RequestContext(request))
     
 def err500 (request, *args, **kwargs):
+    num = random.randint(0, 0)
     local_context = {
-        "current_page" : "err404",
-        "messages" : ["hi", "bye"],
+        "SITE_URL"  : settings.SITE_URL,
+        "num" : num,
     }
-    return render_to_response('errors/500.html', local_context, context_instance= global_context(request))
+    return render_to_response('errors/500.html', local_context, context_instance=RequestContext(request))
 
 def setup(request, *args, **kwargs):
     local_context = {

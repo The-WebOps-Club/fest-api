@@ -63,7 +63,7 @@ urlpatterns = patterns('',
     # Misc
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),
     url(r'^show/500/$', 'misc.views.err500',  name='err505'),
-    url(r'^setup/$', 'misc.views.setup', name='setup'),
+    #url(r'^setup/$', 'misc.views.setup', name='setup'),
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE

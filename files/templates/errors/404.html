@@ -1,9 +1,17 @@
-<div>
-This is a 404
+{% load staticfiles %}
+<html>
+<head>
+<title> 404 Shaastra</title>
+</head>
+
+<body>
+<h1> 404 Not Found <small style="font-size : 0.7em; color : #777"> The file was not found </small> </h1>
+
+<p> Try going back to the <a href="SITE_URL">home page</a></p>
+<br /><br /><br />
+<div class="">
+	<img src="{% static 'img/errors/404'%}-{{num}}.jpg" />
 </div>
-<hr />
-{% for m in messages %}
-	<div>
-	    {{ m }}
-	</div>
-{% endfor %}
+</body>
+
+</html>
