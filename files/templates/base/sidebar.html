@@ -71,27 +71,6 @@
                         </a>
                     </li>
                 {% endfor %}
-
-
-
-                <li class="{% if current_page == 'wall' %}active{% endif %}">
-                    <a href="{% url 'wall' user.erp_profile.wall.id %}">
-                        <i class='icon-profile-blue{% if user_profile.gender == "F" %}-female{% endif %}'></i> Personal Wall
-                    </a>
-                </li>
-                {% if session.role == 'coord' %}
-                <li class="{% if current_page == 'dept_wall' %}active{% endif %}">
-                    <a href="{% url 'my_wall' 'subdept' session.role_dept %}">
-                        <i class='icon-'></i> Subdept Wall
-                    </a>
-                </li>
-                {% else %}
-                <li class="{% if current_page == 'dept_wall' %}active{% endif %}">
-                    <a href="{% url 'my_wall' 'dept' session.role_dept %}">
-                        <i class='icon-home'></i> Department Wall
-                    </a>
-                </li>
-                {% endif %}
             </ul>
 
         </div>
