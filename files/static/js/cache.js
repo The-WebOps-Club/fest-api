@@ -41,6 +41,7 @@ var ContextController = function(){
 			this.fileIds = [];
 			this.contextType = contextType || 'context#unknown'
 			this.contextNumber = storage.num_contexts;
+			this.staticdata = {changed:true,hits:0};
 			storage.num_contexts ++;
 			localStorage.num_contexts = storage.num_contexts.toString();
 		}
@@ -165,6 +166,7 @@ var DriveFileRetreival = function(){
         console.log(this.cache);
 		if( dir_cache != undefined ){
 			query.q = 'modifiedDate >= \''+new Date(dir_cache.lastUpdated).toISOString()+'\'';
+			this.cache.bydir[folderId].staticdata.hits++;
 			callbacks['cached']( {items:dir_cache.files} )
 		}else{
 			var cc = new ContextController();
@@ -221,15 +223,17 @@ var DriveFileRetreival = function(){
         console.log('FILE:')
         console.log(file_cache);
 
-		if( file_cache != undefined )
+		if( file_cache != undefined ){
+			this.cache.byfile[fileId].staticdata.hits++;
 			callbacks['cached']( file_cache.files[0] )
+		}
 		else{
 			var cc = new ContextController();
 			cc.initCache( -1, 'context#byfile');
 			dfr.cache.byfile[fileId] = cc;
 			dfr.cache.controllers.push(cc);
 			//dfr.cache.byfile[fileid].fileIds.push(fileid);
-			dfr.cache.byfile[fileid].staticdata.changed = true;
+			dfr.cache.byfile[fileId].staticdata.changed = true;
 			file_cache = dfr.cache.byfile[fileId];
 		}
 

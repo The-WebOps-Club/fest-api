@@ -103,13 +103,12 @@ var Drive = function( options ) {
 
         }, new Date() );
 
-        gapi.client.drive.files.get({
-            "fileId": fid,
-            "fields": [ "id", "title", ],
-        }).execute(function(response) {
+        self.filesystem.loadByFile(fid,{finish:function(response) {
             self.check_error(response)
             self.set_drive_parent(response)
-        });
+        },cached:function(response){
+            self.set_drive_parent(response)
+        }},new Date(),true);
 
     }
     
