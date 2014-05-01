@@ -221,7 +221,17 @@ class ERPProfile(models.Model):
         return self.user.get_full_name() and self.user.email and \
             self_user.email
 
-    
+    def related_walls(self):
+        wall_list = set()
+        wall_list.update(self.user.notified_wall.all())
+        for i in self.coord_relations.all():
+            wall_list.update(i.notified_wall.all())
+        for i in self.supercoord_relations.all():
+            wall_list.update(i.notified_wall.all())
+        for i in self.core_relations.all():
+            wall_list.update(i.notified_wall.all())
+        return wall_list
+
     # Methods to check for position/role
     def is_coord(self, request):
         return request.session["role"] == "coord"

@@ -110,7 +110,7 @@
 .icon-message {
   background-position: -602px -2px;
 }
-.icon-pencil {
+.icon-subdept {
   background-position: -622px -2px;
 }
 .icon-heart-plus {
@@ -200,7 +200,7 @@
 .icon-pic {
   background-position: -162px -22px;
 }
-.icon-home {
+.icon-home, .icon-dept {
   background-position: -182px -22px;
 }
 .icon-new-profile {

@@ -45,6 +45,35 @@
         <div id='page_links' class='span12 links'>
             <div class='group_link_head'>WALLS</div>
             <ul class='group_link vertical'>
+                
+                {% for w in erp_profile.related_walls %}
+                    <li class="{% if current_page == 'wall' and wall.id == w.id %}active{% endif %}">
+                        <a href="{% url 'wall' w.id %}">
+                            <i class='
+                                {% if w.id == erp_profile.wall.id %}
+                                    icon-profile-blue{% if user_profile.gender == "F" %}-female{% endif %} 
+                                {% elif w.dept %} 
+                                    icon-dept 
+                                {% elif w.subdept %} 
+                                    icon-subdept 
+                                {% else %} 
+                                    icon-wall 
+                                {% endif %}'></i> 
+                                {% if w.id == erp_profile.wall.id %}
+                                    Personal Wall
+                                {% elif w.dept %} 
+                                    {{ w.name }}
+                                {% elif w.subdept %} 
+                                    {{ w.name }}
+                                {% else %} 
+                                    {{ w.name }}
+                                {% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+
+
+
                 <li class="{% if current_page == 'wall' %}active{% endif %}">
                     <a href="{% url 'wall' user.erp_profile.wall.id %}">
                         <i class='icon-profile-blue{% if user_profile.gender == "F" %}-female{% endif %}'></i> Personal Wall
