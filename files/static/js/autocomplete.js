@@ -20,7 +20,7 @@ emoticons = {
     "smile" : [ ":)", ":-)", ":]", "=)", "=]", ":}" ], 
     "sunglasses" : ["B)", "B-)"],
     "tongue" : [":P", ":-P", "XP", "X-P",],
-    "unsure" : [":-/", ":-\\"],
+    "unsure" : [":/", ":-/", ":-\\"],
     "wink" : [";)", ";-)", "^_-", ";D", ";-D", ";]", ";-]"],
     "angel" : ["O:)", "O:-)", "o:-)", "o:)", "0:)", "0:-)"],
     "surprised" : ["o.o", "o_o", "0.0", "0_0"],
@@ -269,9 +269,9 @@ function setup_autocomplete_lists() {
             $.each(emoticons, function(i, v) {
                 if ( v.length ) {
                     if ( ! regex_emoticons[i] ) {
-                        var replace_str = "(" + v.join("~~@~~")
+                        var replace_str = "( " + v.join("~~@~~")
                             .replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/gi, "\\$&")
-                            .replace(/~~@~~/gi, "|") + ")";
+                            .replace(/~~@~~/gi, " | ") + " )";
                         var regex = new RegExp(replace_str, "gi")    
 
                         regex_emoticons[i] = regex
