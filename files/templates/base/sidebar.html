@@ -19,23 +19,24 @@
             <ul class='group_link vertical'>
                 <li class="{% if current_page == 'profile' %}active{% endif %}">
                     <a href="{% url 'profile' %}">
-                        <i class='icon-profile-black{% if user_profile.gender == "F" %}-female{% endif %}'></i> Profile
+                        <i class='icon-profile-black{% if user_profile.gender == "F" %}-female{% endif %}'></i> <span>Profile</span>
                     </a>
                 </li>
                 <li class="{% if current_page == 'newsfeed' %}active{% endif %}">
                     <a href="{% url 'newsfeed' %}">
-                        <i class='icon-checklist'></i> News feed {% if user.notifications.unread.count != 0 %}
+                        <i class='icon-checklist'></i> <span>News feed</span>
+                        {% if user.notifications.unread.count != 0 %}
                         <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span>{% endif %}
                     </a>
                 </li>
                 <li class="{% if current_page == 'docs' %}active{% endif %}">
                     <a href="{% url 'docs' %}">
-                        <i class='icon-folder'></i> Docs
+                        <i class='icon-folder'></i> <span>Docs</span>
                     </a>
                 </li>
                 <li class="{% if current_page == 'contacts' %}active{% endif %}">
                     <a href="{% url 'contacts' %}">
-                        <i class='icon-contact-email'></i> User Contacts
+                        <i class='icon-contact-email'></i> <span>User Contacts</span>
                     </a>
                 </li>
             </ul>
@@ -58,16 +59,19 @@
                                     icon-subdept 
                                 {% else %} 
                                     icon-wall 
-                                {% endif %}'></i> 
-                                {% if w.id == erp_profile.wall.id %}
-                                    Personal Wall
-                                {% elif w.dept %} 
-                                    {{ w.name }}
-                                {% elif w.subdept %} 
-                                    {{ w.name }}
-                                {% else %} 
-                                    {{ w.name }}
-                                {% endif %}
+                                {% endif %}'>
+                            </i> 
+                            <span>
+                            {% if w.id == erp_profile.wall.id %}
+                                Personal Wall
+                            {% elif w.dept %} 
+                                {{ w.name }}
+                            {% elif w.subdept %} 
+                                {{ w.name }}
+                            {% else %} 
+                                {{ w.name }}
+                            {% endif %}
+                            </span>
                         </a>
                     </li>
                 {% endfor %}
@@ -141,7 +145,7 @@ ul.group_link.vertical {
 }
 ul.group_link.vertical > li {
     width: 100%;
-    padding : 3px 0px;
+    padding : 0px 0px;
 }
 ul.group_link.vertical > li a {
     /*padding : 0px 3px;*/
@@ -149,6 +153,8 @@ ul.group_link.vertical > li a {
     width : 100%;
     display : block;
     font-size : 11px;
+    padding : 3px 0px;
+    /*line-height : 13px;*/
     overflow: hidden;
     text-overflow: ellipsis;
     display: inline-block;

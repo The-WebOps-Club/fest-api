@@ -261,10 +261,11 @@ function setup_autocomplete_lists() {
 }
 
 (function($){
-    $.fn.emoticon = function(els){
-        var els = this
-        $.each(els, function(i, el){
+    $.fn.markdown = function(){
+        var $els = this
+        $.each($els, function(i, el){
             var $el = $(el)
+            // EMOTICONS
             $.each(emoticons, function(i, v) {
                 if ( v.length ) {
                     if ( ! regex_emoticons[i] ) {
@@ -280,7 +281,85 @@ function setup_autocomplete_lists() {
                     $el.html( init_string.replace(regex, "<i class='icon-" + i + "'></i>") )
                 }
             })
+            // USER RENDER
         })
     };
+
+
+    $.fn.get_dp = function(size){
+        var $els = this
+        $.each($els, function(i, v) {
+            var $v = $(v)
+            var id = $.trim($v.data("id"))
+            var fbid = $.trim($v.data("fbid"))
+            var size = size || $v.data("size") || 60
+            if ( ! id )
+                return
+
+            if( fbid.length < 2 )
+                fbid = get_fbid_or_null(id);
+
+            if( fbid && fbid.length > 2 ) {
+                var pic_src = "http://graph.facebook.com/" + fbid +  "/picture?height=" + size + "&width=" + size;
+                $v.prop("src", pic_src);
+
+            } else {
+
+                if ( ! atwho_user_list ) {
+                    // As some places have these in templates
+                    return
+                } else {
+                    Dajaxice.apps.users.get_info(function(data) {
+                        var $v = $(v);
+
+                        if ( ! data["fbid"] ) {
+                            data["fbid"] = "Shaastra"
+                        }
+
+                        var pic_src = "http://graph.facebook.com/" + data["fbid"] +  "/picture?height=" + size + "&width=" + size;
+                        $v.prop("src", pic_src);
+                        //var filter_users = $.grep(atwho_user_list, function(a) { return a.id == data["id"] } )
+                        //filter_users[0].fbid = data["fbid"];
+                        $v.data("fbid", data["fbid"])
+                        push_fbid(data['id'], data['fbid']);
+
+                    }, {"id" : $v.data("id") } )
+                }
+            }
+        })
+    }
+
 })(jQuery);
+
+get_link_preview = function(els){
+    var $els = $(els)
+    $.each($els, function(i, v) {
+        var $v = $(v)
+        var service = $v.data("service")
+        var id = $v.data("link-id")
+        if ( service == "youtube" ) {
+            var url = "http://gdata.youtube.com/feeds/api/videos/" + id + "?v=2&alt=jsonc"
+            console.log("TRY UTUBE")
+            $.getJSON(url, function(json) {
+                var $el = $v
+                if ( ! $el.hasClass("comment_link_render") )
+                    return
+                $("<div class='row-fluid video_comment'>" +
+                    "<div class='span4 left'>" +
+                        "<img src='" + json.data.thumbnail.sqDefault + "' width='100%' height='auto' />" +
+                    "</div>" +
+                    "<div class='span8 right'>" +
+                        "<h5 class='title'>" + json.data.title + "</h5>" +
+                        "<p class='desc'>" + json.data.description + "</p>" +
+                    "</div>" +
+                "</div>").appendTo($el)
+                $el.removeClass("comment_link_render")
+            });
+
+        } else if ( service == "vimeo") {
+
+        }
+        
+    })
+}
 

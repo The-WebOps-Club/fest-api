@@ -192,7 +192,13 @@ label {
     margin : 0px;
     padding : 0px;
 }
-
+.fixedbar {
+		    transition: top 0.5s;
+	     -o-transition: top 0.5s;
+		-ms-transition: top 0.5s;
+	   -mox-transition: top 0.5s;
+	-webkit-transition: top 0.5s;
+}
 
 /* Extended bootstrap */
 form .error > label, 

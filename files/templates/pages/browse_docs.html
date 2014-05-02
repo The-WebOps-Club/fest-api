@@ -249,6 +249,11 @@ tr.drive_file.select, tr.drive_file.select:hover {
     line-height : 25px;
     font-size : 11px;
     padding: 2px;
+            transition: width 0.5s;
+         -o-transition: width 0.5s;
+        -ms-transition: width 0.5s;
+       -mox-transition: width 0.5s;
+    -webkit-transition: width 0.5s;
 }
 </style>
 {% endblock %} {% block extra_js %} {{ block.super }}
@@ -411,6 +416,7 @@ function upload_file(e, drag) {
     drive.upload_file(files_data[0], to_folder, function() {
         $(".drive_upload").prop("disabled", false).removeClass("disabled").find(".text").text("Upload")
         drive.get_dir_contents()
+
     })
 }
 
@@ -461,7 +467,9 @@ function move_files (elems, next_folder) {
         }
     })
     if ( new_elems.length )
-		drive.move_files(new_elems)
+		drive.move_files(new_elems, function() {
+            $(".drive_move").prop("disabled", false).removeClass("disabled")
+        })
 }
 </script>
 

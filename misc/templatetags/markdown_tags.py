@@ -11,7 +11,7 @@ register = template.Library()
 
 VIDEO_SOURCES = {
   "youtube": {
-    "re": r'https?://(www\.|)youtube\.com/watch\?\S*v=(?P<youtube>[A-Za-z0-9_&=-]+)\S*',
+    "re": r'https?://(www\.|)youtube\.com/watch\?\S*v=(?P<youtube>[A-Za-z0-9_=-]+)\S*',
   },
   # "vimeo": {
   #   "re": r'https?://(www\.|)vimeo\.com/(?P<vimeo>\d+)\S*',
@@ -77,15 +77,19 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
         else :    
             # print link
             preview = ""
+            video_id = ""
             for key, val in VIDEO_SOURCES.items():
                 match = re.match(val["re"], link)
                 if match and match.group(key):
                     video_id = match.group(key)
-                    preview = """<a href='%s' target='_blank'><div class='row-fluid video_render video_comment' data-service='%s' data-video-id='%s'> <div class='span4 left'>
-                        </div> <div class='span8 right'>
-                        </div></div></a>""" % (link, key, video_id)
-                short_link = (link[:40] + '...') if len(link) > 40 else link
-            my_html = "<a href='" + link + "'>" + short_link + "</a>" + preview
+                #     preview = """<a href='%s' target='_blank'><div class='row-fluid video_render video_comment' data-service='%s' data-video-id='%s'> <div class='span4 left'>
+                #         </div> <div class='span8 right'>
+                #         </div></div></a>""" % (link, key, video_id)
+            short_link = (link[:40] + '...') if len(link) > 40 else link
+            if video_id:
+                my_html = "<a target='_blank' class='comment_link_render comment_link' data-service='%s' data-link-id='%s' href='%s'>%s</a>" % (key, video_id, link, short_link)
+            else:
+                my_html = "<a target='_blank' href='%s'>%s</a>" % (link, short_link)
             # print my_html
         return my_html
 
