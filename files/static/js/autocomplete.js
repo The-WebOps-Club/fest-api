@@ -269,16 +269,16 @@ function setup_autocomplete_lists() {
             $.each(emoticons, function(i, v) {
                 if ( v.length ) {
                     if ( ! regex_emoticons[i] ) {
-                        var replace_str = "( " + v.join("~~@~~")
+                        var replace_str = "(^|\\s|>)(" + v.join("~~@~~")
                             .replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/gi, "\\$&")
-                            .replace(/~~@~~/gi, " | ") + " )";
+                            .replace(/~~@~~/gi, "|") + ")(\\s|$|<)";
                         var regex = new RegExp(replace_str, "gi")    
 
                         regex_emoticons[i] = regex
                     }
                     var regex = regex_emoticons[i]
                     init_string = $el.html()
-                    $el.html( init_string.replace(regex, "<i class='icon-" + i + "'></i>") )
+                    $el.html( init_string.replace(regex, "$1<i class='icon-" + i + "'></i>$3") )
                 }
             })
             // USER RENDER

@@ -27,20 +27,23 @@ import json
 # ------------------ TEMPLATE CUSTOMIZATIONS
 #----------------------------------------------------------------------
 # Generates a context with the most used variables
-def global_context(request):
+def global_context(request, token_info=True, user_info=True):
     """
         Some basic variables useful in templates
         Usage : add context_instance=global_context(request) to the kwargs of the response function
     """
-    from apps.users.models import Dept, Subdept
-    erp_profile = request.user.erp_profile if hasattr(request.user, "erp_profile") else None
-    if hasattr(request.user, "profile"):
-        profile = request.user.profile 
-    else:
-        profile = None
-    token = ""
-    drive = Drive()
-    token = Drive.get_access_token()
+    erp_profile = None
+    profile = None
+    if user_info:
+    	erp_profile = request.user.erp_profile if hasattr(request.user, "erp_profile") else None
+    	if hasattr(request.user, "profile"):
+        	profile = request.user.profile 
+    	else:
+        	profile = None
+    token = None
+    if token_info:
+    	drive = Drive()
+    	token = Drive.get_access_token()
     local_context = {
         'user':request.user,
         'erp_profile':erp_profile,
