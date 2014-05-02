@@ -7,6 +7,20 @@
 
 <div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container">
 	<div class="news_post span12">
+		{% if notification %}
+			<div class="row-fluid news_notif_line">
+		       	<a class="bold" href="{% if notification.sender.id %}{% url 'profile' notification.actor.id %}{% endif %}">
+		       		{{ notification.actor.get_full_name|default:"" }}
+		       	</a>
+		       	{{ notification.verb }}
+		       	<a href="{% url 'wall' post.wall.id %}" class="bold">
+		       		{{ post.wall }}'s Wall
+		       	</a>
+		       	<span class="muted small">
+		       		{{ notification.timestamp|naturaltime }}
+		       	</span>
+		    </div>
+	    {% endif %}
 	    <div class="news_left">
 	        <img src="" 
 	        	{% if not notification %}
@@ -23,16 +37,19 @@
 	    </div>
 	    <div class="news_main">
 	        <div class="news_head">
-	        	{% if not notification %}
-	        		<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
-	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ post.by.get_full_name }}</a> 
-	            	posted on <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a>'s wall. 
-	            	<span class="muted small">{{ post.time_created|naturaltime }}</span>
-	            {% elif notification %}
-	            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">{{ notification.actor.get_full_name|default:"" }}</a> 
-	            	{{notification.verb}} <a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a>.
-	            	<span class="muted small">{{ notification.timestamp|naturaltime }}</span>
-	            {% endif %}
+        		<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
+            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">
+            		{{ post.by.get_full_name|default:"" }}
+            	</a> 
+            	<i class="icon-right"></i>
+            	<a href="{% url 'wall' post.wall.id %}">
+            		{{ post.wall  }}
+            	</a>'s wall. 
+            	
+            	<span class="muted small">
+            		{{ post.time_created|naturaltime }}
+            	</span>
+            
 	        </div>
 	        <div class="news_body markdown">
 	        {% autoescape off %}
@@ -63,6 +80,12 @@
 
 {% once post_styles_and_scripts %}
 <style>
+	.news_notif_line {
+		padding-bottom : 10px;
+		border-bottom : 1px solid #aaa;
+		margin-bottom : 10px;
+
+	}
     .news_post {
 		transition-property: background;
 		transition-duration: 0.5s;
