@@ -17,7 +17,7 @@ import os
 import random
 
 def err404 (request, *args, **kwargs):
-    num = random.randint(1, 12)
+    num = random.randint(1, 9)
     local_context = {
         "SITE_URL"  : settings.SITE_URL,
         "num" : num,
@@ -25,7 +25,7 @@ def err404 (request, *args, **kwargs):
     return render_to_response('errors/404.html', local_context, context_instance=RequestContext(request))
     
 def err500 (request, *args, **kwargs):
-    num = random.randint(0, 0)
+    num = random.randint(1, 3)
     local_context = {
         "SITE_URL"  : settings.SITE_URL,
         "num" : num,
