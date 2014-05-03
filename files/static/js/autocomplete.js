@@ -332,19 +332,24 @@ function setup_autocomplete_lists() {
 })(jQuery);
 
 get_link_preview = function(els){
-    var $els = $(els)
-    $.each($els, function(i, v) {
-        var $v = $(v)
-        var service = $v.data("service")
-        var id = $v.data("link-id")
+    var $els = $(els);
+    var elarray = {};
+    $.each(els, function(i, v) {
+        var $v = $(v);
+        var service = $v.data("service");
+        var id = $v.data("link-id");
+
+        console.log(v);
         if ( service == "youtube" ) {
-            var url = "http://gdata.youtube.com/feeds/api/videos/" + id + "?v=2&alt=jsonc"
-            console.log("TRY UTUBE")
-            $.getJSON(url, function(json) {
-                var $el = $v
+            var url = "http://gdata.youtube.com/feeds/api/videos/" + id + "?v=2&alt=jsonc";
+            console.log("TRY UTUBE");
+            $.ajax({url:url, dataType:'json', success:function(json) {
+                //var json = JSON.parse( data );
+                var $el = $('a[data-link-id=\''+json.data.id+'\']');
                 if ( ! $el.hasClass("comment_link_render") )
                     return
-                $("<div class='row-fluid video_comment'>" +
+
+                $el.append("<div class='row-fluid video_comment'>" +
                     "<div class='span4 left'>" +
                         "<img src='" + json.data.thumbnail.sqDefault + "' width='100%' height='auto' />" +
                     "</div>" +
@@ -352,9 +357,9 @@ get_link_preview = function(els){
                         "<h5 class='title'>" + json.data.title + "</h5>" +
                         "<p class='desc'>" + json.data.description + "</p>" +
                     "</div>" +
-                "</div>").appendTo($el)
-                $el.removeClass("comment_link_render")
-            });
+                "</div>");
+                $el.removeClass("comment_link_render");
+            }});
 
         } else if ( service == "vimeo") {
 

@@ -133,16 +133,17 @@
 	    }
 	
         function on_dom_change() {
-            $(".resize_textarea").autosize()
+            console.log('on dom change');
+            $(".resize_textarea").autosize();
             if ( ! ( typeof at_config_file === "undefined" ) )
-            	$('.atwho_at_config').atwho(at_config_file)
+            	$('.atwho_at_config').atwho(at_config_file);
             if ( ! ( typeof at_config === "undefined" ) )
-            	$('.atwho_at_config').atwho(at_config)
+            	$('.atwho_at_config').atwho(at_config);
             
             // Comment beautify
-            $(".display_pic").get_dp()
-            get_link_preview($(".comment_link_render.comment_link"))
-            $(".markdown").markdown()
+            $(".display_pic").get_dp();
+            get_link_preview($(".comment_link_render.comment_link"));
+            $(".markdown").markdown();
         }        
         $( document ).ready(function() {
             $(".below_topbar").click(hide_popups)
