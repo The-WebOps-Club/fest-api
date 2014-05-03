@@ -4,6 +4,8 @@
 *	the hard cache auto loads files on the background and stores them on the local machine thus reducing the load times.
 *	the soft cache stores search results on global vars in order mimic a decent amount of common sense. Does NOT store data on the client machine.
 */
+var CACHE_VERSION = "1.0";
+
 var ContextController = function(){
 
 	var cobj = this;	// set local object as cobj.
@@ -100,6 +102,13 @@ var ContextController = function(){
 
 }
 
+function validateCache(){
+	// if cache is non-existent or if the cache format is outdated.. reset the local cache to prevent cache inconsistencies.
+	if(localStorage.CacheVersion == undefined || localStorage.CacheVersion != CACHE_VERSION){
+		localStorage.clear();
+		localStorage.CacheVersion = CACHE_VERSION;
+	}
+}
 
 var FileMetaCache = function(){
 	// SINGLETON pattern.
