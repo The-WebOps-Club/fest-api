@@ -19,7 +19,7 @@ from misc.utils import *  #Import miscellaneous functions
 
 # From Apps
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-from apps.walls.utils import paginate_items, parse_atwho, get_tag_object, parse_atwho_file
+from apps.walls.utils import paginate_items, parse_atwho, get_tag_object
 
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
@@ -199,8 +199,6 @@ def create_post(request, wall_id, post_form):
     append_string = ""
     data = deserialize_form(post_form)
    
-    post_text = data["new_post"]
-    tags =  data.getlist("atwho_list")
     post_text, notification_list = parse_atwho(post_text, tags)
 
     new_post = Post.objects.create(description=post_text, wall=wall, by=request.user)
@@ -226,7 +224,6 @@ def quick_post(request, post_form):
     data = deserialize_form(post_form)
     print data
     post_text = data["quick_post"]
-    tags =  data.getlist("atwho_list")
     post_text, notification_list = parse_atwho(post_text, tags)
 
     # Figure out where to create post !
@@ -274,9 +271,7 @@ def create_comment(request, post_id, comment_form):
     if not post:
         raise InvalidArgumentValueException("No Post with id `post_id` was found in the database")
 
-    tags = data.getlist("atwho_list")
-    filetags = data.getlist("atwho_files")
-    comment_text, notification_list = parse_atwho(parse_atwho_file(comment_text, filetags), tags)
+    comment_text, notification_list = parse_atwho(comment_text)
 
     new_comment = Comment.objects.create(description=comment_text, by=request.user)
     post.comments.add(new_comment)

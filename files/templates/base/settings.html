@@ -22,11 +22,10 @@ $( document ).ready(function() {
     function settings_content() {
         return $(".settings_content").html()
     }
-    $(".settingButton").click( function() {
-        $(".userButton").popover("hide")
-        $(".notifButton").popover("hide")
-        $(".messageButton").popover("hide")
-        $(".settingButton").popover("toggle")
+    $(".settingButton").click( function(e) {
+		e.stopPropagation();
+		hide_popups()
+		$(this).popover("show")
     })
     // $(".settingButton").popover("show")
     is_core = "{{session.is_core}}"

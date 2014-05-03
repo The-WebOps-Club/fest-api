@@ -167,23 +167,6 @@
 		font-size: 13px;
 		float : right;	
 	}
-/*
-    .news_comment_body .comment_text a {
-        text-decoration: none;
-        border: 1px #AAA solid;
-        background-color: #FFF;
-        border-radius: 5px;
-        padding-right: 3px;
-        padding-left: 3px;
-        padding-top: 2px;
-    }
-    .news_comment_body .comment_text img{
-        height : 14px;
-        width : 14px;
-    }
-    .news_comment_body .comment_text a:hover {
-        background-color:#CCC;
-    }*/
 </style>
 
 <script>
@@ -215,6 +198,7 @@
         	$el.text(new_content);
         }
         $el.caret("pos", pos+text.length)
+        	.trigger('input.autosize')
 	}
 
 	function attach_doc_callback(el, data) {
@@ -390,8 +374,9 @@
 		})
 		$(".attach_link_btn").click( function (e) {
 			e.stopPropagation();
+			hide_popups()
 			var $el = $(this)
-			$el.popover("toggle")
+			$el.popover("show")
 			$(".popover_insert_link").click(function(e) {
 				e.stopPropagation();
 			})
@@ -442,8 +427,10 @@
 		})
 		$(".attach_emoticon_btn").click( function (e) {
 			e.stopPropagation();
+			hide_popups()
 			var $el = $(this)
-			$el.popover("toggle")
+			$el.popover("show")
+
 			$(".popover_insert_emoticon").click(function(e) {
 				e.stopPropagation();
 			})

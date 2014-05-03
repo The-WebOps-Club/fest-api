@@ -96,7 +96,8 @@ class Command(BaseCommand):
                                 context={ 
                                     'user' : temp,
                                     'password' : password,
-                                    'SITE_URL' : settings.SITE_URL,                                 
+                                    'SITE_URL' : settings.SITE_URL,
+                                    'FEST_NAME' : settings.FEST_NAME,
                                 },
                                 headers = {},
                             )

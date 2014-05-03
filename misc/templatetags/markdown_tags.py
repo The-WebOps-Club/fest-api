@@ -70,25 +70,30 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
         return "<p>" + text + "</p>"
 
     def link(self, link, title, content):
-    	return_text = ""
-    	if not title:
-    		title = ""
-    	if title.startswith("doc#"): # Implies it is a doc from drive
-    		doc_id = title.replace("doc#", "", 1)
-    		doc_link = reverse("view") + "?id=" + doc_id
-    		doc_name = content
-    		doc_icon = link
-    		return_text = "<img src='" + doc_icon + "' /> <a href='" + doc_link + "' target='_blank' title='" + title +"' data-id='" + doc_id + "' >" + doc_name +"</a>"
-    	elif title.startswith("user#"): # Implies it is a doc from drive
-    		pass
-    	elif title.startswith("dept#"): # Implies it is a doc from drive
-    		pass
-    	elif title.startswith("subdept#"): # Implies it is a doc from drive
-    		pass
-    	else:
-    		return_text = "<a href='" + link + "' target='_blank' title='" + title +"' >" + content +"</a>"
-    	
-    	return return_text
+        return_text = ""
+        if not title:
+            title = ""
+        _id = None
+        if title.startswith("doc#") or title.startswith("user#") or title.startswith("subdept#") or title.startswith("dept#"): # Implies it is a doc from drive
+            _type, _id = title.split("#", 1)
+            if _type == "doc":
+                _link = reverse("view") + "?id=" + _id
+            else:
+                _link = reverse("my_wall", kwargs={"owner_type":_type, "owner_id":_id})
+
+        if _id:
+            _name = content
+            _icon = link
+            _icon_text = ""
+            if _type == "doc":
+                _icon_text = "<img src='" + _icon + "' />"
+            else:
+                _icon_text = "<i class='icon-" + _type + "'></i>"
+            return_text = _icon_text + " <a href='" + _link + "' target='_blank' title='" + title +"' data-id='" + _id + "' >" + _name +"</a>"
+        else:
+            return_text = "<a href='" + link + "' target='_blank' title='" + title +"' >" + content +"</a>"
+        
+        return return_text
 
     def autolink(self, link, is_email):
         my_html = ''
@@ -115,37 +120,6 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
                 my_html = "<a target='_blank' href='%s'>%s</a>" % (link, short_link)
             # print my_html
         return my_html
-
-    # def image(self, link, title, alt):
-    #     print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    #     print link, title, alt
-    #     for key, val in VIDEO_SOURCES.items():
-    #       match = re.match(val["re"], link)
-    #       if match and match.group(key):
-    #         video_id = match.group(key)
-    #         return self.make_iframe(video_id.strip(), key, alt, title)
-    #     return u"<img src='{0}' alt='{1}' title='{2}'/>".format(link, alt, title)
- 
-    # def make_iframe(self, id, video_type, alt, title):
-    #     url = VIDEO_SOURCES[video_type]["embed"] % id
-    #     return u"<iframe class='{2}' src='{0}' alt='{1}' title='{3}' allowfullscreen></iframe>" \
-    #         .format(url, alt, video_type, title)
-
-    # def block_code(self, text, lang):
-    #     s = ''
-    #     if not lang:
-    #         lang = 'text'
-    #     try:
-    #         lexer = get_lexer_by_name(lang, stripall=True)
-    #     except:
-    #         s += '<div class="highlight"><span class="err">Error: language "%s" is not supported</span></div>' % lang
-    #         lexer = get_lexer_by_name('text', stripall=True)
-    #     formatter = HtmlFormatter()
-    #     s += highlight(text, lexer, formatter)
-    #     return s
-
-    # def table(self, header, body):
-        # return '<table class="table">\n'+header+'\n'+body+'\n</table>'
 
 # And use the renderer
 renderer = CustomRenderer(flags=

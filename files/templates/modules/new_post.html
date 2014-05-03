@@ -1,6 +1,4 @@
-{% load staticfiles %} 
-{% load humanize %}
-{% load once %}
+{% load staticfiles %} {% load humanize %} {% load once %}
 
 <div class="row-fluid" style="">
     <div class="span12 new_post_media">
@@ -13,7 +11,7 @@
             <i class="icon-cabinet"></i>
             <a href="{% url 'docs' %}" class="menu_link">Upload a file</a>
             <i class="selection_caret"></i>
-        </div> -->
+            </div> -->
     </div>
 </div>
 <div class="row-fluid" style="">
@@ -23,11 +21,11 @@
                 <div class="new_post_text" class="span12">
                     {% csrf_token %}
                     <textarea class="span12 new_post_textarea atwho_at_config resize_textarea" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here"></textarea>
-                
+
                 </div>
                 <div class="new_post_bottom_bar" class="span12">
                     <a class="btn primary small new_post_btn" href="javascript:void(0)"> Post
-                    </a>
+        </a>
                 </div>
             </form>
         </div>
@@ -36,132 +34,137 @@
 
 {% once new_post_styles_and_scripts %}
 <style>
-    .new_post_wrapper {
-        border: 1px solid #B4BBCD;
-    }
-    .new_post_box form {
-        margin : 0px;
-    }
-    .new_post_text .new_post_textarea {
-        outline : 0px;
-        border: 0px;
-        font-size : 13px;
-        color : #000;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        -webkit-transition: none;
-        -moz-transition: none;
-        -ms-transition: none;
-        -o-transition: none;
-        transition: none;
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        box-shadow: 1px;
-    }
-    .new_post_text .new_post_textarea::placeholder {
-        color : #AAA;
-    }
-    .new_post_bottom_bar {
-        background-color: #F2F2F2;
-        border-top: 1px solid #E6E6E6;
-        height : 30px;
-        padding : 0px;
-        margin : 0px 0px;
-        min-height : 0px;
-        display : none;
-    }
-    .new_post_bottom_bar .new_post_btn {
-        margin-top : 2px;
-        float : right;
-        margin-right : 10px;
-        font-size : 13px;
-    }
-    .new_post_bottom_bar .bottom_bar_icon {
-        height : 30px;
-        min-height : 0px;
-    }
-    .new_post_media div {
-        display : inline-block;
-        margin-left : 10px;
-    }
-    .new_post_media a {
-        color: #3B5998;
-        font-weight : bold;
-    }
-    .new_post_media a.active {
-        color : black;
-    }
-    .new_post_media .selection_caret {
-        left: 4px;
-        position: relative;
-        top: 9px;
-        visibility : hidden;
-    }
-    .new_post_media .menu_item .menu_link.active + .selection_caret, 
-    .new_post_media .menu_item.active .menu_link + .selection_caret {
-        visibility : visible;
-    }
-
+.new_post_wrapper {
+    border: 1px solid #B4BBCD;
+}
+.new_post_box form {
+    margin : 0px;
+}
+.new_post_text .new_post_textarea {
+    outline : 0px;
+    border: 0px;
+    font-size : 13px;
+    color : #000;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: 1px;
+}
+.new_post_text .new_post_textarea::placeholder {
+    color : #AAA;
+}
+.new_post_bottom_bar {
+    background-color: #F2F2F2;
+    border-top: 1px solid #E6E6E6;
+    height : 30px;
+    padding : 0px;
+    margin : 0px 0px;
+    min-height : 0px;
+    display : none;
+}
+.new_post_bottom_bar .new_post_btn {
+    margin-top : 2px;
+    float : right;
+    margin-right : 10px;
+    font-size : 13px;
+}
+.new_post_bottom_bar .bottom_bar_icon {
+    height : 30px;
+    min-height : 0px;
+}
+.new_post_media div {
+    display : inline-block;
+    margin-left : 10px;
+}
+.new_post_media a {
+    color: #3B5998;
+    font-weight : bold;
+}
+.new_post_media a.active {
+    color : black;
+}
+.new_post_media .selection_caret {
+    left: 4px;
+    position: relative;
+    top: 9px;
+    visibility : hidden;
+}
+.new_post_media .menu_item .menu_link.active + .selection_caret, .new_post_media .menu_item.active .menu_link + .selection_caret {
+    visibility : visible;
+}
 </style>
 
 <script type="text/javascript">
-    // FOcusing on the text areas
-    function show_status_textarea(e) {
-        $(".new_post_textarea").css("min-height", 20);
-        $(".new_post_bottom_bar").show();
-    }
-    function hide_status_textarea(e) {
-        $(".new_post_textarea").css("min-height", 20);
-        $(".new_post_bottom_bar").hide();
-    }
+// FOcusing on the text areas
 
-    // New post handler
-    function dajax_create_post(data){
-        $(".new_post_textarea").val("").blur()
-            .removeClass("disabled").prop("disabled", false).removeData("clicked");
-        $(".new_post_btn")
-            .removeClass("disabled").prop("disabled", false);
-        
-        $("#new_post_placeholder").after(data.append_string);
+function show_status_textarea(e) {
+    $(".new_post_textarea").css("min-height", 20);
+    $(".new_post_bottom_bar").show();
+}
 
-        hide_status_textarea();
-        $("#empty_wall_msg").hide();
-        
-        on_dom_change()
-    }
+function hide_status_textarea(e) {
+    $(".new_post_textarea").css("min-height", 20);
+    $(".new_post_bottom_bar").hide();
+}
 
-    $( document ).ready(function() {            
-        $(".new_post_wrapper").focusin(show_status_textarea);
-        
-        // Submitting Forms
-        $(".new_post_textarea")
-        .keydown(function (e) {
+// New post handler
+
+function dajax_create_post(data) {
+    $(".new_post_textarea").val("").blur()
+        .removeClass("disabled").prop("disabled", false).removeData("clicked");
+    $(".new_post_btn")
+        .removeClass("disabled").prop("disabled", false);
+
+    $("#new_post_placeholder").after(data.append_string);
+
+    hide_status_textarea();
+    $("#empty_wall_msg").hide();
+
+    on_dom_change()
+}
+
+$(document).ready(function() {
+    $(".new_post_wrapper").focusin(show_status_textarea);
+
+    // Submitting Forms
+    $(".new_post_textarea")
+        .keydown(function(e) {
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
                 e.preventDefault()
             }
         })
-        .keyup(function (e) {
+        .keyup(function(e) {
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl-Enter pressed
                 $(this).closest("form").find(".new_post_btn").click()
                 e.preventDefault()
             }
         })
 
-        $(".new_post_btn").click(function() {
-            $el_form = $(this).closest("form")
-            $el = $el_form.find(".new_post_textarea")
-            if ( $el.data("clicked") )
-                return
-            Dajaxice.apps.walls.create_post(dajax_create_post, {
-                'wall_id': {{ wall.id }}, 
-                'post_form': $el_form.serialize(true) 
-            })
-            $el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
-            $el_form.find(".new_post_btn").addClass("disabled").prop("disabled", true)
+    $(".new_post_btn").click(function() {
+        $el_form = $(this).closest("form")
+        $el = $el_form.find(".new_post_textarea")
+        if ($el.data("clicked"))
+            return
+        Dajaxice.apps.walls.create_post(dajax_create_post, {
+            'wall_id': {
+                {
+                    wall.id
+                }
+            },
+            'post_form': $el_form.serialize(true)
+        })
+        $el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
+        $el_form.find(".new_post_btn").addClass("disabled").prop("disabled", true)
 
-        });
+    });
 
-        
-    })
+
+})
 </script>
 {% endonce %}

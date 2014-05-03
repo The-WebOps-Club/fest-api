@@ -135,10 +135,8 @@
 
 		$(".notifButton").click( function(e) {
 			e.stopPropagation();
-			$(".userButton").popover("hide") 
-			$(".messageButton").popover("hide") 
-			$(".settingsButton").popover("hide")
-			$(".notifButton").popover("toggle")
+			hide_popups()
+			$(this).popover("show")
 			
 			$(".popover_notifs .see_more_notifs").click( function (e) {
 	        	e = e || event;
