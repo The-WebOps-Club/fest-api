@@ -73,7 +73,7 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
             # print link
             preview = ""
             short_link = (link[:40] + '..') if len(link) > 40 else link
-            my_html = "<a href='mailto:" + link + "'>" + short_link + "</a>" + preview
+            my_html = "<a target='_blank' href='mailto:" + link + "'>" + short_link + "</a>" + preview
         else :    
             # print link
             preview = ""

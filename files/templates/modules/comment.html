@@ -21,11 +21,27 @@
 					    	data-postid="{{ post.id }}"
 					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed."></textarea>
 						<div class="span12 comment_links" style="display : none">
-							<!--<a href="javascript:void(0)" class="btn attach_btn">
+							<a href="javascript:void(0)" class="btn small attach_doc_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
 								<i class="icon-attach"></i>
-							</a>-->
+							</a>
+							
+							<a href="javascript:void(0)" class="btn small attach_pic_btn" data-placement="below" rel="twipsy" title="Attach a Picture">
+								<i class="icon-pic"></i>
+							</a>
+							
+							<a href="javascript:void(0)" class="btn small attach_link_btn" data-placement="below" rel="twipsy" title="Insert a Link">
+								<i class="icon-link"></i>
+							</a>
+							
+							<a href="javascript:void(0)" class="btn small attach_emoticon_btn" data-placement="below" rel="twipsy" title="Insert a Smiley">
+								<i class="icon-smile"></i>
+							</a>
 
-							<a href="javascript:void(0)" class="btn primary post_btn">&nbsp;&nbsp;&nbsp;&nbsp;Post&nbsp;&nbsp;&nbsp;&nbsp;</a>
+							<a href="javascript:void(0)" class="btn primary post_btn">
+								&nbsp;
+									<i class="icon-thought"></i>&nbsp; Post
+								&nbsp;
+							</a>
 						</div>
 					</div>
 				</form>
@@ -130,6 +146,10 @@
         $("#post_" + data.post_id + " .textarea_atwho_list").remove()
         on_dom_change()
 	}
+
+	function attach_doc_callback(data) {
+
+	}
 	
 	$( document ).ready(function() {
 		
@@ -164,6 +184,80 @@
         })
         .focus( function() {
         	$(this).siblings(".comment_links").show()
+        	gapi.load('picker')
+        })
+
+        $(".attach_doc_btn").click( function () {
+			var all_docsView = new google.picker.DocsView()
+	            .setIncludeFolders(true)
+	        
+	        var my_docsView = new google.picker.DocsView()
+	            .setIncludeFolders(true)
+				.setSelectFolderEnabled(true)
+	            .setOwnedByMe(true)
+
+	        var shared_docsView = new google.picker.DocsView()
+	            .setIncludeFolders(true)
+	            .setSelectFolderEnabled(true)
+	            .setOwnedByMe(false)
+
+	        // var starred_docsView = new google.picker.DocsView()
+	        //     .setIncludeFolders(true)
+	        //     .setSelectFolderEnabled(true)
+	        //     .setStarred(true)
+
+	        var recent_docsView = new google.picker.DocsView(google.picker.ViewId.RECENTLY_PICKED)
+
+	        var uploadView = new google.picker.DocsUploadView()
+	            .setIncludeFolders(true)
+	        
+	        var attach_doc_picker = new google.picker.PickerBuilder()
+	            .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+	            .setOAuthToken(authToken)
+	            .addView(all_docsView) // Google Drive
+	            .addView(uploadView) // Upload 
+	            .addView(recent_docsView) // Prev selected
+	            .addView(my_docsView) // My Drive
+	            .addView(shared_docsView) // Shared with me
+	            //.addView(starred_docsView) // 
+	            .setCallback(attach_doc_callback)
+	            .build()
+				.setVisible(true);
+        })
+
+		$(".attach_pic_btn").click( function () {
+			var my_picView = new google.picker.View(google.picker.ViewId.DOCS_IMAGES)
+
+			var all_docsView = new google.picker.DocsView()
+	            .setIncludeFolders(true)
+	        
+	        var my_albumView = new google.picker.PhotoAlbumsView()
+	        
+	        var my_picasaView = new google.picker.PhotosView()
+
+			var upload_picasaView = new google.picker.View(google.picker.ViewId.PHOTO_UPLOAD)
+
+			var search_imageView = new google.picker.ImageSearchView()
+			
+			var webcamView = new google.picker.WebCamView()
+
+	        var uploadView = new google.picker.DocsUploadView()
+	            .setIncludeFolders(true)
+	        
+	        var attach_doc_picker = new google.picker.PickerBuilder()
+	            .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+	            .setOAuthToken(authToken)
+	            .addView(all_docsView)
+	            .addView(my_picView)
+	            .addView(my_albumView)
+	            .addView(my_picasaView)
+	            .addView(upload_picasaView)
+	            .addView(search_imageView)
+	            .addView(webcamView)
+	            .addView(uploadView)
+	            .setCallback(attach_doc_callback)
+	            .build()
+				.setVisible(true);
         })
 	});
 </script>

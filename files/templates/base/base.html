@@ -124,6 +124,8 @@
     <script>
     	site_url = "{{ SITE_URL }}"
     	static_url = "{{ STATIC_URL }}"
+    	authToken = "{{ google_access_token }}"
+
         
         function hide_popups() {
 	            $(".userButton").popover("hide") 
@@ -143,6 +145,7 @@
             $(".display_pic").get_dp()
             get_link_preview($(".comment_link_render.comment_link"))
             $(".markdown").markdown()
+            $("a[rel]").twipsy()
         }        
         $( document ).ready(function() {
             $(".below_topbar").click(hide_popups)
