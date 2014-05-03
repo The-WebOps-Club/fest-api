@@ -201,21 +201,20 @@
 	function insert_text(el, text) {
 		var $el = $(el), $ip, content;
 		if ($el.is('textarea, input')) {
-			$ip = new InputCaret($el)
             content = $el.val();
         } else {
-        	$ip = new EditableCaret($el)
             content = $el.text();
         }
-        var start_content = content.substr(0, $ip.getPos())
-        var end_content = content.substr($ip.getPos(), content.length)
+        var pos = $el.caret("pos")
+        var start_content = content.substr(0, pos)
+        var end_content = content.substr($el.caret("pos"), content.length)
         var new_content = start_content + text + end_content
         if ($el.is('textarea, input')) {
             $el.val(new_content);
         } else {
         	$el.text(new_content);
         }
-        console.log(text)
+        $el.caret("pos", pos+text.length)
 	}
 
 	function attach_doc_callback(el, data) {
@@ -382,7 +381,7 @@
 			},
 			"content": function() {
 				var $el = $(this)
-				$(".insert_link_content.hidden").find(".for_comment").prop("id", $el.closest(".news_comment")[0].id)
+				$(".insert_link_content.hidden").find(".for_comment").prop("id", $el.closest(".post_container").prop("id"))
 				return $(".insert_link_content.hidden").html()
 			},
 			"trigger": "manual",
@@ -410,7 +409,7 @@
 			})
 			$(".insert_link_from_popover").click( function(e) {
 				var $el = $(this).closest(".insert_link_content_inner")
-				var $parent = $(".news_comment" + $el.find(".for_comment").prop("id"))
+				var $parent = $(".post_container#" + $el.find(".for_comment").prop("id"))
 				var text = $el.find(".input1").val()
 				var link = $el.find(".input2").val()
 				var mail_link = $(".insert_mail_link").find("input").is(":checked")
@@ -418,8 +417,7 @@
 					link = "mailto:" + $.trim(link)
 				else
 					link = $.trim(link)
-				console.log($parent)
-				insert_text($parent.closest(".news_comment").find(".comment_textarea"), "[" + text + "](" + link + ")")
+				insert_text($parent.find(".comment_textarea"), "[" + text + "](" + link + ")")
 			})
         })
 		
@@ -434,7 +432,8 @@
 			},
 			"content": function() {
 				var $el = $(this)
-				$(".insert_emoticon_content.hidden").find(".for_comment").prop("id", $el.closest(".news_comment")[0].id)
+				$(".insert_emoticon_content.hidden").find(".for_comment").prop("id", $el.closest(".post_container").prop("id"))
+
 				return $(".insert_emoticon_content.hidden").html()
 			},
 			"trigger": "manual",
@@ -463,10 +462,10 @@
 			})
 			.click( function(e) {
 				var $el = $(this).closest(".insert_emoticon_content_inner")
-				var $parent = $(".news_comment" + $el.find(".for_comment").prop("id"))
+				$rr = $el
+				var $parent = $(".post_container#" + $el.find(".for_comment").prop("id"))
 				var text = $.trim($(this).find("i").data("symbol"))
-				console.log(text)
-				insert_text($parent.closest(".news_comment").find(".comment_textarea"), " " + text + " ")
+				insert_text($parent.find(".comment_textarea"), " " + text + " ")
 			})
         })
 	});

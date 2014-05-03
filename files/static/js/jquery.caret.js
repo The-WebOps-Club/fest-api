@@ -1,19 +1,3 @@
-//@ sourceMappingURL=jquery.caret.map
-/*
-  Implement Github like autocomplete mentions
-  http://ichord.github.com/At.js
-
-  Copyright (c) 2013 chord.luo@gmail.com
-  Licensed under the MIT license.
-*/
-
-
-/*
-æœ¬æ’ä»¶æ“ä½œ textarea æˆ–è€… input å†…çš„æ’å…¥ç¬¦
-åªå®žçŽ°äº†èŽ·å¾—æ’å…¥ç¬¦åœ¨æ–‡æœ¬æ¡†ä¸­çš„ä½ç½®ï¼Œæˆ‘è®¾ç½®
-æ’å…¥ç¬¦çš„ä½ç½®.
-*/
-
 
 (function() {
   (function(factory) {

@@ -128,11 +128,12 @@
 
         
         function hide_popups() {
-	            $(".userButton").popover("hide") 
-	            $(".messageButton").popover("hide")
-	            $(".notifButton").popover("hide") 
-	            $(".settingButton").popover("hide") 
-	            $(".attach_link_btn").popover("hide")
+            $(".userButton").popover("hide") 
+            $(".messageButton").popover("hide")
+            $(".notifButton").popover("hide") 
+            $(".settingButton").popover("hide") 
+            $(".attach_link_btn").popover("hide")
+            $(".attach_emoticon_btn").popover("hide")
 	    }
 	    $( document ).click(function() {
 	    	console.log("hihhihi")
@@ -140,15 +141,16 @@
 	    })
 	
         function on_dom_change() {
-            $(".resize_textarea").autosize()
+            console.log('on dom change');
+            $(".resize_textarea").autosize();
             if ( ! ( typeof at_config_file === "undefined" ) )
-            	$('.atwho_at_config').atwho(at_config_file)
+            	$('.atwho_at_config').atwho(at_config_file);
             if ( ! ( typeof at_config === "undefined" ) )
-            	$('.atwho_at_config').atwho(at_config)
+            	$('.atwho_at_config').atwho(at_config);
             
             // Comment beautify
             $(".display_pic").get_dp()
-            get_link_preview($(".comment_link_render.comment_link"))
+            $(".comment_link_render.comment_link").get_link_preview()
             $(".markdown").markdown()
             $("a[rel]").twipsy()
         }        

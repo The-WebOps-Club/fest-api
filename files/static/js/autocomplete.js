@@ -8,7 +8,7 @@ regex_emoticons = []
 emoticons = {
     "like" : ["(Y)"],
     "colonthree" : [ ":3", ":-3" ],
-    "cry" : [ ":'(", ":'-(", ";(", ";-(" ],
+    "cry" : [ ";(", ":'(", ":'-(", ";-(", ";_;" ],
     "frown" : [ ":(", ":-(", ":C", ":[", ":-[" ], 
     "gasp" : [":o", ":-o"],
     "grin" : [ ":D", ":-D", "XD", "X-D", "=D", ], 
@@ -26,10 +26,10 @@ emoticons = {
     "surprised" : ["o.o", "o_o", "0.0", "0_0"],
     "devil" : ["}:)", "}:-)", "3:)", "3:-)"],
     "glasses" : ["8)", "8-)"],
-    "penguin" : [],
-    "poop" : [],
-    "teeth" : [],
-    "tears-of-joy" : [],
+    "penguin" : ["<(\")" ],
+    "poop" : [":poop:"],
+    "teeth" : [":E", ":-E"],
+    "tears-of-joy" : [ ";D", ";-D"],
     "squint" : ["-_-"],
 }
 
@@ -329,37 +329,43 @@ function setup_autocomplete_lists() {
         })
     }
 
+    $.fn.get_link_preview = function() {
+	    var $els = $(this);
+	    var elarray = {};
+	    $.each($els, function(i, v) {
+	        var $v = $(v);
+	        var service = $v.data("service");
+	        var id = $v.data("link-id");
+
+	        console.log(v);
+	        if ( service == "youtube" ) {
+	            var url = "http://gdata.youtube.com/feeds/api/videos/" + id + "?v=2&alt=jsonc";
+	            console.log("TRY UTUBE");
+	            $.ajax({url:url, dataType:'json', success:function(json) {
+	                //var json = JSON.parse( data );
+	                var $el = $('a[data-link-id=\''+json.data.id+'\']');
+	                if ( ! $el.hasClass("comment_link_render") )
+	                    return
+
+	                $el.append("<div class='row-fluid video_comment'>" +
+	                    "<div class='span4 left'>" +
+	                        "<img src='" + json.data.thumbnail.sqDefault + "' width='100%' height='auto' />" +
+	                    "</div>" +
+	                    "<div class='span8 right'>" +
+	                        "<h5 class='title'>" + json.data.title + "</h5>" +
+	                        "<p class='desc'>" + json.data.description + "</p>" +
+	                    "</div>" +
+	                "</div>");
+	                $el.removeClass("comment_link_render");
+	            }});
+
+	        } else if ( service == "vimeo") {
+
+	        }
+	        
+	    })
+	}
+
+
 })(jQuery);
-
-get_link_preview = function(els){
-    var $els = $(els)
-    $.each($els, function(i, v) {
-        var $v = $(v)
-        var service = $v.data("service")
-        var id = $v.data("link-id")
-        if ( service == "youtube" ) {
-            var url = "http://gdata.youtube.com/feeds/api/videos/" + id + "?v=2&alt=jsonc"
-            console.log("TRY UTUBE")
-            $.getJSON(url, function(json) {
-                var $el = $v
-                if ( ! $el.hasClass("comment_link_render") )
-                    return
-                $("<div class='row-fluid video_comment'>" +
-                    "<div class='span4 left'>" +
-                        "<img src='" + json.data.thumbnail.sqDefault + "' width='100%' height='auto' />" +
-                    "</div>" +
-                    "<div class='span8 right'>" +
-                        "<h5 class='title'>" + json.data.title + "</h5>" +
-                        "<p class='desc'>" + json.data.description + "</p>" +
-                    "</div>" +
-                "</div>").appendTo($el)
-                $el.removeClass("comment_link_render")
-            });
-
-        } else if ( service == "vimeo") {
-
-        }
-        
-    })
-}
 
