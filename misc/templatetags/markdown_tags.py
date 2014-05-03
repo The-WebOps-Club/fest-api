@@ -4,6 +4,8 @@ from pygments import highlight, lexers, formatters
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 from django import template
+from django.conf import settings
+from misc.utils import *  #Import miscellaneous functions
 import re
 
 #Tell django that this is a template filter module
@@ -66,6 +68,27 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
 
     def header(self, text, level) :
         return "<p>" + text + "</p>"
+
+    def link(self, link, title, content):
+    	return_text = ""
+    	if not title:
+    		title = ""
+    	if title.startswith("doc#"): # Implies it is a doc from drive
+    		doc_id = title.replace("doc#", "", 1)
+    		doc_link = reverse("view") + "?id=" + doc_id
+    		doc_name = content
+    		doc_icon = link
+    		return_text = "<img src='" + doc_icon + "' /> <a href='" + doc_link + "' target='_blank' title='" + title +"' data-id='" + doc_id + "' >" + doc_name +"</a>"
+    	elif title.startswith("user#"): # Implies it is a doc from drive
+    		pass
+    	elif title.startswith("dept#"): # Implies it is a doc from drive
+    		pass
+    	elif title.startswith("subdept#"): # Implies it is a doc from drive
+    		pass
+    	else:
+    		return_text = "<a href='" + link + "' target='_blank' title='" + title +"' >" + content +"</a>"
+    	
+    	return return_text
 
     def autolink(self, link, is_email):
         my_html = ''

@@ -80,7 +80,7 @@ function setup_autocomplete_files() {
     at_config_file = {
         at: "#",
         data: [],
-        tpl: "<li data-value=':${name}' data-filename='${name}' data-id='${id}' data-small='${small}' data-icon='${iconlink}'><img src='${iconlink}' style='height:12px'> &nbsp; ${name} <small>${small}</small></li>",
+        tpl: "<li data-value='#${name}' data-filename='${name}' data-id='${id}' data-small='${small}' data-icon='${iconlink}'><img src='${iconlink}' style='height:12px'> &nbsp; ${name} <small>${small}</small></li>",
         show_the_at: true,
         callbacks: {
             remote_filter: function(query, callback) {
