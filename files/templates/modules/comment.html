@@ -218,6 +218,8 @@
 	}
 
 	function attach_doc_callback(el, data) {
+		$el.closest(".news_comment").find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
+
 		if ( data.action != google.picker.Action.PICKED )
 			return
 
@@ -228,10 +230,10 @@
 			text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
 			insert_text($el, text)
 		}
-		$el.closest(".news_comment").find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
 	}
 
 	function attach_pic_callback(el, data) {
+		$el.closest(".news_comment").find(".attach_pic_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
 		if ( data.action != google.picker.Action.PICKED )
 			return
 
@@ -242,7 +244,6 @@
 			text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
 			insert_text($el, text)
 		}
-		$el.closest(".news_comment").find(".attach_pic_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
 	}
 	
 	$( document ).ready(function() {
