@@ -78,22 +78,46 @@
 
 <div class="hidden insert_link_content">
 	<div class="insert_link_content_inner">
+		<span class="hidden for_comment"></span>
 		Text to display : <br />
 		<input class="input1" type="text" name="text" placeholder="Text to display"/><br />
 		<br />
 		<span class="input2_text">To which URL</span> : <br />
 		<input class="input2" type="text" name="link" placeholder="To what URL should this go to ?" /><br />
 		<div class="row-fluid">
-			<div class="span6">
-				<input type="radio" name="type" value="link" class="insert_hyper_link" checked="checked" /> Link
+			<div class="span4">
+				<span class="insert_hyper_link">
+					<input type="radio" name="type" value="link" class="insert_hyper_link" checked="checked" /> Link
+				</span>
 			</div>
-			<div class="span6">
-				<input type="radio" name="type" value="mail" class="insert_mail_link" /> Mail
+			<div class="span4">
+				<span class="insert_mail_link">
+					<input type="radio" name="type" value="mail"  /> Mail
+				</span>
+			</div>
+			<div class="span4">
+				<a class="btn primary insert_link_from_popover" href="javascript:void(0)"> 
+					OK
+				</a>
 			</div>
 		</div>
-
 	</div>	
 </div>
+
+<div class="hidden insert_emoticon_title">
+	<div class="insert_emoticon_title_inner">
+		<span class="bold">Insert an emoticon</span>
+	</div>
+</div>
+
+<div class="hidden insert_emoticon_content">
+	<div class="insert_emoticon_content_inner">
+		<span class="hidden for_comment"></span>
+		<div class="emoticon_table">
+		</div>
+	</div>	
+</div>
+
 {% endonce %}
 
 {% once comment_styles_and_scripts %}
@@ -353,36 +377,97 @@
 			"delayOut": 200,
 			"placement": "above",
 			"html": true,
-			"title": function() {
-				return $(".insert_link_title").html()
+			"title": function(e) {
+				return $(".insert_link_title.hidden").html()
 			},
 			"content": function() {
-				return $(".insert_link_content").html()
+				var $el = $(this)
+				$(".insert_link_content.hidden").find(".for_comment").prop("id", $el.closest(".news_comment")[0].id)
+				return $(".insert_link_content.hidden").html()
 			},
 			"trigger": "manual",
 			"myClass": "popover_insert_link"
 		})
-		$(".attach_link_btn").click( function () {
+		$(".attach_link_btn").click( function (e) {
+			e.stopPropagation();
 			var $el = $(this)
-			$el.popover("show")
-			$(".insert_mail_link").click( function() {
-				console.log("mail link fired")
+			$el.popover("toggle")
+			$(".popover_insert_link").click(function(e) {
+				e.stopPropagation();
+			})
+			$(".insert_mail_link").click( function(e) {
+				$(this).find("input")[0].checked = true
 				var $temp = $(this).closest(".insert_link_content_inner");
-				console.log($temp[0])
 			   	$temp.find(".input2").prop("placeholder", "To which email address ?")
 			   	$temp.find(".input2_text").text("To which email address")
 			})
-			$(".insert_hyper_link").click( function() {
-				console.log("hyper link fired")
+			$(".insert_hyper_link").click( function(e) {
+				$(this).find("input")[0].checked = true
 		       	var $temp = $(this).closest(".insert_link_content_inner");
 			   	$temp.find(".input2").prop("placeholder", "To what URL should this go to ?")
 			  $temp.find(".input2_text").text("To which URL")
 
 			})
+			$(".insert_link_from_popover").click( function(e) {
+				var $el = $(this).closest(".insert_link_content_inner")
+				var $parent = $(".news_comment" + $el.find(".for_comment").prop("id"))
+				var text = $el.find(".input1").val()
+				var link = $el.find(".input2").val()
+				var mail_link = $(".insert_mail_link").find("input").is(":checked")
+				if (mail_link) 
+					link = "mailto:" + $.trim(link)
+				else
+					link = $.trim(link)
+				console.log($parent)
+				insert_text($parent.closest(".news_comment").find(".comment_textarea"), "[" + text + "](" + link + ")")
+			})
         })
-        $(".attach_link_btn").focusout( function () {
+		
+		$(".attach_emoticon_btn").popover({
+			"animate": true,
+			"delayIn": 200,
+			"delayOut": 200,
+			"placement": "top",
+			"html": true,
+			"title": function(e) {
+				return $(".insert_emoticon_title.hidden").html()
+			},
+			"content": function() {
+				var $el = $(this)
+				$(".insert_emoticon_content.hidden").find(".for_comment").prop("id", $el.closest(".news_comment")[0].id)
+				return $(".insert_emoticon_content.hidden").html()
+			},
+			"trigger": "manual",
+			"myClass": "popover_insert_emoticon"
+		})
+		$(".attach_emoticon_btn").click( function (e) {
+			e.stopPropagation();
 			var $el = $(this)
-			$el.popover("hide")
+			$el.popover("toggle")
+			$(".popover_insert_emoticon").click(function(e) {
+				e.stopPropagation();
+			})
+			var $table = $(".popover_insert_emoticon").find(".emoticon_table")
+			var emoticon_keys = Object.keys(emoticons)
+			for ( var i = 0, name; name = emoticon_keys[i]; i++ ) {
+				var symbol = emoticons[name][0]
+
+				var text = "<div style='display : inline-block; cursor : pointer; padding : 4px; border : 1px solid #fff; height : 18px; width : 18px;' class='popover_icon'><i data-symbol='" + symbol +"' class='icon-" + name + "'></i></div>"
+				$table.append(text)
+			}
+			$(".emoticon_table .popover_icon").mouseover( function(e) {
+				$(this).css({ "background-color" : "#aaa", "border" : "1px solid #000" })
+			})
+			.mouseout( function(e) {
+				$(this).css({ "background-color" : "#fff", "border" : "1px solid #fff" })
+			})
+			.click( function(e) {
+				var $el = $(this).closest(".insert_emoticon_content_inner")
+				var $parent = $(".news_comment" + $el.find(".for_comment").prop("id"))
+				var text = $.trim($(this).find("i").data("symbol"))
+				console.log(text)
+				insert_text($parent.closest(".news_comment").find(".comment_textarea"), " " + text + " ")
+			})
         })
 	});
 </script>

@@ -134,6 +134,7 @@
 		})
 
 		$(".notifButton").click( function(e) {
+			e.stopPropagation();
 			$(".userButton").popover("hide") 
 			$(".messageButton").popover("hide") 
 			$(".settingsButton").popover("hide")

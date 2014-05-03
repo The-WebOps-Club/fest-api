@@ -132,7 +132,12 @@
 	            $(".messageButton").popover("hide")
 	            $(".notifButton").popover("hide") 
 	            $(".settingButton").popover("hide") 
+	            $(".attach_link_btn").popover("hide")
 	    }
+	    $( document ).click(function() {
+	    	console.log("hihhihi")
+	    	hide_popups()
+	    })
 	
         function on_dom_change() {
             $(".resize_textarea").autosize()
@@ -148,9 +153,6 @@
             $("a[rel]").twipsy()
         }        
         $( document ).ready(function() {
-            $(".below_topbar").click(hide_popups)
-    		$(".searchbar").click(hide_popups)
-
             var $win = $(window), $doc = $(document);
             $win.scroll(function(){
                 $(".fixedbar").css({
