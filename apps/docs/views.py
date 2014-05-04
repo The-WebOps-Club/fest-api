@@ -60,7 +60,7 @@ def edit_file(request, *args, **kwargs):
     local_context = {
         'id' : request.GET['id'],
     }
-    return render_to_response('pages/view_doc.html', local_context, RequestContext(request))
+    return render_to_response('pages/view_doc.html', local_context, RequestContext(request, token_info=False))
 
 #-------------------------------------------------------------
 # One Time actions

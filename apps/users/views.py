@@ -76,16 +76,16 @@ def login_user(request):
                     return HttpResponseRedirect(reverse("identity")) # Redirect to home page
                 else:
                     login_form.errors.update( {
-                        "submit" : "The user has been deactivated.",
+                        "submit" : ["The user has been deactivated."],
                     } )
                 
             else: # errors appeared
                 login_form.errors.update( {
-                    "submit" : "The username or password is incorrect",
+                    "submit" : ["The username or password is incorrect"],
                 } )
                 messages.error(request, strings.LOGIN_ERROR_INACTIVE)
         else:
-            print dict(login_form.errors)
+            # print dict(login_form.errors)
             pass
     # import pdb; pdb.set_trace()
     # Return
@@ -93,7 +93,7 @@ def login_user(request):
         "current_page" : "login",
         "login_form": login_form,
     }
-    return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
+    return render_to_response("pages/login.html", local_context, context_instance= global_context(request, token_info=False))
 
 @login_required
 def associate(request): 
@@ -102,7 +102,7 @@ def associate(request):
         "current_page" : "associate",
         "facebook_association" : user.social_auth.filter(provider="facebook").count() if settings.SOCIAL_AUTH_FORCE_FB else 1,
     }
-    return render_to_response("pages/login.html", local_context, context_instance= global_context(request))
+    return render_to_response("pages/login.html", local_context, context_instance=global_context(request, token_info=False))
 
 def first_login_required(request):
     local_context = {
@@ -110,7 +110,7 @@ def first_login_required(request):
         "FEST_NAME" : settings.FEST_NAME,
         "SETTINGS" : settings,
     }
-    return render_to_response("errors/login_required.html", local_context, context_instance=RequestContext (request))
+    return render_to_response("errors/login_required.html", local_context, context_instance=global_context(request, token_info=False))
     
 @login_required
 def profile(request, user_id=None):

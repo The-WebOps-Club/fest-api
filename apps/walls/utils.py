@@ -15,7 +15,8 @@ from notifications.models import Notification
 from apps.walls.models import Wall, Post, Comment
 from annoying.functions import get_object_or_None
 import json
-    
+import re
+
 def paginate_items(items_list, **kwargs):
     """
         Possible kwargs :
@@ -42,45 +43,29 @@ def filetag_to_url(tag):
     return reverse("view")+'?id='+fileid, filename, iconlink; 
 
 # TODO: merge parse_atwho and parse_atwho_file
-def parse_atwho_file( my_text, tags ):
+def parse_atwho(my_text):
     """
-        Parses through the list form atwho and records file references.
-    """
-    notification_list = []
-    link_text = '![Doc](%s) [%s](%s)'
-    for tag in tags:
-            url, filename, iconLink = filetag_to_url( tag )
-            my_text = my_text.replace('#' + filename, (link_text %(iconLink, filename, url) ))
-    return my_text
-
-def parse_atwho(my_text, tags, at='@' ):
-    """
-        Parses through the list form atwho and gives the depts, subdepts and users
+        Parses through the list form atwho and records file, dept, subdept, user references.
     """
     notification_list = []
-    link_text = '![%s](%s) [%s](%s)' # alt_text, icon_link, name, wall_link
-    for tag in tags:
-        tagged_obj = get_tag_object(tag)
-        if isinstance(tagged_obj, Dept):
-            alt_text = "Dept"
-            icon_link = static("img/dept.png")
-        elif isinstance(tagged_obj, Subdept):
-            alt_text = "Subdept"
-            icon_link = static("img/subdept.png")
-        else:
-            alt_text = "User"
-            if tagged_obj.profile.gender == "F":
-                icon_link = static("img/user-female.png")
-            else:
-                icon_link = static("img/user-male.png")
+    
+    link_regex = re.compile("\[(.*?)\] \((.*?)\)", re.IGNORECASE)
+    link_list = link_regex.findall(my_text)
+    for i in link_list:
+        filename, iconLink, data = docs_list
+        _type, _id = data.split("#", 1)
+        # if _type == "doc":
+        #     pass
+        #     _url = reverse("view") + "?id=" + _id
+        # else:
+        #     _url = reverse("my_wall", kwargs={"owner_type":_type, "owner_id":_id})
+        if _type == "user":
+            notification_list.append(User.objects.get(id=_id))
+        elif _type == "subdept":
+            notification_list.append(Subdept.objects.get(id=_id))
+        elif _type == "dept":
+            notification_list.append(Dept.objects.get(id=_id))
 
-        if isinstance(tagged_obj, Dept) or isinstance(tagged_obj, Subdept):
-            link_href = reverse("wall", kwargs={"wall_id" : tagged_obj.wall.pk})
-            my_text = my_text.replace(at + tagged_obj.name, link_text % (alt_text, icon_link, tagged_obj.name, link_href) )
-        else:
-            link_href = reverse("wall", kwargs={"wall_id" : tagged_obj.erp_profile.wall.pk})
-            my_text = my_text.replace(at + tagged_obj.first_name+" "+tagged_obj.last_name, link_text %(alt_text, icon_link, tagged_obj.get_full_name(), link_href) )
-        notification_list.append(tagged_obj)
     return my_text, notification_list
     
 def get_tag_object(tag):

@@ -22,7 +22,7 @@ def err404 (request, *args, **kwargs):
         "SITE_URL"  : settings.SITE_URL,
         "num" : num,
     }
-    return render_to_response('errors/404.html', local_context, context_instance=RequestContext(request))
+    return render_to_response('errors/404.html', local_context, context_instance=global_context(request, token_info=False))
     
 def err500 (request, *args, **kwargs):
     num = random.randint(1, 3)
@@ -30,9 +30,9 @@ def err500 (request, *args, **kwargs):
         "SITE_URL"  : settings.SITE_URL,
         "num" : num,
     }
-    return render_to_response('errors/500.html', local_context, context_instance=RequestContext(request))
+    return render_to_response('errors/500.html', local_context, context_instance=global_context(request, token_info=False))
 
 def setup(request, *args, **kwargs):
     local_context = {
     }
-    return render_to_response('pages/setup.html', local_context, context_instance= global_context(request))
+    return render_to_response('pages/setup.html', local_context, context_instance= global_context(request, token_info=False, user_info = False))

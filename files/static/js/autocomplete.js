@@ -80,7 +80,7 @@ function setup_autocomplete_files() {
     at_config_file = {
         at: "#",
         data: [],
-        tpl: "<li data-value='#${name}' data-filename='${name}' data-id='${id}' data-small='${small}' data-icon='${iconlink}'><img src='${iconlink}' style='height:12px'> &nbsp; ${name} <small>${small}</small></li>",
+        tpl: "<li data-value='[${name}](${iconlink} \"doc#${id}\")'><img src='${iconlink}' style='height:12px'> &nbsp; ${name} </li>",
         show_the_at: true,
         callbacks: {
             remote_filter: function(query, callback) {
@@ -137,12 +137,12 @@ function setup_autocomplete_files() {
                     }
                 }
             },
-            before_insert: function(value, $li) {
-                if (this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0) {
-                    this.$inputor.after("<input class='textarea_atwho_list' name='atwho_files' value='" + $li.data("filename") + "--@@!@@--" + $li.data("id") + "--@@!@@--" + $li.data("icon") + "' type='hidden'/>");
-                }
-                return value;
-            },
+            // before_insert: function(value, $li) {
+            //     if (this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0) {
+            //         this.$inputor.after("<input class='textarea_atwho_list' name='atwho_files' value='" + $li.data("filename") + "--@@!@@--" + $li.data("id") + "--@@!@@--" + $li.data("icon") + "' type='hidden'/>");
+            //     }
+            //     return value;
+            // },
         },
     }
     $('.atwho_at_config').atwho(at_config_file);
@@ -169,7 +169,8 @@ function setup_autocomplete_lists() {
                 return {
                     "id": value["id"],
                     "name": value["first_name"] + " " + value["last_name"],
-                    "small": value["email"]
+                    "small": value["email"],
+                    "type": "user"
                 };
         })
     }
@@ -178,7 +179,8 @@ function setup_autocomplete_lists() {
             return {
                 "id": value["id"],
                 "name": value["name"],
-                "small": "Department"
+                "small": "Department",
+                "type": "dept"
             };
         })
     }
@@ -187,7 +189,8 @@ function setup_autocomplete_lists() {
             return {
                 "id": value["id"],
                 "name": value["name"],
-                "small": "Subdept"
+                "small": "Subdept",
+                "type": "subdept"
             };
         })
     }
@@ -195,20 +198,17 @@ function setup_autocomplete_lists() {
     at_config = {
         at: "@",
         data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
-        tpl: "<li data-value='@${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
+        tpl: "<li data-value='[${name}](${type}#${id} \"${type}#${id}\")'>${name} <small>${small}</small></li>",
         show_the_at: true,
         max_len: 20,
-        callbacks: {
-            before_insert: function(value, $li) {
-                console.log($li);
-                console.log(value);
-                if (this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0) {
-                    this.$inputor.after("<input class='textarea_atwho_list' name='atwho_list' value='" + $li.data("small").toLowerCase() + "_" + $li.data("id") + "' type='hidden'/>");
-                }
-                console.log($li);
-                return value;
-            },
-        },
+        // callbacks: {
+            // before_insert: function(value, $li) {
+            //     if (this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0) {
+            //         this.$inputor.after("<input class='textarea_atwho_list' name='atwho_list' value='" + $li.data("small").toLowerCase() + "_" + $li.data("id") + "' type='hidden'/>");
+            //     }
+            //     return value;
+            // },
+        // },
     }
 
 
