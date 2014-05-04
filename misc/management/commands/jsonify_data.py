@@ -56,21 +56,19 @@ class Command(BaseCommand):
                 del(i["erp_profile"])
         all_subdept_list = list(Subdept.objects.values("id", "name", "dept", "wall"))
         all_dept_list = list(Dept.objects.values("id", "name", "wall"))
-        id_dept_structure = {
-            i["id"] : {
-                "users" : {}, 
-                "subdepts": {},
-                "name" : i["name"]
-            } 
-            for i in all_dept_list
-        }
-        id_subdept_structure = {
-            i["id"] : {
-                "users" : {},
-                "name" : i["name"]
-            } 
-            for i in all_subdept_list
-        }
+        id_dept_structure = {}
+        for i in all_dept_list:
+            id_dept_structure[i["id"]] = {
+                    "users" : {}, 
+                    "subdepts": {},
+                    "name" : i["name"]
+                }
+        id_subdept_structure = {}
+        for i in all_subdept_list:
+            id_subdept_structure[i["id"]] = {
+                    "users" : {},
+                    "name" : i["name"]
+                } 
 
         for i in all_user_list:
             temp_user = {
