@@ -60,16 +60,18 @@
 	        			{% else %}
 	        				<a href="javascript:void(0)" class="post_like_btn">Acknowledge</a>
 	        			{% endif %}
-	        			 · 
-	        			<a class="" href="javascript:void(0)" rel="twipsy" title="{% for u in post.liked_users.all %}
-	        				{{ u.get_full_name }}
-	        				{% if not forloop.last %}
-	        					{% ifequal forloop.revcounter 2 %} and 
-	        					{% else %}, 
-	        					{% endifequal %}
-	        				{% endif %}
-	        			  {% endfor %} acknowledged"
-	        			><i class="icon-like"></i> <span class="like_number">{{ post.liked_users.count }}</span></a>
+	        			{% if post.liked_users.count %}
+	        				 · 
+		        			<a class="" href="javascript:void(0)" rel="twipsy" title="{% for u in post.liked_users.all %}
+		        				{{ u.get_full_name }}
+		        				{% if not forloop.last %}
+		        					{% ifequal forloop.revcounter 2 %} and 
+		        					{% else %}, 
+		        					{% endifequal %}
+		        				{% endif %}
+		        			  {% endfor %} acknowledged"
+		        			><i class="icon-like"></i> <span class="like_number">{{ post.liked_users.count }}</span></a>
+		        		{% endif %}
 	        		</p>
 	        	</div>
 	        	
