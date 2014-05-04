@@ -31,6 +31,7 @@ tmp
 # User specific files
 files/media/*
 files/static-collected/*
+files/static/img/fest_pics/*
 
 # General configs
 configs/settings.py

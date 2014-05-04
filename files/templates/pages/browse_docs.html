@@ -261,6 +261,7 @@ tr.drive_file.select, tr.drive_file.select:hover {
 var developerKey = '{{ SETTINGS.GOOGLE_API_PUBLIC_KEY }}';
 var rootFolder = '{{ SETTINGS.GOOGLE_DRIVE_ROOT_FOLDER_ID }}';
 var authToken = '{{ google_access_token }}';
+var fest_name = '{{FEST_NAME}}'
 
 drive = null;
 
@@ -293,6 +294,7 @@ function drive_callback() {
         "developerKey": developerKey,
         "rootFolder": rootFolder,
         "fileAddCallback": setup_file_events,
+        "fest_name": fest_name,
     })
     init_button_bar()
 }
