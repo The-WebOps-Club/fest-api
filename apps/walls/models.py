@@ -126,6 +126,8 @@ class Comment(PostInfo):
     """
         Defines the comment to a Post
     """
+    liked_users  = models.ManyToManyField(User, null=True, blank=True, related_name='liked_comment')
+
     def __unicode__(self):
         return self.description
 
@@ -171,6 +173,8 @@ class Post(PostInfo):
     notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_post')
     notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_post')
     
+    liked_users  = models.ManyToManyField(User, null=True, blank=True, related_name='liked_post')
+
     is_public           = models.BooleanField(default=True)
     
     # Relations with other models - Comments

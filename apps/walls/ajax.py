@@ -47,6 +47,31 @@ def hello(request):
     return simplejson.dumps({'message': 'hello'})
 
 # -------------------------------------------------------------
+# GENERAL AJAXED FUNCTIONS
+@dajaxice_register
+def mark_as_read(request, **kwargs):
+    all_notifs = user.notifications.unread()
+    for i in all_notifs:
+        i.public = False
+        i.save()
+    all_notifs.mark_all_as_read()
+    return json.dumps({"msg" : "done"})
+
+@dajaxice_register
+def like_post(request, id=None):
+    if not id:
+        return json.dumps({"msg" : "error"})
+    Post.objects.get(id=id).liked_users.add(request.user)
+    return json.dumps({"msg" : "done"})
+
+@dajaxice_register
+def like_comment(request, id=None):
+    if not id:
+        return json.dumps({"msg" : "error"})
+    Comment.objects.get(id=id).liked_users.add(request.user)
+    return json.dumps({"msg" : "done"})
+
+# -------------------------------------------------------------
 # PAGINATIONS AND INFINITE SCROLLS
 @dajaxice_register
 def get_notifications(request, **kwargs):

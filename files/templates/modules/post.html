@@ -13,9 +13,7 @@
 		       		{{ notification.actor.get_full_name|default:"" }}
 		       	</a>
 		       	{{ notification.verb }}
-		       	<a href="{% url 'wall' post.wall.id %}" class="bold">
-		       		{{ post.wall }}'s Wall
-		       	</a>
+		       	<a href="{% url 'wall' post.wall.id %}" class="bold">{{ post.wall }}</a>'s Wall
 		       	<span class="muted small">
 		       		{{ notification.timestamp|naturaltime }}
 		       	</span>
@@ -41,9 +39,7 @@
             		{{ post.by.get_full_name|default:"" }}
             	</a> 
             	<i class="icon-right"></i>
-            	<a href="{% url 'wall' post.wall.id %}">
-            		{{ post.wall  }}
-            	</a>'s wall. 
+            	<a href="{% url 'wall' post.wall.id %}">{{ post.wall  }}</a>'s wall. 
             	
             	<span class="muted small">
             		{{ post.time_created|naturaltime }}
@@ -53,7 +49,7 @@
 	        <div class="news_body markdown">
 	        {% autoescape off %}
                 {% if post.subject %}
-                	<p class='subject_head'><span class="label label-head">Subject</span> {{ post.subject|default:"" }}</p>
+                	<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }}</p>
                 {% endif %}
                 {{ post.description|markdown:"my_default" }}
 	        {% endautoescape %}
@@ -61,6 +57,27 @@
 	        <div class="news_extra"></div>
 	        <div class="news_comment_wrapper">
 	        	<input class="current_page_comments" type="hidden" name="current_page" value="1" />
+	        	<div class="news_comment news_small_bar" >
+	        		<p style="margin : 0px; padding : 0px;">
+	        			<a href="javascript:void(0)" onclick="$(this).closest('.news_comment_wrapper').find('.comment_textarea').focus()">Comment</a>
+	        			 · 
+	        			{% if user in post.liked_users.all %}
+	        				Acknowledged
+	        			{% else %}
+	        				<a href="javascript:void(0)" class="post_like_btn">Acknowledge</a>
+	        			{% endif %}
+	        			 · 
+	        			<a class="" href="javascript:void(0)" rel="twipsy" title="{% for u in post.liked_users.all %}
+	        				{{ u.get_full_name }}
+	        				{% if not forloop.last %}
+	        					{% ifequal forloop.revcounter 2 %} and 
+	        					{% else %}, 
+	        					{% endifequal %}
+	        				{% endif %}
+	        			  {% endfor %} acknowledged"
+	        			><i class="icon-like"></i> <span class="like_number">{{ post.liked_users.count }}</span></a>
+	        		</p>
+	        	</div>
 	        	
 	        	<div class="news_comment see_more_comments center" >
 	        		See more
@@ -184,6 +201,18 @@
             })
             $el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
 		})
+
+		$(".post_like_btn").click(function() {
+			var $el = $(this)
+			Dajaxice.apps.walls.like_post(function(data) {
+				if ( data["msg"] == "error" )
+					alert("Acknowledging the post failed. Please refresh to try again")
+			}, {"id" : $el.closest(".post_container").data("id")})
+			$el.closest(".news_small_bar").find(".like_number").text(parseInt($el.closest(".news_small_bar").find(".like_number").text()) + 1 + "")
+			$el.after("Acknowledged")
+			$el.remove()
+		})
 	})
 </script>
 {% endonce %}
+
