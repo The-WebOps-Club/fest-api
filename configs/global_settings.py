@@ -360,9 +360,11 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
 SOCIAL_AUTH_FACEBOOK_KEY                = ''
 SOCIAL_AUTH_FACEBOOK_SECRET             = ''
 SOCIAL_AUTH_FACEBOOK_SCOPE              = [
+    'basic_info', # Basic Info scope
     'public_profile',
-    'user_friends',
     'email', # Email scope
+    
+    'user_friends',
     
     'user_about_me', 'user_activities', 'user_birthday', 
     'user_checkins', 'user_education_history', 'user_events', 

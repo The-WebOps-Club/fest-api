@@ -6,11 +6,11 @@ from global_settings import *
 
 # Fest specific Names
 FEST_NAME   = "Fest API"
-FEST_FBID       = "FestAPI"
+FEST_FBID   = FEST_NAME
 
 # Google analytics variables
 ANALYTICS_ID    = 'UA-xxxxxxxx'
-ANALYTICS_SITE  = 'fest.org'
+ANALYTICS_SITE  = 'festapi.org'
 
 # Debug settings, machine specific
 DEBUG = True
