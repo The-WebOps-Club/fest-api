@@ -2,12 +2,14 @@
 <!DOCTYPE HTML> 
 <html>
 	<head>
+		<title>Shaastra Docs</title>
 	<script type='text/javascript'>
 
 	</script>
 	</head>
 	<body style='height:100%; padding : 0px; margin : 0px'>
     	<iframe src="https://docs.google.com/open?id={{ request.GET.id }}" style="height : 100%; width : 100%; padding : 0px; margin : 0px" frameborder="0"></iframe>
+	    <img style="display:none;" onload="" onerror="alert('You need to login to your google account'); window.location='{% url 'social:begin' 'google-oauth2' %}{% if request.GET.id %}?next={{request.get_full_path}}{{ request.GET.id }}{% endif %}';" src="https://accounts.google.com/CheckCookie?continue=https%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fimages%2Flogos%2Faccounts_logo.png&followup=https%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fimages%2Flogos%2Faccounts_logo.png&chtml=LoginDoneHtml&checkedDomains=youtube&checkConnection=youtube%3A291%3A1"/>
     </body>
-<img style="display:none;" onload="" onerror="alert('You need to login to your google account'); window.location='{% url 'social:begin' 'google-oauth2' %}{% if request.GET.id %}?next={{request.get_full_path}}{{ request.GET.id }}{% endif %}';" src="https://accounts.google.com/CheckCookie?continue=https%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fimages%2Flogos%2Faccounts_logo.png&followup=https%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fimages%2Flogos%2Faccounts_logo.png&chtml=LoginDoneHtml&checkedDomains=youtube&checkConnection=youtube%3A291%3A1"/>
+	
 </html>

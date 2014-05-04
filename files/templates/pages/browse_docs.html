@@ -145,7 +145,7 @@ table.table.drive_parent {
 .drive_file td {
     overflow : hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
     margin : 0px;
 }
 .ondrag {
@@ -415,7 +415,7 @@ function upload_file(e, drag) {
         alert("Only 1 file at a time !")
         return
     }
-    drive.upload_file(files_data[0], to_folder, function() {
+    drive.upload_file_resumable(files_data[0], to_folder, function() {
         $(".drive_upload").prop("disabled", false).removeClass("disabled").find(".text").text("Upload")
         drive.get_dir_contents()
 
