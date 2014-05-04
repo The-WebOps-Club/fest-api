@@ -4,7 +4,7 @@
 {% load once %}
 {% load strip_first_p %}
 
-<div {% if not new_comment %} id="comment_{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
+<div {% if not new_comment %} id="comment_{{ comment.pk }}" data-id="{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
     <div class="news_comment_left">
         <img src="" data-id="{% if not new_comment %} {{ comment.by.id }} {% else %} {{ user.id }} {% endif %}" data-fbid="{% if not new_comment %} {{ comment.by.profile.fbid }} {% else %} {{ user_profile.fbid }} {% endif %}" class="news_comment_profile display_pic">
     </div>
@@ -56,12 +56,33 @@
 		            	edited {{ comment.time_updated|naturaltime }}
 		            {% endif %}
 		        </span>
+		        <span style="font-size : 11px" class="comment_small_bar">
+        			 · 
+        			{% if user in comment.liked_users.all %}
+        				Acknowledged
+        			{% else %}
+        				<a href="javascript:void(0)" class="comment_like_btn">Acknowledge</a>
+        			{% endif %}
+        			{% if comment.liked_users.count %}
+        				 · 
+	        			<a class="" href="javascript:void(0)" rel="twipsy" title="{% for u in comment.liked_users.all %}
+	        				{{ u.get_full_name }}
+	        				{% if not forloop.last %}
+	        					{% ifequal forloop.revcounter 2 %} and 
+	        					{% else %}, 
+	        					{% endifequal %}
+	        				{% endif %}
+	        			  {% endfor %} acknowledged"
+	        			><i class="icon-like"></i> <span class="like_number">{{ comment.liked_users.count }}</span></a>
+	        		{% endif %}
+        		</span>
 	        </div>
 	        
 	        <div class="comment_text markdown">
 		        {% autoescape off %}
 		        	{{ comment.description|markdown:"my_default" }} 
 		        {% endautoescape %}
+
 	        </div>
 	        
        	{% endif %}
@@ -456,6 +477,18 @@
 				insert_text($parent.find(".comment_textarea"), " " + text + " ")
 			})
         })
+		
+		$(".comment_like_btn").click(function() {
+			var $el = $(this)
+			console.log($el.closest(".news_comment")[0])
+			Dajaxice.apps.walls.like_comment(function(data) {
+				if ( data["msg"] == "error" )
+					alert("Acknowledging the comment failed. Please refresh to try again")
+			}, {"id" : $el.closest(".news_comment").data("id")})
+			$el.closest(".comment_small_bar").find(".like_number").text(parseInt($el.closest(".comment_small_bar").find(".like_number").text()) + 1 + "")
+			$el.after("Acknowledged")
+			$el.remove()
+		})
 	});
 </script>
 {% endonce %}

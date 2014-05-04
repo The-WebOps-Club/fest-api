@@ -151,9 +151,10 @@
             $win.scroll(function(){
                 $(".fixedbar").css({
                     "margin-top" : $doc.scrollTop() + "px",
+                    "height" : $(window).height()*0.9 + "px",
                 })
             });
-            
+
             get_autocomplete_lists("{% static 'json/user_list.json' %}", "{% static 'json/subdept_list.json' %}", "{% static 'json/dept_list.json' %}");
           
     	})
