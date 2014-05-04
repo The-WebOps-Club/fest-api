@@ -45,23 +45,14 @@ def global_context(request, token_info=True, user_info=True):
     	drive = Drive()
     	token = Drive.get_access_token()
     local_context = {
-        'user':request.user,
-        'erp_profile':erp_profile,
-        'user_profile':profile,
-        'session':request.session,
-        'current_path':request.get_full_path(),
+        'user' : request.user,
+        'erp_profile' : erp_profile,
+        'user_profile' : profile,
+        'session' : request.session,
         'google_access_token' : token,
-        'SITE_URL':settings.SITE_URL,
-        'MEDIA_URL':settings.MEDIA_URL,
-        'MEDIA_ROOT':settings.MEDIA_ROOT,
-        'STATIC_ROOT':settings.STATIC_ROOT,
-        'STATIC_URL':settings.STATIC_URL,
-        'DEBUG':settings.DEBUG,
-        'SETTINGS':settings,
-        'FEST_NAME':settings.FEST_NAME,
-        'FEST_FBID':settings.FEST_FBID,
-        'ANALYTICS_ID':settings.ANALYTICS_ID,
-        'ANALYTICS_SITE':settings.ANALYTICS_SITE,
+        'SITE_URL' : settings.SITE_URL,
+        'SETTINGS' : settings,
+        'FEST_NAME' : settings.FEST_NAME,
     }
 
     context =  RequestContext (request, local_context)
