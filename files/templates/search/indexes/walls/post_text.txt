@@ -1,0 +1,4 @@
+{{ object.subject }}
+{{ object.description }}
+{{ object.wall.name }}
+{{ object.by.get_full_name }}

@@ -19,8 +19,8 @@
         <div class="new_post_box">
             <form name="form_status" action="{{ new_post_url }}" method="POST">
                 <div class="new_post_text" class="span12">
-                    {% csrf_token %}
                     <input type="text" name="new_post_subject" id="id_new_post_subject" placeholder="Mention the subject of post" class="span12" />
+                    {% csrf_token %}
                     <textarea class="span12 new_post_textarea atwho_at_config resize_textarea" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here"></textarea>
 
                 </div>
