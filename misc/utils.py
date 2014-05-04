@@ -59,6 +59,9 @@ def global_context(request, token_info=True, user_info=True):
         'DEBUG':settings.DEBUG,
         'SETTINGS':settings,
         'FEST_NAME':settings.FEST_NAME,
+        'FEST_FBID':settings.FEST_FBID,
+        'ANALYTICS_ID':settings.ANALYTICS_ID,
+        'ANALYTICS_SITE':settings.ANALYTICS_SITE,
     }
 
     context =  RequestContext (request, local_context)

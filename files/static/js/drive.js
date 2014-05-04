@@ -2,6 +2,7 @@ var defaults = {
     "authToken": null,
     "developerKey": null,
     "rootFolder": null,
+    "fest_name":null,
     "fileAddCallback": function(el) {},
 },
     MIME_TYPES = {
@@ -396,7 +397,7 @@ var Drive = function(options) {
     self.set_drive_parent = function(file_details) {
         $(".drive_parent_title").text("folder : " + file_details.title)
             .data("folder", "yes").data("id", file_details.id)
-        $("title").text("Shaastra Docs - " + file_details.title)
+        $("title").text(self.options.fest_name + " Docs - " + file_details.title)
         $(".drive_parent").data("id", file_details.id).data("folder", "yes")
         if (file_details.parents && file_details.parents.length)
             $(".drive_back").removeClass("disabled").prop("disabled", false)

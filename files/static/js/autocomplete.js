@@ -313,7 +313,8 @@ function setup_autocomplete_lists() {
                         var $v = $(v);
 
                         if ( ! data["fbid"] ) {
-                            data["fbid"] = "Shaastra"
+                            data["fbid"] = fest_fbid;
+
                         }
 
                         var pic_src = "http://graph.facebook.com/" + data["fbid"] +  "/picture?height=" + size + "&width=" + size;

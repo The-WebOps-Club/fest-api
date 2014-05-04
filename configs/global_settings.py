@@ -54,7 +54,7 @@ THIRD_PARTY_APPS = (
     'social.apps.django_app.default',
 
     # Search Indexer
-    # 'haystack',
+    'haystack',
 
     # compressor - Easy to use minifier and cache system
     'compressor',
@@ -360,7 +360,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
 SOCIAL_AUTH_FACEBOOK_KEY                = ''
 SOCIAL_AUTH_FACEBOOK_SECRET             = ''
 SOCIAL_AUTH_FACEBOOK_SCOPE              = [
-    'basic_info', # Basic Info scope
+    'public_profile',
+    'user_friends',
     'email', # Email scope
     
     'user_about_me', 'user_activities', 'user_birthday', 
@@ -468,3 +469,13 @@ GOGOLE_API_PUBLIC_KEY = ''
 if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
     with open(GOOGLE_API_CREDENTIALS_FILE_PATH) as f:
         GOOGLE_API_CREDENTIALS = f.read()
+
+
+# ----------------------------------------------------
+# Solr-Haystach search settings
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+#         'URL': 'http://127.0.0.1:8983/solr'
+#     },
+# }

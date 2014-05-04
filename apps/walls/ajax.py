@@ -200,10 +200,11 @@ def create_post(request, wall_id, post_form):
     data = deserialize_form(post_form)
    
     post_text = data["new_post"]
+    post_subject = data["new_post_subject"]
     tags =  data.getlist("atwho_list")
     post_text, notification_list = parse_atwho(post_text, tags)
 
-    new_post = Post.objects.create(description=post_text, wall=wall, by=request.user)
+    new_post = Post.objects.create(subject=post_subject, description=post_text, wall=wall, by=request.user)
 
     new_post.add_notifications(notification_list)
     if wall.parent:

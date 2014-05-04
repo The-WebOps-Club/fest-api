@@ -162,6 +162,7 @@ class Post(PostInfo):
     """
         Defines the Post Class. Holds data about each post made on a Wall.
     """
+    subject             = models.CharField(max_length=200, blank=True, null=True)
     # Relations with other models - Wall
     wall                = models.ForeignKey(Wall, related_name='posts', blank = True, null = True)
     
