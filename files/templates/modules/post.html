@@ -46,6 +46,9 @@
 	        </div>
 	        <div class="news_body markdown">
 	        {% autoescape off %}
+                {% if post.subject %}
+                <strong>{{ post.subject|default:"" }}</strong><br/>
+                {% endif %}
                 {{ post.description|markdown:"my_default" }}
 	        {% endautoescape %}
             </div>

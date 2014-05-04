@@ -54,7 +54,7 @@ THIRD_PARTY_APPS = (
     'social.apps.django_app.default',
 
     # Search Indexer
-    # 'haystack',
+    'haystack',
 
     # compressor - Easy to use minifier and cache system
     'compressor',
@@ -469,3 +469,13 @@ GOGOLE_API_PUBLIC_KEY = ''
 if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
     with open(GOOGLE_API_CREDENTIALS_FILE_PATH) as f:
         GOOGLE_API_CREDENTIALS = f.read()
+
+
+# ----------------------------------------------------
+# Solr-Haystach search settings
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr'
+    },
+}
