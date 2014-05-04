@@ -193,11 +193,11 @@ label {
     padding : 0px;
 }
 .fixedbar {
-		    transition: top 0.5s;
-	     -o-transition: top 0.5s;
-		-ms-transition: top 0.5s;
-	   -mox-transition: top 0.5s;
-	-webkit-transition: top 0.5s;
+            transition: margin 0.2s;
+         -o-transition: margin 0.2s;
+        -ms-transition: margin 0.2s;
+       -mox-transition: margin 0.2s;
+    -webkit-transition: margin 0.2s;
 }
 
 /* Extended bootstrap */

@@ -136,12 +136,10 @@
             $(".attach_emoticon_btn").popover("hide")
 	    }
 	    $( document ).click(function() {
-	    	console.log("hihhihi")
 	    	hide_popups()
 	    })
 	
         function on_dom_change() {
-            console.log('on dom change');
             $(".resize_textarea").autosize();
             if ( ! ( typeof at_config_file === "undefined" ) )
             	$('.atwho_at_config').atwho(at_config_file);
