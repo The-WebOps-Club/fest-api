@@ -201,6 +201,9 @@ label {
 }
 
 /* Extended bootstrap */
+.label.label-head {
+    font-size : 10px;
+}
 form .error > label, 
 form .error .help-block, 
 form .error .help-inline {

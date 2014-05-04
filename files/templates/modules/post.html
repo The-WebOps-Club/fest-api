@@ -53,7 +53,7 @@
 	        <div class="news_body markdown">
 	        {% autoescape off %}
                 {% if post.subject %}
-                <strong>{{ post.subject|default:"" }}</strong><br/>
+                	<p class='subject_head'><span class="label label-head">Subject</span> {{ post.subject|default:"" }}</p>
                 {% endif %}
                 {{ post.description|markdown:"my_default" }}
 	        {% endautoescape %}
@@ -87,6 +87,10 @@
 		border-bottom : 1px solid #aaa;
 		margin-bottom : 10px;
 
+	}
+	.subject_head {
+		padding-bottom : 5px;
+		border-bottom : 1px solid #999;
 	}
     .news_post {
 		transition-property: background;

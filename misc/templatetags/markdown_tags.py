@@ -140,11 +140,11 @@ md = misaka.Markdown(renderer,
         misaka.EXT_NO_INTRA_EMPHASIS | # aa_bb_cc does not become italic
         # misaka.EXT_TABLES | 
         # misaka.EXT_FENCED_CODE | 
-        misaka.EXT_AUTOLINK | # Autolink http:// and stuff
+        misaka.EXT_AUTOLINK # Autolink http:// and stuff
         # misaka.EXT_STRIKETHROUGH | # Allow strikethough in text
         # misaka.EXT_LAX_SPACING |
         # misaka.EXT_SPACE_HEADERS | 
-        misaka.EXT_SUPERSCRIPT  # The ^2 becoming squared funda
+        # misaka.EXT_SUPERSCRIPT  # The ^2 becoming squared funda
     )
  
 def markdown(text, style="default"):
