@@ -2,7 +2,7 @@ var defaults = {
     "authToken": null,
     "developerKey": null,
     "rootFolder": null,
-    "fest_name":null,
+    "fest_name": null,
     "fileAddCallback": function(el) {},
 },
     MIME_TYPES = {
@@ -30,14 +30,13 @@ var Drive = function(options) {
 
     self = this // To use in callback functions to avoid this confusion
 
-    self.chunkSize = 25000
+    self.chunkSize = 262144 // Has to be multiple of 262144
     self.options = $.extend({}, defaults, options || {});
     self.dir_contents = null
     self.finish_progress = 1
     self.current_progress = 0
 
     self.init = function() {
-        console.log("Init Drive")
         if (!self.options.authToken || !self.options.developerKey) {
             console.log("Auth token, DeveloperKey was invalid")
             return
@@ -56,6 +55,8 @@ var Drive = function(options) {
         if (r.error) {
             if (r.error.code == 401)
                 alert('ACCESS TOKEN expired. Please refresh the page.');
+            else if (r.error.code == 400) // comes while uploading files....
+                return
             else
                 alert('Unexpected error: ' + r.error.code);
             console.log(r)
@@ -146,7 +147,7 @@ var Drive = function(options) {
                 self.check_error(response)
                 self.current_progress += 1;
                 self.progress()
-                if ( v.old_parent_id == "" ) {
+                if (v.old_parent_id == "") {
                     gapi.client.drive.parents.delete({
                         'fileId': v.id,
                         'parentId': v.old_parent_id,
@@ -210,11 +211,7 @@ var Drive = function(options) {
                 },
                 'body': multipartRequestBody
             });
-            if (!callback) {
-                callback = function(file) {
-                    console.log(file)
-                };
-            }
+            callback = callback || function(){}
             request.execute(function(file) {
                 self.progress("100");
                 callback(file)
@@ -227,18 +224,17 @@ var Drive = function(options) {
         self.finish_progress = Math.ceil(fileData.size / self.chunkSize) + 3
         self.current_progress = 1
         self.progress()
-        console.log(self.finish_progress)
-
-        file = fileData
         
-        if ( ! fileData.type )
+        file = fileData
+
+        if (!fileData.type)
             fileData.type = 'application/octet-stream';
 
         var metadata = {
             'title': fileData.name,
             'mimeType': fileData.type
         };
-        
+
         var url = 'https://www.googleapis.com/upload/drive/v2/files/?uploadType=resumable';
 
         xhr = new XMLHttpRequest();
@@ -248,22 +244,20 @@ var Drive = function(options) {
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('X-Upload-Content-Length', fileData.size);
         xhr.setRequestHeader('X-Upload-Content-Type', fileData.type);
-        console.log("xhr made")
         xhr.onreadystatechange = function(e) {
             self.current_progress += 1
             self.progress();
             self.upload_file_resumable_part(
-                e.target.getResponseHeader('Location'), fileData, 
+                e.target.getResponseHeader('Location'), fileData,
                 0, dir_id, callback)
         }
         xhr.send(JSON.stringify(metadata));
     }
 
     self.upload_file_resumable_part = function(location, fileData, offset, dir_id, callback) {
-        console.log("xhr loaded")
         url = location;
-        console.log("sending file ....")
-        
+        console.log("sending part ....")
+
         var content = fileData;
         var end = fileData.size;
         var chunkSize = self.chunkSize
@@ -278,21 +272,22 @@ var Drive = function(options) {
         var xhr = new XMLHttpRequest();
         xhr.open('PUT', url, true);
         xhr.setRequestHeader('Content-Type', fileData.type);
-        xhr.setRequestHeader('Content-Range', "bytes " + offset + "-" + (end - 1) + "/" + fileData.size);
-        xhr.setRequestHeader('X-Upload-Content-Type', fileData.type);
-        console.log("xhr send created with put")
+        //xhr.setRequestHeader('Content-Range', "bytes " + offset + "-" + (end - 1) + "/" + fileData.size);
+        //xhr.setRequestHeader('X-Upload-Content-Type', fileData.type);
         xhr.onreadystatechange = function(e) {
             self.current_progress += 1
             self.progress();
             f = e;
-            console.log(self.current_progress)
-            if ( end == fileData.size ) { // done
-                var this_file = JSON.parse(f.target.responseText)
-                self.move_files([ {
-                    "id" : this_file.id, 
-                    "new_parent_id" : dir_id, 
-                    "old_parent_id" : "",
-                    } ], callback(e));
+            console.log(e.target.responseText)
+            //console.log(self.current_progress)
+            if (end == fileData.size) { // done
+
+                var this_file = JSON.parse(e.target.responseText)
+                self.move_files([{
+                    "id": this_file.id,
+                    "new_parent_id": dir_id,
+                    "old_parent_id": "",
+                }], callback(e));
             } else { // incomplete
                 self.upload_file_resumable_part(location, fileData, end, dir_id, callback)
             }
@@ -352,7 +347,8 @@ var Drive = function(options) {
         if (file_data.mimeType == MIME_TYPES["folder"]) {
             $el.data("folder", "yes")
             $el.find(".info a").prop("href", "javascript:void(0)")
-            $el.find(".info a").click(function() {
+            $el.find(".info a").click(function(e) {
+                e.stopPropogation()
                 self.get_dir_contents($(this).closest(".drive_file").data("id"))
             })
         } else {
@@ -421,7 +417,3 @@ var Drive = function(options) {
             }
         }
     }
-
-
-
-
