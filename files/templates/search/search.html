@@ -16,10 +16,9 @@
 
         {% if query %}
             <h3>Results</h3>
-
             {% for result in page.object_list %}
                 <p>
-                    <a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a>
+                    <a href="{{ result.object.get_absolute_url }}">subject:{{ result.object.subject }}, post:{{ result.object }}</a>
                 </p>
             {% empty %}
                 <p>No results found.</p>

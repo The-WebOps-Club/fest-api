@@ -239,6 +239,8 @@ class Post(PostInfo):
                     # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
                 )
 
+    def get_absolute_url(self):
+        return "post/"+str(self.pk)
         
     class Meta:
         get_latest_by = 'time_created'
