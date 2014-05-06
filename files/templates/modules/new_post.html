@@ -19,8 +19,8 @@
         <div class="new_post_box">
             <form name="form_status" action="{{ new_post_url }}" method="POST">
                 <div class="new_post_text" class="span12">
-                    <input type="text" name="new_post_subject" id="id_new_post_subject" placeholder="Mention the subject of post" class="span12" />
                     {% csrf_token %}
+                    <input type="text" name="new_post_subject" id="id_new_post_subject" placeholder="Subject" class="span12" />
                     <textarea class="span12 new_post_textarea atwho_at_config resize_textarea" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here"></textarea>
 
                 </div>
@@ -153,7 +153,7 @@ $(document).ready(function() {
         if ($el.data("clicked"))
             return
         Dajaxice.apps.walls.create_post(dajax_create_post, {
-            'wall_id': {{wall.id}},
+            'wall_id': "{{ wall.id }}",
             'post_form': $el_form.serialize(true)
         })
         $el.addClass("disabled").prop("disabled", true).data("clicked", "yes")

@@ -281,7 +281,6 @@ var Drive = function(options) {
             console.log(e.target.responseText)
             //console.log(self.current_progress)
             if (end == fileData.size) { // done
-
                 var this_file = JSON.parse(e.target.responseText)
                 self.move_files([{
                     "id": this_file.id,
