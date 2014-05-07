@@ -226,7 +226,8 @@ def create_post(request, wall_id, post_form):
    
     post_text = data["new_post"]
     post_subject = data["new_post_subject"]
-    post_text, notification_list = parse_atwho(post_text, tags)
+    print post_subject, "<<<----------------------------------------"
+    post_text, notification_list = parse_atwho(post_text)
 
     new_post = Post.objects.create(subject=post_subject, description=post_text, wall=wall, by=request.user)
 
@@ -251,7 +252,7 @@ def quick_post(request, post_form):
     data = deserialize_form(post_form)
     print data
     post_text = data["quick_post"]
-    post_text, notification_list = parse_atwho(post_text, tags)
+    post_text, notification_list = parse_atwho(post_text)
 
     # Figure out where to create post !
     to_list = data.getlist("quick_post_to")

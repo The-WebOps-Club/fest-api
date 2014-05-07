@@ -81,8 +81,8 @@ var authToken = '{{ google_access_token }}';
                 return
             }
             Dajaxice.apps.walls.get_posts(dajax_get_posts, {
-                    'page' : parseInt($('#main_body_content .current_page_posts').val())+1, 
-                    'wall_id' : {{ wall.id }} 
+                'page' : parseInt($('#main_body_content .current_page_posts').val())+1, 
+                'wall_id' : "{{ wall.id }}"
             })
             $el.data("clicked", "yes")
         })
