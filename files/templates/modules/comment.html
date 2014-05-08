@@ -286,7 +286,9 @@
         	$(this).siblings(".comment_links").show()
         	gapi.load('picker')
         }).focusout( function() {
-        	$(this).siblings(".comment_links").hide()
+        	console.log($(this).closest('.post_btn:hover'));
+        	if(!$('.post_btn:hover').length)
+        		$(this).siblings(".comment_links").hide();
         	//gapi.load('picker')
         })
 
