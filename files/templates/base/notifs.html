@@ -101,16 +101,22 @@
 
 <script>
 	function dajax_get_notifs(data){
+		console.log(data)
 	    if (!data.exhausted) {
-    	    $(".popover_notifs .see_more_notifs").before(data.append_string);
-	        $value = $(".popover_notifs .current_page_notifs")
+	    	console.log("data not exhausted")
+	        $(".notifs_contents_inner .see_more_notifs").before(data.append_string);
+	        // $(".notifButton").click() // refresh popover ...
+    	    console.log($(".notifs_contents_inner .see_more_notifs"))
+	        $value = $(".notifs_contents_inner .current_page_notifs")
 	        $value.val( parseInt($value.val()) + 1 );
-	        $(".popover_notifs .see_more_notifs").removeData("clicked")
+	        console.log("val changed")
+	        console.log($value)
+	        $(".notifs_contents_inner .see_more_notifs").removeClass("disabled").prop("disabled", false).removeData("clicked").text("See more ")
     	}
     	else {
-        	$(".popover_notifs .see_more_notifs").html('No more to load');
+        	$(".notifs_contents_inner .see_more_notifs").html('No more to load');
     	}
-    	on_dom_change()
+    	// on_dom_change()
 	}
 	function notifs_title() {
 		return $(".notifs_title").html()
@@ -134,36 +140,35 @@
 		})
 
 		$(".notifButton").click( function(e) {
+			e = e || event;
 			e.stopPropagation();
 			hide_popups()
 			$(this).popover("show")
 			
 			$(".popover_notifs .see_more_notifs").click( function (e) {
 	        	e = e || event;
+	        	e.stopPropagation();
 	        	el = this; $el = $(this)
 				if ( $el.data("clicked") ) {
+					console.log("debounce")
 	                return
 	            }
-            	
+            	console.log("clicked")
 				Dajaxice.apps.walls.get_notifs(dajax_get_notifs, {
-				    'page' : parseInt($('.current_page_notifs').val())+1, 
+				    'page' : parseInt($('.popover_notifs .current_page_notifs').val())+1, 
 				})
-				$el.data("clicked", "yes")
+				console.log(parseInt($('.popover_notifs .current_page_notifs').val())+1)
+				$el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line icon-rotate'></i> Loading more notifications")
 			})
 			e.preventDefault()
 			$(".popover_notifs #id_notifs_container_notifs").scroll(function(){
 				var $el = $(this)
-				
+
 				if( $el.scrollTop() >= $el.prop("scrollHeight") - $el.height() ) {
-					console.log($el.scrollTop() + ", " )
-					console.log("yes")
 					$(".popover_notifs .see_more_notifs").click()
 				}
-				scrollPos = $(this).scrollTop();
 			});
 		})
-		// $(".notifButton").popover("show")
-		
 	});
 	
 </script>

@@ -43,7 +43,7 @@
 	        <div class="news_body markdown">
 	        {% autoescape off %}
                 {% if post.subject %}
-                	<p class='subject_head'><span class="label notice label-head">Subject</span> a{{ post.subject|default:"" }}a </p>
+                	<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} </p>
                 {% endif %}
                 {{ post.description|markdown:"my_default" }}
 	        {% endautoescape %}

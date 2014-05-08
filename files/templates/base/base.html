@@ -120,13 +120,12 @@
     	authToken = "{{ google_access_token }}"
         fest_fbid = "{{ SETTINGS.FEST_FBID }}"
         
-        function hide_popups() {
-            $(".userButton").popover("hide") 
-            $(".messageButton").popover("hide")
-            $(".notifButton").popover("hide") 
-            $(".settingButton").popover("hide") 
-            $(".attach_link_btn").popover("hide")
-            $(".attach_emoticon_btn").popover("hide")
+        function hide_popups(except) {
+            ["userButton", "messageButton", "notifButton", "settingButton", "attach_link_btn", "attach_emoticon_btn"].forEach(function(i) {
+                if ( !except || except.indexOf(i) == -1 ) {
+                    $("." + i).popover("hide") 
+                }
+            })
 	    }
         
 	    $( document ).click(function() {
@@ -153,7 +152,7 @@
                     "margin-top" : $doc.scrollTop() + "px",
                     "height" : $(window).height()*0.9 + "px",
                 })
-            });
+            }).scroll();
 
             get_autocomplete_lists("{% static 'json/user_list.json' %}", "{% static 'json/subdept_list.json' %}", "{% static 'json/dept_list.json' %}");
           
