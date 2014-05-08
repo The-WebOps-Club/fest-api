@@ -66,3 +66,13 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	. Management command `jsonify_data` is used by atwho for data. Autogenerates some json objects which are easy to use
 	. Management command `jsonify_data` is used to fix all permissions for the users in the beginning
 	
+5. Haystack and Solr
+	. Commands  to install Solr:
+	```curl -O https://archive.apache.org/dist/lucene/solr/3.5.0/apache-solr-3.5.0.tgz
+	tar xvzf apache-solr-3.5.0.tgz
+	cd apache-solr-3.5.0
+	cd example
+	java -jar start.jar```
+	. Next, generate schema from ```python manage.py build_solr_schema```. Take the output from that command and place it in ```apache-solr-3.5.0/example/solr/conf/schema.xml```. Then restart Solr
+	. Solr needs to be run continuously on server
+	. Ref: http://django-haystack.readthedocs.org/en/latest/installing_search_engines.html
