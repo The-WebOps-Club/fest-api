@@ -39,7 +39,7 @@
 
 							<a href="javascript:void(0)" class="btn primary post_btn">
 								&nbsp;
-									<i class="icon-thought"></i>&nbsp; Post
+									<i class="icon-textbox"></i>&nbsp; Post
 								&nbsp;
 							</a>
 						</div>
@@ -80,7 +80,7 @@
 	        
 	        <div class="comment_text markdown">
 		        {% autoescape off %}
-		        	{{ comment.description|markdown:"my_default" }} 
+		        	{{ comment.description|markdown:"my_default"|default:"<p>&nbsp;</p>" }} 
 		        {% endautoescape %}
 
 	        </div>
@@ -195,7 +195,7 @@
         $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
 
         $("#post_" + data.post_id + " .comment_textarea").removeClass("disabled").prop("disabled", false).removeData("clicked")
-        $("#post_" + data.post_id + " .post_btn").removeClass("disabled").prop("disabled", false)
+        $("#post_" + data.post_id + " .post_btn").removeClass("disabled").prop("disabled", false).html("&nbsp;<i class='icon-textbox'></i>&nbsp; Post&nbsp;")
 
         $("#post_" + data.post_id + " .comment_textarea").val("")
         $("#post_" + data.post_id + " .textarea_atwho_list").remove()
@@ -256,14 +256,14 @@
 		$(".post_btn").click(function() {
 			$el_form = $(this).closest("form")
 			$el = $el_form.find(".comment_textarea")
-			if ( $el.data("clicked") )
+			if ( $el.data("clicked") || ! $el.val())
 				return
         	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
         		'post_id' : $el.data("postid"), 
         		'comment_form': $el.closest("form").serialize(true)
         	});
         	$el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
-        	$el_form.find(".post_btn").addClass("disabled").prop("disabled", true)
+        	$el_form.find(".post_btn").addClass("disabled").prop("disabled", true).html("&nbsp;<i class='icon-loading-circle icon-rotate'></i>&nbsp; Posting...&nbsp;")
 		})
 
 		$(".comment_textarea")

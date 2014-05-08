@@ -64,7 +64,7 @@ var authToken = '{{ google_access_token }}';
             $('#main_body_content .see_more_posts').before(data.append_string);
             var $value = $('#main_body_content .current_page_posts')
             $value.val( parseInt($value.val()) + 1 );
-            $('#main_body_content .see_more_posts').removeData("clicked")
+            $('#main_body_content .see_more_posts').removeClass("disabled").prop("disabled", false).removeData("clicked").text("See more")
         }
         else {
             $('#main_body_content .see_more_posts').html('No more to load');
@@ -84,7 +84,7 @@ var authToken = '{{ google_access_token }}';
                 'page' : parseInt($('#main_body_content .current_page_posts').val())+1, 
                 'wall_id' : "{{ wall.id }}"
             })
-            $el.data("clicked", "yes")
+            $el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading more posts ...")
         })
 
         // Inifinite scroll

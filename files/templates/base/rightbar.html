@@ -112,7 +112,7 @@
     function dajax_quick_post(data) {
     	var $el = $(".quick_post_submit")
     	var $el_form = $el.closest("form")
-        $el.removeData("clicked").prop("disabled", false).removeClass("disabled")
+        $el.removeData("clicked").prop("disabled", false).removeClass("disabled").html("Quick Post")
         $el_form.find("textarea").prop("disabled", false).removeClass("disabled").val()
         $el_form.find("input").prop("disabled", false).removeClass("disabled").val("")
         $el_form.find(".select2-search-choice-close").click()
@@ -154,7 +154,7 @@
             Dajaxice.apps.walls.quick_post(dajax_quick_post, {
                 'post_form': $el_form.serialize(true) 
             })
-            $el.data("clicked", "yes").prop("disabled", true).addClass("disabled")
+            $el.data("clicked", "yes").prop("disabled", true).addClass("disabled").html("<i class='icon-loading-circle icon-rotate'></i> Posting ...")
             $el_form.find("textarea").prop("disabled", true).addClass("disabled")
             $el_form.find("input").prop("disabled", true).addClass("disabled")
         });

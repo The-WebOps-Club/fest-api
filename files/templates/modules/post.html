@@ -169,7 +169,7 @@
 
         	$("#post_" + data.post_id + " .see_more_comments").after(data.append_string);
 
-        	$("#post_" + data.post_id + " .see_more_comments").removeClass("disabled").prop("disabled", false).removeData("clicked")
+        	$("#post_" + data.post_id + " .see_more_comments").removeClass("disabled").prop("disabled", false).removeData("clicked").html("See more")
         } else {
         	$("#post_" + data.post_id + " .see_more_comments").html('No more to load');
         }
@@ -195,7 +195,7 @@
                     'page' : parseInt($('#post_' + post_id + ' .current_page_comments').val())+1,
                     'post_id' : post_id,
             })
-            $el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
+            $el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading comments...")
 		})
 
 		$(".post_like_btn").click(function() {
