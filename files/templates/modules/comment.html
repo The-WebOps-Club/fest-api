@@ -238,11 +238,12 @@
 	}
 
 	function attach_pic_callback(el, data) {
+		
+
+		var $el = $(el).find(".comment_textarea")
 		$el.closest(".news_comment").find(".attach_pic_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
 		if ( data.action != google.picker.Action.PICKED )
 			return
-
-		var $el = $(el).find(".comment_textarea")
 		var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
 		for ( var i = 0, d; d = data.docs[i]; i++ ) {
 			var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
@@ -286,8 +287,8 @@
         	$(this).siblings(".comment_links").show()
         	gapi.load('picker')
         }).focusout( function() {
-        	console.log($(this).closest('.post_btn:hover'));
-        	if(!$('.post_btn:hover').length)
+        	//console.log($(this).closest('.post_btn:hover'));
+        	if(!$('.comment_links:hover').length)
         		$(this).siblings(".comment_links").hide();
         	//gapi.load('picker')
         })
