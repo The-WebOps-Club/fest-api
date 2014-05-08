@@ -285,6 +285,9 @@
         .focus( function() {
         	$(this).siblings(".comment_links").show()
         	gapi.load('picker')
+        }).focusout( function() {
+        	$(this).siblings(".comment_links").hide()
+        	//gapi.load('picker')
         })
 
         $(".attach_doc_btn").click( function () {
