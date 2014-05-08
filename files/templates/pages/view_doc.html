@@ -2,14 +2,47 @@
 <!DOCTYPE HTML> 
 <html>
 	<head>
-		<title>Shaastra Docs</title>
-	<script type='text/javascript'>
-
-	</script>
+		<title>{{ FEST_NAME }} Docs</title>
 	</head>
 	<body style='height:100%; padding : 0px; margin : 0px'>
-    	<iframe src="https://docs.google.com/open?id={{ request.GET.id }}" style="height : 100%; width : 100%; padding : 0px; margin : 0px" frameborder="0"></iframe>
+		<div style="position : absolute; top : 0px; left : 0px; ">
+			Loading ... Please wait
+			<div id="error_msg" style="display : none;">
+				This seems to be taking too long ...
+				<br /></br />
+				Something wrong may have happened.
+				<br /></br />
+				Possible issues :
+				<ul>
+					<li>You are not logged into your google account and so cannot use google docs. 
+						<p><b>Solution</b> : Login to google to continue.</p>
+					</li>
+					<li>You are logged in to google with multiple accounts and google drive doesn't know which one to choose.
+						<p><b>Solution</b> : Logout and login with a single account</p>
+					</li>
+					<li>You do not have permission to view/edit this document.
+						<p><b>Solution</b> : If you think this is a mistake, please contact the concerned person and ask him/her to share it with you on ERP</p>
+					</li>
+				</ul>
+			</div>
+		</div>
+    	
+    	<iframe id="doc_iframe" src="https://docs.google.com/open?id={{ request.GET.id }}" style="position : absolute; top : 0px; left : 0px; height : 100%; width : 100%; padding : 0px; margin : 0px background : transparent;" frameborder="0"></iframe>
+
 	    <img style="display:none;" onload="" onerror="alert('You need to login to your google account'); window.location='{% url 'social:begin' 'google-oauth2' %}{% if request.GET.id %}?next={{request.get_full_path}}{{ request.GET.id }}{% endif %}';" src="https://accounts.google.com/CheckCookie?continue=https%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fimages%2Flogos%2Faccounts_logo.png&followup=https%3A%2F%2Fwww.google.com%2Fintl%2Fen%2Fimages%2Flogos%2Faccounts_logo.png&chtml=LoginDoneHtml&checkedDomains=youtube&checkConnection=youtube%3A291%3A1"/>
+
+
+		<script type='text/javascript'>	
+			setTimeout(function() {
+				document.getElementById("error_msg").style.display = "block"
+			}, 5000)
+			document.getElementById('doc_iframe').onload = function() {
+				console.log("loaded")
+			}
+			document.getElementById('doc_iframe').onerror = function() {
+				console.log("loaded error")
+			}
+		</script>
     </body>
 	
 </html>
