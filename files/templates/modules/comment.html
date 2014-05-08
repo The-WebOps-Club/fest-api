@@ -14,12 +14,12 @@
 				<form method="POST">
 					<div class="span12">
 					    {% csrf_token %}
-					    <textarea 
+					    <div
 					    	class="comment_textarea atwho_at_config resize_textarea span12"
 					    	name="comment" 
 					    	rows="1" 
 					    	data-postid="{{ post.id }}"
-					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed."></textarea>
+					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." contenteditable='true'></div>
 						<div class="span12 comment_links" style="display : none">
 							<a href="javascript:void(0)" class="btn small attach_doc_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
 								<i class="icon-attach"></i>
@@ -180,7 +180,9 @@
 		transition: height 0.2s;
 	}
 	.comment_textarea {
-		
+		background-color: #FFF;
+		border: 1px #DDD solid;
+		font-size: 18px;
 	}
 	.btn.post_btn {
 		float: right;
@@ -256,11 +258,16 @@
 		$(".post_btn").click(function() {
 			$el_form = $(this).closest("form")
 			$el = $el_form.find(".comment_textarea")
-			if ( $el.data("clicked") || ! $el.val())
+			console.log('sending comment');
+			if ( $el.data("clicked") || ! $el.html()){
+				console.log(' clicked exiting ');
 				return
+			}
+			console.log($el.closest("form").serialize(true));
         	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
         		'post_id' : $el.data("postid"), 
-        		'comment_form': $el.closest("form").serialize(true)	// for content-editability extend the form serializer.
+        		'csrf_data': $el.closest("form").serialize(true),
+        		'comment': $el.html(),	// for content-editability extend the form serializer.
         	});
         	$el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
         	$el_form.find(".post_btn").addClass("disabled").prop("disabled", true).html("&nbsp;<i class='icon-loading-circle icon-rotate'></i>&nbsp; Posting...&nbsp;")
@@ -284,6 +291,7 @@
         })
         .focus( function() {
         	$(this).siblings(".comment_links").show()
+        	//alert('clicked')
         	gapi.load('picker')
         })
 
