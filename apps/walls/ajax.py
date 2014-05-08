@@ -102,7 +102,7 @@ def get_notifications(request, **kwargs):
             'post' : item.target, 
             'notification' : item,
         }
-        append_string += render_to_string('modules/post.html', local_context, context_instance= global_context(request))
+        append_string += render_to_string('modules/post.html', local_context, context_instance=global_context(request, token_info=False))
     local_context = {
         "append_string" : append_string,
         "exhausted" : exhausted,
@@ -132,7 +132,7 @@ def get_posts(request, **kwargs):
             'show_post' : 'True',
         }
         append_string += "<hr />" \
-            + render_to_string('modules/post.html', local_context, context_instance= global_context(request))
+            + render_to_string('modules/post.html', local_context, context_instance= global_context(request, token_info=False))
     local_context = {
         "append_string" : append_string,
         "exhausted" : exhausted,
@@ -163,7 +163,7 @@ def get_notifs(request, **kwargs):
         local_context = {
             'notification' : item,
         }
-        append_string += render_to_string('modules/notif.html', local_context, context_instance= global_context(request))
+        append_string += render_to_string('modules/notif.html', local_context, context_instance=global_context(request, token_info=False))
     local_context = {
         "append_string" : append_string,
         "exhausted" : exhausted,
@@ -193,7 +193,7 @@ def get_comments(request, **kwargs):
         local_context = {
             'comment' : item,
         }
-        append_string += render_to_string('modules/comment.html', local_context, context_instance= global_context(request))
+        append_string += render_to_string('modules/comment.html', local_context, context_instance=global_context(request, token_info=False))
     local_context = {
         "append_string" : append_string,
         "exhausted" : exhausted,
@@ -226,7 +226,8 @@ def create_post(request, wall_id, post_form):
    
     post_text = data["new_post"]
     post_subject = data["new_post_subject"]
-    post_text, notification_list = parse_atwho(post_text, tags)
+    print post_subject, "<<<----------------------------------------"
+    post_text, notification_list = parse_atwho(post_text)
 
     new_post = Post.objects.create(subject=post_subject, description=post_text, wall=wall, by=request.user)
 
@@ -237,7 +238,7 @@ def create_post(request, wall_id, post_form):
     new_post.send_notif()
     
     # Render the new post
-    append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance= global_context(request)) + "<hr />"
+    append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance=global_context(request, token_info=False)) + "<hr />"
     
     return json.dumps({ 'append_string': append_string })
 
@@ -251,7 +252,7 @@ def quick_post(request, post_form):
     data = deserialize_form(post_form)
     print data
     post_text = data["quick_post"]
-    post_text, notification_list = parse_atwho(post_text, tags)
+    post_text, notification_list = parse_atwho(post_text)
 
     # Figure out where to create post !
     to_list = data.getlist("quick_post_to")
@@ -270,7 +271,7 @@ def quick_post(request, post_form):
 
         new_post.send_notif()
     # Render the new post
-    append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance= global_context(request)) + "<hr />"
+    append_string =  render_to_string('modules/post.html', {'post': new_post}, context_instance=global_context(request, token_info=False)) + "<hr />"
     return json.dumps({ 'append_string': append_string })
 
 @dajaxice_register
@@ -315,7 +316,7 @@ def create_comment(request, post_id, comment_form):
         'comment': new_comment, 
         'post': post
     }
-    append_string =  render_to_string( 'modules/comment.html', local_context, context_instance=global_context(request) )
+    append_string =  render_to_string( 'modules/comment.html', local_context, context_instance=global_context(request, token_info=False))
 
     local_context = { 
         'append_string': append_string,
