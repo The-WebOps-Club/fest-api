@@ -260,7 +260,7 @@
 				return
         	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
         		'post_id' : $el.data("postid"), 
-        		'comment_form': $el.closest("form").serialize(true)
+        		'comment_form': $el.closest("form").serialize(true)	// for content-editability extend the form serializer.
         	});
         	$el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
         	$el_form.find(".post_btn").addClass("disabled").prop("disabled", true)

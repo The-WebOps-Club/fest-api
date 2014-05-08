@@ -54,7 +54,7 @@ THIRD_PARTY_APPS = (
     'social.apps.django_app.default',
 
     # Search Indexer
-    'haystack',
+    #'haystack',
 
     # compressor - Easy to use minifier and cache system
     'compressor',
