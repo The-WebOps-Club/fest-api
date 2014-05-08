@@ -11,6 +11,7 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.core.signals import request_finished
+from django.core.urlresolvers import reverse
 # Apps
 # Decorators
 # Models
@@ -240,7 +241,8 @@ class Post(PostInfo):
                 )
 
     def get_absolute_url(self):
-        return "post/"+str(self.pk)
+        post_str = '#post_' + str(self.pk)
+        return reverse('apps.walls.views.wall', args=(self.wall.pk,)) + post_str
         
     class Meta:
         get_latest_by = 'time_created'

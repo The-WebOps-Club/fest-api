@@ -15,14 +15,16 @@
         </table>
 
         {% if query %}
-            <h3>Results</h3>
+            <h3>Results in Posts</h3>
+            <ul>
             {% for result in page.object_list %}
-                <p>
-                    <a href="{{ result.object.get_absolute_url }}">subject:{{ result.object.subject }}, post:{{ result.object }}</a>
-                </p>
-            {% empty %}
-                <p>No results found.</p>
-            {% endfor %}
+                    <li>
+                        <a href="{{ result.object.get_absolute_url }}">{{ result.object.subject }}</a>
+                    </li>
+                {% empty %}
+                    <p>No results found.</p>
+                {% endfor %}
+            </ul>
 
             {% if page.has_previous or page.has_next %}
                 <div>
