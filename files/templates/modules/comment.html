@@ -19,9 +19,9 @@
 					    	name="comment" 
 					    	rows="1" 
 					    	data-postid="{{ post.id }}"
-					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." contenteditable='true'><div style='font-size:14px'></div></div>
+					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." contenteditable='true'><span></span></div>	<!-- The extra span prevents some twisty bugs related to atwho.-->
 					    <textarea
-					    	class="comment_textarea atwho_at_config resize_textarea span12 comment_fallback"
+					    	class=" atwho_at_config resize_textarea span12 comment_fallback"
 					    	name="comment" 
 					    	rows="1" 
 					    	data-postid="{{ post.id }}"
@@ -85,10 +85,9 @@
 	        </div>
 	        
 	        <div class="comment_text markdown">
-		        {% autoescape off %}
-		        	{{ comment.description|markdown:"my_default"|default:"<p>&nbsp;</p>" }} 
-		        {% endautoescape %}
-
+	        	{% autoescape off%}
+		        	{{ comment.description|default:"<p>&nbsp;</p>" }} 		        
+	        	{% endautoescape %}
 	        </div>
 	        
        	{% endif %}
@@ -188,7 +187,7 @@
 	.comment_textarea {
 		background-color: #FFF;
 		border: 1px #DDD solid;
-		font-size: 18px;
+		font-size: 14px;
 	}
 	.btn.post_btn {
 		float: right;
@@ -210,12 +209,16 @@
         on_dom_change()
 	}
 
-	function insert_text(el, text) {
+	/*
+		Deprecated in favor of a much simpler function
+		Used only for IE.
+	*/
+	function insert_text_manual(el, text) {
 		var $el = $(el), $ip, content;
 		if ($el.is('textarea, input')) {
             content = $el.val();
         } else {
-            content = $el.text();
+            content = $el.html();
         }
         var pos = $el.caret("pos")
         var start_content = content.substr(0, pos)
@@ -224,37 +227,54 @@
         if ($el.is('textarea, input')) {
             $el.val(new_content);
         } else {
-        	$el.text(new_content);
+        	$el.html(new_content);
         }
-        $el.caret("pos", pos+text.length)
-        	.trigger('input.autosize')
+        if(!contentEditableActive && $el.caret("pos", pos+text.length).trigger)
+        	$el.caret("pos", pos+text.length).trigger('input.autosize')
+        
+	}
+
+	function insert_text(el, text){
+		$(el).focus();
+		document.execCommand('insertHTML', false, text);	// WARNING: NOT SUPPORTED BY IE. TODO: need to fallback to insert_text_manual       
 	}
 
 	function attach_doc_callback(el, data) {
-		$el.closest(".news_comment").find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
+		
 
 		if ( data.action != google.picker.Action.PICKED )
 			return
 
 		var $el = $(el).find(".comment_textarea")
+		$el.closest(".news_comment").find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
 		var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
 		for ( var i = 0, d; d = data.docs[i]; i++ ) {
 			var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
-			text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+			if(!contentEditableActive)
+				text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+			else
+				text ='<a href="'+d.url+'"><img src=\''+d.iconUrl+'\'>' + clean_name + '</a>'
 			insert_text($el, text)
 		}
 	}
 
 	function attach_pic_callback(el, data) {
-		$el.closest(".news_comment").find(".attach_pic_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
+
+		console.log('in callback for pic attachment')
 		if ( data.action != google.picker.Action.PICKED )
 			return
-
+		console.log('picked')
+		console.log(data);
 		var $el = $(el).find(".comment_textarea")
+		$el.closest(".news_comment").find(".attach_pic_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
 		var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
 		for ( var i = 0, d; d = data.docs[i]; i++ ) {
 			var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
-			text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+			if(!contentEditableActive)
+				text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+			else
+				text ='<a href="'+d.url+'"><img src=\''+d.iconUrl+'\'>' + clean_name + '</a>'
+
 			insert_text($el, text)
 		}
 	}
@@ -262,8 +282,8 @@
 	$( document ).ready(function() {
 		
 		if(!contentEditableActive){
-			$('.comment_primary').css('display','none');
-			$('.comment_fallback').css('display','block');
+			$('.comment_primary').css('display','none').removeClass('comment_textarea');
+			$('.comment_fallback').css('display','block').addClass('comment_textarea');
 		}
 
 
@@ -318,7 +338,9 @@
         	$(this).siblings(".comment_links").show()
         	gapi.load('picker')
         }).focusout( function(){
-        	$(this).siblings(".comment_links").hide()
+        	if(!$(".comment_links:hover").length){
+        		$(this).siblings(".comment_links").hide()
+        	}
         })
 
         $(".attach_doc_btn").click( function () {
@@ -458,7 +480,10 @@
 					link = "mailto:" + $.trim(link)
 				else
 					link = $.trim(link)
-				insert_text($parent.find(".comment_textarea"), "[" + text + "](" + link + ")")
+				if(!contentEditableActive)
+					insert_text($parent.find(".comment_textarea"), "[" + text + "](" + link + ")")
+				else
+					insert_text($parent.find(".comment_textarea"), "<a href='"+link+"'>" + text + "</a>")
 			})
         })
 		
