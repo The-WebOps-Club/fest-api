@@ -15,11 +15,17 @@
 					<div class="span12">
 					    {% csrf_token %}
 					    <div
-					    	class="comment_textarea atwho_at_config resize_textarea span12"
+					    	class="comment_textarea atwho_at_config resize_textarea span12 comment_primary"
 					    	name="comment" 
 					    	rows="1" 
 					    	data-postid="{{ post.id }}"
-					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." contenteditable='true'></div>
+					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." contenteditable='true'><div style='font-size:14px'></div></div>
+					    <textarea
+					    	class="comment_textarea atwho_at_config resize_textarea span12 comment_fallback"
+					    	name="comment" 
+					    	rows="1" 
+					    	data-postid="{{ post.id }}"
+					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." style='display:none' contenteditable='true'></textarea>
 						<div class="span12 comment_links" style="display : none">
 							<a href="javascript:void(0)" class="btn small attach_doc_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
 								<i class="icon-attach"></i>
@@ -255,20 +261,39 @@
 	
 	$( document ).ready(function() {
 		
+		if(!contentEditableActive){
+			$('.comment_primary').css('display','none');
+			$('.comment_fallback').css('display','block');
+		}
+
+
+
 		$(".post_btn").click(function() {
-			$el_form = $(this).closest("form")
-			$el = $el_form.find(".comment_textarea")
-			console.log('sending comment');
-			if ( $el.data("clicked") || ! $el.html()){
-				console.log(' clicked exiting ');
+			$el_form = $(this).closest("form");
+			var $el;
+			if(contentEditableActive)
+				$el = $el_form.find(".comment_primary");
+			else
+				$el = $el_form.find(".comment_fallback");
+
+			//console.log('sending comment');
+			if ( $el.data("clicked") || ( contentEditableActive  && !$el.html()) || (!contentEditableActive && !$el.val()) ){
+				//console.log(' clicked exiting ');
 				return
 			}
+
 			console.log($el.closest("form").serialize(true));
-        	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
+			post_data  = {
         		'post_id' : $el.data("postid"), 
         		'csrf_data': $el.closest("form").serialize(true),
-        		'comment': $el.html(),	// for content-editability extend the form serializer.
-        	});
+        	}
+        	 
+        	if(contentEditableActive)
+        		post_data['comment'] = $el.html();  
+        	else 
+        		post_data['comment'] = $el.val();
+
+        	Dajaxice.apps.walls.create_comment(dajax_create_comment, post_data );
         	$el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
         	$el_form.find(".post_btn").addClass("disabled").prop("disabled", true).html("&nbsp;<i class='icon-loading-circle icon-rotate'></i>&nbsp; Posting...&nbsp;")
 		})
@@ -291,8 +316,9 @@
         })
         .focus( function() {
         	$(this).siblings(".comment_links").show()
-        	//alert('clicked')
         	gapi.load('picker')
+        }).focusout( function(){
+        	$(this).siblings(".comment_links").hide()
         })
 
         $(".attach_doc_btn").click( function () {
