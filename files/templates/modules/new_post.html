@@ -26,7 +26,7 @@
                 </div>
                 <div class="new_post_bottom_bar" class="span12">
                     <a class="btn primary small new_post_btn" href="javascript:void(0)"> Post
-        </a>
+                    </a>
                 </div>
             </form>
         </div>
@@ -120,7 +120,7 @@ function dajax_create_post(data) {
     $(".new_post_textarea").val("").blur()
         .removeClass("disabled").prop("disabled", false).removeData("clicked");
     $(".new_post_btn")
-        .removeClass("disabled").prop("disabled", false);
+        .removeClass("disabled").prop("disabled", false).html("Post");
 
     $("#new_post_placeholder").after(data.append_string);
 
@@ -157,11 +157,9 @@ $(document).ready(function() {
             'post_form': $el_form.serialize(true)
         })
         $el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
-        $el_form.find(".new_post_btn").addClass("disabled").prop("disabled", true)
+        $el_form.find(".new_post_btn").addClass("disabled").prop("disabled", true).html("<i class='icon-loading-circle'></i> Posting ...");
 
     });
-
-
 })
 </script>
 {% endonce %}

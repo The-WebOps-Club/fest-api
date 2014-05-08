@@ -159,7 +159,7 @@
 	var authToken = '{{ google_access_token }}';
 	function dajax_get_notifications(data) {
 	    if (!data.exhausted){
-	        $('#main_body_content .see_more_notifications').before(data.append_string).removeData("clicked");
+	        $('#main_body_content .see_more_notifications').before(data.append_string).removeClass("disabled").prop("disabled", false).removeData("clicked").text("See more")
 	        var $value = $('#main_body_content .current_page_notifications')
 	        $value.val( parseInt($value.val()) + 1 );
 	    }
@@ -179,7 +179,7 @@
 			Dajaxice.apps.walls.get_notifications(dajax_get_notifications, {
                     'page':parseInt($('#main_body_content .current_page_notifications').val())+1,
             })
-            $el.data("clicked", "yes")
+            $el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading more posts ...")
 		})
 		
 		// Inifinite scroll

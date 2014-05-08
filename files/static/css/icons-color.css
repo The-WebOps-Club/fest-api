@@ -1,3 +1,5 @@
+
+
 /* GLYPH - ICONS */
 [class^="icon-"],
 [class*=" icon-"] {
@@ -14,6 +16,18 @@
 }
 
 
+.icon-loading-line {
+    background-image: url('../img/loading_line.gif');
+    width : 16px;
+    height : 12px;
+    padding-top : 2px;
+    padding-bottom : 2px;
+}
+.icon-loading-circle {
+    background-image: url('../img/loading.png');
+    width : 12px;
+    height : 12px;
+}
 
 
 /* ----------------------------- ROW 1 ------------------------ */
@@ -32,7 +46,7 @@
 .icon-textbox {
   background-position: -82px -2px;
 }
-.icon-x {
+.icon-textbox-multi {
   background-position: -102px -2px;
 }
 .icon-tick {

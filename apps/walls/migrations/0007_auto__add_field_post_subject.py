@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Post.subject'
         db.add_column(u'walls_post', 'subject',
-                      self.gf('django.db.models.fields.CharField')(default='Subject', max_length=200),
+                      self.gf('django.db.models.fields.CharField')(default='', max_length=200),
                       keep_default=False)
 
 
