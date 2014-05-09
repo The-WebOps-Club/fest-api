@@ -90,6 +90,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.users.middleware.SocialAuthExceptionMiddleware',
+    #'apps.users.middleware.LastActivityDatabaseMiddleware',
+    #'apps.users.middleware.LastActivityCacheMiddleware',
     'misc.middleware.ProfileMiddleware',
 )
 TEMPLATE_LOADERS = (
@@ -208,6 +210,15 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+    }
+}
+
+# Cache systems
+# ---------------------------------------------------
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'default-cache'
     }
 }
 
@@ -480,3 +491,8 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
 #         'URL': 'http://127.0.0.1:8983/solr'
 #     },
 # }
+
+# ----------------------------------------------------
+# Last Activity Middleware
+USER_ONLINE_TIMEOUT = 600 #=10mins # Number of seconds of inactivity before a user is marked offline
+USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7 #=1week # Number of seconds that we will keep track of inactive users for before their last seen is removed from the cache

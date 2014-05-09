@@ -135,11 +135,27 @@ class UserProfile(models.Model): # The corresponding auth user
     
     # Analytics information
     date_created       = models.DateTimeField(auto_now_add=True)
+    last_activity_ip = models.IPAddressField()
+    last_activity_date = models.DateTimeField(default = datetime.datetime(1950, 1, 1))
 
     @property
     def fest_id(self):
         return settings.FEST_NAME[:2].upper + str(self.user.id).zfill(6)
         
+    def last_seen(self):
+        return cache.get('seen_%s' % self.user.username)
+
+    def online(self):
+        if self.last_seen():
+            now = datetime.datetime.now()
+            if now > self.last_seen() + datetime.timedelta(
+                         seconds=settings.USER_ONLINE_TIMEOUT):
+                return False
+            else:
+                return True
+        else:
+            return False
+
     def save(self, *args, **kwargs):
         #self.user.save()
         super(UserProfile, self).save(*args, **kwargs)
@@ -214,6 +230,20 @@ class ERPProfile(models.Model):
         else:
             return self.user.get_full_name()
         
+    def last_seen(self):
+        return cache.get('seen_%s' % self.user.username)
+
+    def online(self):
+        if self.last_seen():
+            now = datetime.datetime.now()
+            if now > self.last_seen() + datetime.timedelta(
+                         seconds=settings.USER_ONLINE_TIMEOUT):
+                return False
+            else:
+                return True
+        else:
+            return False
+    
     def __unicode__(self):
         return self.get_name()
 

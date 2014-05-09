@@ -109,3 +109,7 @@ handler500 = 'misc.views.err500'
 #     urlpatterns += patterns('',
 #         url(r'^__debug__/', include(debug_toolbar.urls)),
 #     )
+
+skip_last_activity_date = [
+    # Your expressions go here ... for LastActivityDatabaseMiddleware
+]

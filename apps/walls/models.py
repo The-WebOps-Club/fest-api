@@ -41,7 +41,7 @@ class Wall(models.Model):
     notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_wall')
     
     # Analytics
-
+    # seen_user            = models.ManyToManyField(User, null=True, blank=True, related_name='seen_wall', through=UserWall)
 
     def save(self, *args, **kwargs):
         """
@@ -95,6 +95,11 @@ class Wall(models.Model):
     def __unicode__(self):
         return self.name
     
+# class UserWall(models.Model):
+#     """
+#         A through table to associate users that have seen a wall
+#     """
+
 class PostInfo(models.Model):
     """
         Defines the PostInfo class. The model which has some kind of data about a message.
@@ -180,6 +185,10 @@ class Post(PostInfo):
     # Relations with other models - Comments
     comments            = models.ManyToManyField(Comment, null=True, blank=True, related_name='parent_post')
     comments_count      = models.IntegerField(default=0)
+
+    # Analytics
+    # seen_user       = models.ManyToManyField(User, null=True, blank=True, related_name='seen_post', through=UserPost)
+
 
     def save(self, *args, **kwargs):
         """

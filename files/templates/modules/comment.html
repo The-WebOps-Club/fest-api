@@ -39,7 +39,7 @@
 
 							<a href="javascript:void(0)" class="btn primary post_btn">
 								&nbsp;
-									<i class="icon-textbox"></i>&nbsp; Post
+									<i class="icon-textbox-circle"></i>&nbsp; Post
 								&nbsp;
 							</a>
 						</div>
@@ -195,7 +195,7 @@
         $("#post_" + data.post_id + " .news_comment_placeholder").before(data.append_string);
 
         $("#post_" + data.post_id + " .comment_textarea").removeClass("disabled").prop("disabled", false).removeData("clicked")
-        $("#post_" + data.post_id + " .post_btn").removeClass("disabled").prop("disabled", false).html("&nbsp;<i class='icon-textbox'></i>&nbsp; Post&nbsp;")
+        $("#post_" + data.post_id + " .post_btn").removeClass("disabled").prop("disabled", false).html("&nbsp;<i class='icon-textbox-circle'></i>&nbsp; Post&nbsp;")
 
         $("#post_" + data.post_id + " .comment_textarea").val("")
         $("#post_" + data.post_id + " .textarea_atwho_list").remove()
