@@ -92,6 +92,8 @@ urlpatterns = patterns('',
     # Python social auth
     url(r'', include('social.apps.django_app.urls', namespace='social')),
     
+    # Haystack
+    url(r'^search/', include('haystack.urls')),
 
 )
 

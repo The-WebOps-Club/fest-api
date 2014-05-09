@@ -238,11 +238,12 @@
 	}
 
 	function attach_pic_callback(el, data) {
+		
+
+		var $el = $(el).find(".comment_textarea")
 		$el.closest(".news_comment").find(".attach_pic_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
 		if ( data.action != google.picker.Action.PICKED )
 			return
-
-		var $el = $(el).find(".comment_textarea")
 		var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
 		for ( var i = 0, d; d = data.docs[i]; i++ ) {
 			var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
@@ -260,7 +261,7 @@
 				return
         	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
         		'post_id' : $el.data("postid"), 
-        		'comment_form': $el.closest("form").serialize(true)
+        		'comment_form': $el.closest("form").serialize(true)	// for content-editability extend the form serializer.
         	});
         	$el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
         	$el_form.find(".post_btn").addClass("disabled").prop("disabled", true).html("&nbsp;<i class='icon-loading-circle icon-rotate'></i>&nbsp; Posting...&nbsp;")
@@ -285,6 +286,11 @@
         .focus( function() {
         	$(this).siblings(".comment_links").show()
         	gapi.load('picker')
+        }).focusout( function() {
+        	//console.log($(this).closest('.post_btn:hover'));
+        	if(!$('.comment_links:hover').length)
+        		$(this).siblings(".comment_links").hide();
+        	//gapi.load('picker')
         })
 
         $(".attach_doc_btn").click( function () {
