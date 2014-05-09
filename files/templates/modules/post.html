@@ -1,5 +1,6 @@
 {% load staticfiles %} 
 {% load humanize %} 
+{% load markdown_tags %}
 {% load once %}
 
 {# Remember : "post" and "notification" are keywords used here #}
@@ -44,7 +45,7 @@
                 {% if post.subject %}
                 	<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} </p>
                 {% endif %}
-                {{ post.description }}
+                {{ post.description|markdown }}
 	        {% endautoescape %}
             </div>
 	        <div class="news_extra"></div>
