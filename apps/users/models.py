@@ -14,6 +14,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.db.models import Q
 from django.utils import timezone
+from django.core.urlresolvers import reverse
 # Apps
 # Decorators
 # Models
@@ -155,6 +156,9 @@ class UserProfile(models.Model): # The corresponding auth user
         except:
             pass
 
+    def get_absolute_url(self):
+        return reverse('apps.users.views.profile', args=(self.user.pk,))
+
     def get_pic(self, s=75):
         url = "graph.facebook.com" + self.fbid + "/picture"
         return url
@@ -251,3 +255,6 @@ class ERPProfile(models.Model):
             user_profile.save()
         temp = super(ERPProfile, self).save(*args, **kwargs)
         return 
+
+    def get_absolute_url(self):
+        return reverse('apps.users.views.profile', args=(self.user.pk,))
