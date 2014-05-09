@@ -485,12 +485,12 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
 
 # ----------------------------------------------------
 # Solr-Haystach search settings
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://127.0.0.1:8983/solr'
-    },
-}
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+#         'URL': 'http://127.0.0.1:8983/solr'
+#     },
+# }
 
 # ----------------------------------------------------
 # Last Activity Middleware
