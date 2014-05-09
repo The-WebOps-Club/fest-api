@@ -135,7 +135,7 @@ class UserProfile(models.Model): # The corresponding auth user
     
     # Analytics information
     date_created       = models.DateTimeField(auto_now_add=True)
-    last_activity_ip = models.IPAddressField()
+    last_activity_ip   = models.IPAddressField(default="0.0.0.0")
     last_activity_date = models.DateTimeField(default = datetime.datetime(1950, 1, 1))
 
     @property
