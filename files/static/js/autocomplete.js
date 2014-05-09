@@ -146,6 +146,8 @@ function setup_autocomplete_files() {
             // },
         },
     }
+    if(contentEditableActive)
+        at_config_file.tpl = "<li data-value='<a href=\""+site_url+"docs/view/?id=${id}\"><img src=\"${iconlink}\" style=\"width:16px;height:16px\">${name}</a>'>${name} <small>${small}</small></li>";
     $('.atwho_at_config').atwho(at_config_file);
 }
 

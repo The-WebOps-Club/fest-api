@@ -25,6 +25,8 @@ from apps.walls.utils import paginate_items, parse_atwho, get_tag_object
 from django.shortcuts import get_object_or_404
 from apps.walls.models import Wall, Post, Comment
 from annoying.functions import get_object_or_None
+# Parse HTML: prevention of deliberate code injection.
+
 
 # -------------------------------------------------------------
 # TEST FUNCTIONS
@@ -292,7 +294,7 @@ def create_comment(request, post_id, csrf_data, comment):
     # Create a new comment
     append_string = ""
     data = deserialize_form(csrf_data).dict()
-    #import pdb;pdb.set_trace();
+    import pdb;pdb.set_trace();
     data['comment'] = comment
     print data
     # Attempt to get the post for the comment

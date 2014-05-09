@@ -405,7 +405,7 @@ MARKDOWN_STYLES = {
             "code-friendly": None,
             "cuddled-lists": True,
         },
-        "safe_mode": "escape",
+        "safe_mode": False,
     },
     "trusted": {
         "extras": {
@@ -424,12 +424,12 @@ MARKDOWN_STYLES = {
             # (re.compile(r"""(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/))((?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\)){1,10})(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?])""", re.I), r"<\1\2...>")
 
             # Render copied links as links
-			(re.compile(r"^(http://\S+)", re.I), r"\1"),
-            (re.compile(r"\s(http://\S+)", re.I), r" \1"),
-            (re.compile(r"^(https://\S+)", re.I), r"\1"),
-            (re.compile(r"\s(https://\S+)", re.I), r" \1"),
-            (re.compile(r"^(www\.\S+)", re.I), r"\1"),
-            (re.compile(r"\s(www\.\S+)", re.I), r" \1"),
+			#(re.compile(r"^(http://\S+)", re.I), r"\1"),
+            #(re.compile(r"\s(http://\S+)", re.I), r" \1"),
+            #(re.compile(r"^(https://\S+)", re.I), r"\1"),
+            #(re.compile(r"\s(https://\S+)", re.I), r" \1"),
+            #(re.compile(r"^(www\.\S+)", re.I), r"\1"),
+            #(re.compile(r"\s(www\.\S+)", re.I), r" \1"),
 
         ],
         "extras": {
@@ -443,7 +443,6 @@ MARKDOWN_STYLES = {
             "smarty-pants" : True, # gen
             "wiki-tables" : None, # high funda - too complicated
             "link-patterns" : None,
-            
         },
         "safe_mode": False,
     },

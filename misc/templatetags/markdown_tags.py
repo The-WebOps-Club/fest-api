@@ -132,7 +132,7 @@ renderer = CustomRenderer(flags=
         # misaka.HTML_TOC | 
         misaka.HTML_HARD_WRAP |
         # misaka.HTML_USE_XHTML |
-        misaka.HTML_ESCAPE | 
+        # misaka.HTML_ESCAPE |  //do not escape.
         misaka.HTML_SMARTYPANTS
     )
 md = misaka.Markdown(renderer,
