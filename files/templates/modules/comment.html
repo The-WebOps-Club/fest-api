@@ -1,6 +1,5 @@
 {% load staticfiles %} 
 {% load humanize %} 
-{% load markdown_tags %}
 {% load once %}
 {% load strip_first_p %}
 
@@ -86,7 +85,7 @@
 	        
 	        <div class="comment_text markdown">
 	        	{% autoescape off%}
-		        	{{ comment.description|markdown:"trusted"|default:"<p>&nbsp;</p>" }} 		        
+		        	{{ comment.description|default:"<p>&nbsp;</p>" }} 		        
 	        	{% endautoescape %}
 	        </div>
 	        
@@ -532,7 +531,7 @@
 				var $el = $(this).closest(".insert_emoticon_content_inner")
 				$rr = $el
 				var $parent = $(".post_container#" + $el.find(".for_comment").prop("id"))
-				var text = $.trim($(this).find("i").data("symbol"))
+				var text = $.trim($(this).find("i"))
 				insert_text($parent.find(".comment_textarea"), " " + text + " ")
 			})
         })
