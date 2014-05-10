@@ -1,0 +1,2 @@
+{{ object.mobile_number }}
+{{ object.college_roll }}

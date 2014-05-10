@@ -1,0 +1,4 @@
+{{ object.user.get_full_name }}
+{{ object.user.username }}
+{{ object.nickname }}
+{{ object.summer_number }}
