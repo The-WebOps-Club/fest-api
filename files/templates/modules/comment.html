@@ -592,9 +592,10 @@
 					insert_text($parent.find(".comment_textarea"), "<span><div class='"+classtype+" inline_emoticon'></div></span><span>&nbsp;&nbsp;</span>", lastKnownRange||false);
 				else
 					insert_text($parent.find(".comment_textarea"), " "+symbol+" ");
-
 				$(".inline_emoticon").attr('contenteditable','false');	//force insert the attribute
 				newRange = document.createRange();
+
+				
 			})
 
         })
