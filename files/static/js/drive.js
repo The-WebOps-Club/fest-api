@@ -85,6 +85,13 @@ var Drive = function( options ) {
         });*/
     
         // filesystem loads changes and merges with existing objects.
+        self.filesystem.loadByFile(fid,{finish:function(response) {
+            self.check_error(response)
+            self.set_drive_parent(response)
+        },cached:function(response){
+            self.set_drive_parent(response)
+        }},new Date(),true);
+
         self.filesystem.loadByDir( fid, {finish:function(response) {
                 self.check_error(response)
                 self.dir_contents = response.items
@@ -94,7 +101,7 @@ var Drive = function( options ) {
                 callback();
             },
             cached: function(response){ 
-                self.finish_progress = response.length;
+                self.finish_progress = response.items.length;
                 self.current_progress = 0;
                 self.dir_contents = response.items;
                 callback = self.show_dir_contents;
@@ -103,12 +110,7 @@ var Drive = function( options ) {
 
         }, new Date() );
 
-        self.filesystem.loadByFile(fid,{finish:function(response) {
-            self.check_error(response)
-            self.set_drive_parent(response)
-        },cached:function(response){
-            self.set_drive_parent(response)
-        }},new Date(),true);
+        
 
     }
     
@@ -116,7 +118,7 @@ var Drive = function( options ) {
         self.filesystem.loadByFile( fid ,{finish:function(response) {
             self.check_error(response)
             self.current_progress += 1
-            self.progress()
+            self.progress();
             callback = callbacks['finish'] || self.show_file
             callback(response);
             f = response
@@ -377,25 +379,34 @@ var Drive = function( options ) {
         self.progress();
 
     	self.get_file_meta(fid,{finish:function(r) {
-    		if (r.parents.length) {
-    			if ( r.parents.length > num+1)
-    				num = 0
-    			self.get_dir_contents(r.parents[num].id)
-	    		}
+            if(r.parents == undefined){
+                self.get_dir_contents(r.id);
+            }else
+    		  if (r.parents.length) {
+    		  	   if ( r.parents.length > num+1)
+    				    num = 0
+    			     self.get_dir_contents(r.parents[num].id)
+	    		 }
     	},cached:function(r){
-            if (r.parents.length) {
-                if ( r.parents.length > num+1)
-                    num = 0
-                self.get_dir_contents(r.parents[num].id)
+            if(r.parents == undefined){
+                self.get_dir_contents(r.id);
+            }else
+                if (r.parents.length) {
+                    if ( r.parents.length > num+1)
+                        num = 0
+                    self.get_dir_contents(r.parents[num].id)
                 }
+
         }},new Date(), true);
     }
 
     self.progress = function(val) {
 
     	val = val || ( self.current_progress / self.finish_progress * 100 ).toFixed(0);
+        if(val>100)val = 100;
     	val = "" + val
-        //console.log('progress set');
+
+        console.log('progress set: '+val);
     	$(".progress").css ( {
         	"width" : val + "%",
         })
@@ -413,6 +424,8 @@ var Drive = function( options ) {
     	$(".drive_parent_title").text("folder : " + file_details.title)
         $("title").text("Shaastra Docs - " + file_details.title)
         $(".drive_parent").data("id", file_details.id)
+        //if(file_details.parents == undefined)
+        //    self.root_folder = true;
     }
     /* Execution */
     self.init()

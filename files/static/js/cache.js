@@ -154,6 +154,7 @@ var DriveFileRetreival = function(){
 	this.cache = new FileMetaCache();
 
 	this.init = function(){
+		validateCache();
 		this.cache.init();
 	}
 
@@ -232,7 +233,7 @@ var DriveFileRetreival = function(){
         console.log('FILE:')
         console.log(file_cache);
 
-		if( file_cache != undefined ){
+		if( file_cache != undefined && file_cache.lastUpdated != null){
 			this.cache.byfile[fileId].staticdata.hits++;
 			callbacks['cached']( file_cache.files[0] )
 		}
