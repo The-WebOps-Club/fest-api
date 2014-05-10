@@ -54,7 +54,7 @@ THIRD_PARTY_APPS = (
     'social.apps.django_app.default',
 
     # Search Indexer
-    'haystack',
+    #'haystack',
 
     # compressor - Easy to use minifier and cache system
     'compressor',
@@ -90,6 +90,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.users.middleware.SocialAuthExceptionMiddleware',
+    #'apps.users.middleware.LastActivityDatabaseMiddleware',
+    #'apps.users.middleware.LastActivityCacheMiddleware',
     'misc.middleware.ProfileMiddleware',
 )
 TEMPLATE_LOADERS = (
@@ -208,6 +210,15 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+    }
+}
+
+# Cache systems
+# ---------------------------------------------------
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'default-cache'
     }
 }
 
@@ -405,7 +416,7 @@ MARKDOWN_STYLES = {
             "code-friendly": None,
             "cuddled-lists": True,
         },
-        "safe_mode": "escape",
+        "safe_mode": False,
     },
     "trusted": {
         "extras": {
@@ -424,12 +435,12 @@ MARKDOWN_STYLES = {
             # (re.compile(r"""(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/))((?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\)){1,10})(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?])""", re.I), r"<\1\2...>")
 
             # Render copied links as links
-			(re.compile(r"^(http://\S+)", re.I), r"\1"),
-            (re.compile(r"\s(http://\S+)", re.I), r" \1"),
-            (re.compile(r"^(https://\S+)", re.I), r"\1"),
-            (re.compile(r"\s(https://\S+)", re.I), r" \1"),
-            (re.compile(r"^(www\.\S+)", re.I), r"\1"),
-            (re.compile(r"\s(www\.\S+)", re.I), r" \1"),
+			#(re.compile(r"^(http://\S+)", re.I), r"\1"),
+            #(re.compile(r"\s(http://\S+)", re.I), r" \1"),
+            #(re.compile(r"^(https://\S+)", re.I), r"\1"),
+            #(re.compile(r"\s(https://\S+)", re.I), r" \1"),
+            #(re.compile(r"^(www\.\S+)", re.I), r"\1"),
+            #(re.compile(r"\s(www\.\S+)", re.I), r" \1"),
 
         ],
         "extras": {
@@ -443,7 +454,6 @@ MARKDOWN_STYLES = {
             "smarty-pants" : True, # gen
             "wiki-tables" : None, # high funda - too complicated
             "link-patterns" : None,
-            
         },
         "safe_mode": False,
     },
@@ -474,9 +484,14 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
 
 # ----------------------------------------------------
 # Solr-Haystach search settings
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://0.0.0.0:8983/solr'
-    },
-}
+# HAYSTACK_CONNECTIONS = {
+#     'default': {
+#         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+#         'URL': 'http://127.0.0.1:8983/solr'
+#     },
+# }
+
+# ----------------------------------------------------
+# Last Activity Middleware
+USER_ONLINE_TIMEOUT = 600 #=10mins # Number of seconds of inactivity before a user is marked offline
+USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7 #=1week # Number of seconds that we will keep track of inactive users for before their last seen is removed from the cache

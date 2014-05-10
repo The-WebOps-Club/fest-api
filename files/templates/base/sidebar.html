@@ -1,5 +1,5 @@
 {% load staticfiles %}
-
+{% load unread_by_wall %}
 <div class="">
     <div class="row-fluid">
         <div id='profile_tab' class='span12'>
@@ -72,6 +72,11 @@
                                 {{ w.name }}
                             {% endif %}
                             </span>
+                            
+                            {% with user|unread_by_wall:w.id as unreadcount%}
+                            <span class='label pull-right counter'>{{unreadcount}}</span>
+                            {% endwith %}
+                            
                         </a>
                     </li>
                 {% endfor %}

@@ -46,7 +46,7 @@
 .icon-textbox {
   background-position: -82px -2px;
 }
-.icon-textbox-multi {
+.icon-textbox-circle {
   background-position: -102px -2px;
 }
 .icon-tick {
@@ -70,7 +70,7 @@
 .icon-page {
   background-position: -242px -2px;
 }
-.icon-bookmark {
+.icon-save {
   background-position: -262px -2px;
 }
 .icon-badge {
@@ -286,7 +286,7 @@
 .icon-phone {
   background-position: -642px -22px;
 }
-.icon-pencil-2 {
+.icon-pencil {
   background-position: -662px -22px;
 }
 .icon-pc {

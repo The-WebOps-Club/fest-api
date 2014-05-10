@@ -7,7 +7,7 @@ from dajax.core import Dajax
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # For rendering templates
-from django.template import RequestContext
+from django.template import RequestContext, Template
 from django.template.loader import render_to_string
 
 # Decorators
@@ -25,6 +25,8 @@ from apps.walls.utils import paginate_items, parse_atwho, get_tag_object
 from django.shortcuts import get_object_or_404
 from apps.walls.models import Wall, Post, Comment
 from annoying.functions import get_object_or_None
+# Parse HTML: prevention of deliberate code injection.
+
 
 # -------------------------------------------------------------
 # TEST FUNCTIONS
@@ -275,7 +277,7 @@ def quick_post(request, post_form):
     return json.dumps({ 'append_string': append_string })
 
 @dajaxice_register
-def create_comment(request, post_id, comment_form):
+def create_comment(request, post_id, csrf_data, comment):
     """
         Creates a new comment on a Post
     """
@@ -291,7 +293,9 @@ def create_comment(request, post_id, comment_form):
     
     # Create a new comment
     append_string = ""
-    data = deserialize_form(comment_form)
+    data = deserialize_form(csrf_data).dict()
+    
+    data['comment'] = comment
     print data
     # Attempt to get the post for the comment
     post = get_object_or_None(Post, id=int(post_id))
@@ -301,7 +305,9 @@ def create_comment(request, post_id, comment_form):
 
     comment_text, notification_list = parse_atwho(comment_text)
 
-    new_comment = Comment.objects.create(description=comment_text, by=request.user)
+    rendered_comment = Template('{%load markdown_tags%}{%autoescape off%}{{comment_text|markdown}}{%endautoescape%}').render(RequestContext(request,{'comment_text':comment_text}))
+
+    new_comment = Comment.objects.create(description=rendered_comment, by=request.user)
     post.comments.add(new_comment)
     
     post.add_notifications(notification_list)

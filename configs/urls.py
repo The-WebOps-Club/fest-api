@@ -93,7 +93,7 @@ urlpatterns = patterns('',
     url(r'', include('social.apps.django_app.urls', namespace='social')),
     
     # Haystack
-    url(r'^search/', include('haystack.urls')),
+    # url(r'^search/', include('haystack.urls')),
 
 )
 
@@ -111,3 +111,7 @@ handler500 = 'misc.views.err500'
 #     urlpatterns += patterns('',
 #         url(r'^__debug__/', include(debug_toolbar.urls)),
 #     )
+
+skip_last_activity_date = [
+    # Your expressions go here ... for LastActivityDatabaseMiddleware
+]

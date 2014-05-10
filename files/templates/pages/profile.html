@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load humanize %} 
 {% load staticfiles %}
 
 {% block title %} {{ FEST_NAME }} {% endblock %}
@@ -13,14 +14,14 @@
 		<div class="row-fluid profile_wrapper">
 			<div class="span12">
 				<div class="profile_head">
-					About 
-					
+					About <small class="small muted">last login : {{ user.last_login|naturaltime }}</small>
 					{% if user == showing_user %}
-						<a class="btn form_edit offset5" href="javascript:void(0)">
-							<i class="icon-pencil-2"></i> 
+						<a class="btn form_edit pull-right" href="javascript:void(0)">
+							<i class="icon-pencil"></i> 
 							<span class="edit_text">Edit Profile</span>
 						</a>
-						<a class="btn primary form_input form_submit" href="javascript:void(0)"> 
+						<a class="btn primary form_input pull-right form_submit" href="javascript:void(0)"> 
+							<i class="icon-save"></i> 
 							Save Changes
 						</a>
 					{% endif %}
@@ -238,7 +239,7 @@
 				return
 			}
 			$(".form_value").slideUp(time)
-			$(".form_edit i").addClass("icon-profile-black").removeClass("icon-pencil-2");
+			$(".form_edit i").addClass("icon-profile-black").removeClass("icon-pencil");
 			$(".form_edit span.edit_text").html("View Profile");
 			$(".form_value").remove()
 			setTimeout(function() {
@@ -251,7 +252,7 @@
 			}
 			// $(".form_input").slideUp(time)
 			$(".form_visible").slideUp(time)
-			$(".form_edit i").removeClass("icon-profile-black").addClass("icon-pencil-2");
+			$(".form_edit i").removeClass("icon-profile-black").addClass("icon-pencil");
 			$(".form_edit span.edit_text").html("Edit Profile");
 			$(".form_input").each(function(i, v) {
 				v = $(v)

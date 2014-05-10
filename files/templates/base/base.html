@@ -7,7 +7,9 @@
     {% include 'base/meta.html' %} 
     <title>{% block title %} {{ FEST_NAME }} {% endblock %}</title>
 
+
     {% compress css %}
+
     <!-- Include stylesheets here -->
     <link href="{% static 'css/erp-bootstrap.css' %}" rel="stylesheet" media="screen">
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
@@ -120,6 +122,8 @@
     	authToken = "{{ google_access_token }}"
         fest_fbid = "{{ SETTINGS.FEST_FBID }}"
         
+        var contentEditableActive = true;   //flag to switch between markdown and native html.
+
         function hide_popups(except) {
             ["userButton", "messageButton", "notifButton", "settingButton", "attach_link_btn", "attach_emoticon_btn"].forEach(function(i) {
                 if ( !except || except.indexOf(i) == -1 ) {
