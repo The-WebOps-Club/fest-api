@@ -21,7 +21,8 @@
                 <div class="new_post_text" class="span12">
                     {% csrf_token %}
                     <input type="text" name="new_post_subject" id="id_new_post_subject" placeholder="Subject" class="span12" />
-                    <textarea class="span12 new_post_textarea atwho_at_config resize_textarea" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here"></textarea>
+                    <div class="span12 new_post_textarea atwho_at_config resize_textarea new_post_primary" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here" contenteditable='true'></div>
+                    <textarea class="span12 new_post_textarea atwho_at_config resize_textarea new_post_fallback" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here" style="display:none"></textarea>
 
                 </div>
                 <div class="new_post_bottom_bar" class="span12">
@@ -59,6 +60,11 @@
 }
 .new_post_text .new_post_textarea::placeholder {
     color : #AAA;
+}
+.new_post_primary{
+    background-color: #FFF;
+    border:1px solid #DDD;
+    font-size:14px;
 }
 .new_post_bottom_bar {
     background-color: #F2F2F2;
@@ -131,6 +137,11 @@ function dajax_create_post(data) {
 }
 
 $(document).ready(function() {
+    if(!contentEditableActive){
+            $('.new_post_primary').css('display','none');
+            $('.new_post_fallback').css('display','block');
+        }
+
     $(".new_post_wrapper").focusin(show_status_textarea);
 
     // Submitting Forms
@@ -146,12 +157,20 @@ $(document).ready(function() {
                 e.preventDefault()
             }
         })
-
+    $(".new_post_primary").keyup(function(){
+        
+        console.log('changed');
+    });
     $(".new_post_btn").click(function() {
         $el_form = $(this).closest("form")
+        if(contentEditableActive)
+            $el_form.find('.new_post_fallback').val($el_form.find(".new_post_primary").html());
+
+        
         $el = $el_form.find(".new_post_textarea")
         if ($el.data("clicked"))
             return
+
         Dajaxice.apps.walls.create_post(dajax_create_post, {
             'wall_id': "{{ wall.id }}",
             'post_form': $el_form.serialize(true)

@@ -1,6 +1,6 @@
 {% load staticfiles %} 
-{% load markdown_tags %}
 {% load humanize %}
+{% load markdown_tags %}
 {% load once %}
 
 <div class="notif {% if notification.unread and notification.public %}unread{% endif %}" 
@@ -18,7 +18,7 @@
 	        {{ notification.verb|default:"" }} <span class="bold">{{ notification.target.wall|default:"" }}</span> 
 	        <br />
 	        {% autoescape off %} 
-	        {{ notification.action_object.description|markdown:"my_default" }} 
+	        {{ notification.action_object.description|markdown }} 
 	        {% endautoescape %}
 	    </div>
 	    <div class="notif_foot">
