@@ -294,7 +294,7 @@ def create_comment(request, post_id, csrf_data, comment):
     # Create a new comment
     append_string = ""
     data = deserialize_form(csrf_data).dict()
-    import pdb;pdb.set_trace();
+    
     data['comment'] = comment
     print data
     # Attempt to get the post for the comment
@@ -305,7 +305,7 @@ def create_comment(request, post_id, csrf_data, comment):
 
     comment_text, notification_list = parse_atwho(comment_text)
 
-    rendered_comment = Template('{%load markdown_tags%}{{comment_text|markdown}}').render(Context({'comment_text':comment_text}))
+    rendered_comment = comment_text#Template('{%load markdown_tags%}{{comment_text|markdown}}').render(Context({'comment_text':comment_text}))
 
     new_comment = Comment.objects.create(description=rendered_comment, by=request.user)
     post.comments.add(new_comment)
