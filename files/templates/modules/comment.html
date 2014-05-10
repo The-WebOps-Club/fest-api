@@ -86,7 +86,7 @@
 	        
 	        <div class="comment_text markdown">
 	        	{% autoescape off%}
-		        	{{ comment.description|markdown|default:"<p>&nbsp;</p>" }} 		        
+		        	{{ comment.description|default:"<p>&nbsp;</p>" }} 		        
 	        	{% endautoescape %}
 	        </div>
 	        
