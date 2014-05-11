@@ -75,9 +75,12 @@
 	        		</p>
 	        	</div>
 	        	
-	        	<div class="news_comment see_more_comments center" >
-	        		See more
-	        	</div>
+	        	{% if post.comments.count > 5 %}
+	        		<div class="news_comment see_more_comments center" >
+	        			See more
+	        		</div>
+	        	{% endif %}
+	        	
 	        	{% for comment in post.comments.all|dictsortreversed:"time_created"|slice:":5" reversed %}
 	            	{% include 'modules/comment.html' %}
 	        	{% endfor %}
