@@ -1,7 +1,7 @@
 {% load staticfiles %} 
 {% load humanize %} 
-{% load markdown_tags %}
 {% load once %}
+{% load markdown_tags %}
 {% load strip_first_p %}
 
 <div {% if not new_comment %} id="comment_{{ comment.pk }}" data-id="{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
@@ -14,12 +14,18 @@
 				<form method="POST">
 					<div class="span12">
 					    {% csrf_token %}
-					    <textarea 
-					    	class="comment_textarea atwho_at_config resize_textarea span12"
+					    <div
+					    	class="comment_textarea atwho_at_config resize_textarea span12 comment_primary"
 					    	name="comment" 
 					    	rows="1" 
 					    	data-postid="{{ post.id }}"
-					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed."></textarea>
+					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." contenteditable='true'><span></span></div>	<!-- The extra span prevents some twisty bugs related to atwho.-->
+					    <textarea
+					    	class=" atwho_at_config resize_textarea span12 comment_fallback"
+					    	name="comment" 
+					    	rows="1" 
+					    	data-postid="{{ post.id }}"
+					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." style='display:none' contenteditable='true'></textarea>
 						<div class="span12 comment_links" style="display : none">
 							<a href="javascript:void(0)" class="btn small attach_doc_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
 								<i class="icon-attach"></i>
@@ -79,10 +85,9 @@
 	        </div>
 	        
 	        <div class="comment_text markdown">
-		        {% autoescape off %}
-		        	{{ comment.description|markdown:"my_default"|default:"<p>&nbsp;</p>" }} 
-		        {% endautoescape %}
-
+	        	{% autoescape off%}
+		        	{{ comment.description|default:"<p>&nbsp;</p>" }} 		        
+	        	{% endautoescape %}
 	        </div>
 	        
        	{% endif %}
@@ -180,7 +185,9 @@
 		transition: height 0.2s;
 	}
 	.comment_textarea {
-		
+		background-color: #FFF;
+		border: 1px #DDD solid;
+		font-size: 14px;
 	}
 	.btn.post_btn {
 		float: right;
@@ -202,12 +209,16 @@
         on_dom_change()
 	}
 
-	function insert_text(el, text) {
+	/*
+		Deprecated in favor of a much simpler function
+		Used only for IE.
+	*/
+	function insert_text_manual(el, text) {
 		var $el = $(el), $ip, content;
 		if ($el.is('textarea, input')) {
             content = $el.val();
         } else {
-            content = $el.text();
+            content = $el.html();
         }
         var pos = $el.caret("pos")
         var start_content = content.substr(0, pos)
@@ -216,23 +227,38 @@
         if ($el.is('textarea, input')) {
             $el.val(new_content);
         } else {
-        	$el.text(new_content);
+        	$el.html(new_content);
         }
-        $el.caret("pos", pos+text.length)
-        	.trigger('input.autosize')
+        if(!contentEditableActive && $el.caret("pos", pos+text.length).trigger)
+        	$el.caret("pos", pos+text.length).trigger('input.autosize')
+        
+	}
+
+	function insert_text(el, text, range){
+		$(el).focus();
+		if(range){
+			window.getSelection().removeAllRanges();
+			window.getSelection().addRange(range);
+		}
+		document.execCommand('insertHTML', false, text);	// WARNING: NOT SUPPORTED BY IE. TODO: need to fallback to insert_text_manual       
+		lastKnownRange = range;
 	}
 
 	function attach_doc_callback(el, data) {
-		$el.closest(".news_comment").find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
+		
 
 		if ( data.action != google.picker.Action.PICKED )
 			return
 
 		var $el = $(el).find(".comment_textarea")
+		$el.closest(".news_comment").find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
 		var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
 		for ( var i = 0, d; d = data.docs[i]; i++ ) {
 			var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
-			text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+			if(!contentEditableActive)
+				text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+			else
+				text ='<a href="'+d.url+'"><img src=\''+d.iconUrl+'\'>' + clean_name + '</a>'
 			insert_text($el, text)
 		}
 	}
@@ -244,28 +270,62 @@
 		$el.closest(".news_comment").find(".attach_pic_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
 		if ( data.action != google.picker.Action.PICKED )
 			return
+
 		var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
 		for ( var i = 0, d; d = data.docs[i]; i++ ) {
 			var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
-			text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+			if(!contentEditableActive)
+				text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+			else
+				text ='<a href="'+d.url+'"><img src=\''+d.iconUrl+'\'>' + clean_name + '</a>'
+
 			insert_text($el, text)
 		}
 	}
 	
+
+
+
 	$( document ).ready(function() {
 		
+		if(!contentEditableActive){
+			$('.comment_primary').css('display','none').removeClass('comment_textarea');
+			$('.comment_fallback').css('display','block').addClass('comment_textarea');
+		}
+
+
+
 		$(".post_btn").click(function() {
-			$el_form = $(this).closest("form")
-			$el = $el_form.find(".comment_textarea")
-			if ( $el.data("clicked") || ! $el.val())
+			$el_form = $(this).closest("form");
+			var $el;
+			if(contentEditableActive)
+				$el = $el_form.find(".comment_primary");
+			else
+				$el = $el_form.find(".comment_fallback");
+
+			//console.log('sending comment');
+			if ( $el.data("clicked") || ( contentEditableActive  && !$el.html()) || (!contentEditableActive && !$el.val()) ){
+				//console.log('no content ');
 				return
-        	Dajaxice.apps.walls.create_comment(dajax_create_comment, {
+			}
+
+			console.log($el.closest("form").serialize(true));
+			post_data  = {
         		'post_id' : $el.data("postid"), 
-        		'comment_form': $el.closest("form").serialize(true)	// for content-editability extend the form serializer.
-        	});
+        		'csrf_data': $el.closest("form").serialize(true),
+        	}
+        	 
+        	if(contentEditableActive)
+        		post_data['comment'] = $el.html();  
+        	else 
+        		post_data['comment'] = $el.val();
+
+        	Dajaxice.apps.walls.create_comment(dajax_create_comment, post_data );
         	$el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
         	$el_form.find(".post_btn").addClass("disabled").prop("disabled", true).html("&nbsp;<i class='icon-loading-circle icon-rotate'></i>&nbsp; Posting...&nbsp;")
 		})
+
+
 
 		$(".comment_textarea")
 		.keydown(function(e) {
@@ -281,16 +341,33 @@
             if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
             	$(this).closest("form").find(".post_btn").click()
             	e.preventDefault()
-            } 
+            }
+            if(window.getSelection().rangeCount) 
+            	lastKnownRange = window.getSelection().getRangeAt(0);
         })
         .focus( function() {
         	$(this).siblings(".comment_links").show()
         	gapi.load('picker')
+        	isInFocus = true;
+    		var savedRange = 'undefined';
+    		
         }).focusout( function() {
         	//console.log($(this).closest('.post_btn:hover'));
         	if(!$('.comment_links:hover').length)
         		$(this).siblings(".comment_links").hide();
+
+        	if(window.getSelection().rangeCount) 
+            	lastKnownRange = window.getSelection().getRangeAt(0);
         	//gapi.load('picker')
+        	/*if(window.getSelection)//non IE Browsers
+    		{
+        		savedRange = JSON.stringify(window.getSelection().getRangeAt(0));
+        		$(this).data('selection',savedRange);
+    		}	
+    		else if(document.selection)//IE
+    		{ 
+        		savedRange = document.selection.createRange();  
+    		} */
         })
 
         $(".attach_doc_btn").click( function () {
@@ -430,7 +507,10 @@
 					link = "mailto:" + $.trim(link)
 				else
 					link = $.trim(link)
-				insert_text($parent.find(".comment_textarea"), "[" + text + "](" + link + ")")
+				if(!contentEditableActive)
+					insert_text($parent.find(".comment_textarea"), "[" + text + "](" + link + ")")
+				else
+					insert_text($parent.find(".comment_textarea"), "<a href='"+link+"'>" + text + "</a>")
 			})
         })
 		
@@ -458,6 +538,10 @@
 			var $el = $(this)
 			$el.popover("show")
 
+			  
+
+        	
+    		
 			$(".popover_insert_emoticon").click(function(e) {
 				e.stopPropagation();
 			})
@@ -479,9 +563,41 @@
 				var $el = $(this).closest(".insert_emoticon_content_inner")
 				$rr = $el
 				var $parent = $(".post_container#" + $el.find(".for_comment").prop("id"))
-				var text = $.trim($(this).find("i").data("symbol"))
-				insert_text($parent.find(".comment_textarea"), " " + text + " ")
+				var symbol = $.trim($(this).find("i").data('symbol'));
+				var classtype = $.trim($(this).find("i").attr('class'));
+				// the <i> tag is messing everything up.
+				//if(contentEditableActive)
+				//	insert_text($parent.find(".comment_textarea"), "<div contenteditable='false' class='"+classtype+"'></div>")
+				//else
+
+				if(!$(parent).find(".comment_textarea").is(':focus')){
+					console.log('resetting selection')
+				/*if (window.getSelection)//non IE and there is already a selection
+        		{	
+            		var s = window.getSelection();
+            		if (s.rangeCount > 0) 
+                		range = s.getRangeAt(0);
+                		s.removeAllRanges();
+	            		s.addRange(range);
+    	    	}
+        		else if (document.createRange)//non IE and no selection
+        			window.getSelection().addRange(savedRange);
+        		else if (document.selection)//IE
+            		savedRange.select();
+            	}*/
+            }
+            	console.log(window.getSelection().getRangeAt(0));
+
+            	if(contentEditableActive)
+					insert_text($parent.find(".comment_textarea"), "<span><div class='"+classtype+" inline_emoticon'></div></span><span>&nbsp;&nbsp;</span>", lastKnownRange||false);
+				else
+					insert_text($parent.find(".comment_textarea"), " "+symbol+" ");
+				$(".inline_emoticon").attr('contenteditable','false');	//force insert the attribute
+				newRange = document.createRange();
+
+				
 			})
+
         })
 		
 		$(".comment_like_btn").click(function() {

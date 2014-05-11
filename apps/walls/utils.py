@@ -42,18 +42,25 @@ def filetag_to_url(tag):
     filename, fileid, iconlink = tag.split('--@@!@@--');
     return reverse("view")+'?id='+fileid, filename, iconlink; 
 
-# TODO: merge parse_atwho and parse_atwho_file
+
 def parse_atwho(my_text):
     """
         Parses through the list form atwho and records file, dept, subdept, user references.
     """
     notification_list = []
     
-    link_regex = re.compile("\[(.*?)\] \((.*?)\)", re.IGNORECASE)
-    link_list = link_regex.findall(my_text)
+    markdown_link_regex = re.compile("\[.*?\] \((.*?) \".*?\"\)", re.IGNORECASE) # need  to test this.
+    direct_link_regex = re.compile("data-notify=\"(.*?)\"", re.IGNORECASE)
+    link_list = []
+    try:
+        link_list = markdown_link_regex.findall(my_text) + direct_link_regex.findall(my_text)
+    except:
+        link_list = []
+
+    #import pdb;pdb.set_trace();
     for i in link_list:
-        filename, iconLink, data = docs_list
-        _type, _id = data.split("#", 1)
+        #data = link_list
+        _type, _id = i.split("#", 1)
         # if _type == "doc":
         #     pass
         #     _url = reverse("view") + "?id=" + _id

@@ -25,16 +25,24 @@ var defaults = {
         "thumbnail", "thumbnailLink", "iconLink"
     ]
 
+// Load required files from googleapis. DO NOT call any of the other functions before this.
 
-var Drive = function(options) {
+
+var Drive = function( options ) {
 
     self = this // To use in callback functions to avoid this confusion
 
+
     self.chunkSize = 262144 // Has to be multiple of 262144
     self.options = $.extend({}, defaults, options || {});
+
+    //self.options = $.extend({}, defaults, options || {});
+    self.filesystem = new DriveFileRetreival();
+
     self.dir_contents = null
     self.finish_progress = 1
     self.current_progress = 0
+    
 
     self.init = function() {
         if (!self.options.authToken || !self.options.developerKey) {
@@ -47,8 +55,9 @@ var Drive = function(options) {
             expires_in: 2000
         }); // set the access token obtained from the server. OAuth2 automatically logs us in.
 
-        gapi.client.setApiKey(this.options.developerKey); //set our public api key
+        gapi.client.setApiKey(self.options.developerKey); //set our public api key
         gapi.client.load('drive', 'v2', self.gapi_drive_callback); // ask gapi to load API details for the drive api.
+        self.filesystem.init();
     }
 
     self.check_error = function(r) {
@@ -70,7 +79,7 @@ var Drive = function(options) {
 
     self.get_dir_contents = function(fid, callback) {
         fid = fid || $(".drive_parent").data("id") || self.options.rootFolder
-        gapi.client.drive.children.list({
+        /*gapi.client.drive.children.list({
             "folderId": fid,
         }).execute(function(response) {
             self.check_error(response)
@@ -83,27 +92,49 @@ var Drive = function(options) {
                 callback = callback || self.show_empty_dir
             }
             callback();
-        });
-        gapi.client.drive.files.get({
-            "fileId": fid,
-            "fields": ["id", "title", ],
-        }).execute(function(response) {
+
+        });*/
+    
+        // filesystem loads changes and merges with existing objects.
+        self.filesystem.loadByFile(fid,{finish:function(response) {
             self.check_error(response)
             self.set_drive_parent(response)
-        });
+        },cached:function(response){
+            self.set_drive_parent(response)
+        }},new Date(),true);
+
+        self.filesystem.loadByDir( fid, {finish:function(response) {
+                self.check_error(response)
+                self.dir_contents = response.items
+                self.finish_progress = response.items.length
+                self.current_progress = 0
+                callback = callback || self.show_dir_contents
+                callback();
+            },
+            cached: function(response){ 
+                self.finish_progress = response.items.length;
+                self.current_progress = 0;
+                self.dir_contents = response.items;
+                callback = self.show_dir_contents;
+                callback();
+            },
+
+        }, new Date() );
+
+        
+
     }
 
-    self.get_file_meta = function(fid, callback) {
-        gapi.client.drive.files.get({
-            "fileId": fid,
-            "fields": STANDARD_META_LIST,
-        }).execute(function(response) {
+    
+    self.get_file_meta = function(fid, callbacks ) {
+        self.filesystem.loadByFile( fid ,{finish:function(response) {
             self.check_error(response)
             self.current_progress += 1
-            self.progress()
-            callback = callback || self.show_file
+            self.progress();
+            callback = callbacks['finish'] || self.show_file
             callback(response);
-        });
+            f = response
+        },cached:callbacks['cached']}, new Date(), false);
     }
     self.rename_files = function(file_details, callback) {
         $.each(file_details, function(i, v) {
@@ -302,7 +333,11 @@ var Drive = function(options) {
             $(".empty_dir").hide()
         }
         $.each(folder_items, function(i, v) {
-            self.get_file_meta(v.id)
+                self.get_file_meta( v.id, {finish:function( filemeta ){
+                    callback = self.show_file
+                    callback( filemeta );
+                },cached:function( filemeta ){}
+            });
         })
         $(".drive_refresh").prop("disabled", false).removeClass("disabled")
         $(".drive_back").prop("disabled", false).removeClass("disabled")
@@ -347,7 +382,7 @@ var Drive = function(options) {
             $el.data("folder", "yes")
             $el.find(".info a").prop("href", "javascript:void(0)")
             $el.find(".info a").click(function(e) {
-                e.stopPropogation()
+                e.stopPropagation()
                 self.get_dir_contents($(this).closest(".drive_file").data("id"))
             })
         } else {
@@ -373,11 +408,44 @@ var Drive = function(options) {
         })
     }
 
+    self.show_parent = function (fid, num) {
+    	num = num | 0
+
+        self.finish_progress = 1;
+        self.current_progress = 0;
+        self.progress();
+
+    	self.get_file_meta(fid,{finish:function(r) {
+            if(r.parents == undefined){
+                self.get_dir_contents(r.id);
+            }else
+    		  if (r.parents.length) {
+    		  	   if ( r.parents.length > num+1)
+    				    num = 0
+    			     self.get_dir_contents(r.parents[num].id)
+	    		 }
+    	},cached:function(r){
+            if(r.parents == undefined){
+                self.get_dir_contents(r.id);
+            }else
+                if (r.parents.length) {
+                    if ( r.parents.length > num+1)
+                        num = 0
+                    self.get_dir_contents(r.parents[num].id)
+                }
+
+        }},new Date(), true);
+    }
+
     self.progress = function(val) {
-        val = val || (self.current_progress / self.finish_progress * 100).toFixed(0);
-        val = "" + val
-        $(".progress").css({
-            "width": val + "%",
+
+    	val = val || ( self.current_progress / self.finish_progress * 100 ).toFixed(0);
+        if(val>100)val = 100;
+    	val = "" + val
+
+        //console.log('progress set: '+val);
+    	$(".progress").css ( {
+        	"width" : val + "%",
         })
         $(".progress_val").text(val + "%")
         if ($.trim(val) == "100") {

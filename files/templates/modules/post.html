@@ -45,7 +45,7 @@
                 {% if post.subject %}
                 	<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} </p>
                 {% endif %}
-                {{ post.description|markdown:"my_default" }}
+                {{ post.description|markdown }}
 	        {% endautoescape %}
             </div>
 	        <div class="news_extra"></div>
@@ -180,6 +180,7 @@
         
 	}
     $( document ).ready(function() {
+    	
 	    $(".news_post").mouseover( function() {
             $(this).find(".news_post_settings").show()
         })
