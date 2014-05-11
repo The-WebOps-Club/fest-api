@@ -54,8 +54,19 @@ def global_context(request, token_info=True, user_info=True):
         'SETTINGS' : settings,
         'FEST_NAME' : settings.FEST_NAME,
     }
+    # Handle lite mode.
+    if('lite' in request.GET.keys()):
+        request.session['lite'] = request.GET['lite']
+    
+    if ('lite' in request.session.keys()):
+        if(request.session['lite'] == 'true'):
+            local_context['content_editable'] = 'false'
+        else:
+            local_context['content_editable'] = 'true'
+    else:
+        local_context['content_editable'] = 'true'
 
-    context =  RequestContext (request, local_context)
+    context =  RequestContext(request, local_context)
     return context
 
 # ------------------ FORM CUSTOMIZATIONS

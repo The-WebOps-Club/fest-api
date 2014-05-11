@@ -23,16 +23,84 @@
                     <input type="text" name="new_post_subject" id="id_new_post_subject" placeholder="Subject" class="span12" />
                     <div class="span12 new_post_textarea atwho_at_config resize_textarea new_post_primary" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here" contenteditable='true'></div>
                     <textarea class="span12 new_post_textarea atwho_at_config resize_textarea new_post_fallback" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here" style="display:none"></textarea>
+                    <div class="span12 post_links" style="display : none">
+                            <a href="javascript:void(0)" class="btn small attach_doc_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
+                                <i class="icon-attach"></i>
+                            </a>
+                            
+                            <a href="javascript:void(0)" class="btn small attach_pic_btn" data-placement="below" rel="twipsy" title="Attach a Picture">
+                                <i class="icon-pic"></i>
+                            </a>
+                            
+                            <a href="javascript:void(0)" class="btn small attach_link_btn" data-placement="below" rel="twipsy" title="Insert a Link">
+                                <i class="icon-link"></i>
+                            </a>
+                            
+                            <a href="javascript:void(0)" class="btn small attach_emoticon_btn" data-placement="below" rel="twipsy" title="Insert a Smiley">
+                                <i class="icon-smile"></i>
+                            </a>
 
-                </div>
-                <div class="new_post_bottom_bar" class="span12">
-                    <a class="btn primary small new_post_btn" href="javascript:void(0)"> Post
-                    </a>
+                            <a href="javascript:void(0)" class="btn primary new_post_btn">
+                                &nbsp;
+                                    <i class="icon-textbox-circle"></i>&nbsp; Post
+                                &nbsp;
+                            </a>
+                        </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
+{% once attach_popovers %}
+<div class="hidden insert_link_title">
+    <div class="insert_link_title_inner">
+        <span class="bold">Insert a link</span>
+    </div>
+</div>
+
+<div class="hidden insert_link_content">
+    <div class="insert_link_content_inner">
+        <span class="hidden for_comment"></span>
+        Text to display : <br />
+        <input class="input1" type="text" name="text" placeholder="Text to display"/><br />
+        <br />
+        <span class="input2_text">To which URL</span> : <br />
+        <input class="input2" type="text" name="link" placeholder="To what URL should this go to ?" /><br />
+        <div class="row-fluid">
+            <div class="span4">
+                <span class="insert_hyper_link">
+                    <input type="radio" name="type" value="link" class="insert_hyper_link" checked="checked" /> Link
+                </span>
+            </div>
+            <div class="span4">
+                <span class="insert_mail_link">
+                    <input type="radio" name="type" value="mail"  /> Mail
+                </span>
+            </div>
+            <div class="span4">
+                <a class="btn primary insert_link_from_popover" href="javascript:void(0)"> 
+                    OK
+                </a>
+            </div>
+        </div>
+    </div>  
+</div>
+
+<div class="hidden insert_emoticon_title">
+    <div class="insert_emoticon_title_inner">
+        <span class="bold">Insert an emoticon</span>
+    </div>
+</div>
+
+<div class="hidden insert_emoticon_content">
+    <div class="insert_emoticon_content_inner">
+        <span class="hidden for_comment"></span>
+        <div class="emoticon_table">
+        </div>
+    </div>  
+</div>
+
+{% endonce %}
 
 {% once new_post_styles_and_scripts %}
 <style>
@@ -108,6 +176,86 @@
 </style>
 
 <script type="text/javascript">
+
+
+    /*
+        Deprecated in favor of a much simpler function
+        Used only for IE.
+    */
+    function insert_text_manual(el, text) {
+        var $el = $(el), $ip, content;
+        if ($el.is('textarea, input')) {
+            content = $el.val();
+        } else {
+            content = $el.html();
+        }
+        var pos = $el.caret("pos")
+        var start_content = content.substr(0, pos)
+        var end_content = content.substr($el.caret("pos"), content.length)
+        var new_content = start_content + text + end_content
+        if ($el.is('textarea, input')) {
+            $el.val(new_content);
+        } else {
+            $el.html(new_content);
+        }
+        if(!contentEditableActive && $el.caret("pos", pos+text.length).trigger)
+            $el.caret("pos", pos+text.length).trigger('input.autosize')
+        
+    }
+
+    function insert_text(el, text, range){
+        $(el).focus();
+        if(range){
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+        }
+        document.execCommand('insertHTML', false, text);    // WARNING: NOT SUPPORTED BY IE. TODO: need to fallback to insert_text_manual       
+        lastKnownRange = range;
+    }
+
+    function attach_doc_post_callback(el, data) {
+        
+
+        if ( data.action != google.picker.Action.PICKED )
+            return
+
+        var $el = $(el).find(".post_textarea")
+        $el.closest(".new_post_wrapper").find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
+        var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
+        for ( var i = 0, d; d = data.docs[i]; i++ ) {
+            var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
+            if(!contentEditableActive)
+                text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+            else
+                text ='<a href="'+d.url+'"><img src=\''+d.iconUrl+'\'>' + clean_name + '</a>'
+            insert_text($el, text)
+        }
+    }
+
+    function attach_pic_post_callback(el, data) {
+        
+
+        var $el = $(el).find(".post_textarea")
+        $el.closest(".new_post_wrapper").find(".attach_pic_btn").removeData("clicked").prop("disabled", false).removeClass("disabled");
+        console.log('something');
+        console.log($el.closest(".new_post_wrapper").find(".attach_pic_btn"));
+        if ( data.action != google.picker.Action.PICKED )
+            return
+
+        var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
+        for ( var i = 0, d; d = data.docs[i]; i++ ) {
+            var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
+            if(!contentEditableActive)
+                text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+            else
+                text ='<a href="'+d.url+'"><img src=\''+d.iconUrl+'\'>' + clean_name + '</a>'
+
+            insert_text($el, text)
+        }
+    }
+    
+
+
 // FOcusing on the text areas
 
 function show_status_textarea(e) {
@@ -156,7 +304,22 @@ $(document).ready(function() {
                 $(this).closest("form").find(".new_post_btn").click()
                 e.preventDefault()
             }
+        }).focus( function() {
+            $(this).siblings(".post_links").show()
+            gapi.load('picker')
+            isInFocus = true;
+            var savedRange = 'undefined';
+            
+        }).focusout( function() {
+            //console.log($(this).closest('.post_btn:hover'));
+            if(!$('.post_links:hover').length)
+                $(this).siblings(".post_links").hide();
+
+            if(window.getSelection().rangeCount) 
+                lastKnownRange = window.getSelection().getRangeAt(0);
         })
+
+
     $(".new_post_primary").keyup(function(){
         
         console.log('changed');
@@ -179,6 +342,234 @@ $(document).ready(function() {
         $el_form.find(".new_post_btn").addClass("disabled").prop("disabled", true).html("<i class='icon-loading-circle'></i> Posting ...");
 
     });
+    $(".attach_doc_btn").click( function () {
+            var $el = $(this)
+            if ( $el.data("clicked") == "yes" )
+                return
+            $el.data("clicked", "yes").prop("disabled", true).addClass("disabled")
+            
+            var all_docsView = new google.picker.DocsView()
+                .setIncludeFolders(true)
+            
+            var my_docsView = new google.picker.DocsView()
+                .setIncludeFolders(true)
+                .setSelectFolderEnabled(true)
+                .setOwnedByMe(true)
+
+            var shared_docsView = new google.picker.DocsView()
+                .setIncludeFolders(true)
+                .setSelectFolderEnabled(true)
+                .setOwnedByMe(false)
+
+            // var starred_docsView = new google.picker.DocsView()
+            //     .setIncludeFolders(true)
+            //     .setSelectFolderEnabled(true)
+            //     .setStarred(true)
+
+            var recent_docsView = new google.picker.DocsView(google.picker.ViewId.RECENTLY_PICKED)
+
+            var uploadView = new google.picker.DocsUploadView()
+                .setIncludeFolders(true)
+            
+            var attach_doc_picker = new google.picker.PickerBuilder()
+                .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                .setOAuthToken(authToken)
+                .addView(all_docsView) // Google Drive
+                .addView(uploadView) // Upload 
+                .addView(recent_docsView) // Prev selected
+                .addView(my_docsView) // My Drive
+                .addView(shared_docsView) // Shared with me
+                //.addView(starred_docsView) // 
+                .setCallback(function(data) { 
+                    var $v = $el.closest(".new_post_wrapper"); 
+                    attach_doc_post_callback($v, data) }
+                )
+                .build()
+                .setVisible(true);
+        })
+
+        $(".attach_pic_btn").click( function () {
+
+            var $el = $(this)
+            if ( $el.data("clicked") == "yes" )
+                return
+            $el.data("clicked", "yes").prop("disabled", true).addClass("disabled")
+            var my_picView = new google.picker.DocsView(google.picker.ViewId.DOCS_IMAGES)
+                .setMode(google.picker.DocsViewMode.GRID)
+
+            var all_docsView = new google.picker.DocsView()
+                .setIncludeFolders(true)
+            
+            // var my_albumView = new google.picker.PhotoAlbumsView()
+            
+            // var my_picasaView = new google.picker.PhotosView()   
+
+            // var upload_picasaView = new google.picker.View(google.picker.ViewId.PHOTO_UPLOAD)
+            //  .setMode(DocsViewMode.GRID)
+
+            var search_imageView = new google.picker.ImageSearchView()
+            
+            var webcamView = new google.picker.WebCamView()
+
+            var uploadView = new google.picker.DocsUploadView()
+                .setIncludeFolders(true)
+            
+            var attach_doc_picker = new google.picker.PickerBuilder()
+                .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                .setOAuthToken(authToken)
+                .addView(my_picView)
+                .addView(uploadView)
+                //.addView(search_imageView)
+                //.addView(webcamView)
+                .addView(all_docsView)
+                .setCallback(function(data) { 
+                    var $v = $el.closest(".new_post_wrapper"); 
+                    attach_pic_post_callback($v, data) }
+                )
+                .build()
+                .setVisible(true);
+        })
+
+        $(".attach_link_btn").popover({
+            "animate": true,
+            "delayIn": 200,
+            "delayOut": 200,
+            "placement": "above",
+            "html": true,
+            "title": function(e) {
+                return $(".insert_link_title.hidden").html()
+            },
+            "content": function() {
+                var $el = $(this)
+                //$(".insert_link_content.hidden").find(".for_comment").prop("id", $el.closest(".post_container").prop("id"))
+                return $(".insert_link_content.hidden").html()
+            },
+            "trigger": "manual",
+            "myClass": "popover_insert_link"
+        })
+        $(".attach_link_btn").click( function (e) {
+            e.stopPropagation();
+            hide_popups()
+            var $el = $(this)
+            $el.popover("show")
+            $(".popover_insert_link").click(function(e) {
+                e.stopPropagation();
+            })
+            $(".insert_mail_link").click( function(e) {
+                $(this).find("input")[0].checked = true
+                var $temp = $(this).closest(".insert_link_content_inner");
+                $temp.find(".input2").prop("placeholder", "To which email address ?")
+                $temp.find(".input2_text").text("To which email address")
+            })
+            $(".insert_hyper_link").click( function(e) {
+                $(this).find("input")[0].checked = true
+                var $temp = $(this).closest(".insert_link_content_inner");
+                $temp.find(".input2").prop("placeholder", "To what URL should this go to ?")
+              $temp.find(".input2_text").text("To which URL")
+
+            })
+            $(".insert_link_from_popover").click( function(e) {
+                var $el = $(this).closest(".insert_link_content_inner")
+                var $parent = $(this).closest('.new_post_wrapper');
+                var text = $el.find(".input1").val()
+                var link = $el.find(".input2").val()
+                var mail_link = $(".insert_mail_link").find("input").is(":checked")
+                if (mail_link) 
+                    link = "mailto:" + $.trim(link)
+                else
+                    link = $.trim(link)
+                if(!contentEditableActive)
+                    insert_text($parent.find(".post_textarea"), "[" + text + "](" + link + ")")
+                else
+                    insert_text($parent.find(".post_textarea"), "<a href='"+link+"'>" + text + "</a>")
+            })
+        })
+        
+        $(".attach_emoticon_btn").popover({
+            "animate": true,
+            "delayIn": 200,
+            "delayOut": 200,
+            "placement": "top",
+            "html": true,
+            "title": function(e) {
+                return $(".insert_emoticon_title.hidden").html()
+            },
+            "content": function() {
+                var $el = $(this)
+                //$(".insert_emoticon_content.hidden").find(".for_comment").prop("id", $el.closest(".post_container").prop("id"))
+
+                return $(".insert_emoticon_content.hidden").html()
+            },
+            "trigger": "manual",
+            "myClass": "popover_insert_emoticon"
+        })
+        $(".attach_emoticon_btn").click( function (e) {
+            e.stopPropagation();
+            hide_popups()
+            var $el = $(this)
+            $el.popover("show")
+
+              
+
+            
+            
+            $(".popover_insert_emoticon").click(function(e) {
+                e.stopPropagation();
+            })
+            var $table = $(".popover_insert_emoticon").find(".emoticon_table")
+            var emoticon_keys = Object.keys(emoticons)
+            for ( var i = 0, name; name = emoticon_keys[i]; i++ ) {
+                var symbol = emoticons[name][0]
+
+                var text = "<div style='display : inline-block; cursor : pointer; padding : 4px; border : 1px solid #fff; height : 18px; width : 18px;' class='popover_icon'><i data-symbol='" + symbol +"' class='icon-" + name + "'></i></div>"
+                $table.append(text)
+            }
+            $(".emoticon_table .popover_icon").mouseover( function(e) {
+                $(this).css({ "background-color" : "#aaa", "border" : "1px solid #000" })
+            })
+            .mouseout( function(e) {
+                $(this).css({ "background-color" : "#fff", "border" : "1px solid #fff" })
+            })
+            .click( function(e) {
+                var $el = $(this).closest(".insert_emoticon_content_inner")
+                $rr = $el
+                var $parent = $(this).closest('.new_post_wrapper');
+                var symbol = $.trim($(this).find("i").data('symbol'));
+                var classtype = $.trim($(this).find("i").attr('class'));
+                // the <i> tag is messing everything up.
+                //if(contentEditableActive)
+                //  insert_text($parent.find(".post_textarea"), "<div contenteditable='false' class='"+classtype+"'></div>")
+                //else
+
+                if(!$(parent).find(".post_textarea").is(':focus')){
+                    console.log('resetting selection')
+                /*if (window.getSelection)//non IE and there is already a selection
+                {   
+                    var s = window.getSelection();
+                    if (s.rangeCount > 0) 
+                        range = s.getRangeAt(0);
+                        s.removeAllRanges();
+                        s.addRange(range);
+                }
+                else if (document.createRange)//non IE and no selection
+                    window.getSelection().addRange(savedRange);
+                else if (document.selection)//IE
+                    savedRange.select();
+                }*/
+            }
+                console.log(window.getSelection().getRangeAt(0));
+
+                if(contentEditableActive)
+                    insert_text($parent.find(".post_textarea"), "<span><div class='"+classtype+" inline_emoticon'></div></span><span>&nbsp;&nbsp;</span>", lastKnownRange||false);
+                else
+                    insert_text($parent.find(".post_textarea"), " "+symbol+" ");
+
+                $(".inline_emoticon").attr('contenteditable','false');  //force insert the attribute
+                newRange = document.createRange();
+            })
+
+        })
 })
 </script>
 {% endonce %}

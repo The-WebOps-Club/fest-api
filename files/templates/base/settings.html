@@ -72,6 +72,23 @@ $( document ).ready(function() {
                 </div>
             {% endfor %}
         {% endif %}
+        <div class='breakpoint'></div>
+        <div class="breaktitle">
+            Lite Mode:
+        </div>
+        {%if content_editable == 'true'%}
+        <div class='setting'>
+            <a href="?lite=true">
+                Restart ERP in Lite Mode
+            </a>
+        </div>
+        {%else%}
+        <div class='setting'>
+            <a href="?lite=false">
+                Restart ERP in Normal Mode
+            </a>
+        </div>
+        {%endif%}
     </div>
 </div>
 

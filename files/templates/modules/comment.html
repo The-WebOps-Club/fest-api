@@ -570,7 +570,6 @@
 				//	insert_text($parent.find(".comment_textarea"), "<div contenteditable='false' class='"+classtype+"'></div>")
 				//else
 
-
 				if(!$(parent).find(".comment_textarea").is(':focus')){
 					console.log('resetting selection')
 				/*if (window.getSelection)//non IE and there is already a selection
@@ -589,9 +588,12 @@
             }
             	console.log(window.getSelection().getRangeAt(0));
 
+            	if(contentEditableActive)
 					insert_text($parent.find(".comment_textarea"), "<span><div class='"+classtype+" inline_emoticon'></div></span><span>&nbsp;&nbsp;</span>", lastKnownRange||false);
-					$(".inline_emoticon").attr('contenteditable','false');	//force insert the attribute
-					newRange = document.createRange();
+				else
+					insert_text($parent.find(".comment_textarea"), " "+symbol+" ");
+				$(".inline_emoticon").attr('contenteditable','false');	//force insert the attribute
+				newRange = document.createRange();
 
 				
 			})
