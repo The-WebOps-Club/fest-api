@@ -162,7 +162,7 @@ class Comment(PostInfo):
                     action_object=self, # the model on which something happened - POST
                     target=parent_post, # The model which got affected - POST
                     # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
-                    description = 'wall:'+format(self.wall.pk),
+                    description = 'wall:'+format(parent_wall.pk),
                 )
 
 
