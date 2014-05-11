@@ -24,19 +24,19 @@
                     <div class="span12 new_post_textarea atwho_at_config resize_textarea new_post_primary" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here" contenteditable='true'></div>
                     <textarea class="span12 new_post_textarea atwho_at_config resize_textarea new_post_fallback" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here" style="display:none"></textarea>
                     <div class="span12 post_links" style="display : none">
-                            <a href="javascript:void(0)" class="btn small attach_doc_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
+                            <a href="javascript:void(0)" class="btn small attach_doc_post_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
                                 <i class="icon-attach"></i>
                             </a>
                             
-                            <a href="javascript:void(0)" class="btn small attach_pic_btn" data-placement="below" rel="twipsy" title="Attach a Picture">
+                            <a href="javascript:void(0)" class="btn small attach_pic_post_btn" data-placement="below" rel="twipsy" title="Attach a Picture">
                                 <i class="icon-pic"></i>
                             </a>
                             
-                            <a href="javascript:void(0)" class="btn small attach_link_btn" data-placement="below" rel="twipsy" title="Insert a Link">
+                            <a href="javascript:void(0)" class="btn small attach_link_post_btn" data-placement="below" rel="twipsy" title="Insert a Link">
                                 <i class="icon-link"></i>
                             </a>
                             
-                            <a href="javascript:void(0)" class="btn small attach_emoticon_btn" data-placement="below" rel="twipsy" title="Insert a Smiley">
+                            <a href="javascript:void(0)" class="btn small attach_emoticon_post_btn" data-placement="below" rel="twipsy" title="Insert a Smiley">
                                 <i class="icon-smile"></i>
                             </a>
 
@@ -125,6 +125,7 @@
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: 1px;
+    resize:vertical;
 }
 .new_post_text .new_post_textarea::placeholder {
     color : #AAA;
@@ -177,7 +178,7 @@
 
 <script type="text/javascript">
 
-
+     
     /*
         Deprecated in favor of a much simpler function
         Used only for IE.
@@ -235,8 +236,8 @@
     function attach_pic_post_callback(el, data) {
         
 
-        var $el = $(el).find(".post_textarea")
-        $el.closest(".new_post_wrapper").find(".attach_pic_btn").removeData("clicked").prop("disabled", false).removeClass("disabled");
+        var $el = $(".new_post_textarea");
+        $el.closest(".new_post_wrapper").find(".attach_pic_post_btn").removeData("clicked").prop("disabled", false).removeClass("disabled");
         console.log('something');
         console.log($el.closest(".new_post_wrapper").find(".attach_pic_btn"));
         if ( data.action != google.picker.Action.PICKED )
@@ -289,7 +290,7 @@ $(document).ready(function() {
             $('.new_post_primary').css('display','none');
             $('.new_post_fallback').css('display','block');
         }
-
+    $(".new_post_primary").ckeditor(function(){console.log('not work')},{'skin':'kama','extraPlugins':'autogrow'});
     $(".new_post_wrapper").focusin(show_status_textarea);
 
     // Submitting Forms
@@ -309,21 +310,24 @@ $(document).ready(function() {
             gapi.load('picker')
             isInFocus = true;
             var savedRange = 'undefined';
-            
+            //$(this).css('height','200px');
         }).focusout( function() {
             //console.log($(this).closest('.post_btn:hover'));
             if(!$('.post_links:hover').length)
                 $(this).siblings(".post_links").hide();
-
+            //$(this).css('height','200px');
             if(window.getSelection().rangeCount) 
                 lastKnownRange = window.getSelection().getRangeAt(0);
+            
         })
 
 
     $(".new_post_primary").keyup(function(){
         
         console.log('changed');
+        
     });
+
     $(".new_post_btn").click(function() {
         $el_form = $(this).closest("form")
         if(contentEditableActive)
@@ -342,7 +346,7 @@ $(document).ready(function() {
         $el_form.find(".new_post_btn").addClass("disabled").prop("disabled", true).html("<i class='icon-loading-circle'></i> Posting ...");
 
     });
-    $(".attach_doc_btn").click( function () {
+    $(".attach_doc_post_btn").click( function () {
             var $el = $(this)
             if ( $el.data("clicked") == "yes" )
                 return
@@ -388,7 +392,7 @@ $(document).ready(function() {
                 .setVisible(true);
         })
 
-        $(".attach_pic_btn").click( function () {
+        $(".attach_pic_post_btn").click( function () {
 
             var $el = $(this)
             if ( $el.data("clicked") == "yes" )
@@ -431,7 +435,7 @@ $(document).ready(function() {
                 .setVisible(true);
         })
 
-        $(".attach_link_btn").popover({
+        $(".attach_link_post_btn").popover({
             "animate": true,
             "delayIn": 200,
             "delayOut": 200,
@@ -448,7 +452,7 @@ $(document).ready(function() {
             "trigger": "manual",
             "myClass": "popover_insert_link"
         })
-        $(".attach_link_btn").click( function (e) {
+        $(".attach_link_post_btn").click( function (e) {
             e.stopPropagation();
             hide_popups()
             var $el = $(this)
@@ -486,7 +490,7 @@ $(document).ready(function() {
             })
         })
         
-        $(".attach_emoticon_btn").popover({
+        $(".attach_emoticon_post_btn").popover({
             "animate": true,
             "delayIn": 200,
             "delayOut": 200,
@@ -504,7 +508,7 @@ $(document).ready(function() {
             "trigger": "manual",
             "myClass": "popover_insert_emoticon"
         })
-        $(".attach_emoticon_btn").click( function (e) {
+        $(".attach_emoticon_post_btn").click( function (e) {
             e.stopPropagation();
             hide_popups()
             var $el = $(this)
