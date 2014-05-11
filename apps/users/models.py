@@ -232,6 +232,7 @@ class ERPProfile(models.Model):
         
     def last_seen(self):
         return cache.get('seen_%s' % self.user.username)
+        # return self.user.last_login
 
     def online(self):
         if self.last_seen():
@@ -274,6 +275,7 @@ class ERPProfile(models.Model):
     
     def relations_count(self):
         return self.core_relations.count() + self.supercoord_relations.count() + self.coord_relations.count()
+
     def save(self, *args, **kwargs):
         if not hasattr(self.user, "profile"):
             user_profile = UserProfile(user=self.user)
