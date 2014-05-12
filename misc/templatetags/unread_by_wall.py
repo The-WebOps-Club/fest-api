@@ -6,9 +6,4 @@ register = template.Library()
 
 @register.filter(name="unread_by_wall")
 def unread_by_wall(value,wid):
-	count = 0
-	for i in value.notifications.unread():
-		if (i.target.wall.id == wid):
-			count+=1
-
-	return count
+	return value.notifications.unread().filter(description__contains = 'wall:'+format(wid)).count();

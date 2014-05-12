@@ -14,7 +14,7 @@ class Command(BaseCommand):
     """
     help = 'Automatically parses existing markdown based HTML'
 
-    def handle(self, edit_all = 'false', debug = 'true',comment_end=-1, post_end=-1,**options):
+    def handle(self, edit_all = 'true', debug = 'true',comment_end=-1, post_end=-1,**options):
         for c in Comment.objects.all() :
             if edit_all or ( comment_end != -1 and c.pk < comment_end) :
                 try:
@@ -25,7 +25,6 @@ class Command(BaseCommand):
                 except Exception as e:
                     if debug:
                         print(e.message)
-                    
 
                 c.save();
 
