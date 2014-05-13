@@ -50,22 +50,18 @@ def global_context(request, token_info=True, user_info=True):
         'user_profile' : profile,
         'session' : request.session,
         'google_access_token' : token,
+        'experimental' : settings.EXPERIMENTAL_MODE,
         'SITE_URL' : settings.SITE_URL,
-        'SETTINGS' : settings,
         'FEST_NAME' : settings.FEST_NAME,
+        'SETTINGS' : settings,
     }
-    # Handle lite mode.
-    if('lite' in request.GET.keys()):
-        request.session['lite'] = request.GET['lite']
-    
-    if ('lite' in request.session.keys()):
-        if(request.session['lite'] == 'true'):
-            local_context['content_editable'] = 'false'
-        else:
-            local_context['content_editable'] = 'true'
-    else:
-        local_context['content_editable'] = 'true'
 
+    # Handle experimental mode.
+    if 'experimental' in request.GET.keys(): # Take from get
+        request.session['experimental'] = request.GET['experimental']
+    if ('experimental' in request.session.keys()): # Take from preset value
+        local_context['experimental'] = request.session['experimental']
+    
     context =  RequestContext(request, local_context)
     return context
 

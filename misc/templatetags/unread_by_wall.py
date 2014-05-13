@@ -5,7 +5,7 @@ from django.http.request import QueryDict
 register = template.Library()
 
 @register.filter(name="unread_by_wall")
-def unread_by_wall(value,wid):
+def unread_by_wall(value, wid):
 	count = 0
 	for i in value.notifications.unread():
 		if (i.target.wall.id == wid):

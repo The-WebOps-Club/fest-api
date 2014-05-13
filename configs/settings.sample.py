@@ -66,5 +66,19 @@ SOCIAL_AUTH_FACEBOOK_SECRET          = 'fd6da85c30b673d399ea6e61180e35da'
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY        = '186928535147.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET     = 'N2LxEfSraUVwC79sn4aqtqFE'
     # Twitter
-SOCIAL_AUTH_TWITTER_KEY                 = 'JfZ6GDYPaUaUu3HMfBVEA'
-SOCIAL_AUTH_TWITTER_SECRET              = '7YKPtkVLEYpoWXtbDwxMqKwZWYCXXm7IkxmjoWg'
+SOCIAL_AUTH_TWITTER_KEY              = 'JfZ6GDYPaUaUu3HMfBVEA'
+SOCIAL_AUTH_TWITTER_SECRET           = '7YKPtkVLEYpoWXtbDwxMqKwZWYCXXm7IkxmjoWg'
+
+
+# INSTALLED APPS SETTINGS
+    # Django Debug Toolbar
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+    # Django post office
+# EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+# EMAIL_FILE_PATH = 'full_path_for_emails'
+    # Django compressor conditions
+COMPRESS_ENABLED = False
+    # FEST api settings
+EXPERIMENTAL_MODE = "true" # NOTE : should be a string
+    # Dajaxice
+# DAJAXICE_MEDIA_PREFIX = "2015/erptest/dajaxice"

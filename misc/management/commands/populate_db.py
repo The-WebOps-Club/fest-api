@@ -156,7 +156,7 @@ class Command(BaseCommand):
                 user.set_password(pass_key)
                 user.save()
                 erp_profile, created_it = ERPProfile.objects.get_or_create(user=user)
-                erp_profile.core_relations.add(dept)
+				erp_profile.core_relations.add(dept)
                 
                 erp_profile.save()
 

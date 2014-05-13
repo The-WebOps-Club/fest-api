@@ -76,3 +76,11 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	. Next, generate schema from ```python manage.py build_solr_schema```. Take the output from that command and place it in ```apache-solr-3.5.0/example/solr/conf/schema.xml```. Then restart Solr
 	. Solr needs to be run continuously on server
 	. Ref: http://django-haystack.readthedocs.org/en/latest/installing_search_engines.html
+
+
+
+
+------------------------------------------------------------------------------------------------------
+
+Experimental Features :
+ - Content Editable divs

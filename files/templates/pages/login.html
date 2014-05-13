@@ -52,7 +52,7 @@
 {% block full_content %}
     <div class='row-fluid below_loginbar'>
         <div class='span5 offset1'>
-            <img src="{% static 'img/fest_pics/login_page_logo.png' %}" style="width : 100%; height : auto;"/>
+            <img src="{% static 'img/fest_pics/login_page_logo.jpg' %}" style="width : 100%; height : auto;"/>
             {% if current_page == "login" %}
             {% elif current_page == "associate" %}
             {% endif %}
@@ -209,7 +209,6 @@
         // Form submission 
         function login_form_submit() {
             $('form#login_form').submit();
-            console.log($('#login_form'))
         }
         $("#id_submit").click(login_form_submit);
         $('form#login_form input').on('keyup', function(e) {
