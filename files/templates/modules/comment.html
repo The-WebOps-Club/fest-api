@@ -15,9 +15,9 @@
 					<div class="span12">
 					    {% csrf_token %}
 					    <div
-					    	class="comment_textarea atwho_at_config resize_textarea span12 comment_primary"
+					    	class="comment_textarea atwho_at_config span12 comment_primary"
 					    	name="comment" 
-					    	rows="1" 
+					    	style='min-height:80px;max-height:200px;'
 					    	data-postid="{{ post.id }}"
 					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." contenteditable='true'><span></span></div>	<!-- The extra span prevents some twisty bugs related to atwho.-->
 					    <textarea
@@ -189,6 +189,9 @@
 		border: 1px #DDD solid;
 		font-size: 14px;
 	}
+	.comment_primary{
+		resize:vertical;
+	}
 	.btn.post_btn {
 		float: right;
 		padding: 3px 5px;
@@ -291,9 +294,9 @@
 		if(!contentEditableActive){
 			$('.comment_primary').css('display','none').removeClass('comment_textarea');
 			$('.comment_fallback').css('display','block').addClass('comment_textarea');
+		}else{
+			//tinymce.init({mode:'div.comment_textarea'});
 		}
-
-
 
 		$(".post_btn").click(function() {
 			$el_form = $(this).closest("form");
@@ -316,9 +319,11 @@
         	}
         	 
         	if(contentEditableActive)
-        		post_data['comment'] = $el.html();  
+        		post_data['comment'] = $el.html().replace('>','> ').replace('<',' <'.replace('&nbsp;',' &nbsp; '));  
         	else 
         		post_data['comment'] = $el.val();
+        	console.log(post_data);
+        	// need some preprocessing
 
         	Dajaxice.apps.walls.create_comment(dajax_create_comment, post_data );
         	$el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
@@ -334,6 +339,8 @@
         	if (e.ctrlKey && e.keyCode == 13) { // Ctrl+Enter
             	e.preventDefault() // to avoid auto submit of forms
             }
+            //$el.css('resize','vertical');
+            //e.stopPropagation();
 		})
 		.keyup(function (e) {
         	e = e || event;
@@ -342,22 +349,28 @@
             	$(this).closest("form").find(".post_btn").click()
             	e.preventDefault()
             }
+            //$el.css('resize','vertical');
             if(window.getSelection().rangeCount) 
             	lastKnownRange = window.getSelection().getRangeAt(0);
-        })
-        .focus( function() {
+            //e.stopPropagation();
+            //$(".comment_textarea").off('input');
+        }).focus( function(e) {
         	$(this).siblings(".comment_links").show()
         	gapi.load('picker')
         	isInFocus = true;
     		var savedRange = 'undefined';
-    		
-        }).focusout( function() {
+    		//$el.css('resize','vertical');
+
+        }).focusout( function(e) {
         	//console.log($(this).closest('.post_btn:hover'));
         	if(!$('.comment_links:hover').length)
         		$(this).siblings(".comment_links").hide();
 
         	if(window.getSelection().rangeCount) 
             	lastKnownRange = window.getSelection().getRangeAt(0);
+            //$el.css('resize','vertical');
+
+        
         	//gapi.load('picker')
         	/*if(window.getSelection)//non IE Browsers
     		{

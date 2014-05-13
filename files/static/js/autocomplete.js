@@ -147,7 +147,7 @@ function setup_autocomplete_files() {
         },
     }
     if(contentEditableActive)
-        at_config_file.tpl = "<li data-value='<a href=\""+site_url+"docs/view/?id=${id}\"><img src=\"${iconlink}\" style=\"width:16px;height:16px\">${name}</a>'>${name} <small>${small}</small></li>";
+        at_config_file.tpl = "<li data-value='<a href=\""+site_url+"docs/view/?id=${id}\"><img src=\"${iconlink}\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name} <small>${small}</small></li>";
     $('.atwho_at_config').atwho(at_config_file);
 }
 
@@ -214,7 +214,7 @@ function setup_autocomplete_lists() {
         // },
     }
     if(contentEditableActive)
-        at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><img src=\""+site_url+"static/img/neutral.png\" style=\"width:16px;height:16px\">${name}</a>'>${name} <small>${small}</small></li>"
+        at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><img src=\""+site_url+"static/img/neutral.png\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name} <small>${small}</small></li>"
 
     all_list = atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list)
     $("#topbar_search_input").atwho({
