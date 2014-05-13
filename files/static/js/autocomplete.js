@@ -318,7 +318,6 @@ function setup_autocomplete_lists() {
                         if ( ! data["fbid"] || data["fbid"] == "" ) {
                             data["fbid"] = fest_fbid;
                         }
-                        console.log(".." + data["fbid"] + "..")
                         var pic_src = "http://graph.facebook.com/" + data["fbid"] +  "/picture?height=" + size + "&width=" + size;
                         $v.prop("src", pic_src);
                         //var filter_users = $.grep(atwho_user_list, function(a) { return a.id == data["id"] } )
