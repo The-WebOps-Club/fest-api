@@ -231,7 +231,7 @@ CACHES = {
 USER_ONLINE_TIMEOUT = 600 #=10mins # Number of seconds of inactivity before a user is marked offline
 USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7 #=1week # Number of seconds that we will keep track of inactive users for before their last seen is removed from the cache
     # LITE MODE ON setting
-UNSTABLE_MODE = True
+EXPERIMENTAL_MODE = True
 
 # Post Office
 EMAIL_BACKEND = 'post_office.EmailBackend'
