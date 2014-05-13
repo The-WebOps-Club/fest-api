@@ -21,7 +21,7 @@
 					    	data-postid="{{ post.id }}"
 					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." contenteditable='true'><span></span></div>	<!-- The extra span prevents some twisty bugs related to atwho.-->
 					    <textarea
-					    	class=" atwho_at_config resize_textarea span12 comment_fallback"
+					    	class="atwho_at_config resize_textarea span12 comment_fallback"
 					    	name="comment" 
 					    	rows="1" 
 					    	data-postid="{{ post.id }}"
@@ -551,10 +551,6 @@
 			var $el = $(this)
 			$el.popover("show")
 
-			  
-
-        	
-    		
 			$(".popover_insert_emoticon").click(function(e) {
 				e.stopPropagation();
 			})
@@ -573,38 +569,34 @@
 				$(this).css({ "background-color" : "#fff", "border" : "1px solid #fff" })
 			})
 			.click( function(e) {
+				var $this = $(this)
 				var $el = $(this).closest(".insert_emoticon_content_inner")
-				$rr = $el
 				var $parent = $(".post_container#" + $el.find(".for_comment").prop("id"))
-				var symbol = $.trim($(this).find("i").data('symbol'));
-				var classtype = $.trim($(this).find("i").attr('class'));
-				// the <i> tag is messing everything up.
-				//if(contentEditableActive)
-				//	insert_text($parent.find(".comment_textarea"), "<div contenteditable='false' class='"+classtype+"'></div>")
-				//else
+				var symbol = $.trim($this.find("i").data('symbol'));
+				var classtype = $.trim($this.find("i").attr('class'));
 
-				if(!$(parent).find(".comment_textarea").is(':focus')){
+				if(! $parent.find(".comment_textarea").is(':focus')){
 					console.log('resetting selection')
-				/*if (window.getSelection)//non IE and there is already a selection
-        		{	
-            		var s = window.getSelection();
-            		if (s.rangeCount > 0) 
-                		range = s.getRangeAt(0);
-                		s.removeAllRanges();
-	            		s.addRange(range);
-    	    	}
-        		else if (document.createRange)//non IE and no selection
-        			window.getSelection().addRange(savedRange);
-        		else if (document.selection)//IE
-            		savedRange.select();
-            	}*/
-            }
+					/*if (window.getSelection)//non IE and there is already a selection
+	        		{	
+	            		var s = window.getSelection();
+	            		if (s.rangeCount > 0) 
+	                		range = s.getRangeAt(0);
+	                		s.removeAllRanges();
+		            		s.addRange(range);
+	    	    	}
+	        		else if (document.createRange)//non IE and no selection
+	        			window.getSelection().addRange(savedRange);
+	        		else if (document.selection)//IE
+	            		savedRange.select();
+	            	}*/
+	            }
             	console.log(window.getSelection().getRangeAt(0));
 
             	if(contentEditableActive)
-					insert_text($parent.find(".comment_textarea"), "<span><div class='"+classtype+" inline_emoticon'></div></span><span>&nbsp;&nbsp;</span>", lastKnownRange||false);
+					insert_text($parent.find(".comment_textarea"), "<span><div class='" + classtype + " inline_emoticon'></div></span><span>&nbsp;&nbsp;</span>", lastKnownRange||false);
 				else
-					insert_text($parent.find(".comment_textarea"), " "+symbol+" ");
+					insert_text($parent.find(".comment_textarea"), " " + symbol + " ");
 				$(".inline_emoticon").attr('contenteditable','false');	//force insert the attribute
 				newRange = document.createRange();
 
