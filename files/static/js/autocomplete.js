@@ -90,7 +90,6 @@ function setup_autocomplete_files() {
                     "small": "Loading ...",
                     "iconlink": site_url + "static/img/loading-dice.gif",
                 }]);
-                console.log('refreshing list');
                 /* check if gapi is loaded, authorized and linked with drive*/
                 if ( gapi && gapi.client && gapi.client.drive) {
                     if (query != '') {
