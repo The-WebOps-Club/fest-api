@@ -277,7 +277,7 @@ def quick_post(request, post_form):
     return json.dumps({ 'append_string': append_string })
 
 @dajaxice_register
-def create_comment(request, post_id, csrf_data, comment):
+def create_comment(request, post_id, data):
     """
         Creates a new comment on a Post
     """
@@ -293,9 +293,8 @@ def create_comment(request, post_id, csrf_data, comment):
     
     # Create a new comment
     append_string = ""
-    data = deserialize_form(csrf_data).dict()
-    
-    data['comment'] = comment
+    data = deserialize_form(data).dict()
+
     print data
     # Attempt to get the post for the comment
     post = get_object_or_None(Post, id=int(post_id))
