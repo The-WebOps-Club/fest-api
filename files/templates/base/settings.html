@@ -42,7 +42,7 @@ $( document ).ready(function() {
 <div class="hidden settings_title">
     <div class="settings_title_inner">
         <span class="bold settings_title">Settings</span>
-        <span class="pull-right settings_link"><a href="#">Edit Profile</a></span>
+        <span class="pull-right settings_link"><a href="{% url 'profile' %}">Edit Profile</a></span>
     </div>
 </div>
 <div class="hidden settings_content">
@@ -55,18 +55,18 @@ $( document ).ready(function() {
         <div class="breaktitle">
             Experimental Features :
         </div>
-        {% if content_editable == 'true' %}
-        <div class='setting'>
-            <a href="?experimental=true">
-                Restart ERP in experimental Mode
-            </a>
-        </div>
+        {% if experimental == 'true' %}
+            <div class='setting'>
+                <a href="?experimental=false">
+                    Use ERP in Experimental Mode
+                </a>
+            </div>
         {% else %}
-        <div class='setting'>
-            <a href="?experimental=false">
-                Restart ERP in Normal Mode
-            </a>
-        </div>
+            <div class='setting'>
+                <a href="?experimental=true">
+                    Use ERP in stable Mode
+                </a>
+            </div>
         {% endif %}
         
         <div class='breakpoint'></div>

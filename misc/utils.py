@@ -61,7 +61,7 @@ def global_context(request, token_info=True, user_info=True):
         request.session['experimental'] = request.GET['experimental']
     if ('experimental' in request.session.keys()): # Take from preset value
         local_context['experimental'] = request.session['experimental']
-    
+    print local_context["experimental"]
     context =  RequestContext(request, local_context)
     return context
 
