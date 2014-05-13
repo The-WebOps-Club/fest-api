@@ -101,16 +101,11 @@
 
 <script>
 	function dajax_get_notifs(data){
-		console.log(data)
-	    if (!data.exhausted) {
-	    	console.log("data not exhausted")
+		if (!data.exhausted) {
 	        $(".notifs_contents_inner .see_more_notifs").before(data.append_string);
 	        // $(".notifButton").click() // refresh popover ...
-    	    console.log($(".notifs_contents_inner .see_more_notifs"))
-	        $value = $(".notifs_contents_inner .current_page_notifs")
+    	    $value = $(".notifs_contents_inner .current_page_notifs")
 	        $value.val( parseInt($value.val()) + 1 );
-	        console.log("val changed")
-	        console.log($value)
 	        $(".notifs_contents_inner .see_more_notifs").removeClass("disabled").prop("disabled", false).removeData("clicked").text("See more")
     	}
     	else {
@@ -150,14 +145,11 @@
 	        	e.stopPropagation();
 	        	el = this; $el = $(this)
 				if ( $el.data("clicked") ) {
-					console.log("debounce")
-	                return
+					return
 	            }
-            	console.log("clicked")
-				Dajaxice.apps.walls.get_notifs(dajax_get_notifs, {
+            	Dajaxice.apps.walls.get_notifs(dajax_get_notifs, {
 				    'page' : parseInt($('.popover_notifs .current_page_notifs').val())+1, 
 				})
-				console.log(parseInt($('.popover_notifs .current_page_notifs').val())+1)
 				$el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading more notifications")
 			})
 			e.preventDefault()

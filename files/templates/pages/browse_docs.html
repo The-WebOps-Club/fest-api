@@ -349,16 +349,13 @@ function init_button_bar() {
     $holder.bind("dragenter dragover", function(e) {
         e = e.originalEvent
         var $target = $(e.target)
-        console.log($target[0])
         f = $target
         var $drive_file = $target.closest(".drive_file")
         var $drive_back = $target.closest(".drive_back")
 
         if ( $drive_file.length && $drive_file.data("folder") != "yes" ) {
-            console.log($drive_file.length)
             $drive_file = $(".drive_parent")
         } else if ( $drive_back.length ) {
-            console.log($drive_back)
             $drive_file = $drive_back    
         }
         $drive_file.addClass("ondrag")
@@ -445,7 +442,6 @@ function move_picker_done(data, not_picker) {
     if ( not_picker || data.action == google.picker.Action.PICKED) {
         folder = data.docs[0];
         if (folder.mimeType != MIME_TYPES["folder"]) {
-            console.log("Woah there : You did not select a folder")
             alert("Woah there : You did not select a folder")
             return
         } else {
