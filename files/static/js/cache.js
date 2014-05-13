@@ -1,10 +1,25 @@
 /*
 *	FEST API background cache system.
-*	Currently operates off a hard cache and a soft cache.
-*	the hard cache auto loads files on the background and stores them on the local machine thus reducing the load times.
-*	the soft cache stores search results on global vars in order mimic a decent amount of common sense. Does NOT store data on the client machine.
 */
-var CACHE_VERSION = "1.0";
+var CACHE_VERSION = "1.1";
+var STORAGE_PREFIX = "pre1";
+
+var VirtualStorage = function( contextPrefix ){
+	//var obj0 = {};
+	this.contexts = localStorage[contextPrefix+'contexts'];
+	this.num_contexts = localStorage[contextPrefix+'num_contexts'];
+	this.CacheVersion = localStorage[contextPrefix+'CacheVersion'];
+	this.update = function(){
+		localStorage[contextPrefix+'contexts'] = this.contexts;
+		localStorage[contextPrefix+'num_contexts'] = this.num_contexts;
+		localStorage[contextPrefix+'CacheVersion'] = this.CacheVersion;
+	}
+	this.clear = function(){
+		localStorage.removeItem(contextPrefix+'contexts');
+		localStorage.removeItem(contextPrefix+'num_contexts');
+		localStorage.removeItem(contextPrefix+'CacheVersion');
+	}
+}
 
 var ContextController = function(){
 
@@ -16,17 +31,17 @@ var ContextController = function(){
 	this.contextType = 'context#unknown'
 	this.staticdata = {};
 	this.contextNumber = -1;
-
+	this.virtualStorage = new VirtualStorage( STORAGE_PREFIX );
 
 	this.initCache = function( contextNumber, contextType ){
 		this.contextNumber = contextNumber;
 		var storage = {};
 		storage.contexts = []
 		storage.num_contexts = 0;
-		if(localStorage.contexts != undefined )
-			storage.contexts = JSON.parse(localStorage.contexts);
-		if(localStorage.num_contexts != undefined )
-			storage.num_contexts = parseInt(localStorage.num_contexts);
+		if(this.virtualStorage.contexts != undefined )
+			storage.contexts = JSON.parse(this.virtualStorage.contexts);
+		if(this.virtualStorage.num_contexts != undefined )
+			storage.num_contexts = parseInt(this.virtualStorage.num_contexts);
 
 		//console.log(storage);
 		if(storage.contexts[ contextNumber ] != undefined){
@@ -45,7 +60,8 @@ var ContextController = function(){
 			this.contextNumber = storage.num_contexts;
 			this.staticdata = {changed:true,hits:0};
 			storage.num_contexts ++;
-			localStorage.num_contexts = storage.num_contexts.toString();
+			this.virtualStorage.num_contexts = storage.num_contexts.toString();
+			this.virtualStorage.update();
 		}
 	}
 
@@ -53,8 +69,8 @@ var ContextController = function(){
 	// cache files using the date parameter
 	this.cacheFiles = function( datetime ){
 		storage = []
-		if(localStorage.contexts !=undefined)
-			storage.contexts = JSON.parse(localStorage.contexts);
+		if(this.virtualStorage.contexts !=undefined)
+			storage.contexts = JSON.parse(this.virtualStorage.contexts);
 		else
 			storage.contexts = [];
 
@@ -66,7 +82,8 @@ var ContextController = function(){
 		storage.contexts[this.contextNumber].lastUpdated = datetime.toISOString();
 		storage.contexts[this.contextNumber].contextType = this.contextType;
 		storage.contexts[this.contextNumber].staticdata = JSON.stringify(this.staticdata)
-		localStorage.contexts = JSON.stringify(storage.contexts);
+		this.virtualStorage.contexts = JSON.stringify(storage.contexts);
+		this.virtualStorage.update();
 
 	}
 
@@ -80,12 +97,11 @@ var ContextController = function(){
 	}
 
 	this.syncFiles = function(){
-		localStorage.contexts = JSON.parse(localStorage.contexts);
-		this.files = JSON.parse( localStorage.contexts[this.contextNumber].files );
-		this.fileIds = JSON.parse( localStorage.contexts[this.contextNumber].fileIds );
-		this.lastUpdated = new Date( localStorage.contexts[this.contextNumber].lastUpdated );
-		this.contextType = localStorage.contexts[this.contextNumber].contextType ;
-		this.staticdata = JSON.parse( localStorage.contexts[this.contextNumber].staticdata );
+		this.files = JSON.parse( storage.contexts[this.contextNumber].files );
+		this.fileIds = JSON.parse( storage.contexts[this.contextNumber].fileIds );
+		this.lastUpdated = new Date( storage.contexts[this.contextNumber].lastUpdated );
+		this.contextType = storage.contexts[this.contextNumber].contextType;
+		this.staticdata = JSON.parse( storage.contexts[this.contextNumber].staticdata );
 	}
 
 	this.pushFiles = function( fileList ){
@@ -102,11 +118,17 @@ var ContextController = function(){
 
 }
 
-function validateCache(){
+function validateVirtualCache( storagePrefix ){
 	// if cache is non-existent or if the cache format is outdated.. reset the local cache to prevent cache inconsistencies.
-	if(localStorage.CacheVersion == undefined || localStorage.CacheVersion != CACHE_VERSION){
-		localStorage.clear();
-		localStorage.CacheVersion = CACHE_VERSION;
+	var virtualStorage = new VirtualStorage( storagePrefix );
+	console.log(virtualStorage);
+	if(virtualStorage.CacheVersion == undefined || virtualStorage.CacheVersion != CACHE_VERSION){
+		console.log('invalid cache version');
+		virtualStorage.clear();
+		virtualStorage.CacheVersion = CACHE_VERSION;
+		virtualStorage.num_contexts = 0;
+
+		virtualStorage.update();
 	}
 }
 
@@ -125,7 +147,7 @@ var FileMetaCache = function(){
 	this.init = function(){
 		//console.log(localStorage.num_contexts);
 		var i = 0;
-		var max = localStorage.num_contexts;
+		var max = new VirtualStorage( STORAGE_PREFIX ).num_contexts;
 		for( i = 0; i<parseInt(max); i++ ){
 			controller = new ContextController( );
 			controller.initCache( i );
@@ -154,7 +176,7 @@ var DriveFileRetreival = function(){
 	this.cache = new FileMetaCache();
 
 	this.init = function(){
-		validateCache();
+		validateVirtualCache( STORAGE_PREFIX );
 		this.cache.init();
 	}
 

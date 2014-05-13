@@ -21,11 +21,11 @@
 					    	data-postid="{{ post.id }}"
 					    	placeholder="Post your comment here." contenteditable='true'><span></span></div>	<!-- The extra span prevents some twisty bugs related to atwho.-->
 					    <textarea
-					    	class="atwho_at_config resize_textarea span12 comment_fallback"
+					    	class=" atwho_at_config resize_textarea span12 comment_fallback comment_textarea"
 					    	name="comment" 
 					    	rows="1" 
 					    	data-postid="{{ post.id }}"
-					    	placeholder="Post your comment here." style='display:none' contenteditable='true'></textarea>
+					    	placeholder="Post your comment here. *italic*, **bold** etc are allowed." style='display:none'></textarea>
 						<div class="span12 comment_links" style="display : none">
 							<a href="javascript:void(0)" class="btn small attach_doc_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
 								<i class="icon-attach"></i>
@@ -184,7 +184,7 @@
 		-moz-transition: height 0.2s;
 		transition: height 0.2s;
 	}
-	.comment_textarea {
+	.comment_primary {
 		background-color: #FFF;
 		border: 1px #DDD solid;
 		font-size: 14px;
@@ -292,22 +292,20 @@
 	$( document ).ready(function() {
 		
 		if(!contentEditableActive){
-			$('.comment_primary').css('display','none').removeClass('comment_textarea');
-			$('.comment_fallback').css('display','block').addClass('comment_textarea');
+			$('.comment_primary').css('display','none');
+			$('.comment_fallback').css('display','block');
 		}else{
 			//tinymce.init({mode:'div.comment_textarea'});
 		}
 
 		$(".post_btn").click(function() {
-			$el_form = $(this).closest("form");
-			var $el;
-			if(contentEditableActive)
-				$el = $el_form.find(".comment_primary");
-			else
-				$el = $el_form.find(".comment_fallback");
+			$el_form = $(this).closest("form")
+        	if(contentEditableActive)
+            	$el_form.find('.comment_fallback').val($el_form.find(".comment_primary").html().replace('>','> ').replace('<',' <').replace('&nbsp;',' &nbsp; '));
 
+        	$el = $el_form.find(".comment_textarea")
 			//console.log('sending comment');
-			if ( $el.data("clicked") || ( contentEditableActive  && !$el.html()) || (!contentEditableActive && !$el.val()) ){
+			if ( $el.data("clicked") ){
 				//console.log('no content ');
 				return
 			}
@@ -315,16 +313,9 @@
 			console.log($el.closest("form").serialize(true));
 			post_data  = {
         		'post_id' : $el.data("postid"), 
-        		'csrf_data': $el.closest("form").serialize(true),
+        		'data': $el.closest("form").serialize(true),
         	}
-        	 
-        	if(contentEditableActive)
-        		post_data['comment'] = $el.html().replace('>','> ').replace('<',' <'.replace('&nbsp;',' &nbsp; '));  
-        	else 
-        		post_data['comment'] = $el.val();
-        	console.log(post_data);
         	// need some preprocessing
-
         	Dajaxice.apps.walls.create_comment(dajax_create_comment, post_data );
         	$el.addClass("disabled").prop("disabled", true).data("clicked", "yes")
         	$el_form.find(".post_btn").addClass("disabled").prop("disabled", true).html("&nbsp;<i class='icon-loading-circle icon-rotate'></i>&nbsp; Posting...&nbsp;")
@@ -349,15 +340,13 @@
             	$(this).closest("form").find(".post_btn").click()
             	e.preventDefault()
             }
-            //$el.css('resize','vertical');
+
             if(window.getSelection().rangeCount) 
             	lastKnownRange = window.getSelection().getRangeAt(0);
-            //e.stopPropagation();
-            //$(".comment_textarea").off('input');
+
         }).focus( function(e) {
         	$(this).siblings(".comment_links").show()
         	gapi.load('picker')
-        	isInFocus = true;
     		var savedRange = 'undefined';
     		//$el.css('resize','vertical');
 

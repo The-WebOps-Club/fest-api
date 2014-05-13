@@ -331,7 +331,7 @@ $(document).ready(function() {
     $(".new_post_btn").click(function() {
         $el_form = $(this).closest("form")
         if(contentEditableActive)
-            $el_form.find('.new_post_fallback').val($el_form.find(".new_post_primary").html());
+            $el_form.find('.new_post_fallback').val($el_form.find(".new_post_primary").html().replace('>','> ').replace('<',' <').replace('&nbsp;',' &nbsp; '));
 
         
         $el = $el_form.find(".new_post_textarea")

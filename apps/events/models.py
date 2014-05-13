@@ -46,7 +46,6 @@ EVENT_TYPE = (
 class Event(models.Model):
     """
         An Event model which defines every event happening in the fest.
-        
         #question : Should FAQ be a different model ? Why was it kept like this in saarang ?
     """
     
