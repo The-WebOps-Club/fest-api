@@ -23,34 +23,35 @@
                     <input type="text" name="new_post_subject" id="id_new_post_subject" placeholder="Subject" class="span12" />
                     <div class="span12 new_post_textarea atwho_at_config resize_textarea new_post_primary" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here" contenteditable='true'></div>
                     <textarea class="span12 new_post_textarea atwho_at_config resize_textarea new_post_fallback" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here" style="display:none"></textarea>
-                    <div class="span12 post_links" style="display : none">
-                            <a href="javascript:void(0)" class="btn small attach_doc_post_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
-                                <i class="icon-attach"></i>
-                            </a>
-                            
-                            <a href="javascript:void(0)" class="btn small attach_pic_post_btn" data-placement="below" rel="twipsy" title="Attach a Picture">
-                                <i class="icon-pic"></i>
-                            </a>
-                            
-                            <a href="javascript:void(0)" class="btn small attach_link_post_btn" data-placement="below" rel="twipsy" title="Insert a Link">
-                                <i class="icon-link"></i>
-                            </a>
-                            
-                            <a href="javascript:void(0)" class="btn small attach_emoticon_post_btn" data-placement="below" rel="twipsy" title="Insert a Smiley">
-                                <i class="icon-smile"></i>
-                            </a>
+                    <div class="span12 post_links new_post_bottom_bar" style="display : none">
+                        <a href="javascript:void(0)" class="btn small attach_doc_post_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
+                            <i class="icon-attach"></i>
+                        </a>
+                        
+                        <a href="javascript:void(0)" class="btn small attach_pic_post_btn" data-placement="below" rel="twipsy" title="Attach a Picture">
+                            <i class="icon-pic"></i>
+                        </a>
+                        
+                        <a href="javascript:void(0)" class="btn small attach_link_post_btn" data-placement="below" rel="twipsy" title="Insert a Link">
+                            <i class="icon-link"></i>
+                        </a>
+                        
+                        <a href="javascript:void(0)" class="btn small attach_emoticon_post_btn" data-placement="below" rel="twipsy" title="Insert a Smiley">
+                            <i class="icon-smile"></i>
+                        </a>
 
-                            <a href="javascript:void(0)" class="btn primary new_post_btn">
-                                &nbsp;
-                                    <i class="icon-textbox-circle"></i>&nbsp; Post
-                                &nbsp;
-                            </a>
-                        </div>
+                        <a href="javascript:void(0)" class="btn primary new_post_btn pull-right">
+                            &nbsp;
+                                <i class="icon-textbox"></i>&nbsp; Post
+                            &nbsp;
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 {% once attach_popovers %}
 <div class="hidden insert_link_title">
     <div class="insert_link_title_inner">
@@ -145,7 +146,6 @@
     display : none;
 }
 .new_post_bottom_bar .new_post_btn {
-    margin-top : 2px;
     float : right;
     margin-right : 10px;
     font-size : 13px;
@@ -331,7 +331,7 @@ $(document).ready(function() {
     $(".new_post_btn").click(function() {
         $el_form = $(this).closest("form")
         if(contentEditableActive)
-            $el_form.find('.new_post_fallback').val($el_form.find(".new_post_primary").html());
+            $el_form.find('.new_post_fallback').val($el_form.find(".new_post_primary").html().replace('>','> ').replace('<',' <').replace('&nbsp;',' &nbsp; '));
 
         
         $el = $el_form.find(".new_post_textarea")

@@ -26,7 +26,8 @@
                     <a href="{% url 'newsfeed' %}">
                         <i class='icon-checklist'></i> <span>News feed</span>
                         {% if user.notifications.unread.count != 0 %}
-                        <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span>{% endif %}
+                            <span class='label pull-right counter'>{{ user.notifications.unread.count }}</span>
+                        {% endif %}
                     </a>
                 </li>
                 <li class="{% if current_page == 'docs' %}active{% endif %}">
@@ -74,7 +75,7 @@
                             </span>
                             
                             {% with user|unread_by_wall:w.id as unreadcount%}
-                            <span class='label pull-right counter'>{{unreadcount}}</span>
+                                {% if unreadcount > 0 %}<span class='label pull-right counter'>{{unreadcount}}</span>{% endif %}
                             {% endwith %}
                             
                         </a>

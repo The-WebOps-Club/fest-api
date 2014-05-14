@@ -224,6 +224,15 @@ CACHES = {
 
 # Settings for specific Apps
 # ---------------------------------------------------
+
+# ----------------------------------------------------
+# FEST API SETTINGS
+    # Last Activity Middleware
+USER_ONLINE_TIMEOUT = 600 #=10mins # Number of seconds of inactivity before a user is marked offline
+USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7 #=1week # Number of seconds that we will keep track of inactive users for before their last seen is removed from the cache
+    # LITE MODE ON setting
+EXPERIMENTAL_MODE = True
+
 # Post Office
 EMAIL_BACKEND = 'post_office.EmailBackend'
 POST_OFFICE = {
@@ -466,6 +475,7 @@ COMPRESS_CSS_FILTERS = [
 COMPRESS_JS_FILTERS = [
     'compressor.filters.jsmin.JSMinFilter'
 ]
+COMPRESS_ENABLED = False
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS
@@ -481,7 +491,6 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
     with open(GOOGLE_API_CREDENTIALS_FILE_PATH) as f:
         GOOGLE_API_CREDENTIALS = f.read()
 
-
 # ----------------------------------------------------
 # Solr-Haystach search settings
 # HAYSTACK_CONNECTIONS = {
@@ -490,8 +499,3 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
 #         'URL': 'http://127.0.0.1:8983/solr'
 #     },
 # }
-
-# ----------------------------------------------------
-# Last Activity Middleware
-USER_ONLINE_TIMEOUT = 600 #=10mins # Number of seconds of inactivity before a user is marked offline
-USER_LASTSEEN_TIMEOUT = 60 * 60 * 24 * 7 #=1week # Number of seconds that we will keep track of inactive users for before their last seen is removed from the cache

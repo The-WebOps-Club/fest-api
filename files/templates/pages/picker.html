@@ -51,8 +51,6 @@ var authToken = '{{token}}'
       $(this).click(createPicker)
     // A simple callback implementation.
       function pickerCallback(data) {
-        console.log(data);
-        console.log(picker);
         if (data.action == google.picker.Action.PICKED) {
             fileId = data.docs[0].id;
             //alert('The user selected: ' + fileId);
@@ -90,8 +88,6 @@ var authToken = '{{token}}'
     // A simple callback implementation.
 
     function pickerCallback(data) {
-        console.log(data);
-        console.log(picker);
         if (data.action == google.picker.Action.PICKED) {
             fileId = data.docs[0].id;
             //alert('The user selected: ' + fileId);

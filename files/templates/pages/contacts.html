@@ -279,7 +279,6 @@
 	function show_subdepts(list, $template) {
 		$.each( list, function(i, val) {
 			var $el = create_contact_element(i, val, $template)
-			console.log($el)
 			$el.data("type", "subdept")
 			$el.find(".clickable").click(function() {
 				var $el = $(this)

@@ -90,7 +90,6 @@ function setup_autocomplete_files() {
                     "small": "Loading ...",
                     "iconlink": site_url + "static/img/loading-dice.gif",
                 }]);
-                console.log('refreshing list');
                 /* check if gapi is loaded, authorized and linked with drive*/
                 if ( gapi && gapi.client && gapi.client.drive) {
                     if (query != '') {
@@ -315,12 +314,9 @@ function setup_autocomplete_lists() {
                 } else {
                     Dajaxice.apps.users.get_info(function(data) {
                         var $v = $(v);
-
-                        if ( ! data["fbid"] ) {
+                        if ( ! data["fbid"] || data["fbid"] == "" ) {
                             data["fbid"] = fest_fbid;
-
                         }
-
                         var pic_src = "http://graph.facebook.com/" + data["fbid"] +  "/picture?height=" + size + "&width=" + size;
                         $v.prop("src", pic_src);
                         //var filter_users = $.grep(atwho_user_list, function(a) { return a.id == data["id"] } )
