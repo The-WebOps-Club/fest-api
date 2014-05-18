@@ -79,6 +79,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'full_path_for_emails'
     # Django compressor conditions
 COMPRESS_ENABLED = False
+    # Django HTML minify
+HTML_MINIFY = False
     # FEST api settings
 EXPERIMENTAL_MODE = "true" # NOTE : should be a string
 SEND_EMAIL = True
