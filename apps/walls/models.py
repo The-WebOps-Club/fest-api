@@ -40,10 +40,13 @@ class Wall(models.Model):
     notification_users   = models.ManyToManyField(User, null=True, blank=True, related_name='notified_wall')
     notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_wall')
     notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_wall')
+    notification_pages   = models.ManyToManyField('users.Page', null=True, blank=True, related_name='notified_wall')
     
     # Analytics
     # seen_user            = models.ManyToManyField(User, null=True, blank=True, related_name='seen_wall', through=UserWall)
-
+    time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    
     def save(self, *args, **kwargs):
         """
             An extended save method to handle   
@@ -63,6 +66,8 @@ class Wall(models.Model):
             return self.subdept
         elif hasattr(self, "dept"): # Dept
             return self.dept
+        elif hasattr(self, "page"): # Dept
+            return self.page
         print "No parent found"
         return temp
     
@@ -91,6 +96,8 @@ class Wall(models.Model):
             users.update(dept.related_users())
         for sub_dept in self.notification_subdepts.all():
             users.update(sub_dept.related_users())
+        for page in self.notification_pages.all():
+            users.update(page.related_users())
         return users
     
     def __unicode__(self):
@@ -125,9 +132,6 @@ class PostInfo(models.Model):
         ordering = ['time_created']
         get_latest_by = 'time_created'
 
-    def __unicode__(self):
-        return self.description
-
 class Comment(PostInfo):
     """
         Defines the comment to a Post
@@ -142,7 +146,7 @@ class Comment(PostInfo):
 
     def send_notif(self, notif_list=None):
         # Had to do this because signals refuse to work.
-        parent_post = self.parent_post.first()
+        parent_post = self.parent_post.first() # There is only one parent_post
         parent_wall = parent_post.wall
         if not notif_list:
             notif_list  = parent_post.notify_users() # Get post notifs
@@ -179,6 +183,7 @@ class Post(PostInfo):
     notification_users  = models.ManyToManyField(User, null=True, blank=True, related_name='notified_post')
     notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_post')
     notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_post')
+    notification_pages= models.ManyToManyField('users.Page', null=True, blank=True, related_name='notified_post')
     
     liked_users  = models.ManyToManyField(User, null=True, blank=True, related_name='liked_post')
 
@@ -216,9 +221,12 @@ class Post(PostInfo):
                 notifications_subdept.append(i)
             elif isinstance(i, Dept):
                 notifications_dept.append(i)
+            elif isinstance(i, Page):
+                notifications_page.append(i)
         self.notification_users.add(*notifications_user)
         self.notification_subdepts.add(*notifications_subdept)
         self.notification_depts.add(*notifications_dept)
+        self.notification_pages.add(*notifications_page)
 
     def notify_users(self):
         users = set()
@@ -227,6 +235,8 @@ class Post(PostInfo):
             users.update(dept.related_users())
         for sub_dept in self.notification_subdepts.all():
             users.update(sub_dept.related_users())
+        for page in self.notification_pages.all():
+            users.update(page.related_users())
         return users
 
     def send_notif(self, notif_list=None):
