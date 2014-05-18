@@ -1,10 +1,12 @@
-all_list = []
-atwho_user_list = [];
-atwho_subdept_list = [];
-atwho_dept_list = [];
-atwho_page_list = [];
-atwho_file_list = [];
+all_list = null;
+atwho_user_list = null;
+atwho_subdept_list = null;
+atwho_dept_list = null;
+atwho_page_list = null;
+atwho_file_list = null;
 atwho_file_list_raw = [];
+atwho_setup = false;
+
 regex_emoticons = []
 emoticons = {
     "like" : ["(Y)"],
@@ -67,7 +69,8 @@ function get_autocomplete_file_data(url1, url2, url3) {
  }
 
 function sync_autocomplete() {
-    if (atwho_user_list && atwho_subdept_list && atwho_dept_list && atwho_page_list) {
+    if (!atwho_setup && ( atwho_user_list && atwho_subdept_list && atwho_dept_list && atwho_page_list ) ) {
+        atwho_setup = true
         setup_autocomplete_lists();
         on_dom_change()
     }
@@ -94,8 +97,7 @@ function setup_autocomplete_files() {
                             maxResults: 5,
                             fields: 'items(title,id,iconLink)',
                         }).execute(function(response) {
-                            console.log(response.items)
-  							if ( ! response.items ) {
+                            if ( ! response.items ) {
   								callback([{
 				                    "id": "",
 				                    "name": "Cannot connect to google. Please check your connection",
@@ -139,9 +141,9 @@ function setup_autocomplete_files() {
 }
 
 function setup_autocomplete_lists() {
+
     goto_wall = {
         before_insert: function(value, $li) {
-            console.log($li)
             owner_type = $li.data("type")
             document.location.href = site_url + "wall/" + owner_type + "/" + $li.data("id")
             return value;
@@ -185,17 +187,18 @@ function setup_autocomplete_lists() {
             };
         })
     }
+    
+    all_list = atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list).concat(atwho_page_list)
     at_config = {
         at: "@",
-        data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
+        data: all_list,
         tpl: "<li data-value='[${name}](${type}#${id} \"${type}#${id}\")'>${name}</li>",
         show_the_at: true,
         max_len: 20,
     }
     if(contentEditableActive)
         at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><img src=\""+site_url+"static/img/neutral.png\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name}</li>"
-
-    all_list = atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list).concat(atwho_page_list)
+  
     $("#topbar_search_input").atwho({
         at: "",
         data: all_list,
@@ -290,10 +293,8 @@ function setup_autocomplete_lists() {
 	        var service = $v.data("service");
 	        var id = $v.data("link-id");
 
-	        console.log(v);
 	        if ( service == "youtube" ) {
 	            var url = "http://gdata.youtube.com/feeds/api/videos/" + id + "?v=2&alt=jsonc";
-	            console.log("TRY UTUBE");
 	            $.ajax({url:url, dataType:'json', success:function(json) {
 	                //var json = JSON.parse( data );
 	                var $el = $('a[data-link-id=\''+json.data.id+'\']');
