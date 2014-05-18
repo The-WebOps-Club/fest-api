@@ -88,7 +88,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
     
     'django.middleware.gzip.GZipMiddleware',
-    'htmlmin.middleware.HtmlMinifyMiddleware',
+    #'htmlmin.middleware.HtmlMinifyMiddleware',
     
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -100,6 +100,8 @@ MIDDLEWARE_CLASSES = (
     'apps.users.middleware.SocialAuthExceptionMiddleware',
     
     'django.middleware.cache.FetchFromCacheMiddleware',
+    #'htmlmin.middleware.MarkRequestMiddleware',
+
     #'apps.users.middleware.LastActivityDatabaseMiddleware',
     #'apps.users.middleware.LastActivityCacheMiddleware',
     #'misc.middleware.ProfileMiddleware',
