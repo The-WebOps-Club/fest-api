@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError, NoArgsCommand
 from django.contrib.auth.models import User
 from configs import settings
-from apps.users.models import Dept, Subdept, ERPProfile
+from apps.users.models import Dept, Subdept, Page, ERPProfile
 from apps.walls.models import Wall, Post, Comment
 import json
 import os
@@ -21,7 +21,9 @@ class Command(BaseCommand):
 
         static_files = settings.STATICFILES_DIRS[0]
         data_root = os.path.abspath(os.path.join(static_files, "json"))
-
+        
+        if not os.path.exists(data_root):
+            os.makedirs(data_root)
         #- User list : for Search - file="user_list.json"
         user_list = list(User.objects.values("id", "first_name", "last_name", "email"))
         user_list_file = os.path.abspath(os.path.join(data_root, "user_list.json"))
@@ -43,6 +45,13 @@ class Command(BaseCommand):
         with open(dept_list_file, 'w') as outfile:
             json.dump(dept_list, outfile)
         self.stdout.write("Dept ... done.")
+
+        #- Dept list : for Search - file="dept_list.json"
+        dept_list = list(Page.objects.values("id", "name"))
+        dept_list_file = os.path.abspath(os.path.join(data_root, "page_list.json"))
+        with open(dept_list_file, 'w') as outfile:
+            json.dump(dept_list, outfile)
+        self.stdout.write("Page ... done.")
 
         #- Dept > Subdept > User dict : for contacts - file="user_structure.json"
         all_user_list = list(User.objects.values("id", "first_name", "last_name", "email", "erp_profile"))

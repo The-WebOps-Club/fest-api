@@ -72,6 +72,8 @@ def parse_atwho(my_text):
             notification_list.append(Subdept.objects.get(id=_id))
         elif _type == "dept":
             notification_list.append(Dept.objects.get(id=_id))
+        elif _type == "page":
+            notification_list.append(Page.objects.get(id=_id))
 
     return my_text, notification_list
     
@@ -84,10 +86,12 @@ def get_tag_object(tag):
     print "---------------------------"
     tag_id = int(tag[1])
     key = tag[0].lower()
-    if key == "department":
+    if key == "dept":
         obj = get_object_or_None(Dept, id=tag_id)
     elif key == "subdept":
         obj = get_object_or_None(Subdept, id=tag_id)
+    elif key == "page":
+        obj = get_object_or_None(Page, id=tag_id)
     else:
         obj = get_object_or_None(User, id=tag_id)
     return obj

@@ -2,6 +2,7 @@ all_list = []
 atwho_user_list = [];
 atwho_subdept_list = [];
 atwho_dept_list = [];
+atwho_page_list = [];
 atwho_file_list = [];
 atwho_file_list_raw = [];
 regex_emoticons = []
@@ -33,7 +34,7 @@ emoticons = {
     "squint" : ["-_-"],
 }
 
-function get_autocomplete_lists(url1, url2, url3) {
+function get_autocomplete_lists(url1, url2, url3, url4) {
     atwho_user_list = null;
     atwho_subdept_list = null;
     atwho_dept_list = null;
@@ -51,6 +52,10 @@ function get_autocomplete_lists(url1, url2, url3) {
         atwho_dept_list = json;
         sync_autocomplete();
     });
+    $.getJSON(url4, function(json) {
+        atwho_page_list = json;
+        sync_autocomplete();
+    });
 }
 
 function get_autocomplete_file_data(url1, url2, url3) {
@@ -58,19 +63,11 @@ function get_autocomplete_file_data(url1, url2, url3) {
         atwho_file_list = null;
         return;
     }
-    console.log('get file lists from google.');
-    gapi.client.drive.files.list({
-        'fields': ['title', 'id', 'mimeType', 'iconLink']
-    }).execute(function(response) {
-        console.log('obtained response');
-        console.log(response);
-        atwho_file_list_raw = response.items;
-        setup_autocomplete_files();
-    });
-}
+    setup_autocomplete_files();
+ }
 
 function sync_autocomplete() {
-    if (atwho_user_list && atwho_subdept_list && atwho_dept_list) {
+    if (atwho_user_list && atwho_subdept_list && atwho_dept_list && atwho_page_list) {
         setup_autocomplete_lists();
         on_dom_change()
     }
@@ -86,23 +83,23 @@ function setup_autocomplete_files() {
             remote_filter: function(query, callback) {
                 callback([{
                     "id": "",
-                    "name": "",
-                    "small": "Loading ...",
-                    "iconlink": site_url + "static/img/loading-dice.gif",
+                    "name": "Loading ...",
+                    "iconlink": site_url + "static/img/loading_line.gif",
                 }]);
                 /* check if gapi is loaded, authorized and linked with drive*/
                 if ( gapi && gapi.client && gapi.client.drive) {
                     if (query != '') {
                         gapi.client.drive.files.list({
                             q: 'title contains \'' + query + '\'',
-                            maxResults: 5
+                            maxResults: 5,
+                            fields: 'items(title,id,iconLink)',
                         }).execute(function(response) {
+                            console.log(response.items)
   							if ( ! response.items ) {
   								callback([{
 				                    "id": "",
-				                    "name": "",
-				                    "small": "Cannot connect to google. Please check your connection",
-				                    "iconlink": site_url + "static/img/loading-dice.gif",
+				                    "name": "Cannot connect to google. Please check your connection",
+				                    "iconlink": site_url + "static/img/loading_line.gif",
 				                }]);
   								return 
   							}
@@ -110,9 +107,8 @@ function setup_autocomplete_files() {
                                 callback($.map(response.items, function(value, i) {
                                     return {
                                         "id": "",
-                                        "name": "",
-                                        "small": "No files found !",
-                                        "iconlink": site_url + "static/img/loading-dice.gif",
+                                        "name": "No files found !",
+                                        "iconlink": site_url + "static/img/loading_line.gif",
                                     }
                                 }));
                             }
@@ -121,7 +117,6 @@ function setup_autocomplete_files() {
                                     return {
                                         "id": value['id'],
                                         "name": value['title'],
-                                        "small": value['mimeType'],
                                         "iconlink": value['iconLink'],
                                     }
                                 }));
@@ -130,23 +125,16 @@ function setup_autocomplete_files() {
                     } else {
                         callback([{
                             "id": "",
-                            "name": "",
-                            "small": "Too many items. Please type more",
-                            "iconlink": site_url + "static/img/loading-dice.gif",
+                            "name": "Too many items. Please type more",
+                            "iconlink": site_url + "static/img/loading_line.gif",
                         }]);
                     }
                 }
             },
-            // before_insert: function(value, $li) {
-            //     if (this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0) {
-            //         this.$inputor.after("<input class='textarea_atwho_list' name='atwho_files' value='" + $li.data("filename") + "--@@!@@--" + $li.data("id") + "--@@!@@--" + $li.data("icon") + "' type='hidden'/>");
-            //     }
-            //     return value;
-            // },
         },
     }
     if(contentEditableActive)
-        at_config_file.tpl = "<li data-value='<a href=\""+site_url+"docs/view/?id=${id}\"><img src=\"${iconlink}\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name} <small>${small}</small></li>";
+        at_config_file.tpl = "<li data-value='<a href=\""+site_url+"docs/view/?id=${id}\"><img src=\"${iconlink}\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name}</li>";
     $('.atwho_at_config').atwho(at_config_file);
 }
 
@@ -154,12 +142,7 @@ function setup_autocomplete_lists() {
     goto_wall = {
         before_insert: function(value, $li) {
             console.log($li)
-            owner_type = "user"
-            if ($li.data("small") == "Department") {
-                owner_type = "dept"
-            } else if ($li.data("small") == "Subdept") {
-                owner_type = "subdept"
-            }
+            owner_type = $li.data("type")
             document.location.href = site_url + "wall/" + owner_type + "/" + $li.data("id")
             return value;
         },
@@ -171,7 +154,6 @@ function setup_autocomplete_lists() {
                 return {
                     "id": value["id"],
                     "name": value["first_name"] + " " + value["last_name"],
-                    "small": value["email"],
                     "type": "user"
                 };
         })
@@ -181,7 +163,6 @@ function setup_autocomplete_lists() {
             return {
                 "id": value["id"],
                 "name": value["name"],
-                "small": "Department",
                 "type": "dept"
             };
         })
@@ -191,72 +172,43 @@ function setup_autocomplete_lists() {
             return {
                 "id": value["id"],
                 "name": value["name"],
-                "small": "Subdept",
                 "type": "subdept"
             };
         })
     }
-
+    if (atwho_page_list) {
+        atwho_page_list = $.map(atwho_page_list, function(value, i) {
+            return {
+                "id": value["id"],
+                "name": value["name"],
+                "type": "page"
+            };
+        })
+    }
     at_config = {
         at: "@",
         data: atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list),
-        tpl: "<li data-value='[${name}](${type}#${id} \"${type}#${id}\")'>${name} <small>${small}</small></li>",
+        tpl: "<li data-value='[${name}](${type}#${id} \"${type}#${id}\")'>${name}</li>",
         show_the_at: true,
         max_len: 20,
-        // callbacks: {
-            // before_insert: function(value, $li) {
-            //     if (this.$inputor.parent().find(".textarea_atwho_list[value='" + value + "']").length == 0) {
-            //         this.$inputor.after("<input class='textarea_atwho_list' name='atwho_list' value='" + $li.data("small").toLowerCase() + "_" + $li.data("id") + "' type='hidden'/>");
-            //     }
-            //     return value;
-            // },
-        // },
     }
     if(contentEditableActive)
-        at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><img src=\""+site_url+"static/img/neutral.png\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name} <small>${small}</small></li>"
+        at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><img src=\""+site_url+"static/img/neutral.png\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name}</li>"
 
-    all_list = atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list)
+    all_list = atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list).concat(atwho_page_list)
     $("#topbar_search_input").atwho({
         at: "",
         data: all_list,
-        tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
+        tpl: "<li data-value='${name}' data-id='${id}' data-type='${type}'>${name}</li>",
         show_the_at: false,
         callbacks: goto_wall,
-    }).atwho({
-        at: "u:",
-        data: atwho_user_list,
-        tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-        show_the_at: false,
-        callbacks: goto_wall,
-    }).atwho({
-        at: "d:",
-        data: atwho_dept_list,
-        tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-        show_the_at: false,
-        callbacks: goto_wall,
-    }).atwho({
-        at: "s:",
-        data: atwho_subdept_list,
-        tpl: "<li data-value='${name}' data-id='${id}' data-small='${small}'>${name} <small>${small}</small></li>",
-        show_the_at: false,
-        callbacks: goto_wall,
-    })  
-
-    
-
-    // emoticon_config = {
-    //   at: ":",
-    //   data: $.map(emojis, function(value, i) {return {name: i, symbol:value}}),
-    //   tpl:"<li data-value='${symbol}'><i class='icon-${name}'></i> &nbsp; ${name} </li>",
-    // }
+    })
 
     $(".atwho_at_config").atwho(at_config)
-    // if ( emoticon_config )
-    //     $(".atwho_at_config").atwho(emoticon_config);
 
     for (var i in all_list) {
         $(".select_all_list").append(
-            "<option value='" + all_list[i]['small'] + "_" + all_list[i]['id'] + "'>" +
+            "<option value='" + all_list[i]['type'] + "_" + all_list[i]['id'] + "'>" +
             all_list[i]['name'] +
             "</option>")
     }
