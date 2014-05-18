@@ -42,6 +42,11 @@ class Wall(models.Model):
     notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_wall')
     notification_pages   = models.ManyToManyField('users.Page', null=True, blank=True, related_name='notified_wall')
     
+    access_users   = models.ManyToManyField(User, null=True, blank=True, related_name='access_wall')
+    access_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='access_wall')
+    access_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='access_wall')
+    access_pages   = models.ManyToManyField('users.Page', null=True, blank=True, related_name='access_wall')
+    
     # Analytics
     # seen_user            = models.ManyToManyField(User, null=True, blank=True, related_name='seen_wall', through=UserWall)
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
@@ -71,23 +76,21 @@ class Wall(models.Model):
         print "No parent found"
         return temp
     
+    def add_access(self, access_list):
+        from apps.walls.utils import filter_objects
+        list_user, list_subdept, list_dept, list_page = filter_objects(access_list)
+        self.access_users.add(*list_user)
+        self.access_subdepts.add(*list_subdept)
+        self.access_depts.add(*list_dept)
+        self.access_pages.add(*list_page)
+    
     def add_notifications(self, notif_list):
-        from apps.users.models import ERPProfile, Dept, Subdept
-        notifications_user = []
-        notifications_subdept = []
-        notifications_dept = []
-        for i in notif_list: # Adding to lists so addition to db can be done in batch
-            if isinstance(i, User):
-                notifications_user.append(i)
-            elif isinstance(i, ERPProfile):
-                notifications_user.append(i.user)
-            elif isinstance(i, Subdept):
-                notifications_subdept.append(i)
-            elif isinstance(i, Dept):
-                notifications_dept.append(i)
-        self.notification_users.add(*notifications_user)
-        self.notification_subdepts.add(*notifications_subdept)
-        self.notification_depts.add(*notifications_dept)
+        from apps.walls.utils import filter_objects
+        list_user, list_subdept, list_dept, list_page = filter_objects(notif_list)
+        self.notification_users.add(*list_user)
+        self.notification_subdepts.add(*list_subdept)
+        self.notification_depts.add(*list_dept)
+        self.notification_pages.add(*list_page)
 
     def notify_users(self):
         users = set()
@@ -184,6 +187,11 @@ class Post(PostInfo):
     notification_depts  = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_post')
     notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_post')
     notification_pages  = models.ManyToManyField('users.Page', null=True, blank=True, related_name='notified_post')
+
+    access_users   = models.ManyToManyField(User, null=True, blank=True, related_name='access_post')
+    access_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='access_post')
+    access_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='access_post')
+    access_pages   = models.ManyToManyField('users.Page', null=True, blank=True, related_name='access_post')
     
     liked_users  = models.ManyToManyField(User, null=True, blank=True, related_name='liked_post')
 
@@ -206,28 +214,22 @@ class Post(PostInfo):
         
         temp = super(Post, self).save(*args, **kwargs)
         return
-
+    def add_access(self, access_list):
+        from apps.walls.utils import filter_objects
+        list_user, list_subdept, list_dept, list_page = filter_objects(access_list)
+        self.access_users.add(*list_user)
+        self.access_subdepts.add(*list_subdept)
+        self.access_depts.add(*list_dept)
+        self.access_pages.add(*list_page)
+    
     def add_notifications(self, notif_list):
-        from apps.users.models import ERPProfile, Dept, Subdept
-        notifications_user = []
-        notifications_subdept = []
-        notifications_dept = []
-        notifications_page = []
-        for i in notif_list:
-            if isinstance(i, User):
-                notifications_user.append(i)
-            elif isinstance(i, ERPProfile):
-                notifications_user.append(i.user)
-            elif isinstance(i, Subdept):
-                notifications_subdept.append(i)
-            elif isinstance(i, Dept):
-                notifications_dept.append(i)
-            elif isinstance(i, Page):
-                notifications_page.append(i)
-        self.notification_users.add(*notifications_user)
-        self.notification_subdepts.add(*notifications_subdept)
-        self.notification_depts.add(*notifications_dept)
-        self.notification_pages.add(*notifications_page)
+        from apps.walls.utils import filter_objects
+        list_user, list_subdept, list_dept, list_page = filter_objects(notif_list)
+        self.notification_users.add(*list_user)
+        self.notification_subdepts.add(*list_subdept)
+        self.notification_depts.add(*list_dept)
+        self.notification_pages.add(*list_page)
+
 
     def notify_users(self):
         users = set()

@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 # Python
 from misc.utils import *  #Import miscellaneous functions
 # From Apps
-from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
+from apps.users.models import UserProfile, ERPProfile, Dept, Subdept, Page
 from notifications.models import Notification
 # Ajax post & comment
 from apps.walls.models import Wall, Post, Comment
@@ -99,6 +99,22 @@ def get_tag_object(tag):
 def notification_query():
     post_set = set()
     post_set.update(Notification.objects.values_list("target_object_id", flat=True))
-    
-
     return Notification.objects.order_by("-timestamp")
+
+def fitler_objects(my_list):
+    list_user = []
+    list_subdept = []
+    list_dept = []
+    list_page = []
+    for i in my_list:
+        if isinstance(i, User):
+            list_user.append(i)
+        elif isinstance(i, ERPProfile):
+            list_user.append(i.user)
+        elif isinstance(i, Subdept):
+            list_subdept.append(i)
+        elif isinstance(i, Dept):
+            list_dept.append(i)
+        elif isinstance(i, Page):
+            list_page.append(i)
+    return list_user, list_subdept, list_dept, list_page
