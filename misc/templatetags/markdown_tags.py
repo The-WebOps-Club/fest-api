@@ -75,7 +75,7 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
         if not title:
             title = ""
         _id = None
-        if title.startswith("doc#") or title.startswith("user#") or title.startswith("subdept#") or title.startswith("dept#"): # Implies it is a doc from drive
+        if title.startswith("doc#") or title.startswith("user#") or title.startswith("subdept#") or title.startswith("dept#") or title.startswith("page#"): # Implies it is a doc from drive
             _type, _id = title.split("#", 1)
             if _type == "doc":
                 _link = reverse("view") + "?id=" + _id

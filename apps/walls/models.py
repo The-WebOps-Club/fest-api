@@ -181,9 +181,9 @@ class Post(PostInfo):
     
     # Relations with other models - Users
     notification_users  = models.ManyToManyField(User, null=True, blank=True, related_name='notified_post')
-    notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_post')
+    notification_depts  = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_post')
     notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_post')
-    notification_pages= models.ManyToManyField('users.Page', null=True, blank=True, related_name='notified_post')
+    notification_pages  = models.ManyToManyField('users.Page', null=True, blank=True, related_name='notified_post')
     
     liked_users  = models.ManyToManyField(User, null=True, blank=True, related_name='liked_post')
 
@@ -212,6 +212,7 @@ class Post(PostInfo):
         notifications_user = []
         notifications_subdept = []
         notifications_dept = []
+        notifications_page = []
         for i in notif_list:
             if isinstance(i, User):
                 notifications_user.append(i)

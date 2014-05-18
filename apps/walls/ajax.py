@@ -252,17 +252,14 @@ def quick_post(request, post_form):
     # create a new post
     append_string = ""
     data = deserialize_form(post_form)
-    print data
     post_text = data["quick_post"]
     post_text, notification_list = parse_atwho(post_text)
 
     # Figure out where to create post !
     to_list = data.getlist("quick_post_to")
     for i in to_list:
-        print i
-        print "---------------------------"
         obj = get_tag_object(i)
-        if isinstance(obj, Dept) or isinstance(obj, Subdept):
+        if isinstance(obj, Dept) or isinstance(obj, Subdept) or isinstance(obj, Post):
             obj_wall =  obj.wall
         else:
             obj_wall =  obj.erp_profile.wall

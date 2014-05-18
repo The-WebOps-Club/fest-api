@@ -58,7 +58,9 @@ def parse_atwho(my_text):
         link_list = []
 
     #import pdb;pdb.set_trace();
+    print link_list
     for i in link_list:
+        print i
         #data = link_list
         _type, _id = i.split("#", 1)
         # if _type == "doc":
@@ -82,8 +84,6 @@ def get_tag_object(tag):
     # First id and last is keyword (department, subdepartment and any others: email)
     if not isinstance(tag, list) and ( isinstance(tag, basestring) ):
         tag = tag.rsplit("_", 1)
-    print tag
-    print "---------------------------"
     tag_id = int(tag[1])
     key = tag[0].lower()
     if key == "dept":
