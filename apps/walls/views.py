@@ -118,7 +118,8 @@ def my_wall(request, owner_type, owner_id):
                 wall_id = get_object_or_None(Wall, dept__id=request.session["role_dept"])
                 if wall_id:
             		wall_id = wall_id.id
-
+    elif owner_type == "page":
+        wall_id = get_object_or_None(Wall, page__id=owner_id)
     if wall_id == None:
         raise InvalidArgumentValueException
     return redirect(reverse("wall", kwargs={"wall_id" : wall_id}))

@@ -70,11 +70,13 @@ def get_info(request, id):
         obj_erp_profile = obj.erp_profile
         local_context = {
             "id" : obj.id,
+            "email" : obj.email,
             "fbid" : obj_profile.fbid,
         }
     else:
     	local_context = {
             "id" : "",
+            "email" : "",
             "fbid" : "",
         }
     return json.dumps(local_context)

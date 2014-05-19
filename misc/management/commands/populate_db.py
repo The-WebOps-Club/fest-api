@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError, NoArgsCommand
 from django.contrib.auth.models import User
-from apps.users.models import Dept, Subdept, ERPProfile
+from apps.users.models import Dept, Subdept, ERPProfile, Page
 from django.conf import settings
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
@@ -149,14 +149,17 @@ class Command(BaseCommand):
                     dept.save()
                     self.stdout.write("Dept %s did not exist. Added it." %(dept_name))
                 
-                user, created_it = User.objects.get_or_create(username=dept_name+'_core', 
-                                                email=str(dept_name).lower()+'_core'+'@festapi.com')
+                page, created_it = Page.objects.get_or_create(name=dept_name+'_page')
+                page.save()
+
+                user, created_it = User.objects.get_or_create(username=dept_name+'_core')
                 user.first_name = str(dept_name).lower()
                 user.last_name = "core"
+                user.email = str(dept_name).lower()+'_core'+'@festapi.com'
                 user.set_password(pass_key)
                 user.save()
                 erp_profile, created_it = ERPProfile.objects.get_or_create(user=user)
-				erp_profile.core_relations.add(dept)
+                erp_profile.core_relations.add(dept)
                 
                 erp_profile.save()
 

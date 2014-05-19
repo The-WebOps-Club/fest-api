@@ -41,6 +41,10 @@ class Dept(models.Model):
     name            = models.CharField(max_length=30, unique=True)
     description     = models.TextField(max_length=500, null=True, blank=True)
     
+    # Analytics
+    time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    
     def __unicode__(self):
         return self.name
 
@@ -81,6 +85,10 @@ class Subdept(models.Model):
     name            = models.CharField(max_length=30, unique=True)
     description     = models.TextField(max_length=500, null=True, blank=True)
 
+    # Analytics
+    time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+
     def __unicode__(self):
         return self.name
 
@@ -100,6 +108,34 @@ class Subdept(models.Model):
         return temp
     def banner_pic(self):
         temp = settings.MEDIA_URL + "profile/subdept/banner/" + self.id
+        return temp
+
+class Page(models.Model):
+    """ 
+        A model having data about a page. An equivalent of a group
+    """
+    # Relations with other models
+    wall            = models.OneToOneField(Wall, related_name='page')
+    
+    # Basic information
+    name            = models.CharField(max_length=30, unique=True)
+    description     = models.TextField(max_length=500, null=True, blank=True)
+
+    # Analytics
+    time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+
+    def __unicode__(self):
+        return self.name
+
+    def related_users(self):
+        return self.user_set()
+
+    def profile_pic(self):
+        temp = settings.MEDIA_URL + "profile/page/dp/" + self.id
+        return temp
+    def banner_pic(self):
+        temp = settings.MEDIA_URL + "profile/page/banner/" + self.id
         return temp
 
 class UserProfile(models.Model): # The corresponding auth user
@@ -207,6 +243,7 @@ class ERPProfile(models.Model):
     coord_relations = models.ManyToManyField(Subdept, null=True, blank=True, related_name='coord_set')
     supercoord_relations = models.ManyToManyField(Dept, null=True, blank=True, related_name='supercoord_set')
     core_relations  = models.ManyToManyField(Dept, null=True, blank=True, related_name='core_set')
+    page_relations  = models.ManyToManyField(Page, null=True, blank=True, related_name='user_set')
     
     # Other random information for profile
     nickname        = models.CharField(max_length=100, blank=True, null=True)
@@ -260,6 +297,8 @@ class ERPProfile(models.Model):
         for i in self.supercoord_relations.all():
             wall_list.update(i.notified_wall.all())
         for i in self.core_relations.all():
+            wall_list.update(i.notified_wall.all())
+        for i in self.page_relations.all():
             wall_list.update(i.notified_wall.all())
         return wall_list
 

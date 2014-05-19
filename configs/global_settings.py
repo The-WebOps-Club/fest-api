@@ -82,17 +82,31 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 MIDDLEWARE_CLASSES = (
+    # Runs Last
     'annoying.middlewares.StaticServe',
+
+    'django.middleware.cache.UpdateCacheMiddleware',
+    
+    'django.middleware.gzip.GZipMiddleware',
+    #'htmlmin.middleware.HtmlMinifyMiddleware',
+    
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
     'apps.users.middleware.SocialAuthExceptionMiddleware',
+    
+    'django.middleware.cache.FetchFromCacheMiddleware',
+    #'htmlmin.middleware.MarkRequestMiddleware',
+
     #'apps.users.middleware.LastActivityDatabaseMiddleware',
     #'apps.users.middleware.LastActivityCacheMiddleware',
-    'misc.middleware.ProfileMiddleware',
+    #'misc.middleware.ProfileMiddleware',
+
+    # Runs first
 )
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -119,7 +133,7 @@ WSGI_APPLICATION = 'configs.wsgi.application'
 
 # Explicit settings patch for debug_toolbar for Django 1.6
 # http://django-debug-toolbar.readthedocs.org/en/1.0/installation.html#explicit-setup
-# DEBUG_TOOLBAR_PATCH_SETTINGS = False
+DEBUG_TOOLBAR_PATCH_SETTINGS = True
 
 # AUTH_PROFILE_MODULE = 'apps.users.models.UserProfile'
 # Database
@@ -217,8 +231,8 @@ LOGGING = {
 # ---------------------------------------------------
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'default-cache'
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211'
     }
 }
 
@@ -467,8 +481,9 @@ MARKDOWN_STYLES = {
         "safe_mode": False,
     },
 }
+
 # -------------------------------------------------
-# COmpressor
+# Compressor
 COMPRESS_CSS_FILTERS = [
     'compressor.filters.cssmin.CSSMinFilter'
 ]
@@ -476,6 +491,12 @@ COMPRESS_JS_FILTERS = [
     'compressor.filters.jsmin.JSMinFilter'
 ]
 COMPRESS_ENABLED = False
+
+# -------------------------------------------------
+# HTML Minify
+HTML_MINIFY = False
+KEEP_COMMENTS_ON_MINIFYING = False
+# EXCLUDE_FROM_MINIFYING = ()
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS
