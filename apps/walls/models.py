@@ -48,6 +48,7 @@ class Wall(models.Model):
     access_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='access_wall')
     access_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='access_wall')
     access_pages   = models.ManyToManyField('users.Page', null=True, blank=True, related_name='access_wall')
+    access_public  = models.BooleanField(default=False)
     
     # Analytics
     # seen_user            = models.ManyToManyField(User, null=True, blank=True, related_name='seen_wall', through=UserWall)
@@ -194,11 +195,10 @@ class Post(PostInfo):
     access_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='access_post')
     access_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='access_post')
     access_pages   = models.ManyToManyField('users.Page', null=True, blank=True, related_name='access_post')
-    
+    access_public  = models.BooleanField(default=False)
+
     liked_users  = models.ManyToManyField(User, null=True, blank=True, related_name='liked_post')
 
-    is_public           = models.BooleanField(default=True)
-    
     # Relations with other models - Comments
     comments            = models.ManyToManyField(Comment, null=True, blank=True, related_name='parent_post')
     comments_count      = models.IntegerField(default=0)
