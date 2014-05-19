@@ -1,6 +1,7 @@
 # From Django
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import RequestContext
+from django.db.models import Q
 from django.template.loader import render_to_string
 from django.templatetags.static import static
 from django.shortcuts import get_object_or_404
@@ -49,20 +50,15 @@ def parse_atwho(my_text):
     """
     notification_list = []
     
-    markdown_link_regex = re.compile("\[.*?\] \((.*?) \".*?\"\)", re.IGNORECASE) # need  to test this.
-    direct_link_regex = re.compile("data-notify=\"(.*?)\"", re.IGNORECASE)
+    #markdown_link_regex = re.compile("\[.*?\] \((.*?) \".*?\"\)", re.IGNORECASE) # need  to test this.
+    markdown_link_regex = re.compile("\[([^\]]+)\]\(([^)\"]+)(?: \\\"([^\\\"]+)\\\")?\)", re.IGNORECASE)
+    direct_link_regex = re.compile("data-notify=\\\"([^\\\"]+)\\\"", re.IGNORECASE)
     link_list = []
-    try:
-        link_list = markdown_link_regex.findall(my_text) + direct_link_regex.findall(my_text)
-    except:
-        link_list = []
+    link_list = markdown_link_regex.findall(my_text) + direct_link_regex.findall(my_text)
 
-    #import pdb;pdb.set_trace();
-    print link_list
     for i in link_list:
-        print i
         #data = link_list
-        _type, _id = i.split("#", 1)
+        _type, _id = i[1].split("#", 1)
         # if _type == "doc":
         #     pass
         #     _url = reverse("view") + "?id=" + _id
@@ -96,12 +92,7 @@ def get_tag_object(tag):
         obj = get_object_or_None(User, id=tag_id)
     return obj
 
-def notification_query():
-    post_set = set()
-    post_set.update(Notification.objects.values_list("target_object_id", flat=True))
-    return Notification.objects.order_by("-timestamp")
-
-def fitler_objects(my_list):
+def filter_objects(my_list):
     list_user = []
     list_subdept = []
     list_dept = []
@@ -118,3 +109,101 @@ def fitler_objects(my_list):
         elif isinstance(i, Page):
             list_page.append(i)
     return list_user, list_subdept, list_dept, list_page
+
+def get_newsfeed(user=None):
+    """
+        The query to get all notificatios related to a user
+    """
+    return Notification.objects.raw("""
+            SELECT a.* 
+            FROM notifications_notification a 
+            WHERE NOT EXISTS (
+                SELECT 1 
+                FROM notifications_notification 
+                WHERE target_object_id = a.target_object_id 
+                    AND timestamp > a.timestamp
+            ) 
+            GROUP BY a.target_object_id
+            ORDER BY a.timestamp DESC
+            LIMIT """ + str((page-1)*max_items) + "," + str(page*max_items))
+
+def get_my_posts(access_obj, wall=None):
+    """
+        Checks all relations from a user to the posts in this wall
+    """
+    from apps.users.models import Dept, Subdept, Page
+    if isinstance(access_obj, User):
+        erp_profile = access_obj.erp_profile
+        my_query = ( \
+                Q(access_users__id__exact=access_obj.id) | \
+                Q(access_subdepts__in=erp_profile.coord_relations.all()) | \
+                Q(access_depts__in=erp_profile.supercoord_relations.all()) | \
+                Q(access_depts__in=erp_profile.core_relations.all()) | \
+                Q(access_pages__in=erp_profile.page_relations.all())
+            )
+        if wall:
+            my_query = my_query & Q(wall=wall)
+        return Post.objects.filter(my_query).order_by('-time_created')
+    elif isinstance(access_obj, Subdept) or isinstance(access_obj, Dept) or isinstance(access_obj, Page):
+        temp = access_obj.access_post
+        if wall:
+            return temp.filter(wall=wall).order_by('-time_created')
+        else:
+            return temp.all().order_by('-time_created')
+
+def get_my_walls(user):
+    """
+        The query to get all walls related to a user
+    """
+    erp_profile = None
+    if isinstance(user, User):
+        user = user
+        erp_profile = user.erp_profile
+    elif isinstance(user, ERPProfile):
+        erp_profile = user
+        user = erp_profile.user
+        
+    my_query = Q(person=user) | \
+                Q(subdept__in=erp_profile.coord_relations.all()) | \
+                Q(dept__in=erp_profile.supercoord_relations.all()) | \
+                Q(dept__in=erp_profile.core_relations.all()) | \
+                Q(page__in=erp_profile.page_relations.all())
+    wall_list = Wall.objects.filter(my_query)
+    """ # Older method
+    wall_list = set()
+    wall_list.update(user.access_wall.all())
+    for i in erp_profile.coord_relations.all():
+        wall_list.update(i.access_wall.all())
+    for i in erp_profile.supercoord_relations.all():
+        wall_list.update(i.access_wall.all())
+    for i in erp_profile.core_relations.all():
+        wall_list.update(i.access_wall.all())
+    for i in erp_profile.page_relations.all():
+        wall_list.update(i.access_wall.all())
+    """
+    return wall_list
+
+def check_access_rights(access_obj, thing):
+    """
+        Used by walls and posts to check if the obj has access right or not
+    """
+    from apps.users.models import Dept, Subdept, Page
+    if isinstance(access_obj, User):
+        erp_profile = access_obj.erp_profile
+        my_query = Q(id=thing.id) & ( \
+                Q(access_users__id__exact=access_obj.id) | \
+                Q(access_subdepts__in=erp_profile.coord_relations.all()) | \
+                Q(access_depts__in=erp_profile.supercoord_relations.all()) | \
+                Q(access_depts__in=erp_profile.core_relations.all()) | \
+                Q(access_pages__in=erp_profile.page_relations.all())
+            )
+        if isinstance(thing, Post):
+            return Post.objects.filter(my_query)
+        elif isinstance(thing, Wall):
+            return Wall.objects.filter(my_query)
+    elif isinstance(access_obj, Subdept):
+        return thing.access_subdepts.filter(id=access_obj.id).count()
+    elif isinstance(access_obj, Dept):
+        return thing.access_depts.filter(id=access_obj.id).count()
+    elif isinstance(access_obj, Page):
+        return thing.access_pages.filter(id=access_obj.id).count()

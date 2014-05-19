@@ -24,6 +24,8 @@ import notifications
 # Python
 import random
 
+#### MODELS
+
 # Model for Department forum
 class Wall(models.Model):
     """
@@ -76,6 +78,10 @@ class Wall(models.Model):
         print "No parent found"
         return temp
     
+    def has_access(self, access_obj):
+        from apps.walls.utils import check_access_rights
+        return check_access_rights(access_obj, self)
+
     def add_access(self, access_list):
         from apps.walls.utils import filter_objects
         list_user, list_subdept, list_dept, list_page = filter_objects(access_list)
@@ -91,6 +97,7 @@ class Wall(models.Model):
         self.notification_subdepts.add(*list_subdept)
         self.notification_depts.add(*list_dept)
         self.notification_pages.add(*list_page)
+        self.add_access(notif_list) # This is so that they can read and comment also ...
 
     def notify_users(self):
         users = set()
@@ -105,11 +112,6 @@ class Wall(models.Model):
     
     def __unicode__(self):
         return self.name
-    
-# class UserWall(models.Model):
-#     """
-#         A through table to associate users that have seen a wall
-#     """
 
 class PostInfo(models.Model):
     """
@@ -214,6 +216,11 @@ class Post(PostInfo):
         
         temp = super(Post, self).save(*args, **kwargs)
         return
+
+    def has_access(self, access_obj):
+        from apps.walls.utils import check_access_rights
+        check_access_rights(access_obj, self)
+        
     def add_access(self, access_list):
         from apps.walls.utils import filter_objects
         list_user, list_subdept, list_dept, list_page = filter_objects(access_list)
@@ -229,7 +236,7 @@ class Post(PostInfo):
         self.notification_subdepts.add(*list_subdept)
         self.notification_depts.add(*list_dept)
         self.notification_pages.add(*list_page)
-
+        self.add_access(notif_list) # This is so that they can read and comment also ...
 
     def notify_users(self):
         users = set()

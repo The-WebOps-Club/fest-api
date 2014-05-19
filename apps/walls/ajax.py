@@ -19,7 +19,7 @@ from misc.utils import *  #Import miscellaneous functions
 
 # From Apps
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-from apps.walls.utils import paginate_items, parse_atwho, get_tag_object
+from apps.walls.utils import paginate_items, parse_atwho, get_tag_object, get_newsfeed
 
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
@@ -82,19 +82,8 @@ def get_notifications(request, **kwargs):
     exhausted = False
     max_items = kwargs.get("max_items", 5)
     notifications_list = Notification.objects.all()
-    if page:    
-        items = Notification.objects.raw("""
-            SELECT a.* 
-            FROM notifications_notification a 
-            WHERE NOT EXISTS (
-                SELECT 1 
-                FROM notifications_notification 
-                WHERE target_object_id = a.target_object_id 
-                    AND timestamp > a.timestamp
-            ) 
-            GROUP BY a.target_object_id
-            ORDER BY a.timestamp DESC
-            LIMIT """ + str((page-1)*max_items) + "," + str(page*max_items))
+    if page:
+        items = get_newsfeed()
     elif notification_id:
         items = notification_lists.filter(id=notification_id)
 
@@ -118,9 +107,9 @@ def get_posts(request, **kwargs):
     post_id = kwargs.get("id", None)
     exhausted = False
     if wall_id:
-        posts_list = Post.objects.filter(wall__id = int(wall_id)).order_by('-time_updated')
+        posts_list = Post.objects.filter(wall__id = int(wall_id)).order_by('-time_created')
     else:
-        posts_list = Post.objects.all().order_by('-time_updated')
+        posts_list = Post.objects.all().order_by('-time_created')
 
     if page:
         items, exhausted = paginate_items(posts_list, **kwargs)
@@ -228,11 +217,10 @@ def create_post(request, wall_id, post_form):
    
     post_text = data["new_post"]
     post_subject = data["new_post_subject"]
-    print post_subject, "<<<----------------------------------------"
     post_text, notification_list = parse_atwho(post_text)
 
     new_post = Post.objects.create(subject=post_subject, description=post_text, wall=wall, by=request.user)
-
+    print notification_list
     new_post.add_notifications(notification_list)
     if wall.parent:
         new_post.add_notifications([wall.parent, request.user]) # add to and from

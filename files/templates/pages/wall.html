@@ -10,7 +10,19 @@
         
         {% include 'modules/profile_banner.html' %}
         <br/>
+        
+        {% if not wall_accessible %}
+            <div class="row-fluid">
+                <div class="alert-message error span12">
+                    <!--<a class="close" href="#">×</a>-->
+                    <p><strong>Access Error !</strong> <br>You are not allowed to view this wall ! <br>You will only be able to see Posts in which you are tagged.</p>
+                </div>
+            </div>
+        {% endif %}
+    
+
         {% url 'create_post' wall.id as new_post_url %}
+
         {% include "modules/new_post.html" %}
     </div>
     <div class="row-fluid post_wrapper">
