@@ -9,6 +9,9 @@
 	<div class="news_post span12">
 		{% if notification %}
 			<div class="row-fluid news_notif_line">
+				{% if notification.unread %}
+					<span class='label warning label-head'>UNREAD</span>
+				{% endif %}
 		       	<a class="bold" href="{% if notification.sender.id %}{% url 'profile' notification.actor.id %}{% endif %}">
 		       		{{ notification.actor.get_full_name|default:"" }}
 		       	</a>
