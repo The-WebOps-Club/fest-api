@@ -69,6 +69,7 @@ API_APPS = (
     'apps.walls',
     'apps.events',
     'apps.docs',
+    'apps.portals.coreportal',
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 
