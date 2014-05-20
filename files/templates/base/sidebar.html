@@ -91,10 +91,11 @@
             <ul class='group_link vertical'>
                 {% if erp_profile.core_relations.count %}
                     <li class="{% if current_page == 'portal_admin' %}active{% endif %}">
-                        <a href=''>
+                        <a href='{%url "coreportal"%}'>
                             <i class='icon-crown'></i> Admin Portal
                         </a>
                     </li>
+
                 {% else %}
                     <span class="muted">You have no portals ...</span>
                 {% endif %}

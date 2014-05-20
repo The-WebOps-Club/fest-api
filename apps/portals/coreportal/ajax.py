@@ -71,12 +71,13 @@ def add_users_to_page(request,page_id,user_ids):
     if not (request.session['role'] == 'core'):
         return json.dumps({'message':'Not Authorized'})
 
+    page = Page.objects.get(id = page_id)
     append_string = ''
     for user_id in user_ids:
-        e = ERPProfile.objects.get(id = user_id.split('_')[1])
+        e = User.objects.get(id = user_id.split('_')[1]).erp_profile
         if not (page in e.page_relations.all()):
             append_string+=render_to_string('portals/coreportal/user.html', {'user':e.user,'link_type':'page','link_id':page_id}, context_instance=global_context(request, token_info=False))
-        e.page_relations.add(Page.objects.get(id = page_id))
+        e.page_relations.add(page)
         
 
     return json.dumps({'message':'done','append_string':append_string})
@@ -93,7 +94,7 @@ def add_users_to_subdept(request,subdept_id,user_ids):
         return json.dumps({'message':'Not your subdept :P'})
 
     for user_id in user_ids:
-        e = ERPProfile.objects.get(id = user_id.split('_')[1])
+        e = User.objects.get(id = user_id.split('_')[1]).erp_profile
         if not (subdept in e.coord_relations.all()):
             append_string+=render_to_string('portals/coreportal/user.html', {'user':e.user,'link_type':'subdept','link_id':subdept_id}, context_instance=global_context(request, token_info=False))        
         e.coord_relations.add(subdept)
@@ -109,7 +110,7 @@ def delete_user_from_subdept(request,subdept_id,user_id):
     if not (request.session['role_dept'] == subdept.dept.id):
         return json.dumps({'message':'Not your subdept :P'})
 
-    ERPProfile.objects.get(id = user_id).coord_relations.remove(subdept)
+    User.objects.get(id = user_id).erp_profile.coord_relations.remove(subdept)
     return json.dumps({'message':'done'})
     pass
 
@@ -118,7 +119,7 @@ def delete_user_from_page(request,page_id,user_id):
     if not (request.session['role'] == 'core'):
         return json.dumps({'message':'Not Authorized'})
 
-    ERPProfile.objects.get(id = user_id).page_relations.remove(Page.objects.get(id = page_id))
+    User.objects.get(id = user_id).erp_profile.page_relations.remove(Page.objects.get(id = page_id))
     return json.dumps({'message':'done'})
     pass
 
@@ -159,7 +160,7 @@ def remove_subdept(request, subdept_id):
         return json.dumps({'message':'Not your subdept :P'})
 
     Subdept.objects.get(id = subdept_id).delete();
-    return json.dumps({'message':'done','id':s.id,'name':page_name})
+    return json.dumps({'message':'done'})
 
 @dajaxice_register
 def remove_page(request, page_id):
@@ -167,5 +168,5 @@ def remove_page(request, page_id):
     if not (request.session['role'] == 'core'):
         return json.dumps({'message':'Not Authorized'})
 
-    Page.objects.get(id = dept_id).delete();
-    return json.dumps({'message':'done','id':p.id,'name':page_name})
+    Page.objects.get(id = page_id).delete();
+    return json.dumps({'message':'done'})

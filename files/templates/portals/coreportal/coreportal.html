@@ -7,8 +7,10 @@
 	<div data-id='{{i.dept.id}}' class='span12 card dept-name' style='text-align:center'><h3>{{i.dept.name}}</h3></div>
 		<div class='card template span12 subdept-container' data-id='-1' style='display:none'>
 			<div class="span12">
-			<div class='data-fetch-subdept'><h5 class='subdept-name'></h5><div class='subdept-user-container span5'></div></div>
-			<button class='remove-btn subdept-remove-btn'>Remove</button>
+			<div class='data-fetch-subdept'><h5><b class='subdept-name'></b>
+				<button class='remove-btn subdept-remove-btn icon-stop'></button>
+			</h5><div class='subdept-user-container span5'></div></div>
+			
 			</div>
 			
 			<select class='user-selector for-subdept select_all_list' style='width:200px' multiple>
@@ -17,8 +19,10 @@
 		</div>
 		<div class='page-container card span12 template' style='display:none' data-id='-1'>
 			<div class='span12'>
-				<div class='data-fetch-page'><h4 class='page-name'></h4><div class='page-user-container span5'></div></div>
-				<button class='remove-btn page-remove-btn'>Remove</button>
+				<div class='data-fetch-page'><h4><b class='page-name'></b>
+					<button class='remove-btn page-remove-btn icon-stop'></button>
+				</h4><div class='page-user-container span5'></div></div>
+				
 			</div>
 
 			<div class='span11'>
@@ -113,12 +117,7 @@
 		width:26px;
 	}
 	.remove-btn{
-		background-color: #FFAAAA;
-		padding-left: 4px;
-		padding-right: 3px;
-		font-weight: bolder;
-		font-size: 11px;
-		border-radius: 5px;
+		background-color: transparent;
 	}
 	.user-display-name{
 		padding-left:20px;
@@ -178,7 +177,22 @@
 					e.stopPropagation();
 				});
 	}
-
+	function bindRemove(){
+		$('.subdept-remove-btn').click(function(e){
+			var id = $(this).parents('.subdept-container').data('id');
+			Dajaxice.apps.portals.coreportal.remove_subdept(function(res){
+				$('.subdept-container[data-id='+id+']').remove();
+			},{'subdept_id':id});
+			e.stopPropagation();
+		});
+		$('.page-remove-btn').click(function(e){
+			var id = $(this).parents('.page-container').data('id');
+			Dajaxice.apps.portals.coreportal.remove_page(function(res){
+				$('.page-container[data-id='+id+']').remove();
+			},{'page_id':id});
+			e.stopPropagation();
+		});
+	}
 	function replaceSubdeptPlaceholder(i,e){
 			console.log('cloning..');
 			$el = $('.subdept-container.template').clone();
@@ -219,6 +233,7 @@
 				$('.pages-container').append($el);
 				$('.page-placeholder').each(replacePagePlaceholder);
 				bindUserAdd();
+				bindRemove();
 				$(this).removeAttr('disabled');
 			},{'page_name':$('.add-page-name').val()});
 			e.stopPropagation();
@@ -231,6 +246,7 @@
 				$('.subdepts-container').append($el);
 				$('.subdept-placeholder').each(replaceSubdeptPlaceholder);
 				bindUserAdd();
+				bindRemove();
 				$(this).removeAttr('disabled');
 			},{'page_name':$('.add-subdept-name').val(),'dept_id':$('.dept-name').data('id')});
 		});
@@ -271,20 +287,7 @@
 		//on_dom_change();
 		// run ajax functions.
 		//Dajax.apps.portals.coreportal.get_user_of_subdept(Dajax.process,sub_dept_id)
-		$('.subdept-remove-btn').click(function(e){
-			var id = $(this).parents('.subdept-container').data('id');
-			Dajaxice.apps.portals.coreportal.remove_subdept(function(res){
-				$('.subdept-container[data-id='+id+']').remove();
-			},{'subdept_id':id});
-			e.stopPropagation();
-		});
-		$('.page-remove-btn').click(function(e){
-			var id = $(this).parents('.page-container').data('id');
-			Dajaxice.apps.portals.coreportal.remove_page(function(res){
-				$('.page-container[data-id='+id+']').remove();
-			},{'page_id':id});
-			e.stopPropagation();
-		});
+		bindRemove();
 	});
 
 </script>

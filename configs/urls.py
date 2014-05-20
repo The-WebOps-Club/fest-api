@@ -64,7 +64,7 @@ urlpatterns = patterns('',
     url(r'^show/500/$', 'misc.views.err500',  name='err505'),
     #url(r'^setup/$', 'misc.views.setup', name='setup'),
 
-    url(r'^sample/$','apps.portals.coreportal.views.coreportal', name='coreportal' ),
+    url(r'^portals/coreportal/$','apps.portals.coreportal.views.coreportal', name='coreportal' ),
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
