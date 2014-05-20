@@ -20,6 +20,9 @@ from misc.utils import *
 from apps.users.models import *
 from apps.walls.models import *
 
+import os
+from django.core.management import call_command
+
 def cores_only(in_func):
     def out_func(request, *args, **kwargs):
         if not (request.session['role'] == 'Core'):
@@ -78,7 +81,6 @@ def add_users_to_page(request,page_id,user_ids):
         if not (page in e.page_relations.all()):
             append_string+=render_to_string('portals/coreportal/user.html', {'user':e.user,'link_type':'page','link_id':page_id}, context_instance=global_context(request, token_info=False))
         e.page_relations.add(page)
-        
 
     return json.dumps({'message':'done','append_string':append_string})
 
@@ -181,7 +183,14 @@ def create_user(request, username, email, first_name, last_name):
         return json.dumps({'message':'Account with '+email+' already exists'});
 
     u = User(username = username, email = email, first_name =  first_name, last_name = last_name);
+    erp_profile = ERPProfile()
     passkey = User.objects.make_random_password()
     u.set_password(passkey);
     u.save();
+    erp_profile.user = u
+    erp_profile.save();
+    # refresh json lists.
+    call_command('jsonify_data')
+    call_command('collectstatic',interactive=False)\
+    #pipe = os.popen('python \'manage.py\' collectstatic')
     return json.dumps({'message':'Successfully created <b>'+username+'</b> Password: <b>'+passkey+'</b>. Ask the user to use reset password to reset the password.','passkey':passkey})

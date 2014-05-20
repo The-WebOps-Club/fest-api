@@ -5,32 +5,33 @@
 <div class='coreportal-container'>
 {%for i in subdepts%}
 	<div data-id='{{i.dept.id}}' class='span12 card dept-name' style='text-align:center'><h3>{{i.dept.name}}</h3></div>
-		<div class='card template span12 subdept-container' data-id='-1' style='display:none'>
+		<div class='card template span12 subdept-container collapser' data-id='-1' style='display:none'>
 			<div class="span12">
 			<div class='data-fetch-subdept'><h5><b class='subdept-name'></b>
 				<button class='remove-btn subdept-remove-btn icon-stop'></button>
-			</h5><div class='subdept-user-container span5'></div></div>
+			</h5><div class='subdept-user-container collapsible span5'></div></div>
 			
 			</div>
-			
-			<select class='user-selector for-subdept select_all_list' style='width:200px' multiple>
-			</select>
-			<button type=submit class='user-selector-btn btn btn-primary for-subdept'>Add User</button>
+			<div class='span12 collapsible'>
+				<select class='user-selector for-subdept select_all_list' style='width:200px' multiple>
+				</select>
+				<button type=submit class='user-selector-btn btn btn-primary for-subdept'>Add User</button>
+			</div>
 		</div>
-		<div class='page-container card span12 template' style='display:none' data-id='-1'>
+		<div class='page-container card span12 template collapser' style='display:none' data-id='-1'>
 			<div class='span12'>
-				<div class='data-fetch-page'><h4><b class='page-name'></b>
+				<div class='data-fetch-page '><h4><b class='page-name'></b>
 					<button class='remove-btn page-remove-btn icon-stop'></button>
-				</h4><div class='page-user-container span5'></div></div>
+				</h4><div class='page-user-container collapsible span5'></div></div>
 				
 			</div>
 
-			<div class='span11'>
+			<div class='span11 collapsible'>
 				<select name='user-selector-{{j.pk}}' class='user-selector for-page select_all_list' style='width:100%' multiple>
 				</select>
 			</div>
 
-			<div class='span1'>
+			<div class='span1 collapsible'>
 				<button type=submit class='user-selector-btn btn btn-primary for-page'>Add User</button>
 			</div>
 		</div>
@@ -140,14 +141,14 @@
 	.warning{
 		
 		background-color: gold;
-opacity: 0.5;
-margin-right: 10px;
-border-radius: 3px;
-text-align: center;
-color: darkred;
-border: 1px solid darkred;
-margin-bottom: 5px;
-display:none;
+		opacity: 0.5;
+		margin-right: 10px;
+		border-radius: 3px;
+		text-align: center;
+		color: darkred;
+		border: 1px solid darkred;
+		margin-bottom: 5px;
+		display:none;
 	}
 	.new-user-textbox{
 		margin-bottom:5px;
@@ -220,6 +221,23 @@ display:none;
 			e.stopPropagation();
 		});
 	}
+	function bindCollapser(){
+		$('.collapser').click(function(){
+			console.log('clicked');
+			var a = $(this).find('.collapsed')
+			var b = $(this).find('.collapsible')
+
+			a.slideDown(200);
+			a.removeClass('collapsed')
+			a.addClass('collapsible')
+
+			
+			b.slideUp(200);
+			b.removeClass('collapsible')
+			b.addClass('collapsed')
+			
+		});
+	}
 	function replaceSubdeptPlaceholder(i,e){
 			console.log('cloning..');
 			$el = $('.subdept-container.template').clone();
@@ -261,6 +279,7 @@ display:none;
 				$('.pages-container').append($el);
 				$('.page-placeholder').each(replacePagePlaceholder);
 				bindUserAdd();
+				bindCollapser();
 				bindRemove();
 				$e.removeAttr('disabled');
 			},{'page_name':$('.add-page-name').val()});
@@ -275,6 +294,7 @@ display:none;
 				$('.subdepts-container').append($el);
 				$('.subdept-placeholder').each(replaceSubdeptPlaceholder);
 				bindUserAdd();
+				bindCollapser();
 				bindRemove();
 				$e.removeAttr('disabled');
 			},{'page_name':$('.add-subdept-name').val(),'dept_id':$('.dept-name').data('id')});
@@ -317,6 +337,7 @@ display:none;
 		// run ajax functions.
 		//Dajax.apps.portals.coreportal.get_user_of_subdept(Dajax.process,sub_dept_id)
 		bindRemove();
+		bindCollapser();
 		$('.add-user-btn').click(function(e){
 			var first_name = $(this).parents('.add-user-container').find('.new-user-first-name').val();
 			var last_name = $(this).parents('.add-user-container').find('.new-user-last-name').val();
