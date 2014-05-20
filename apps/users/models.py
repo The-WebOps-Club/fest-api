@@ -290,17 +290,8 @@ class ERPProfile(models.Model):
             self_user.email
 
     def related_walls(self):
-        wall_list = set()
-        wall_list.update(self.user.notified_wall.all())
-        for i in self.coord_relations.all():
-            wall_list.update(i.notified_wall.all())
-        for i in self.supercoord_relations.all():
-            wall_list.update(i.notified_wall.all())
-        for i in self.core_relations.all():
-            wall_list.update(i.notified_wall.all())
-        for i in self.page_relations.all():
-            wall_list.update(i.notified_wall.all())
-        return wall_list
+        from apps.walls.utils import get_my_walls
+        get_my_walls(self)
 
     # Methods to check for position/role
     def is_coord(self, request):

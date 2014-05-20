@@ -28,7 +28,6 @@ import notifications
 #     """
 #     # If comments = 0 It is a new post.
 #     if created:
-#         #print(instance)
 #         by = instance.by
 #         set_recipients = set()
 #         set_recipients.update(instance.wall.notify_users())

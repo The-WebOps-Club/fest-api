@@ -17,17 +17,16 @@
 
 <div class="hidden notifs_content">
 	<div id="id_notifs_container_notifs" class="notifs_contents_inner">
-		<input type="hidden" name="current_page_unread" class="current_page_notifs" value="1" />
-		{% for notification in user.notifications.all|slice:":5" %}
-			{% include 'modules/notif.html'%}
-		{% empty %}
+		<input type="hidden" name="current_page_unread" class="current_page_notifs" value="0" />
+		{% if not user.notifications.count %}
 			<div class="notif muted">
 				You have no unread notifications.
 			</div>
-		{% endfor %}
-		<div class="center see_more_notifs" name="see_more_notifs" >
-			See more
-		</div>
+		{% else %}
+			<div class="center see_more_notifs" name="see_more_notifs" >
+				See more
+			</div>
+		{% endif %}
 	</div>	
 </div>
 
@@ -160,6 +159,10 @@
 					$(".popover_notifs .see_more_notifs").click()
 				}
 			});
+
+			if ( parseInt($('.popover_notifs .current_page_notifs').val()) == 0 ) {
+				$(".popover_notifs .see_more_notifs").click()
+			}
 		})
 	});
 	

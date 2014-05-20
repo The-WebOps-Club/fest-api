@@ -19,7 +19,7 @@ from misc.utils import *  #Import miscellaneous functions
 
 # From Apps
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-from apps.walls.utils import paginate_items, parse_atwho, get_tag_object
+from apps.walls.utils import paginate_items, parse_atwho, get_tag_object, query_newsfeed, query_notifs
 
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
@@ -81,22 +81,14 @@ def get_notifications(request, **kwargs):
     notification_id = kwargs.get("id", None)
     exhausted = False
     max_items = kwargs.get("max_items", 5)
-    notifications_list = Notification.objects.all()
-    if page:    
-        items = Notification.objects.raw("""
-            SELECT a.* 
-            FROM notifications_notification a 
-            WHERE NOT EXISTS (
-                SELECT 1 
-                FROM notifications_notification 
-                WHERE target_object_id = a.target_object_id 
-                    AND timestamp > a.timestamp
-            ) 
-            GROUP BY a.target_object_id
-            ORDER BY a.timestamp DESC
-            LIMIT """ + str((page-1)*max_items) + "," + str(page*max_items))
+    user = request.user
+
+    if page:
+        items = query_newsfeed(request.user, **kwargs)
     elif notification_id:
-        items = notification_lists.filter(id=notification_id)
+        items = Notification.objects.filter(id=notification_id, recipient_id=user.id)
+    else:
+        items = Notification.objects.filter(recipient_id=user.id)
 
     append_string = ""
     for item in items:
@@ -105,6 +97,8 @@ def get_notifications(request, **kwargs):
             'notification' : item,
         }
         append_string += render_to_string('modules/post.html', local_context, context_instance=global_context(request, token_info=False))
+    if append_string == "":
+        exhausted = True
     local_context = {
         "append_string" : append_string,
         "exhausted" : exhausted,
@@ -117,10 +111,12 @@ def get_posts(request, **kwargs):
     wall_id = kwargs.get("wall_id", None)
     post_id = kwargs.get("id", None)
     exhausted = False
+    user = request.user
+
     if wall_id:
-        posts_list = Post.objects.filter(wall__id = int(wall_id)).order_by('-time_updated')
+        posts_list = Post.objects.filter(wall__id = int(wall_id)).order_by('-time_created')
     else:
-        posts_list = Post.objects.all().order_by('-time_updated')
+        posts_list = Post.objects.all().order_by('-time_created')
 
     if page:
         items, exhausted = paginate_items(posts_list, **kwargs)
@@ -148,24 +144,21 @@ def get_notifs(request, **kwargs):
     notif_type = kwargs.get("notif_type", None)
     notif_id = kwargs.get("id", None)
     exhausted = False
-    if notif_type == 'unread':
-        notifs_list = request.user.notifications.unread()
-    elif notif_type == 'read':
-        notifs_list = request.user.notifications.read()
-    else:    
-        notifs_list = request.user.notifications.all()
+    user = request.user
 
-    if page:
-        items, exhausted = paginate_items(notifs_list, **kwargs)
-    elif notif_id:
-        items = notif_list.filter(id=notif_id)
-
+    if notif_id:
+        items = user.notifications.filter(id=notif_id)
+    else:
+        items = query_notifs(user, **kwargs)
+    
     append_string = ""
     for item in items:
         local_context = {
             'notification' : item,
         }
         append_string += render_to_string('modules/notif.html', local_context, context_instance=global_context(request, token_info=False))
+    if append_string == "":
+        exhausted = True
     local_context = {
         "append_string" : append_string,
         "exhausted" : exhausted,
@@ -214,11 +207,9 @@ def create_post(request, wall_id, post_form):
     try:
         wall_id = int(wall_id)
     except ValueError:
-        print wall_id, "could not convert to int"
         wall_id = None
     
     if not ( type(wall_id) is int ):
-        print "wall_id :", wall_id, type(wall_id)
         raise InvalidArgumentTypeException("argument `wall_id` should be of type integer")
     wall = get_object_or_404(Wall, id=int(wall_id))
 
@@ -228,11 +219,10 @@ def create_post(request, wall_id, post_form):
    
     post_text = data["new_post"]
     post_subject = data["new_post_subject"]
-    print post_subject, "<<<----------------------------------------"
     post_text, notification_list = parse_atwho(post_text)
 
     new_post = Post.objects.create(subject=post_subject, description=post_text, wall=wall, by=request.user)
-
+    
     new_post.add_notifications(notification_list)
     if wall.parent:
         new_post.add_notifications([wall.parent, request.user]) # add to and from
@@ -285,14 +275,13 @@ def create_comment(request, post_id, data):
         print post_id, "could not convert to int"
         post_id = None
     if not ( type(post_id) is int ):
-        print "post_id :", post_id, type(post_id)
         raise InvalidArgumentTypeException("argument `post_id` should be of type integer")
     
     # Create a new comment
     append_string = ""
     data = deserialize_form(data).dict()
 
-    print data
+    
     # Attempt to get the post for the comment
     post = get_object_or_None(Post, id=int(post_id))
     comment_text = data['comment']

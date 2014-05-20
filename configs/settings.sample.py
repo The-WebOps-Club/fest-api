@@ -72,6 +72,12 @@ SOCIAL_AUTH_LOGIN_REDIRECT_URL = SITE_URL + 'login/'
 # INSTALLED APPS SETTINGS
     # Django Debug Toolbar
 DEBUG_TOOLBAR_PATCH_SETTINGS = True
+    # Django cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+   }
+}
     # Django post office
 DEFAULT_FROM_EMAIL = 'Fest-API <noreply@festapi.com>'
 SERVER_EMAIL = 'Fest-API Server <server@festapi.com>' #The email address that error messages come from, such as those sent to ADMINS and MANAGERS.

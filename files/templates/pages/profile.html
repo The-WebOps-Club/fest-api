@@ -20,7 +20,7 @@
 							<i class="icon-pencil"></i> 
 							<span class="edit_text">Edit Profile</span>
 						</a>
-						<a class="btn primary form_input pull-right form_submit" href="javascript:void(0)"> 
+						<a class="btn primary form_input pull-right form_submit form_visible " href="javascript:void(0)"> 
 							<i class="icon-save"></i> 
 							Save Changes
 						</a>
@@ -144,17 +144,17 @@
 		</div>
 		<div class="row-fluid profile_wrapper">
 			<div class="span12">
-				<div class="profile_head">{{FEST_NAME}} Relations</div>
+				<div class="profile_head">Social Account Relations</div>
 				<div class="profile_body">
-
-				</div>
-			</div>
-		</div>
-		<div class="row-fluid profile_wrapper">
-			<div class="span12">
-				<div class="profile_head">Media Relations</div>
-				<div class="profile_body">
-					
+					<a class='zocial facebook span3' href="{% url 'social:begin' 'facebook' %}?next=/profile">
+                        Sign in with Facebook
+                    </a>
+                    <a class='zocial google span3 offset1' href="{% url 'social:begin' 'google-oauth2' %}?next=/profile">
+                    	Sign in with Google
+                    </a>
+                    <a class='zocial twitter span3 offset1' href="{% url 'social:begin' 'twitter' %}?next=/profile">
+                        Sign in with Twitter
+                    </a>
 				</div>
 			</div>
 		</div>
@@ -221,6 +221,117 @@
 		background-color: #DD3C10;
 		border : 2px solid black;
 	}
+
+	/* Button structure */
+	.zocial {
+		border: 1px solid #777;
+		border-color: rgba(0,0,0,0.2);
+		border-bottom-color: #333;
+		border-bottom-color: rgba(0,0,0,0.4);
+		color: #fff;
+		-moz-box-shadow: inset 0 0.08em 0 rgba(255,255,255,0.4), inset 0 0 0.1em rgba(255,255,255,0.9);
+		-webkit-box-shadow: inset 0 0.08em 0 rgba(255,255,255,0.4), inset 0 0 0.1em rgba(255,255,255,0.9);
+		box-shadow: inset 0 0.08em 0 rgba(255,255,255,0.4), inset 0 0 0.1em rgba(255,255,255,0.9);
+		cursor: pointer;
+		display: inline-block;
+		font: bold 100%/2.1 "Lucida Grande", Tahoma, sans-serif;
+		padding: 0 .95em 0 0;
+		text-align: center;
+		text-decoration: none;
+		text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+		white-space: nowrap;
+		margin:5px;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		user-select: none;
+		
+		position: relative;
+		
+		-moz-border-radius: .3em;
+		-webkit-border-radius: .3em;
+		border-radius: .3em;
+	}
+
+	.zocial:before {
+		content: "";
+		border-right: 0.075em solid rgba(0,0,0,0.1);
+		float: left;
+		font-style: normal;
+		font-weight: normal;
+		margin: 0 0.5em 0 0;
+		padding: 0 0.5em;
+		text-align: center;
+		text-decoration: none;
+		text-transform: none;
+		
+		-moz-box-shadow: 0.075em 0 0 rgba(255,255,255,0.25);
+		-webkit-box-shadow: 0.075em 0 0 rgba(255,255,255,0.25);
+		box-shadow: 0.075em 0 0 rgba(255,255,255,0.25);
+		
+		-moz-font-smoothing: antialiased;
+		-webkit-font-smoothing: antialiased;
+		font-smoothing: antialiased;
+	}
+
+	.zocial:active {
+		outline: none; /* outline is visible on :focus */
+	}
+
+	/* Buttons can be displayed as standalone icons by adding a class of "icon" */
+
+	.zocial.icon {
+		overflow: hidden;
+		max-width: 2.4em;
+		padding-left: 0;
+		padding-right: 0;
+		max-height: 2.15em;
+		white-space: nowrap;
+	}
+	.zocial.icon:before {
+		padding: 0;
+		width: 2em;
+		height: 2em;
+		
+		box-shadow: none;
+		border: none;
+	}
+
+	/* Gradients */
+
+	.zocial {
+		background-image: -moz-linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.05) 49%, rgba(0,0,0,.05) 51%, rgba(0,0,0,.1));
+		background-image: -ms-linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.05) 49%, rgba(0,0,0,.05) 51%, rgba(0,0,0,.1));
+		background-image: -o-linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.05) 49%, rgba(0,0,0,.05) 51%, rgba(0,0,0,.1));
+		background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,.1)), color-stop(49%, rgba(255,255,255,.05)), color-stop(51%, rgba(0,0,0,.05)), to(rgba(0,0,0,.1)));
+		background-image: -webkit-linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.05) 49%, rgba(0,0,0,.05) 51%, rgba(0,0,0,.1));
+		background-image: linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.05) 49%, rgba(0,0,0,.05) 51%, rgba(0,0,0,.1));
+	}
+
+	.zocial:hover, .zocial:focus {
+		background-image: -moz-linear-gradient(rgba(255,255,255,.15) 49%, rgba(0,0,0,.1) 51%, rgba(0,0,0,.15));
+		background-image: -ms-linear-gradient(rgba(255,255,255,.15) 49%, rgba(0,0,0,.1) 51%, rgba(0,0,0,.15));
+		background-image: -o-linear-gradient(rgba(255,255,255,.15) 49%, rgba(0,0,0,.1) 51%, rgba(0,0,0,.15));
+		background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,.15)), color-stop(49%, rgba(255,255,255,.15)), color-stop(51%, rgba(0,0,0,.1)), to(rgba(0,0,0,.15)));
+		background-image: -webkit-linear-gradient(rgba(255,255,255,.15) 49%, rgba(0,0,0,.1) 51%, rgba(0,0,0,.15));
+		background-image: linear-gradient(rgba(255,255,255,.15) 49%, rgba(0,0,0,.1) 51%, rgba(0,0,0,.15));
+		color : #fff;
+	}
+
+	.zocial:active {
+		background-image: -moz-linear-gradient(bottom, rgba(255,255,255,.1), rgba(255,255,255,0) 30%, transparent 50%, rgba(0,0,0,.1));
+		background-image: -ms-linear-gradient(bottom, rgba(255,255,255,.1), rgba(255,255,255,0) 30%, transparent 50%, rgba(0,0,0,.1));
+		background-image: -o-linear-gradient(bottom, rgba(255,255,255,.1), rgba(255,255,255,0) 30%, transparent 50%, rgba(0,0,0,.1));
+		background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,.1)), color-stop(30%, rgba(255,255,255,0)), color-stop(50%, transparent), to(rgba(0,0,0,.1)));
+		background-image: -webkit-linear-gradient(bottom, rgba(255,255,255,.1), rgba(255,255,255,0) 30%, transparent 50%, rgba(0,0,0,.1));
+		background-image: linear-gradient(bottom, rgba(255,255,255,.1), rgba(255,255,255,0) 30%, transparent 50%, rgba(0,0,0,.1));
+	}
+	.zocial.google:before {content: "G";}
+	.zocial.google {background-color: #4e6cf7;}
+	.zocial.twitter:before {content: "T";}
+	.zocial.twitter {background-color: #46c0fb;}
+	.zocial.facebook:before {content: "f";}
+	.zocial.facebook {background-color: #4863ae;}
+
 </style>
 {% endblock %}
 

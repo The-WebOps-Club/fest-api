@@ -88,21 +88,32 @@
     <div class="row-fluid">
         <div id='portal_links' class='span12 links'>
             <div class='group_link_head'>PORTALS</div>
+            <ul class='group_link vertical'>
+                {% if erp_profile.core_relations.count %}
+                    <li class="{% if current_page == 'portal_admin' %}active{% endif %}">
+                        <a href='{% url "portal_admin" %}'>
+                            <i class='icon-crown'></i> Admin Portal
+                        </a>
+                    </li>
+                {% else %}
+                    <span class="muted">You have no portals ...</span>
+                {% endif %}
+            </ul>
             <!-- <ul class='group_link vertical'>
-        <li><a href='#'>
-            <i class='icon-search'></i> Events Portal
-            {# <span class='label pull-right counter'>0</span> #}
-        </a></li>
-        <li><a href='#'>
-            <i class='icon-search'></i> Personal page
-            {# <span class='label pull-right counter'>0</span> #}
-        </a></li>
-        <li><a href='#'>
-            <i class='icon-search'></i> Personal page
-            <span class='label pull-right counter loading'><i class='icon-loading'></i></span>
-        </a></li>
-    </ul> -->
-            <span class="muted">Coming soon ...</span>
+                <li><a href='#'>
+                    <i class='icon-search'></i> Events Portal
+                    {# <span class='label pull-right counter'>0</span> #}
+                </a></li>
+                <li><a href='#'>
+                    <i class='icon-search'></i> Personal page
+                    {# <span class='label pull-right counter'>0</span> #}
+                </a></li>
+                <li><a href='#'>
+                    <i class='icon-search'></i> Personal page
+                    <span class='label pull-right counter loading'><i class='icon-loading'></i></span>
+                </a></li>
+            </ul> -->
+            
 
         </div>
     </div>
