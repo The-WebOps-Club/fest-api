@@ -207,11 +207,9 @@ def create_post(request, wall_id, post_form):
     try:
         wall_id = int(wall_id)
     except ValueError:
-        print wall_id, "could not convert to int"
         wall_id = None
     
     if not ( type(wall_id) is int ):
-        print "wall_id :", wall_id, type(wall_id)
         raise InvalidArgumentTypeException("argument `wall_id` should be of type integer")
     wall = get_object_or_404(Wall, id=int(wall_id))
 
@@ -224,7 +222,7 @@ def create_post(request, wall_id, post_form):
     post_text, notification_list = parse_atwho(post_text)
 
     new_post = Post.objects.create(subject=post_subject, description=post_text, wall=wall, by=request.user)
-    print notification_list
+    
     new_post.add_notifications(notification_list)
     if wall.parent:
         new_post.add_notifications([wall.parent, request.user]) # add to and from
@@ -277,14 +275,13 @@ def create_comment(request, post_id, data):
         print post_id, "could not convert to int"
         post_id = None
     if not ( type(post_id) is int ):
-        print "post_id :", post_id, type(post_id)
         raise InvalidArgumentTypeException("argument `post_id` should be of type integer")
     
     # Create a new comment
     append_string = ""
     data = deserialize_form(data).dict()
 
-    print data
+    
     # Attempt to get the post for the comment
     post = get_object_or_None(Post, id=int(post_id))
     comment_text = data['comment']

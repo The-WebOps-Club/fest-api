@@ -115,7 +115,7 @@ def query_newsfeed(user, **kwargs):
         The query to get all notificatios related to a user
         This query clubs all notifications with the post's id and only which were sent to the user
     """
-    page = kwargs.get("page", None)
+    page = kwargs.get("page", 0)
     max_items = kwargs.get("max_items", 5)
     if page and max_items:
         start_item = (page-1)*max_items
@@ -128,10 +128,11 @@ def query_newsfeed(user, **kwargs):
             FROM notifications_notification a 
             WHERE ( ( NOT EXISTS (
                 SELECT 1 
-                FROM notifications_notification 
-                WHERE target_object_id = a.target_object_id 
-                    AND timestamp > a.timestamp
-            ) ) AND a.`recipient_id`=%(user_id)d )
+                FROM notifications_notification b
+                WHERE b.target_object_id = a.target_object_id 
+                    AND b.timestamp > a.timestamp
+                    AND b.recipient_id=%(user_id)d
+            ) ) AND a.recipient_id=%(user_id)d )
             GROUP BY a.target_object_id
             ORDER BY a.timestamp DESC
         """
@@ -151,7 +152,12 @@ def query_notifs(user, **kwargs):
         This query clubs all notifications with the post's id and only which were sent to the user
     """
     notif_type = kwargs.get("notif_type", None)
-    page = kwargs.get("page", None)
+    notif_unread = None
+    if notif_type == "unread":
+        notif_unread = 1
+    elif notif_type == "read":
+        notif_unread = 0
+    page = kwargs.get("page", 0)
     max_items = kwargs.get("max_items", 5)
     if page and max_items:
         start_item = (page-1)*max_items
@@ -165,23 +171,24 @@ def query_notifs(user, **kwargs):
             FROM notifications_notification a 
             WHERE (a.recipient_id = %(user_id)s  
         """
-    if notif_type:
-        notif_query += """AND a.unread = %(notif_type)s """
+    if notif_unread != None:
+        notif_query += """AND a.unread = %(notif_unread)s """
     notif_query += """
             AND ( NOT EXISTS (
                 SELECT 1 
-                FROM notifications_notification 
-                WHERE target_object_id = a.target_object_id 
-                    AND timestamp > a.timestamp
+                FROM notifications_notification b
+                WHERE b.target_object_id = a.target_object_id 
+                    AND b.timestamp > a.timestamp
+                    AND b.recipient_id=%(user_id)d
             ) ) )
             GROUP BY a.target_object_id 
-            ORDER BY a.`timestamp` DESC
+            ORDER BY a.unread DESC, a.timestamp DESC
         """
     if start_item and end_item :
         notif_query += "LIMIT %(start_item)d,%(end_item)s"
 
     notif_query = notif_query.replace("\n", "") % { "user_id" : user.id, 
-        "notif_type" : notif_type,
+        "notif_unread" : notif_unread,
         "start_item" : start_item, 
         "end_item" :  end_item,
     }

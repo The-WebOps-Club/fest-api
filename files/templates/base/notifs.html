@@ -159,6 +159,10 @@
 					$(".popover_notifs .see_more_notifs").click()
 				}
 			});
+
+			if ( parseInt($('.popover_notifs .current_page_notifs').val()) == 0 ) {
+				$(".popover_notifs .see_more_notifs").click()
+			}
 		})
 	});
 	

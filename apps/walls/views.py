@@ -71,7 +71,6 @@ def wall (request, wall_id=None):
         raise InvalidArgumentValueException("Wall with the `wall_id` " + str(wall_id) + " not found.")
     elif not wall.has_access(user):
         wall_accessible = False
-    print wall.has_access(user)
     # Logic
     if not wall_accessible:
         wall_posts = get_my_posts(user, wall)[:5]
@@ -98,7 +97,7 @@ def my_wall(request, owner_type, owner_id):
     if not ( type(owner_type) is str or type(owner_type) is unicode ):
         print owner_id, type(owner_id)
         print owner_type, type(owner_type)
-        raise InvalidArgumentTypeException
+        raise InvalidArgumentTypeException("owner_id : " + str(owner_id) + " is of type " + type(owner_id) + " ... owner_type" + str(owner_type) + " is of type " + type(owner_type))
     owner_type = owner_type.lower()
     wall_id = None
 
