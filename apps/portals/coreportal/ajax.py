@@ -48,6 +48,9 @@ def hello(request):
 
 @dajaxice_register
 def get_users_of_subdept(request, subdept_id):
+    if not (request.session['role'] == 'core'):
+        return json.dumps({'message':'Not Authorized'})
+
     append_string = ""
     for i in ERPProfile.objects.filter(coord_relations__in = [Subdept.objects.filter(id = subdept_id)[0]] ):
         append_string+=render_to_string('portals/coreportal/user.html', {'user':i.user,'link_type':'subdept','link_id':subdept_id}, context_instance=global_context(request, token_info=False))
@@ -55,6 +58,9 @@ def get_users_of_subdept(request, subdept_id):
 
 @dajaxice_register
 def get_users_of_page(request, page_id):
+    if not (request.session['role'] == 'core'):
+        return json.dumps({'message':'Not Authorized'})
+
     append_string = ""
     for i in ERPProfile.objects.filter(page_relations__in = [Page.objects.filter(id = page_id)[0]] ):
         append_string+=render_to_string('portals/coreportal/user.html', {'user':i.user,'link_type':'page','link_id':page_id}, context_instance=global_context(request, token_info=False))
@@ -68,8 +74,10 @@ def add_users_to_page(request,page_id,user_ids):
     append_string = ''
     for user_id in user_ids:
         e = ERPProfile.objects.get(id = user_id.split('_')[1])
+        if not (page in e.page_relations.all()):
+            append_string+=render_to_string('portals/coreportal/user.html', {'user':e.user,'link_type':'page','link_id':page_id}, context_instance=global_context(request, token_info=False))
         e.page_relations.add(Page.objects.get(id = page_id))
-        append_string+=render_to_string('portals/coreportal/user.html', {'user':e.user,'link_type':'page','link_id':page_id}, context_instance=global_context(request, token_info=False))
+        
 
     return json.dumps({'message':'done','append_string':append_string})
 
@@ -86,8 +94,9 @@ def add_users_to_subdept(request,subdept_id,user_ids):
 
     for user_id in user_ids:
         e = ERPProfile.objects.get(id = user_id.split('_')[1])
+        if not (subdept in e.coord_relations.all()):
+            append_string+=render_to_string('portals/coreportal/user.html', {'user':e.user,'link_type':'subdept','link_id':subdept_id}, context_instance=global_context(request, token_info=False))        
         e.coord_relations.add(subdept)
-        append_string+=render_to_string('portals/coreportal/user.html', {'user':e.user,'link_type':'subdept','link_id':subdept_id}, context_instance=global_context(request, token_info=False))        
 
     return json.dumps({'message':'done','append_string':append_string})
 
@@ -116,6 +125,12 @@ def delete_user_from_page(request,page_id,user_id):
 @dajaxice_register
 def create_subdept(request, dept_id, page_name):
     # ?
+    if not (request.session['role'] == 'core'):
+        return json.dumps({'message':'Not Authorized'})
+
+    if not (request.session['role_dept'] == dept_id):
+        return json.dumps({'message':'Not your subdept :P'})
+
     s = Subdept();
     s.dept_id = dept_id
     s.name = page_name
@@ -125,7 +140,32 @@ def create_subdept(request, dept_id, page_name):
 @dajaxice_register
 def create_page(request, page_name):
     # ?
+    if not (request.session['role'] == 'core'):
+        return json.dumps({'message':'Not Authorized'})
+
     p = Page();
     p.name = page_name;
     p.save();
+    return json.dumps({'message':'done','id':p.id,'name':page_name})
+
+@dajaxice_register
+def remove_subdept(request, subdept_id):
+    # ?
+    if not (request.session['role'] == 'core'):
+        return json.dumps({'message':'Not Authorized'})
+
+    subdept = Subdept.objects.get(id = subdept_id)
+    if not (request.session['role_dept'] == subdept.dept.id):
+        return json.dumps({'message':'Not your subdept :P'})
+
+    Subdept.objects.get(id = subdept_id).delete();
+    return json.dumps({'message':'done','id':s.id,'name':page_name})
+
+@dajaxice_register
+def remove_page(request, page_id):
+    # ?
+    if not (request.session['role'] == 'core'):
+        return json.dumps({'message':'Not Authorized'})
+
+    Page.objects.get(id = dept_id).delete();
     return json.dumps({'message':'done','id':p.id,'name':page_name})

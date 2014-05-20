@@ -8,6 +8,7 @@
 		<div class='card template span12 subdept-container' data-id='-1' style='display:none'>
 			<div class="span12">
 			<div class='data-fetch-subdept'><h5 class='subdept-name'></h5><div class='subdept-user-container span5'></div></div>
+			<button class='remove-btn subdept-remove-btn'>Remove</button>
 			</div>
 			
 			<select class='user-selector for-subdept select_all_list' style='width:200px' multiple>
@@ -17,6 +18,7 @@
 		<div class='page-container card span12 template' style='display:none' data-id='-1'>
 			<div class='span12'>
 				<div class='data-fetch-page'><h4 class='page-name'></h4><div class='page-user-container span5'></div></div>
+				<button class='remove-btn page-remove-btn'>Remove</button>
 			</div>
 
 			<div class='span11'>
@@ -211,21 +213,25 @@
 
 
 		$('.add-page-btn').click(function(e){
+			$(this).attr('disabled','true');
 			Dajaxice.apps.portals.coreportal.create_page(function(res){
 				$el = $('<div class=\'page-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
 				$('.pages-container').append($el);
 				$('.page-placeholder').each(replacePagePlaceholder);
 				bindUserAdd();
+				$(this).removeAttr('disabled');
 			},{'page_name':$('.add-page-name').val()});
 			e.stopPropagation();
 		});
 
 		$('.add-subdept-btn').click(function(){
+			$(this).attr('disabled','true');
 			Dajaxice.apps.portals.coreportal.create_subdept(function(res){
 				$el = $('<div class=\'subdept-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
 				$('.subdepts-container').append($el);
 				$('.subdept-placeholder').each(replaceSubdeptPlaceholder);
 				bindUserAdd();
+				$(this).removeAttr('disabled');
 			},{'page_name':$('.add-subdept-name').val(),'dept_id':$('.dept-name').data('id')});
 		});
 
@@ -265,6 +271,20 @@
 		//on_dom_change();
 		// run ajax functions.
 		//Dajax.apps.portals.coreportal.get_user_of_subdept(Dajax.process,sub_dept_id)
+		$('.subdept-remove-btn').click(function(e){
+			var id = $(this).parents('.subdept-container').data('id');
+			Dajaxice.apps.portals.coreportal.remove_subdept(function(res){
+				$('.subdept-container[data-id='+id+']').remove();
+			},{'subdept_id':id});
+			e.stopPropagation();
+		});
+		$('.page-remove-btn').click(function(e){
+			var id = $(this).parents('.page-container').data('id');
+			Dajaxice.apps.portals.coreportal.remove_page(function(res){
+				$('.page-container[data-id='+id+']').remove();
+			},{'page_id':id});
+			e.stopPropagation();
+		});
 	});
 
 </script>
