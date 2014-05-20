@@ -110,22 +110,83 @@ def filter_objects(my_list):
             list_page.append(i)
     return list_user, list_subdept, list_dept, list_page
 
-def get_newsfeed(user=None):
+def query_newsfeed(user, **kwargs):
     """
         The query to get all notificatios related to a user
+        This query clubs all notifications with the post's id and only which were sent to the user
     """
-    return Notification.objects.raw("""
+    page = kwargs.get("page", None)
+    max_items = kwargs.get("max_items", 5)
+    if page and max_items:
+        start_item = (page-1)*max_items
+        end_item = page*max_items
+    else:
+        start_item = ""
+        end_item = ""
+    notification_query = """
             SELECT a.* 
             FROM notifications_notification a 
-            WHERE NOT EXISTS (
+            WHERE ( ( NOT EXISTS (
                 SELECT 1 
                 FROM notifications_notification 
                 WHERE target_object_id = a.target_object_id 
                     AND timestamp > a.timestamp
-            ) 
+            ) ) AND a.`recipient_id`=%(user_id)d )
             GROUP BY a.target_object_id
             ORDER BY a.timestamp DESC
-            LIMIT """ + str((page-1)*max_items) + "," + str(page*max_items))
+        """
+    if start_item and end_item :
+        notification_query += "LIMIT %(start_item)d,%(end_item)s"
+    
+    notification_query = notification_query % {"user_id" : user.id, 
+        "start_item" : start_item, 
+        "end_item" :  end_item,
+    }
+    notification_list = Notification.objects.raw(notification_query)
+    return notification_list
+
+def query_notifs(user, **kwargs):
+    """
+        The query to execute for notifs related to a user.
+        This query clubs all notifications with the post's id and only which were sent to the user
+    """
+    notif_type = kwargs.get("notif_type", None)
+    page = kwargs.get("page", None)
+    max_items = kwargs.get("max_items", 5)
+    if page and max_items:
+        start_item = (page-1)*max_items
+        end_item = page*max_items
+    else:
+        start_item = ""
+        end_item = ""
+
+    notif_query = """
+            SELECT a.*
+            FROM notifications_notification a 
+            WHERE (a.recipient_id = %(user_id)s  
+        """
+    if notif_type:
+        notif_query += """AND a.unread = %(notif_type)s """
+    notif_query += """
+            AND ( NOT EXISTS (
+                SELECT 1 
+                FROM notifications_notification 
+                WHERE target_object_id = a.target_object_id 
+                    AND timestamp > a.timestamp
+            ) ) )
+            GROUP BY a.target_object_id 
+            ORDER BY a.`timestamp` DESC
+        """
+    if start_item and end_item :
+        notif_query += "LIMIT %(start_item)d,%(end_item)s"
+
+    notif_query = notif_query.replace("\n", "") % { "user_id" : user.id, 
+        "notif_type" : notif_type,
+        "start_item" : start_item, 
+        "end_item" :  end_item,
+    }
+    notif_list = Notification.objects.raw(notif_query)
+    return notif_list
 
 def get_my_posts(access_obj, wall=None):
     """
