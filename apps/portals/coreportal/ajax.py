@@ -170,3 +170,18 @@ def remove_page(request, page_id):
 
     Page.objects.get(id = page_id).delete();
     return json.dumps({'message':'done'})
+
+@dajaxice_register
+def create_user(request, username, email, first_name, last_name):
+    # ?
+    if not (request.session['role'] == 'core'):
+        return json.dumps({'message':'FATAL: 403: Not Authorized'})
+
+    if( User.objects.filter(email = email).count() ):
+        return json.dumps({'message':'Account with '+email+' already exists'});
+
+    u = User(username = username, email = email, first_name =  first_name, last_name = last_name);
+    passkey = User.objects.make_random_password()
+    u.set_password(passkey);
+    u.save();
+    return json.dumps({'message':'Successfully created <b>'+username+'</b> Password: <b>'+passkey+'</b>. Ask the user to use reset password to reset the password.','passkey':passkey})

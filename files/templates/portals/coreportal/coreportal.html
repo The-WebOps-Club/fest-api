@@ -85,6 +85,17 @@
 			<button class='add-page-btn btn btn-primary'>Add</button>
 		</div>
 	</div>
+
+	<div class='card add-user-container span12' style='text-align:center'>
+		<h3><b>Add new user</b></h3>
+		<h4 class='warning'><b class='last-action'></b></h4>
+		<input type=text class='new-user-first-name new-user-textbox' placeholder='First Name'><br>
+		<input type=text class='new-user-last-name new-user-textbox' placeholder='Last Name'><br>
+		<input type=text class='new-user-username new-user-textbox' placeholder='Username'><br>
+		<input type=text class='new-user-email new-user-textbox' placeholder='Email'><br>
+		
+		<button class='btn btn-primary add-user-btn'>Add</button>
+	</div>
 </div>
 {%endblock%}
 {%block extra_css%}
@@ -126,6 +137,21 @@
 	.user-list-item:hover{
 		background-color: #BBB;
 	}
+	.warning{
+		
+		background-color: gold;
+opacity: 0.5;
+margin-right: 10px;
+border-radius: 3px;
+text-align: center;
+color: darkred;
+border: 1px solid darkred;
+margin-bottom: 5px;
+display:none;
+	}
+	.new-user-textbox{
+		margin-bottom:5px;
+	}
 </style>
 {%endblock%}
 {%block extra_js%}
@@ -153,6 +179,7 @@
 			},{'user_ids':$el.parents('.page-container').find('select.user-selector').val(),'page_id':$el.parents('.page-container').data('id')});
 			e.stopPropagation();
 		});
+
 	}
 	
 	function bindUserRemove(link){
@@ -228,26 +255,28 @@
 
 		$('.add-page-btn').click(function(e){
 			$(this).attr('disabled','true');
+			var $e = $(this)
 			Dajaxice.apps.portals.coreportal.create_page(function(res){
 				$el = $('<div class=\'page-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
 				$('.pages-container').append($el);
 				$('.page-placeholder').each(replacePagePlaceholder);
 				bindUserAdd();
 				bindRemove();
-				$(this).removeAttr('disabled');
+				$e.removeAttr('disabled');
 			},{'page_name':$('.add-page-name').val()});
 			e.stopPropagation();
 		});
 
 		$('.add-subdept-btn').click(function(){
 			$(this).attr('disabled','true');
+			var $e = $(this)
 			Dajaxice.apps.portals.coreportal.create_subdept(function(res){
 				$el = $('<div class=\'subdept-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
 				$('.subdepts-container').append($el);
 				$('.subdept-placeholder').each(replaceSubdeptPlaceholder);
 				bindUserAdd();
 				bindRemove();
-				$(this).removeAttr('disabled');
+				$e.removeAttr('disabled');
 			},{'page_name':$('.add-subdept-name').val(),'dept_id':$('.dept-name').data('id')});
 		});
 
@@ -288,6 +317,20 @@
 		// run ajax functions.
 		//Dajax.apps.portals.coreportal.get_user_of_subdept(Dajax.process,sub_dept_id)
 		bindRemove();
+		$('.add-user-btn').click(function(e){
+			var first_name = $(this).parents('.add-user-container').find('.new-user-first-name').val();
+			var last_name = $(this).parents('.add-user-container').find('.new-user-last-name').val();
+			var $el = $(this)
+			var username = $el.parents('.add-user-container').find('.new-user-username').val();
+			var email = $el.parents('.add-user-container').find('.new-user-email').val();
+			$el.attr('disabled','true');
+			Dajaxice.apps.portals.coreportal.create_user(function(res){
+				console.log(res.message);
+				$el.parents('.add-user-container').find('.warning').css('display','block').html(res.message);
+				$el.removeAttr('disabled');
+			},{'username':username,'email':email,'first_name':first_name,'last_name':last_name});
+			e.stopPropagation();
+		})
 	});
 
 </script>
