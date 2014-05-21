@@ -45,6 +45,16 @@
     </div>
 
 
+    <div class='card add-user-container span12' style='text-align:center'>
+        <h3><b>Add new user</b></h3>
+        <h4 class='warning'><b class='last-action'></b></h4>
+        <input type=text class='new-user-first-name new-user-textbox' placeholder='First Name'>
+        <input type=text class='new-user-last-name new-user-textbox' placeholder='Last Name'><br>
+        <input type=text class='new-user-username new-user-textbox' placeholder='Username'>
+        <input type=text class='new-user-email new-user-textbox' placeholder='Email'><br>
+        
+        <button class='btn btn-primary add-user-btn'>Add</button>
+    </div>
     {% for i_dept_info in dept_info %}
         <div data-id='{{ i_dept_info.dept.id }}' class='span12 card dept-name' style='text-align:center'>
             <h3>
@@ -78,18 +88,7 @@
             <div class='page-placeholder' data-id='{{i_page.id}}' data-name='{{i_page.name}}'></div>
         {% endfor %}
     </div>
-
-    <hr />
-    <div class='card add-user-container span12' style='text-align:center'>
-        <h3><b>Add new user</b></h3>
-        <h4 class='warning'><b class='last-action'></b></h4>
-        <input type=text class='new-user-first-name new-user-textbox' placeholder='First Name'><br>
-        <input type=text class='new-user-last-name new-user-textbox' placeholder='Last Name'><br>
-        <input type=text class='new-user-username new-user-textbox' placeholder='Username'><br>
-        <input type=text class='new-user-email new-user-textbox' placeholder='Email'><br>
-        
-        <button class='btn btn-primary add-user-btn'>Add</button>
-    </div>
+    
 </div>
 {% endblock %}
 {% block extra_css %}
