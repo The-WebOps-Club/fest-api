@@ -6,14 +6,16 @@
 		<div class='profile-pic-container span1'>
 			<img src="" data-id="{{user.id}}" data-fbid=" {{ user.profile.fbid }} " class="admin_portal-user-pic display_pic">
 		</div>
-		<div class='user-display-name span10'>
+		<div class='user-display-name span11'>
 		
 			<h5>
 			<a href='{%url "wall" user.erp_profile.wall.id%}'>
-				{{user.first_name}}&nbsp;{{user.last_name}}</a>
-			{% if user.erp_profile.nickname %} 
-				<small>{{ erp_profile.nickname }}</small>
-			{% endif %}
+				{{ user.get_full_name }}</a>
+			{% comment %}
+				{% if user.erp_profile.nickname %} 
+					<small>{{ erp_profile.nickname }}</small>
+				{% endif %}
+			{% endcomment %}
 			
 			<a class='remove-btn user-remove link_no_style' data-id='{{user.erp_profile.pk}}' data-link='{{link_type}}' href="javascript:void(0)">
                 <i class="icon-trash"></i>

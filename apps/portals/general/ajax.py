@@ -5,7 +5,8 @@ from dajax.core import Dajax
 # For rendering templates
 from django.template import RequestContext
 from django.template.loader import render_to_string
-
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from configs import settings
 from apps.users.models import Dept, Subdept, ERPProfile
@@ -173,8 +174,8 @@ def remove_subdept(request, subdept_id):
     if erp_profile.core_relations.filter(id=dept.id).count() == 0 and \
         erp_profile.supercoord_relations.filter(id=dept.id).count() == 0:
         return json.dumps({'message': 'This subdept is not under your department !'})
-
-    Subdept.objects.get(id=subdept_id).delete();
+    subdept.wall.is_visible = False
+    Subdept.objects.get(id=subdept_id).is_visible = False;
     return json.dumps({'message': 'done'})
 
 @dajaxice_register
@@ -188,20 +189,23 @@ def remove_page(request, page_id):
     return json.dumps({'message':'done'})
 
 @dajaxice_register
-def create_user(request, username, email, first_name, last_name):
+def create_user(request, email, first_name, last_name):
     user = request.user
     erp_profile = user.erp_profile
     if not user.is_staff:
         return json.dumps({'message':'Not Authorized'})
 
-    if( User.objects.filter(email = email).count() ):
-        return json.dumps({'message':'Account with ' + email + ' already exists'});
-
-    if( User.objects.filter(username = username).count() ):
-        return json.dumps({'message':'Account with ' + username + ' already exists'});
+    if not email or not first_name or not last_name:
+        return json.dumps({'message' : '<b>Error :</b> All fields are required'});
+    elif User.objects.filter(email=email).count() + User.objects.filter(username=email).count():
+        return json.dumps({'message':'<b>Error :</b> Account with ' + email + ' already exists'});
+    try:
+        validate_email( email )
+    except ValidationError:
+        return json.dumps({'message':'<b>Error :</b> Please enter a valid email address'});
 
     passwd = User.objects.make_random_password()
-    u = User.objects.create(username = username, email = email, first_name =  first_name, last_name = last_name, password=passwd);
+    u = User.objects.create(username=email, email=email, first_name=first_name, last_name=last_name, password=passwd);
     e = ERPProfile.objects.create(user=u)
     if settings.SEND_EMAIL:
         mail.send( [u.email], 
@@ -218,9 +222,13 @@ def create_user(request, username, email, first_name, last_name):
         # print "Error : The email id", e.user.email, "was not found. UserProfile id : ", e.id
     # refresh json lists.
     call_command('jsonify_data')
-    call_command('collectstatic',interactive=False)
+    call_command('collectstatic', interactive=False)
     
     return json.dumps( { 
-        'message' : 'Successfully created <b>' + username + '</b> Email has been sent with the password to the given email address.',
-        'passkey' : passwd
+        'message' : 'Successfully created <b>' + email + '</b>. An email has been sent with the password to the given email address.',
+        'success' : 'yes',
+        'id' : u.id,
+        'first_name' : u.first_name,
+        'last_name' : u.last_name,
+        'email' : u.email,
     } )

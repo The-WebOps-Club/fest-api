@@ -71,6 +71,45 @@ function get_autocomplete_file_data(url1, url2, url3) {
 function sync_autocomplete() {
     if (!atwho_setup && ( atwho_user_list && atwho_subdept_list && atwho_dept_list && atwho_page_list ) ) {
         atwho_setup = true
+        // Fix the lists to my format :)
+        if (atwho_user_list) {
+            atwho_user_list = $.map(atwho_user_list, function(value, i) {
+                if (value["first_name"] + " " + value["last_name"] != " " ) // To make sure no blank users are taken. eg : superusers
+                    return {
+                        "id": value["id"],
+                        "name": value["first_name"] + " " + value["last_name"],
+                        "type": "user"
+                    };
+            })
+        }
+        if (atwho_dept_list) {
+            atwho_dept_list = $.map(atwho_dept_list, function(value, i) {
+                return {
+                    "id": value["id"],
+                    "name": value["name"],
+                    "type": "dept"
+                };
+            })
+        }
+        if (atwho_subdept_list) {
+            atwho_subdept_list = $.map(atwho_subdept_list, function(value, i) {
+                return {
+                    "id": value["id"],
+                    "name": value["name"],
+                    "type": "subdept"
+                };
+            })
+        }
+        if (atwho_page_list) {
+            atwho_page_list = $.map(atwho_page_list, function(value, i) {
+                return {
+                    "id": value["id"],
+                    "name": value["name"],
+                    "type": "page"
+                };
+            })
+        }
+        
         setup_autocomplete_lists();
         on_dom_change()
     }
@@ -150,44 +189,6 @@ function setup_autocomplete_lists() {
         },
     }
 
-    if (atwho_user_list) {
-        atwho_user_list = $.map(atwho_user_list, function(value, i) {
-            if (value["first_name"] + " " + value["last_name"] != " " ) // To make sure no blank users are taken. eg : superusers
-                return {
-                    "id": value["id"],
-                    "name": value["first_name"] + " " + value["last_name"],
-                    "type": "user"
-                };
-        })
-    }
-    if (atwho_dept_list) {
-        atwho_dept_list = $.map(atwho_dept_list, function(value, i) {
-            return {
-                "id": value["id"],
-                "name": value["name"],
-                "type": "dept"
-            };
-        })
-    }
-    if (atwho_subdept_list) {
-        atwho_subdept_list = $.map(atwho_subdept_list, function(value, i) {
-            return {
-                "id": value["id"],
-                "name": value["name"],
-                "type": "subdept"
-            };
-        })
-    }
-    if (atwho_page_list) {
-        atwho_page_list = $.map(atwho_page_list, function(value, i) {
-            return {
-                "id": value["id"],
-                "name": value["name"],
-                "type": "page"
-            };
-        })
-    }
-    
     all_list = atwho_user_list.concat(atwho_dept_list).concat(atwho_subdept_list).concat(atwho_page_list)
     at_config = {
         at: "@",
@@ -209,11 +210,15 @@ function setup_autocomplete_lists() {
 
     $(".atwho_at_config").atwho(at_config)
 
+    var $select = $("select.select_all_list")
     for (var i in all_list) {
-        $(".select_all_list").append(
-            "<option value='" + all_list[i]['type'] + "_" + all_list[i]['id'] + "'>" +
-            all_list[i]['name'] +
-            "</option>")
+        var opt_val = all_list[i]['type'] + "_" + all_list[i]['id']
+        if ( $select.find("[value=" + opt_val + "]").length == 0 ) {
+            $select.append(
+                "<option value='" + opt_val + "'>" +
+                all_list[i]['name'] +
+                "</option>")
+        }
     }
     $(".right_search .searchbar input").keyup()
 }
