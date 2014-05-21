@@ -172,8 +172,9 @@ def remove_subdept(request, subdept_id):
     if erp_profile.core_relations.filter(id=dept.id).count() == 0 and \
         erp_profile.supercoord_relations.filter(id=dept.id).count() == 0:
         return json.dumps({'message': 'This subdept is not under your department !'})
-    subdept.wall.is_visible = False
-    Subdept.objects.get(id=subdept_id).is_visible = False;
+    
+    subdept.is_active = False;
+    subdept.save()
     return json.dumps({'message': 'done'})
 
 @dajaxice_register
@@ -184,7 +185,10 @@ def remove_page(request, page_id):
     if not user.is_staff:
         return json.dumps({'message':'Not Authorized'})
 
-    Page.objects.get(id = page_id).delete();
+    page = Page.objects.get(id = page_id).delete();
+    page.is_active = False;
+    page.save()
+    
     return json.dumps({'message':'done'})
 
 @dajaxice_register
