@@ -197,7 +197,7 @@ def create_user(request, email, first_name, last_name, supercoord):
     erp_profile = user.erp_profile
     if not user.is_staff:
         return json.dumps({'message':'Not Authorized'})
-    import pdb;pdb.set_trace();
+    #import pdb;pdb.set_trace();
     if not email or not first_name or not last_name:
         return json.dumps({'message' : '<b>Error :</b> All fields are required'});
     elif User.objects.filter(email=email).count() + User.objects.filter(username=email).count():
@@ -219,7 +219,7 @@ def create_user(request, email, first_name, last_name, supercoord):
             
     if len(supercoord):
         e.save();
-    import pdb;pdb.set_trace();
+    #import pdb;pdb.set_trace();
     #--------------------------------------
 
     if settings.SEND_EMAIL:
