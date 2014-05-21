@@ -69,7 +69,7 @@ API_APPS = (
     'apps.walls',
     'apps.events',
     'apps.docs',
-    'apps.portals.coreportal',
+    'apps.portals.general',
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 
@@ -501,6 +501,7 @@ KEEP_COMMENTS_ON_MINIFYING = False
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS
+USE_GOOGLE_DRIVE = True
 GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
 GOOGLE_API_PUBLIC_KEY = ''
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'google/oauth2callback'
