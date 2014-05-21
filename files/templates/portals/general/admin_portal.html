@@ -46,14 +46,23 @@
 
 
     <div class='card add-user-container span12' style='text-align:center'>
-        <h3><b>Add new user</b></h3>
+        <h3><b>Create a new user</b></h3>
         <h4 class='warning'><b class='last-action'></b></h4>
-        <input type=text class='new-user-first-name new-user-textbox' placeholder='First Name'>
-        <input type=text class='new-user-last-name new-user-textbox' placeholder='Last Name'><br>
-        <input type=text class='new-user-username new-user-textbox' placeholder='Username'>
-        <input type=text class='new-user-email new-user-textbox' placeholder='Email'><br>
+        <input type="text" class='new-user-first-name new-user-textbox' placeholder='First Name'>
+        <input type="text" class='new-user-last-name new-user-textbox' placeholder='Last Name'><br>
+        <input type="text" class='new-user-username new-user-textbox' placeholder='Username'>
+        <input type="email" class='new-user-email new-user-textbox' placeholder='Email'><br>
         
-        <button class='btn btn-primary add-user-btn'>Add</button>
+        <button class='btn btn-primary add-user-btn'>Create</button>
+        <div class="row-fluid">
+            <br >
+            <div class="alert-message info span12">
+                <p><strong>Notice !</strong>
+                Be careful on whom you add ! They can access things related to shaastra.<br >
+                An email will be sent ot he person wiith account information.
+                </p>
+            </div>
+        </div>
     </div>
     {% for i_dept_info in dept_info %}
         <div data-id='{{ i_dept_info.dept.id }}' class='span12 card dept-name' style='text-align:center'>
@@ -98,6 +107,7 @@
     }
     .card{
         padding-left: 10px;
+        padding-right: 10px;
         padding-bottom: 5px;
         padding-top: 5px;
         background-color: #EEE;
