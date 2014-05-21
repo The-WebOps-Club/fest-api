@@ -486,10 +486,12 @@ MARKDOWN_STYLES = {
 # -------------------------------------------------
 # Compressor
 COMPRESS_CSS_FILTERS = [
-    'compressor.filters.cssmin.CSSMinFilter'
+    'compressor.filters.template.TemplateFilter',
+    'compressor.filters.cssmin.CSSMinFilter',
 ]
 COMPRESS_JS_FILTERS = [
-    'compressor.filters.jsmin.JSMinFilter'
+    'compressor.filters.template.TemplateFilter',
+    'compressor.filters.jsmin.JSMinFilter',
 ]
 COMPRESS_ENABLED = False
 
