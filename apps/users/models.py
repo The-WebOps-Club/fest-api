@@ -312,7 +312,7 @@ class ERPProfile(models.Model):
 
     def related_walls(self):
         from apps.walls.utils import get_my_walls
-        get_my_walls(self)
+        return get_my_walls(self)
 
     # Methods to check for position/role
     def is_coord(self, request):
