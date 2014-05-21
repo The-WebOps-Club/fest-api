@@ -1,7 +1,7 @@
 <!-- user.html -->
 <!-- -->
 
-<div class='user-list-item span12' data-id='{{user.erp_profile.pk}}' data-link='{{link_type}}' data-link-id='{{link_id}}'>
+<div class='user-list-item span6' data-id='{{user.erp_profile.pk}}' data-link='{{link_type}}' data-link-id='{{link_id}}'>
 	<div class='span12'>
 		<div class='profile-pic-container span1'>
 			<img src="" data-id="{{user.id}}" data-fbid=" {{ user.profile.fbid }} " class="admin_portal-user-pic display_pic">
@@ -10,10 +10,15 @@
 		
 			<h5>
 			<a href='{%url "wall" user.erp_profile.wall.id%}'>
-			{{user.first_name}}&nbsp;{{user.last_name}}
-			<small>{{user.erp_profile.nickname}}</small>
-			</a>
-			<button class='user-remove remove-btn icon-stop' data-id='{{user.erp_profile.pk}}' data-link='{{link_type}}'></button>
+				{{user.first_name}}&nbsp;{{user.last_name}}</a>
+			{% if user.erp_profile.nickname %} 
+				<small>{{ erp_profile.nickname }}</small>
+			{% endif %}
+			
+			<a class='remove-btn user-remove link_no_style' data-id='{{user.erp_profile.pk}}' data-link='{{link_type}}' href="javascript:void(0)">
+                <i class="icon-trash"></i>
+                <span class="label important label-head ">Delete</span>
+            </a>
 			</h5>
 			&nbsp;
 			

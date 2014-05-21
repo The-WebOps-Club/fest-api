@@ -12,18 +12,21 @@
                     <div class="pull-right">
                         <a class='remove-btn subdept-remove-btn link_no_style' href="javascript:void(0)">
                         <i class="icon-trash"></i>
-                            <span class="label danger label-head ">Delete</span>
+                            <span class="label important label-head ">Delete</span>
                         </a>
-                        <i class="icon-down"></i>
+                        <i class="icon-down collapsed"></i>
+                        <i class="icon-up collapsible"></i>
                     </div>
                 </h5>
-                <div class='subdept-user-container collapsible span5'></div>
+                <div class='subdept-user-container collapsible span12'></div>
             </div>
         </div>
         <div class='span12 collapsible center'>
             <select class='user-selector for-subdept select_all_list' style='width:75%' multiple>
             </select>
-            <button type=submit class='user-selector-btn btn btn-primary for-subdept'>Add User</button>
+            <button type=submit class='user-selector-btn btn btn-primary for-subdept'>
+                <i class='icon-plus'></i> Add User
+            </button>
         </div>
     </div>
     <div class='page-container card span12 template collapser' style='display:none' data-id='-1'>
@@ -31,7 +34,14 @@
             <div class='data-fetch-page '>
                 <h4>
                     <b class='page-name'></b>
-                    <button class='remove-btn page-remove-btn'></button>
+                    <div class="pull-right">
+                        <a class='remove-btn page-remove-btn link_no_style' href="javascript:void(0)">
+                            <i class="icon-trash"></i>
+                            <span class="label important label-head ">Delete</span>
+                        </a>
+                        <i class="icon-down collapsed"></i>
+                        <i class="icon-up collapsible"></i>
+                    </div>
                 </h4>
                 <div class='page-user-container collapsible span5'></div>
             </div>
@@ -40,7 +50,9 @@
         <div class='span12 collapsible center'>
             <select name='user-selector-{{ j.id }}' class='user-selector for-page select_all_list' style='width:75%' multiple>
             </select>
-            <button type=submit class='user-selector-btn btn btn-primary for-page'>Add User</button>
+            <button type=submit class='user-selector-btn btn btn-primary for-page'>
+                <i class='icon-plus'></i> Add User
+            </button>
         </div>
     </div>
 
@@ -59,7 +71,7 @@
             <div class="alert-message info span12">
                 <p><strong>Notice !</strong>
                 Be careful on whom you add ! They can access things related to shaastra.<br >
-                An email will be sent ot he person wiith account information.
+                After you submit, within 15 minutes, an email will be sent to the person with thier account information.
                 </p>
             </div>
         </div>
@@ -105,6 +117,9 @@
     .template{
         display:none;
     }
+    .collapsed {
+        display : none;
+    }
     .card{
         padding-left: 10px;
         padding-right: 10px;
@@ -133,9 +148,6 @@
         padding-left:20px;
         height:20px;
     }
-    .user-list-item:hover{
-        background-color: #BBB;
-    }
     .warning{
         
         background-color: gold;
@@ -146,7 +158,6 @@
         color: darkred;
         border: 1px solid darkred;
         margin-bottom: 5px;
-        display:none;
     }
     .new-user-textbox{
         margin-bottom:5px;
