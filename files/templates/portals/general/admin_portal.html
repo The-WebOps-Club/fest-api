@@ -58,8 +58,8 @@
             <br >
             <div class="alert-message info span12">
                 <p><strong>Notice !</strong>
-                Be careful on whom you add ! They can access things related to shaastra.<br >
-                An email will be sent ot he person wiith account information.
+                Be careful whom you add ! They can access things related to {{FEST_NAME}}.<br >
+                An email will be sent to the person with account information.
                 </p>
             </div>
         </div>
@@ -203,6 +203,7 @@
             e.stopPropagation();
         });
     }
+    
     function bindRemove(){
         $('.subdept-remove-btn').click(function(e){
             var id = $(this).parents('.subdept-container').data('id');
