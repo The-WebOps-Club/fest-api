@@ -207,10 +207,15 @@ def get_my_posts(access_obj, wall=None):
                 Q(access_subdepts__in=erp_profile.coord_relations.all()) | \
                 Q(access_depts__in=erp_profile.supercoord_relations.all()) | \
                 Q(access_depts__in=erp_profile.core_relations.all()) | \
-                Q(access_pages__in=erp_profile.page_relations.all())
+                Q(access_pages__in=erp_profile.page_relations.all()) | \
+                Q(wall__access_users__id__exact=access_obj.id) | \
+                Q(wall__access_subdepts__in=erp_profile.coord_relations.all()) | \
+                Q(wall__access_depts__in=erp_profile.supercoord_relations.all()) | \
+                Q(wall__access_depts__in=erp_profile.core_relations.all()) | \
+                Q(wall__access_pages__in=erp_profile.page_relations.all())
             )
         if wall:
-            my_query = my_query & Q(wall=wall)
+            my_query = Q(wall=wall) & my_query
         return Post.objects.filter(my_query).order_by('-time_created')
     elif isinstance(access_obj, Subdept) or isinstance(access_obj, Dept) or isinstance(access_obj, Page):
         temp = access_obj.access_post
@@ -256,6 +261,8 @@ def check_access_rights(access_obj, thing):
         Used by walls and posts to check if the obj has access right or not
     """
     from apps.users.models import Dept, Subdept, Page
+    if hasattr(thing, "person"): # Allow all user walls to be accessible by everyone
+        return 1
     if isinstance(access_obj, User):
         erp_profile = access_obj.erp_profile
         my_query = Q(id=thing.id) & ( \
@@ -266,9 +273,9 @@ def check_access_rights(access_obj, thing):
                 Q(access_pages__in=erp_profile.page_relations.all())
             )
         if isinstance(thing, Post):
-            return Post.objects.filter(my_query)
+            return Post.objects.filter(my_query).count()
         elif isinstance(thing, Wall):
-            return Wall.objects.filter(my_query)
+            return Wall.objects.filter(my_query).count()
     elif isinstance(access_obj, Subdept):
         return thing.access_subdepts.filter(id=access_obj.id).count()
     elif isinstance(access_obj, Dept):
