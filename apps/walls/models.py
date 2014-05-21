@@ -15,6 +15,7 @@ from django.core.urlresolvers import reverse
 # Apps
 # Decorators
 # Models
+from misc.managers import CheckActiveManager
 # Forms
 # View functions
 # Misc
@@ -34,6 +35,7 @@ class Wall(models.Model):
         
         @todo : Add analytics to be able to see when each person saw the wall last
     """
+    is_active       = models.BooleanField(default=True)
     
     # Basic information
     name                 = models.CharField(max_length=60)
@@ -54,6 +56,8 @@ class Wall(models.Model):
     # seen_user            = models.ManyToManyField(User, null=True, blank=True, related_name='seen_wall', through=UserWall)
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    
+    objects = CheckActiveManager()
     
     def save(self, *args, **kwargs):
         """
@@ -120,6 +124,8 @@ class PostInfo(models.Model):
         Used for both Post and Comment
         @todo : Add options to upload a file to any message
     """
+    is_active       = models.BooleanField(default=True)
+
     # Basic data
     description     = models.TextField(blank=True, default='') # The matter of post
     by              = models.ForeignKey(User, related_name='%(class)s_created')
@@ -127,6 +133,8 @@ class PostInfo(models.Model):
     # Analytics
     time_created    = models.DateTimeField(auto_now_add=True)
     time_updated    = models.DateTimeField(auto_now=True)
+    
+    objects = CheckActiveManager()
     
     def __unicode__(self):
         LIMIT = 50

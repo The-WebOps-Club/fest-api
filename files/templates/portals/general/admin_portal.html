@@ -12,18 +12,21 @@
                     <div class="pull-right">
                         <a class='remove-btn subdept-remove-btn link_no_style' href="javascript:void(0)">
                         <i class="icon-trash"></i>
-                            <span class="label danger label-head ">Delete</span>
+                            <span class="label important label-head ">Delete</span>
                         </a>
-                        <i class="icon-down"></i>
+                        <i class="icon-down collapsed"></i>
+                        <i class="icon-up collapsible"></i>
                     </div>
                 </h5>
-                <div class='subdept-user-container collapsible span5'></div>
+                <div class='subdept-user-container collapsible span12'></div>
             </div>
         </div>
         <div class='span12 collapsible center'>
             <select class='user-selector for-subdept select_all_list' style='width:75%' multiple>
             </select>
-            <button type=submit class='user-selector-btn btn btn-primary for-subdept'>Add User</button>
+            <button type=submit class='user-selector-btn btn btn-primary for-subdept'>
+                <i class='icon-plus'></i> Add User
+            </button>
         </div>
     </div>
     <div class='page-container card span12 template collapser' style='display:none' data-id='-1'>
@@ -31,27 +34,41 @@
             <div class='data-fetch-page '>
                 <h4>
                     <b class='page-name'></b>
-                    <button class='remove-btn page-remove-btn'></button>
+                    <div class="pull-right">
+                        <a class='remove-btn page-remove-btn link_no_style' href="javascript:void(0)">
+                            <i class="icon-trash"></i>
+                            <span class="label important label-head ">Delete</span>
+                        </a>
+                        <i class="icon-down collapsed"></i>
+                        <i class="icon-up collapsible"></i>
+                    </div>
                 </h4>
-                <div class='page-user-container collapsible span5'></div>
+                <div class='page-user-container collapsible span12'></div>
             </div>
         </div>
 
         <div class='span12 collapsible center'>
             <select name='user-selector-{{ j.id }}' class='user-selector for-page select_all_list' style='width:75%' multiple>
             </select>
-            <button type=submit class='user-selector-btn btn btn-primary for-page'>Add User</button>
+            <button type=submit class='user-selector-btn btn btn-primary for-page'>
+                <i class='icon-plus'></i> Add User
+            </button>
         </div>
     </div>
 
 
     <div class='card add-user-container span12' style='text-align:center'>
         <h3><b>Create a new user</b></h3>
-        <h4 class='warning'><b class='last-action'></b></h4>
-        <input type="text" class='new-user-first-name new-user-textbox' placeholder='First Name'>
-        <input type="text" class='new-user-last-name new-user-textbox' placeholder='Last Name'><br>
-        <input type="text" class='new-user-username new-user-textbox' placeholder='Username'>
-        <input type="email" class='new-user-email new-user-textbox' placeholder='Email'><br>
+        <div class="row-fluid alert-messages-block" style="display : none;">
+            <br >
+            <div class="alert-message error span12">
+                <p class='text'>
+                </p>
+            </div>
+        </div>
+        <input type="text" class='new-user-first-name new-user-textbox' placeholder='First Name' required>
+        <input type="text" class='new-user-last-name new-user-textbox' placeholder='Last Name' required><br>
+        <input type="email" class='new-user-email new-user-textbox' placeholder='Email' required><br>
         
         <button class='btn btn-primary add-user-btn'>Create</button>
         <div class="row-fluid">
@@ -59,7 +76,7 @@
             <div class="alert-message info span12">
                 <p><strong>Notice !</strong>
                 Be careful whom you add ! They can access things related to {{FEST_NAME}}.<br >
-                An email will be sent to the person with account information.
+                After you submit, within 15 minutes, an email will be sent to the person with thier account information.
                 </p>
             </div>
         </div>
@@ -72,7 +89,7 @@
             </h3>
             <div class='span12'>
                 <input type="text" class='add-subdept-name' placeholder="Add a new subdept under this department">
-                <button class='add-subdept-btn btn btn-primary'>Add Subdept</button>
+                <button class='add-subdept-btn btn btn-primary'>Create a Subdept</button>
             </div>
         </div>
         <div class='subdepts-container'>
@@ -88,7 +105,7 @@
         <h3>Groups
             <div class='span12'>
                 <input type="text" class='add-page-name' placeholder="Add a new group">
-                <button class='add-page-btn btn btn-primary'>Add</button>
+                <button class='add-page-btn btn btn-primary'>Create a Group</button>
             </div>
         </h3> 
     </div>
@@ -104,6 +121,9 @@
 <style>
     .template{
         display:none;
+    }
+    .collapsed {
+        display : none;
     }
     .card{
         padding-left: 10px;
@@ -133,21 +153,6 @@
         padding-left:20px;
         height:20px;
     }
-    .user-list-item:hover{
-        background-color: #BBB;
-    }
-    .warning{
-        
-        background-color: gold;
-        opacity: 0.5;
-        margin-right: 10px;
-        border-radius: 3px;
-        text-align: center;
-        color: darkred;
-        border: 1px solid darkred;
-        margin-bottom: 5px;
-        display:none;
-    }
     .new-user-textbox{
         margin-bottom:5px;
     }
@@ -159,7 +164,6 @@
     function bindUserAdd(){
         $('.user-selector-btn.for-subdept').click(function(e){
             $el = $(this)
-            console.log($el.parent().find('select.user-selector').val());
             Dajaxice.apps.portals.general.add_users_to_subdept(function(res){
                 $el.parents('.subdept-container').find('.subdept-user-container').append(res.append_string);
                 $('.display_pic').get_dp();
@@ -170,7 +174,6 @@
 
         $('.user-selector-btn.for-page').click(function(e){
             $el = $(this)
-            console.log($el.parent().find('select.user-selector').val());
             Dajaxice.apps.portals.general.add_users_to_page(function(res){
                 $el.parents('.page-container').find('.page-user-container').append(res.append_string);
                 $('.display_pic').get_dp();
@@ -196,7 +199,6 @@
             var params = {'user_id':id};
             params[link+'_id'] = l_id;
             F(function(res){
-                console.log(res);
                 $('.user-list-item[data-link='+link+'][data-link-id='+l_id+'][data-id='+id+']').remove();
             },params);
 
@@ -222,7 +224,6 @@
     }
     function bindCollapser(){
         $('.collapser').click(function(){
-            console.log('clicked');
             var $this = $(this)
             var a = $this.find('.collapsed')
             var b = $this.find('.collapsible')
@@ -241,13 +242,12 @@
     function replaceSubdeptPlaceholder(i, e){
         var $e = $(e)
         var $el = $('.subdept-container.template').clone();
-        console.log('cloning.. ' + $e.data('id'));
         $el.removeClass('template').css('display', 'block');
         //$el.data('id', $e.data('id'));
         $el.attr('data-id',$e.data('id'));
         $el.find('.subdept-name').html($e.data('name'));
         $el.find('.user-selector').addClass('select2-pending');
-        $e.closest('.subdepts-container').append($el);
+        $e.closest('.subdepts-container').prepend($el);
         $e.remove()
         $('.select2-pending').select2();
         $('.select2-pending').removeClass('select2-pending').addClass('select2');
@@ -256,9 +256,7 @@
     function fetchSubdept(i,e){
         var $e = $(e)
         var id = $e.parents('.subdept-container').data('id');
-        console.log(id);
         Dajaxice.apps.portals.general.get_users_of_subdept( function(res) {
-            console.log(res);
             $('.subdept-container[data-id='+id+']').find('.subdept-user-container').append(res.append_string);
             $('.display_pic').get_dp();
             bindUserRemove('subdept');
@@ -271,7 +269,7 @@
         $el.attr('data-id',$e.data('id'));
         $el.find('.page-name').html($e.data('name'));
         $el.find('.user-selector').addClass('select2-pending');
-        $e.closest('.pages-container').append($el);
+        $e.closest('.pages-container').prepend($el);
         $e.remove();
         $('.select2-pending').select2();
         $('.select2-pending').removeClass('select2-pending').addClass('select2');
@@ -287,7 +285,6 @@
     }
 
     $(document).ready(function(){
-        console.log('BLAH!!');
         $('.subdept-placeholder').each(replaceSubdeptPlaceholder)
         $('.page-placeholder').each(replacePagePlaceholder)
 
@@ -303,15 +300,30 @@
             var $parent = $this.parents('.add-user-container')
             var first_name = $parent.find('.new-user-first-name').val();
             var last_name = $parent.find('.new-user-last-name').val();
-            var username = $parent.find('.new-user-username').val();
             var email = $parent.find('.new-user-email').val();
             $this.attr('disabled','true');
             Dajaxice.apps.portals.general.create_user(function(res){
                 var $el = $this, $el_parent = $el.parents('.add-user-container')
-                console.log(res.message);
-                $el_parent.find('.warning').css('display','block').html(res.message);
+                if ( res.success ) {
+                    $el_parent.find('.alert-messages-block').css('display', 'block')
+                        .find(".alert-message").addClass("success").removeClass("error")
+                    // added a new user ... need to add to select2
+                    atwho_user_list.push({
+                        "id": res["id"],
+                        "name": res["first_name"] + " " + res["last_name"],
+                        "email": res["email"],
+                        "type": "user",
+                    });
+                    setTimeout(function() {
+                        setup_autocomplete_lists()
+                    }, 1 )
+                } else {
+                    $el_parent.find('.alert-messages-block').css('display', 'block')
+                        .find(".alert-message").addClass("error").removeClass("success")
+                }
+                $el_parent.find('.alert-messages-block .alert-message .text').html(res.message);
                 $el.removeAttr('disabled');
-            }, { 'username' : username, 'email' : email, 'first_name' : first_name, 'last_name' : last_name }
+            }, { 'email' : email, 'first_name' : first_name, 'last_name' : last_name }
             );
             e.stopPropagation();
         })

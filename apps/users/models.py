@@ -19,6 +19,7 @@ from django.utils import timezone
 # Models
 from misc.models import College
 from apps.walls.models import Wall, Post
+from misc.managers import CheckActiveManager
 # Forms
 # View functions
 # Misc
@@ -34,6 +35,8 @@ class Dept(models.Model):
     """ 
         A model having data about specific Departments @ the fest 
     """
+    is_active       = models.BooleanField(default=True)
+
     # Relations with other models
     wall            = models.OneToOneField(Wall, related_name='dept')
     
@@ -44,6 +47,8 @@ class Dept(models.Model):
     # Analytics
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    
+    objects = CheckActiveManager()
     
     def __unicode__(self):
         return self.name
@@ -76,6 +81,8 @@ class Subdept(models.Model):
         A model having data about specific SubDepartments @ the fest 
         Every subdept is linked to an event 
     """
+    is_active       = models.BooleanField(default=True)
+
     # Relations with other models
     dept            = models.ForeignKey(Dept, related_name='subdepts')
     wall            = models.OneToOneField(Wall, related_name='subdept')
@@ -88,6 +95,8 @@ class Subdept(models.Model):
     # Analytics
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+
+    objects = CheckActiveManager()
 
     def __unicode__(self):
         return self.name
@@ -114,6 +123,8 @@ class Page(models.Model):
     """ 
         A model having data about a page. An equivalent of a group
     """
+    is_active       = models.BooleanField(default=True)
+
     # Relations with other models
     wall            = models.OneToOneField(Wall, related_name='page')
     
@@ -124,6 +135,8 @@ class Page(models.Model):
     # Analytics
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+
+    objects = CheckActiveManager()
 
     def __unicode__(self):
         return self.name
@@ -145,6 +158,8 @@ class UserProfile(models.Model): # The corresponding auth user
         It handles the basic 
     
     """
+    is_active       = models.BooleanField(default=True)
+
     user               = models.OneToOneField(User, related_name='profile') # uses name and email from here. username = email
     
     # Basic information
@@ -173,6 +188,8 @@ class UserProfile(models.Model): # The corresponding auth user
     date_created       = models.DateTimeField(auto_now_add=True)
     last_activity_ip   = models.IPAddressField(default="0.0.0.0")
     last_activity_date = models.DateTimeField(default = datetime.datetime(1950, 1, 1))
+
+    objects = CheckActiveManager()
 
     @property
     def fest_id(self):
@@ -231,6 +248,8 @@ class UserProfile(models.Model): # The corresponding auth user
 
 class ERPProfile(models.Model):
     # Relations to other models
+    is_active       = models.BooleanField(default=True)
+
     user            = models.OneToOneField(User, related_name='erp_profile') # uses name and email from here. username = email
     wall            = models.OneToOneField(Wall, related_name='person')
     
@@ -256,6 +275,8 @@ class ERPProfile(models.Model):
     winter_stay     = models.CharField(max_length=100, blank=True, null=True)
     summer_stay2    = models.CharField(max_length=100, blank=True, null=True)
     winter_stay2    = models.CharField(max_length=100, blank=True, null=True)
+
+    objects = CheckActiveManager()
 
     @property
     def name(self):
