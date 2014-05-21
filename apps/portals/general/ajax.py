@@ -145,7 +145,7 @@ def create_subdept(request, dept_id, name):
 
     if user.erp_profile.core_relations.filter(id=dept_id).count() == 0 and user.erp_profile.supercoord_relations.filter(id=dept_id).count() == 0:
         return json.dumps({'message': 'This subdept is not under your department !'})
-
+     
     s = Subdept.objects.create(dept=Dept.objects.get(id=dept_id), name=name)
     return json.dumps({'message' : 'done', 'id' : s.id, 'name' : name})
 
