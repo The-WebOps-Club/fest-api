@@ -6,76 +6,78 @@
     <!-- TEMPLATES -->
     <div class='card template span12 subdept-container collapser' data-id='-1' style='display:none'>
         <div class="span12">
-            <div class='data-fetch-subdept'><h5><b class='subdept-name'></b>
-                <button class='remove-btn subdept-remove-btn icon-stop'></button>
-            </h5><div class='subdept-user-container collapsible span5'></div></div>
+            <div class='data-fetch-subdept'>
+                <h5>
+                    <b class='subdept-name'></b>
+                    <div class="pull-right">
+                        <a class='remove-btn subdept-remove-btn link_no_style' href="javascript:void(0)">
+                        <i class="icon-trash"></i>
+                            <span class="label danger label-head ">Delete</span>
+                        </a>
+                        <i class="icon-down"></i>
+                    </div>
+                </h5>
+                <div class='subdept-user-container collapsible span5'></div>
+            </div>
             
         </div>
-        <div class='span12 collapsible'>
-            <select class='user-selector for-subdept select_all_list' style='width:200px' multiple>
+        <div class='span12 collapsible center'>
+            <select class='user-selector for-subdept select_all_list' style='width:75%' multiple>
             </select>
             <button type=submit class='user-selector-btn btn btn-primary for-subdept'>Add User</button>
         </div>
     </div>
     <div class='page-container card span12 template collapser' style='display:none' data-id='-1'>
         <div class='span12'>
-            <div class='data-fetch-page '><h4><b class='page-name'></b>
-                <button class='remove-btn page-remove-btn icon-stop'></button>
-            </h4><div class='page-user-container collapsible span5'></div></div>
-
+            <div class='data-fetch-page '>
+                <h4>
+                    <b class='page-name'></b>
+                    <button class='remove-btn page-remove-btn'></button>
+                </h4>
+                <div class='page-user-container collapsible span5'></div>
+            </div>
         </div>
 
-        <div class='span11 collapsible'>
-            <select name='user-selector-{{ j.id }}' class='user-selector for-page select_all_list' style='width:100%' multiple>
+        <div class='span12 collapsible center'>
+            <select name='user-selector-{{ j.id }}' class='user-selector for-page select_all_list' style='width:75%' multiple>
             </select>
-        </div>
-
-        <div class='span1 collapsible'>
             <button type=submit class='user-selector-btn btn btn-primary for-page'>Add User</button>
         </div>
     </div>
 
 
     {% for i_dept_info in dept_info %}
-    <div data-id='{{ i_dept_info.dept.id }}' class='span12 card dept-name' style='text-align:center'>
-        <h3>
-            <span class="muted">Department : </span> 
-            {{ i_dept_info.dept.name }}
-        </h3>
-    </div>
-    <div class='subdepts-container'>
-        {% for j_subdept in i_dept_info.subdepts %}
-            <div class='subdept-placeholder' data-id='{{ j_subdept.id }}' data-name='{{j_subdept.name}}'></div>
-        {% endfor %}
-    </div>
-    <div class='card span12'>
-        <div class='span11' style='padding-right:20px'>
-            <input type=text class='add-subdept-name'>
+        <div data-id='{{ i_dept_info.dept.id }}' class='span12 card dept-name' style='text-align:center'>
+            <h3>
+                <span class="muted">Department : </span> 
+                {{ i_dept_info.dept.name }}
+            </h3>
+            <div class='span12'>
+                <input type="text" class='add-subdept-name' placeholder="Add a new subdept under this department">
+                <button class='add-subdept-btn btn btn-primary'>Add Subdept</button>
+            </div>
         </div>
-        <div class='span1'>
-            <button class='add-subdept-btn btn btn-primary'>Add</button>
+        <div class='subdepts-container'>
+            {% for j_subdept in i_dept_info.subdepts %}
+                <div class='subdept-placeholder' data-id='{{ j_subdept.id }}' data-name='{{j_subdept.name}}'></div>
+            {% endfor %}
         </div>
-    </div>
-
-    {%endfor%}
+        
+    {% endfor %}
     
     <hr />
-    <div class='span12 card' style='text-align:center'>
-        <h3>Groups</h3> 
+    <div class='span12 card group-head' style='text-align:center'>
+        <h3>Groups
+            <div class='span12'>
+                <input type="text" class='add-page-name' placeholder="Add a new group">
+                <button class='add-page-btn btn btn-primary'>Add</button>
+            </div>
+        </h3> 
     </div>
     <div class='pages-container'>
         {% for i_page in pages %}
             <div class='page-placeholder' data-id='{{i_page.id}}' data-name='{{i_page.name}}'></div>
         {% endfor %}
-    </div>
-
-    <div class='card span12'>
-        <div class='span11' style='padding-right:20px'>
-            <input type=text class='add-page-name'>
-        </div>
-        <div class='span1'>
-            <button class='add-page-btn btn btn-primary'>Add</button>
-        </div>
     </div>
 
     <hr />
@@ -105,20 +107,12 @@
         border-radius: 8px;
         margin-bottom: 10px;
     }
-    .dept-name.active i {
-        transform:rotate(180deg);
-        -ms-transform:rotate(180deg);
-        -webkit-transform:rotate(180deg);
+    .dept-name, .group-head {
+        margin-top : 30px;
     }
-    .add-subdept-name{
+    .add-subdept-name, .add-page-name{
         height:17px;
-        width:100%;
-        margin-right:20px;
-    }
-    .add-page-name{
-        height:17px;
-        width:100%;
-        margin-right:20px;
+        width:40%;
     }
     .admin_portal-user-pic{
         height:26px;
@@ -220,8 +214,9 @@
     function bindCollapser(){
         $('.collapser').click(function(){
             console.log('clicked');
-            var a = $(this).find('.collapsed')
-            var b = $(this).find('.collapsible')
+            var $this = $(this)
+            var a = $this.find('.collapsed')
+            var b = $this.find('.collapsible')
 
             a.slideDown(200);
             a.removeClass('collapsed')
