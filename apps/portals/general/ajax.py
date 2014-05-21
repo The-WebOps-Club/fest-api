@@ -91,11 +91,12 @@ def add_users_to_page(request,page_id,user_ids):
 @dajaxice_register
 def add_users_to_subdept(request,subdept_id,user_ids):
     user = request.user
+    erp_profile = user.erp_profile
     if not user.is_staff:
         return json.dumps({'message':'Not Authorized'})
 
     subdept = Subdept.objects.get(id = subdept_id)
-    dept = sundept.dept
+    dept = subdept.dept
 
     append_string = ''
     if erp_profile.core_relations.filter(id=dept.id).count() == 0 and \
@@ -143,8 +144,7 @@ def create_subdept(request, dept_id, name):
     if not user.is_staff:
         return json.dumps({'message':'Not Authorized'})
 
-    if erp_profile.core_relations.filter(id=dept_id).count() == 0 and \
-        erp_profile.supercoord_relations.filter(id=dept_id).count() == 0:
+    if user.erp_profile.core_relations.filter(id=dept_id).count() == 0 and user.erp_profile.supercoord_relations.filter(id=dept_id).count() == 0:
         return json.dumps({'message': 'This subdept is not under your department !'})
 
     s = Subdept.objects.create(dept=Dept.objects.get(id=dept_id), name=name)
@@ -197,6 +197,9 @@ def create_user(request, username, email, first_name, last_name):
     if( User.objects.filter(email = email).count() ):
         return json.dumps({'message':'Account with ' + email + ' already exists'});
 
+    if( User.objects.filter(username = username).count() ):
+        return json.dumps({'message':'Account with ' + username + ' already exists'});
+
     passwd = User.objects.make_random_password()
     u = User.objects.create(username = username, email = email, first_name =  first_name, last_name = last_name, password=passwd);
     e = ERPProfile.objects.create(user=u)
@@ -216,7 +219,7 @@ def create_user(request, username, email, first_name, last_name):
     # refresh json lists.
     call_command('jsonify_data')
     call_command('collectstatic',interactive=False)
-    #pipe = os.popen('python \'manage.py\' collectstatic')
+    
     return json.dumps( { 
         'message' : 'Successfully created <b>' + username + '</b> Email has been sent with the password to the given email address.',
         'passkey' : passwd
