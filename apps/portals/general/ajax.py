@@ -127,8 +127,7 @@ def delete_user_from_subdept(request,subdept_id,user_id):
 
     User.objects.get(id = user_id).erp_profile.coord_relations.remove(subdept)
     return json.dumps({'message':'done'})
-    pass
-
+    
 @dajaxice_register
 def delete_user_from_page(request,page_id,user_id):
     user = request.user
@@ -137,8 +136,7 @@ def delete_user_from_page(request,page_id,user_id):
 
     User.objects.get(id = user_id).erp_profile.page_relations.remove(Page.objects.get(id = page_id))
     return json.dumps({'message':'done'})
-    pass
-
+    
 @dajaxice_register
 def create_subdept(request, dept_id, name):
     user = request.user
@@ -180,6 +178,7 @@ def remove_subdept(request, subdept_id):
 
 @dajaxice_register
 def remove_page(request, page_id):
+    # ?
     user = request.user
     erp_profile = user.erp_profile
     if not user.is_staff:
