@@ -1,0 +1,22 @@
+<!-- user.html -->
+<!-- -->
+
+<div class='user-list-item span12' data-id='{{user.erp_profile.pk}}' data-link='{{link_type}}' data-link-id='{{link_id}}'>
+	<div class='span12'>
+		<div class='profile-pic-container span1'>
+			<img src="" data-id="{{user.id}}" data-fbid=" {{ user.profile.fbid }} " class="admin_portal-user-pic display_pic">
+		</div>
+		<div class='user-display-name span10'>
+		
+			<h5>
+			<a href='{%url "wall" user.erp_profile.wall.id%}'>
+			{{user.first_name}}&nbsp;{{user.last_name}}
+			<small>{{user.erp_profile.nickname}}</small>
+			</a>
+			<button class='user-remove remove-btn icon-stop' data-id='{{user.erp_profile.pk}}' data-link='{{link_type}}'></button>
+			</h5>
+			&nbsp;
+			
+		</div>
+	</div>
+</div>

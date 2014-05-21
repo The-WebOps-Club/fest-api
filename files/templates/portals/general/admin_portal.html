@@ -1,0 +1,365 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+<div class='admin_portal-container'>
+	{% for i_dept_info in dept_info %}
+	<div data-id='{{ i_dept_info.dept.id }}' class='span12 card dept-name' style='text-align:center'>
+		<h3>
+			<span class="muted">Department : </span> 
+			{{ i_dept_info.dept.name }}
+			<i class="icon-down pull-right"></i>
+		</h3>
+	</div>
+	<div class='card template span12 subdept-container collapser' data-id='-1' style='display:none'>
+		<div class="span12">
+			<div class='data-fetch-subdept'><h5><b class='subdept-name'></b>
+				<button class='remove-btn subdept-remove-btn icon-stop'></button>
+			</h5><div class='subdept-user-container collapsible span5'></div></div>
+			
+		</div>
+		<div class='span12 collapsible'>
+			<select class='user-selector for-subdept select_all_list' style='width:200px' multiple>
+			</select>
+			<button type=submit class='user-selector-btn btn btn-primary for-subdept'>Add User</button>
+		</div>
+	</div>
+	<div class='page-container card span12 template collapser' style='display:none' data-id='-1'>
+		<div class='span12'>
+			<div class='data-fetch-page '><h4><b class='page-name'></b>
+				<button class='remove-btn page-remove-btn icon-stop'></button>
+			</h4><div class='page-user-container collapsible span5'></div></div>
+
+		</div>
+
+		<div class='span11 collapsible'>
+			<select name='user-selector-{{ j.id }}' class='user-selector for-page select_all_list' style='width:100%' multiple>
+			</select>
+		</div>
+
+		<div class='span1 collapsible'>
+			<button type=submit class='user-selector-btn btn btn-primary for-page'>Add User</button>
+		</div>
+	</div>
+	<div class='subdepts-container'>
+		{% for j_subdept in i_dept_info.subdepts %}
+			<div class='subdept-placeholder' data-id='{{ j_subdept.id }}' data-name='{{j_subdept.name}}'></div>
+		{% endfor %}
+	</div>
+	<div class='card span12'>
+		<div class='span11' style='padding-right:20px'>
+			<input type=text class='add-subdept-name'>
+		</div>
+		<div class='span1'>
+			<button class='add-subdept-btn btn btn-primary'>Add</button>
+		</div>
+	</div>
+
+	{%endfor%}
+	
+	<hr />
+	<div class='span12 card' style='text-align:center'>
+		<h3>Groups</h3> 
+	</div>
+	<div class='pages-container'>
+		{% for i_page in pages %}
+			<div class='page-placeholder' data-id='{{i_page.id}}' data-name='{{i_page.name}}'></div>
+		{% endfor %}
+	</div>
+
+	<div class='card span12'>
+		<div class='span11' style='padding-right:20px'>
+			<input type=text class='add-page-name'>
+		</div>
+		<div class='span1'>
+			<button class='add-page-btn btn btn-primary'>Add</button>
+		</div>
+	</div>
+
+	<hr />
+	<div class='card add-user-container span12' style='text-align:center'>
+		<h3><b>Add new user</b></h3>
+		<h4 class='warning'><b class='last-action'></b></h4>
+		<input type=text class='new-user-first-name new-user-textbox' placeholder='First Name'><br>
+		<input type=text class='new-user-last-name new-user-textbox' placeholder='Last Name'><br>
+		<input type=text class='new-user-username new-user-textbox' placeholder='Username'><br>
+		<input type=text class='new-user-email new-user-textbox' placeholder='Email'><br>
+		
+		<button class='btn btn-primary add-user-btn'>Add</button>
+	</div>
+</div>
+{% endblock %}
+{% block extra_css %}
+<style>
+	.template{
+		display:none;
+	}
+	.card{
+		padding-left: 10px;
+		padding-bottom: 5px;
+		padding-top: 5px;
+		background-color: #EEE;
+		border-bottom: #BBB 2px solid;
+		border-radius: 8px;
+		margin-bottom: 10px;
+	}
+	.dept-name.active i {
+		transform:rotate(180deg);
+		-ms-transform:rotate(180deg);
+		-webkit-transform:rotate(180deg);
+	}
+	.add-subdept-name{
+		height:17px;
+		width:100%;
+		margin-right:20px;
+	}
+	.add-page-name{
+		height:17px;
+		width:100%;
+		margin-right:20px;
+	}
+	.admin_portal-user-pic{
+		height:26px;
+		width:26px;
+	}
+	.remove-btn{
+		background-color: transparent;
+	}
+	.user-display-name{
+		padding-left:20px;
+		height:20px;
+	}
+	.user-list-item:hover{
+		background-color: #BBB;
+	}
+	.warning{
+		
+		background-color: gold;
+		opacity: 0.5;
+		margin-right: 10px;
+		border-radius: 3px;
+		text-align: center;
+		color: darkred;
+		border: 1px solid darkred;
+		margin-bottom: 5px;
+		display:none;
+	}
+	.new-user-textbox{
+		margin-bottom:5px;
+	}
+</style>
+{% endblock %}
+{% block extra_js %}
+<script type='text/javascript'>
+
+	function bindUserAdd(){
+		$('.user-selector-btn.for-subdept').click(function(e){
+			$el = $(this)
+			console.log($el.parent().find('select.user-selector').val());
+			Dajaxice.apps.portals.general.add_users_to_subdept(function(res){
+				$el.parents('.subdept-container').find('.subdept-user-container').append(res.append_string);
+				$('.display_pic').get_dp();
+				bindUserRemove('subdept');
+			},{'user_ids':$el.parents('.subdept-container').find('select.user-selector').val(),'subdept_id':$el.parents('.subdept-container').data('id')});
+			e.stopPropagation();
+		});
+
+		$('.user-selector-btn.for-page').click(function(e){
+			$el = $(this)
+			console.log($el.parent().find('select.user-selector').val());
+			Dajaxice.apps.portals.general.add_users_to_page(function(res){
+				$el.parents('.page-container').find('.page-user-container').append(res.append_string);
+				$('.display_pic').get_dp();
+				bindUserRemove('page');
+			},{'user_ids':$el.parents('.page-container').find('select.user-selector').val(),'page_id':$el.parents('.page-container').data('id')});
+			e.stopPropagation();
+		});
+
+	}
+	
+	function bindUserRemove(link){
+		$('.user-remove[data-link='+link+']').click(function(e){
+			$el = $(this);
+			var id = $el.data('id');
+			var l_id = $el.parents('.'+link+'-container').data('id');
+
+			var F;
+			if(link == 'page')
+				F = Dajaxice.apps.portals.general.delete_user_from_page
+			else
+				F = Dajaxice.apps.portals.general.delete_user_from_subdept
+
+			var params = {'user_id':id};
+			params[link+'_id'] = l_id;
+			F(function(res){
+				console.log(res);
+				$('.user-list-item[data-link='+link+'][data-link-id='+l_id+'][data-id='+id+']').remove();
+			},params);
+
+			e.stopPropagation();
+		});
+	}
+	function bindRemove(){
+		$('.subdept-remove-btn').click(function(e){
+			var id = $(this).parents('.subdept-container').data('id');
+			Dajaxice.apps.portals.general.remove_subdept(function(res){
+				$('.subdept-container[data-id='+id+']').remove();
+			},{'subdept_id':id});
+			e.stopPropagation();
+		});
+		$('.page-remove-btn').click(function(e){
+			var id = $(this).parents('.page-container').data('id');
+			Dajaxice.apps.portals.general.remove_page(function(res){
+				$('.page-container[data-id='+id+']').remove();
+			},{'page_id':id});
+			e.stopPropagation();
+		});
+	}
+	function bindCollapser(){
+		$('.collapser').click(function(){
+			console.log('clicked');
+			var a = $(this).find('.collapsed')
+			var b = $(this).find('.collapsible')
+
+			a.slideDown(200);
+			a.removeClass('collapsed')
+			a.addClass('collapsible')
+
+			
+			b.slideUp(200);
+			b.removeClass('collapsible')
+			b.addClass('collapsed')
+			
+		});
+	}
+	function replaceSubdeptPlaceholder(i, e){
+		var $e = $(e)
+		var $el = $('.subdept-container.template').clone();
+		console.log('cloning..');
+		console.log($e.data('id'));
+		$el.removeClass('template').css('display', 'block');
+		$el.data('id', $e.data('id'));
+		$el.find('.subdept-name').html($e.data('name'));
+		$el.find('.user-selector').addClass('select2-pending');
+		$('.subdepts-container').append($el);
+	}	
+	
+	function fetchSubdept(i,e){
+		var $e = $(e)
+		var id = $e.parents('.subdept-container').data('id');
+		Dajaxice.apps.portals.general.get_users_of_subdept( function(res) {
+			console.log(res);
+			console.log($('.user-remove[data-link=subdept]'));
+
+			$('.subdept-container[data-id='+id+']').find('.subdept-user-container').append(res.append_string);
+			$('.display_pic').get_dp();
+			bindUserRemove('subdept');
+		}, { 'subdept_id' : id } );	
+	}
+	function replacePagePlaceholder(i,e){
+		var $e = $(e)
+		var $el = $('.page-container.template').clone();
+		$el.removeClass('template').css('display','block');;
+		$el.attr('data-id',$e.data('id'));
+		$el.find('.page-name').html($e.data('name'));
+		$el.find('.user-selector').addClass('select2-pending');
+		$('.pages-container').append($el);
+		$('.select2-pending').select2();
+		$('.select2-pending').removeClass('select2-pending').addClass('select2');
+		$e.remove();
+	}
+	function fetchPage (i , e) {
+		var $e = $(e)
+		var id = $e.parents('.page-container').data('id');
+		Dajaxice.apps.portals.general.get_users_of_page( function(res) {
+			$('.page-container[data-id=' + id + ']').find('.page-user-container').append(res.append_string);
+			bindUserRemove('page');
+			$('.display_pic').get_dp();
+		}, { 'page_id' : id } );
+	}
+
+	$(document).ready(function(){
+		console.log('BLAH!!');
+		// $(".dept-name").click( function () {
+		// 	var $el = $(this)
+		// 	if ( $el.hasClass("active") ) { 
+		// 		$el.removeClass("active")
+		// 		$el.addClass("inactive")
+		// 	} else ( $el.hasClass("inactive") ) { // inactive is there to make sude dajaxice doesnt run again
+		// 		$el.removeClass("inactive")
+		// 		$el.addClass("active")
+		// 	} else {
+		// 		$el.addClass("active")
+		// 		setTimeout(function() { 
+		// 			$el.find('.subdept-placeholder').each(replaceSubdeptPlaceholder) 
+		// 		}, 1 );
+		// 		bindUserAdd();
+		// 		bindRemove();
+		// 		bindCollapser();
+		// 	}
+		// })
+
+//		$('.subdept-placeholder').each(replaceSubdeptPlaceholder)
+		$('.subdept-placeholder').remove()
+		// setTimeout(function() { $('.page-placeholder').each(replacePagePlaceholder) }, 1);
+
+		//$('.data-fetch-subdept').each(fetchSubdept);
+		//$('.data-fetch-page').each(fetchPage);
+		
+
+		bindUserAdd();
+		bindRemove();
+		bindCollapser();
+		$('.add-user-btn').click(function(e){
+			var $this = $(this)
+			var $parent = $this.parents('.add-user-container')
+			var first_name = $parent.find('.new-user-first-name').val();
+			var last_name = $parent.find('.new-user-last-name').val();
+			var username = $parent.find('.new-user-username').val();
+			var email = $parent.find('.new-user-email').val();
+			$this.attr('disabled','true');
+			Dajaxice.apps.portals.general.create_user(function(res){
+				var $el = $this, $el_parent = $el.parents('.add-user-container')
+				console.log(res.message);
+				$el_parent.find('.warning').css('display','block').html(res.message);
+				$el.removeAttr('disabled');
+			}, { 'username' : username, 'email' : email, 'first_name' : first_name, 'last_name' : last_name }
+			);
+			e.stopPropagation();
+		})
+		$('.add-page-btn').click(function(e){
+			$(this).attr('disabled','true');
+			var $e = $(this)
+			Dajaxice.apps.portals.general.create_page(function(res){
+				$el = $('<div class=\'page-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
+				$('.pages-container').append($el);
+				$('.page-placeholder').each(replacePagePlaceholder);
+				bindUserAdd();
+				bindCollapser();
+				bindRemove();
+				$e.removeAttr('disabled');
+			},{'name':$('.add-page-name').val()});
+			e.stopPropagation();
+		});
+
+		$('.add-subdept-btn').click(function(){
+			$(this).attr('disabled','true');
+			var $e = $(this)
+			Dajaxice.apps.portals.general.create_subdept(function(res){
+				$el = $('<div class=\'subdept-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
+				$('.subdepts-container').append($el);
+				$('.subdept-placeholder').each(replaceSubdeptPlaceholder);
+				bindUserAdd();
+				bindCollapser();
+				bindRemove();
+				$e.removeAttr('disabled');
+			},{'name':$('.add-subdept-name').val(),'dept_id':$('.dept-name').data('id')});
+		});
+
+		$('.select2-pending').select2();
+		$('.select2-pending').removeClass('select2-pending').addClass('select2');
+
+	});
+
+</script>
+{% endblock %}
