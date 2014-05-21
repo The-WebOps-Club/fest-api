@@ -19,7 +19,6 @@
                 </h5>
                 <div class='subdept-user-container collapsible span5'></div>
             </div>
-            
         </div>
         <div class='span12 collapsible center'>
             <select class='user-selector for-subdept select_all_list' style='width:75%' multiple>
@@ -234,20 +233,22 @@
         var $el = $('.subdept-container.template').clone();
         console.log('cloning.. ' + $e.data('id'));
         $el.removeClass('template').css('display', 'block');
-        $el.data('id', $e.data('id'));
+        //$el.data('id', $e.data('id'));
+        $el.attr('data-id',$e.data('id'));
         $el.find('.subdept-name').html($e.data('name'));
         $el.find('.user-selector').addClass('select2-pending');
         $e.closest('.subdepts-container').append($el);
         $e.remove()
+        $('.select2-pending').select2();
+        $('.select2-pending').removeClass('select2-pending').addClass('select2');
     }   
     
     function fetchSubdept(i,e){
         var $e = $(e)
         var id = $e.parents('.subdept-container').data('id');
+        console.log(id);
         Dajaxice.apps.portals.general.get_users_of_subdept( function(res) {
             console.log(res);
-            console.log($('.user-remove[data-link=subdept]'));
-
             $('.subdept-container[data-id='+id+']').find('.subdept-user-container').append(res.append_string);
             $('.display_pic').get_dp();
             bindUserRemove('subdept');
@@ -262,6 +263,8 @@
         $el.find('.user-selector').addClass('select2-pending');
         $e.closest('.pages-container').append($el);
         $e.remove();
+        $('.select2-pending').select2();
+        $('.select2-pending').removeClass('select2-pending').addClass('select2');
     }
     function fetchPage (i , e) {
         var $e = $(e)
@@ -331,8 +334,7 @@
             },{'name':$('.add-subdept-name').val(),'dept_id':$('.dept-name').data('id')});
         });
 
-        $('.select2-pending').select2();
-        $('.select2-pending').removeClass('select2-pending').addClass('select2');
+        
 
     });
 

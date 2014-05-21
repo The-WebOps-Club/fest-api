@@ -11,7 +11,7 @@ def admin_portal(request):
     user = request.user
     erp_profile = user.erp_profile
     if not user.is_staff:
-        raise PermissionDenied('You are allowed here.')
+        raise PermissionDenied('You are not allowed here.')
 
     depts = list(chain(erp_profile.supercoord_relations.all(), erp_profile.core_relations.all()))
     local_context = {
