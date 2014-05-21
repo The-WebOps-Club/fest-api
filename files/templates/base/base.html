@@ -113,10 +113,13 @@
     <script type="text/javascript" src='{% static "js/local_storage.js" %}'></script>
 
     {% if experimental %}
-    <script type="text/javascript" src='{% static "modules/ckeditor/ckeditor.js"%}'></script>
+        <script>
+            window.CKEDITOR_BASEPATH="{{ SETTINGS.STATIC_URL }}modules/ckeditor/"
+        </script>
+        <script type="text/javascript" src='{% static "modules/ckeditor/ckeditor.js"%}'></script>
+        <!--<script type="text/javascript" src='{% static "modules/ckeditor/adapters/jquery.js"%}'></script>-->
     {% endif %}
-    <!--<script type="text/javascript" src='{% static "modules/ckeditor/adapters/jquery.js"%}'></script>-->
-
+    
     {% endcompress %}
 
     {% block extra_js %}{% endblock %}
