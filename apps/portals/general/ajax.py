@@ -207,9 +207,8 @@ def create_user(request, email, first_name, last_name, supercoord):
     except ValidationError:
         return json.dumps({'message':'<b>Error :</b> Please enter a valid email address'});
 
-
     passwd = User.objects.make_random_password()
-    u = User.objects.create(username=email, email=email, first_name=first_name, last_name=last_name, password=passwd);
+    u = User.objects.create_user(username=email, email=email, first_name=first_name, last_name=last_name, password=passwd);
     e = ERPProfile.objects.create(user=u)
     # inconsistent code. change asap.------
     for i in supercoord:
@@ -247,4 +246,5 @@ def create_user(request, email, first_name, last_name, supercoord):
         'first_name' : u.first_name,
         'last_name' : u.last_name,
         'email' : u.email,
+        'passkey': passwd
     } )
