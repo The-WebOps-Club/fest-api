@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse
 # Apps
 # Decorators
 # Models
-from misc.managers import CheckActiveManager
+#from misc.managers import CheckActiveManager
 # Forms
 # View functions
 # Misc

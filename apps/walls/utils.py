@@ -202,17 +202,21 @@ def get_my_posts(access_obj, wall=None):
     from apps.users.models import Dept, Subdept, Page
     if isinstance(access_obj, User):
         erp_profile = access_obj.erp_profile
+        erp_coords = erp_profile.coord_relations.all()
+        erp_supercoords = erp_profile.supercoord_relations.all()
+        erp_cores = erp_profile.core_relations.all()
+        erp_pages = erp_profile.page_relations.all()
         my_query = ( \
                 Q(access_users__id__exact=access_obj.id) | \
-                Q(access_subdepts__in=erp_profile.coord_relations.all()) | \
-                Q(access_depts__in=erp_profile.supercoord_relations.all()) | \
-                Q(access_depts__in=erp_profile.core_relations.all()) | \
-                Q(access_pages__in=erp_profile.page_relations.all()) | \
+                Q(access_subdepts__in=erp_coords) | \
+                Q(access_depts__in=erp_supercoords) | \
+                Q(access_depts__in=erp_cores) | \
+                Q(access_pages__in=erp_pages) | \
                 Q(wall__access_users__id__exact=access_obj.id) | \
-                Q(wall__access_subdepts__in=erp_profile.coord_relations.all()) | \
-                Q(wall__access_depts__in=erp_profile.supercoord_relations.all()) | \
-                Q(wall__access_depts__in=erp_profile.core_relations.all()) | \
-                Q(wall__access_pages__in=erp_profile.page_relations.all())
+                Q(wall__access_subdepts__in=erp_coords) | \
+                Q(wall__access_depts__in=erp_supercoords) | \
+                Q(wall__access_depts__in=erp_cores) | \
+                Q(wall__access_pages__in=erp_pages)
             )
         if wall:
             my_query = Q(wall=wall) & my_query

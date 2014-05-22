@@ -67,15 +67,20 @@ def wall (request, wall_id=None):
         wall = get_object_or_None(Wall, id=wall_id)
 
     wall_accessible = True
+
+    # Logic
+        # Check wall conditions
     if not wall:
         raise InvalidArgumentValueException("Wall with the `wall_id` " + str(wall_id) + " not found.")
     elif not wall.has_access(user):
         wall_accessible = False
-    # Logic
+    
+        # Get wall posts
     if not wall_accessible:
         wall_posts = get_my_posts(user, wall)[:5]
     if wall_accessible:
-        wall_posts = Post.objects.filter(wall = wall).order_by('-time_created')[:5]
+        wall_posts = Post.objects.filter(wall=wall).order_by('-time_created')[:5]
+    
     wall_parent = wall.parent
 
     local_context = {
@@ -133,7 +138,12 @@ def my_wall(request, owner_type, owner_id):
                 if wall_id:
             		wall_id = wall_id.id
     elif owner_type == "page":
-        wall_id = get_object_or_None(Wall, page__id=owner_id)
+        if owner_id:
+            wall_id = get_object_or_None(Wall, page__id=owner_id)
+            if wall_id:
+                wall_id = wall_id.id
+        else:
+            raise InvalidArgumentValueException("Got no `owner_id` for `owner_type` = " + owner_type)
     if wall_id == None:
-        raise InvalidArgumentValueException
+        raise InvalidArgumentValueException("Got no wall for `owner_id` = " + owner_id + " and `owner_type` = " + owner_type)
     return redirect(reverse("wall", kwargs={"wall_id" : wall_id}))

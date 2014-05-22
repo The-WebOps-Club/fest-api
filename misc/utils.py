@@ -9,6 +9,7 @@ from django.utils.timezone import utc
 from django.conf import settings
 # Decorators
 # Apps
+from misc.managers import *
 from misc.strings import *  #Import miscellaneous functions
 from misc.exceptions import *  #Import miscellaneous functions
 from misc.decorators import *  #Import miscellaneous functions
