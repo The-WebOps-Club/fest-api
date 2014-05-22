@@ -79,7 +79,7 @@ def wall (request, wall_id=None):
     wall_parent = wall.parent
 
     local_context = {
-    	"current_page" : "wall",
+        "current_page" : "wall",
         "wall" : wall,
         "showing_user" : wall_parent,
         "wall_posts" : wall_posts,
@@ -109,17 +109,17 @@ def my_wall(request, owner_type, owner_id):
         if owner_id:
             wall_id = get_object_or_None(Wall, subdept__id=owner_id)
             if wall_id:
-            	wall_id = wall_id.id
+                wall_id = wall_id.id
         else:
             if request.session["role"] == "coord":
                 wall_id = get_object_or_None(Wall, subdept__id=request.session["role_dept"])
                 if wall_id:
-            		wall_id = wall_id.id
+                    wall_id = wall_id.id
     elif owner_type == "dept":
         if owner_id:
             wall_id = get_object_or_None(Wall, dept__id=owner_id)
             if wall_id:
-            	wall_id = wall_id.id
+                wall_id = wall_id.id
         else:
             if request.session["role"] == "coord":
                 dept_id = get_object_or_None(Subdept, id=request.session["role_dept"])
@@ -127,13 +127,18 @@ def my_wall(request, owner_type, owner_id):
                     dept_id = dept_id.dept.id
                     wall_id = get_object_or_None(Wall, dept__id=dept_id)
                     if wall_id:
-            			wall_id = wall_id.id
+                        wall_id = wall_id.id
             else: # supercoord and core
                 wall_id = get_object_or_None(Wall, dept__id=request.session["role_dept"])
                 if wall_id:
-            		wall_id = wall_id.id
+                    wall_id = wall_id.id
     elif owner_type == "page":
-        wall_id = get_object_or_None(Wall, page__id=owner_id)
+        if owner_id:
+            wall_id = get_object_or_None(Wall, page__id=owner_id)
+            if wall_id:
+                wall_id = wall_id.id
+        else:
+            raise InvalidArgumentValueException("`owner_id` needs to be specified for `owner_type` = 'page'")
     if wall_id == None:
-        raise InvalidArgumentValueException
+        raise InvalidArgumentValueException("Wall with `owner_id` = " + owner_id + " and `owner_type` = " + owner_type + " not found")
     return redirect(reverse("wall", kwargs={"wall_id" : wall_id}))
