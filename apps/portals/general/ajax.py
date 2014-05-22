@@ -100,7 +100,7 @@ def add_users_to_subdept(request,subdept_id,user_ids):
     dept = subdept.dept
 
     append_string = ''
-    if erp_profile.core_relations.filter(id=dept.id).count() == 0 and \
+    if (not user.is_superuser) and erp_profile.core_relations.filter(id=dept.id).count() == 0 and \
         erp_profile.supercoord_relations.filter(id=dept.id).count() == 0:
         return json.dumps({'message': 'This subdept is not under your department !'})
 
@@ -121,7 +121,7 @@ def delete_user_from_subdept(request,subdept_id,user_id):
 
     subdept = Subdept.objects.get(id = subdept_id)
     dept = subdept.dept
-    if erp_profile.core_relations.filter(id=dept.id).count() == 0 and \
+    if (not user.is_superuser) and erp_profile.core_relations.filter(id=dept.id).count() == 0 and \
         erp_profile.supercoord_relations.filter(id=dept.id).count() == 0:
         return json.dumps({'message': 'This subdept is not under your department !'})
 
@@ -143,7 +143,7 @@ def create_subdept(request, dept_id, name):
     if not user.is_staff:
         return json.dumps({'message':'Not Authorized'})
 
-    if user.erp_profile.core_relations.filter(id=dept_id).count() == 0 and user.erp_profile.supercoord_relations.filter(id=dept_id).count() == 0:
+    if (not user.is_superuser) and user.erp_profile.core_relations.filter(id=dept_id).count() == 0 and user.erp_profile.supercoord_relations.filter(id=dept_id).count() == 0:
         return json.dumps({'message': 'This subdept is not under your department !'})
      
     s = Subdept.objects.create(dept=Dept.objects.get(id=dept_id), name=name)
@@ -169,7 +169,7 @@ def remove_subdept(request, subdept_id):
 
     subdept = Subdept.objects.get(id = subdept_id)
     dept = subdept.dept
-    if erp_profile.core_relations.filter(id=dept.id).count() == 0 and \
+    if (not user.is_superuser) and erp_profile.core_relations.filter(id=dept.id).count() == 0 and \
         erp_profile.supercoord_relations.filter(id=dept.id).count() == 0:
         return json.dumps({'message': 'This subdept is not under your department !'})
     
