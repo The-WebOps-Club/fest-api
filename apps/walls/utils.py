@@ -200,6 +200,7 @@ def get_my_posts(access_obj, wall=None):
         Checks all relations from a user to the posts in this wall
     """
     from apps.users.models import Dept, Subdept, Page
+
     if isinstance(access_obj, User):
         erp_profile = access_obj.erp_profile
         erp_coords = erp_profile.coord_relations.all()
@@ -220,6 +221,9 @@ def get_my_posts(access_obj, wall=None):
             )
         if wall:
             my_query = Q(wall=wall) & my_query
+            if access_obj.is_superuser:
+                my_query = Q(wall=wall)
+
         return Post.objects.filter(my_query).order_by('-time_created')
     elif isinstance(access_obj, Subdept) or isinstance(access_obj, Dept) or isinstance(access_obj, Page):
         temp = access_obj.access_post

@@ -192,12 +192,12 @@ def remove_page(request, page_id):
     return json.dumps({'message':'done'})
 
 @dajaxice_register
-def create_user(request, email, first_name, last_name):
+def create_user(request, email, first_name, last_name, supercoord):
     user = request.user
     erp_profile = user.erp_profile
     if not user.is_staff:
         return json.dumps({'message':'Not Authorized'})
-
+    #import pdb;pdb.set_trace();
     if not email or not first_name or not last_name:
         return json.dumps({'message' : '<b>Error :</b> All fields are required'});
     elif User.objects.filter(email=email).count() + User.objects.filter(username=email).count():
@@ -207,9 +207,21 @@ def create_user(request, email, first_name, last_name):
     except ValidationError:
         return json.dumps({'message':'<b>Error :</b> Please enter a valid email address'});
 
+
     passwd = User.objects.make_random_password()
     u = User.objects.create(username=email, email=email, first_name=first_name, last_name=last_name, password=passwd);
     e = ERPProfile.objects.create(user=u)
+    # inconsistent code. change asap.------
+    for i in supercoord:
+        dept = Dept.objects.filter(id = i)[0]
+        if(dept in erp_profile.core_relations.all()):
+            e.supercoord_relations.add(dept)
+            
+    if len(supercoord):
+        e.save();
+    #import pdb;pdb.set_trace();
+    #--------------------------------------
+
     if settings.SEND_EMAIL:
         mail.send( [u.email], 
             settings.DEFAULT_FROM_EMAIL, 
@@ -224,6 +236,7 @@ def create_user(request, email, first_name, last_name):
         )
         # print "Error : The email id", e.user.email, "was not found. UserProfile id : ", e.id
     # refresh json lists.
+
     call_command('jsonify_data')
     call_command('collectstatic', interactive=False)
     

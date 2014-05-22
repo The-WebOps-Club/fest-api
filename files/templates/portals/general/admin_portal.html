@@ -69,13 +69,15 @@
         <input type="text" class='new-user-first-name new-user-textbox' placeholder='First Name' required>
         <input type="text" class='new-user-last-name new-user-textbox' placeholder='Last Name' required><br>
         <input type="email" class='new-user-email new-user-textbox' placeholder='Email' required><br>
-        
+        {% for i in user.erp_profile.core_relations.all %}
+        <input type='checkbox' class='new-user-supercoord' data-id='{{i.id}}'>Add as Supercoord to {{i.name}} department<br>
+        {% endfor %}
         <button class='btn btn-primary add-user-btn'>Create</button>
         <div class="row-fluid">
             <br >
             <div class="alert-message info span12">
                 <p><strong>Notice !</strong>
-                Be careful on whom you add ! They can access things related to shaastra.<br >
+                Be careful whom you add ! They can access things related to {{FEST_NAME}}.<br >
                 After you submit, within 15 minutes, an email will be sent to the person with thier account information.
                 </p>
             </div>
@@ -205,6 +207,7 @@
             e.stopPropagation();
         });
     }
+    
     function bindRemove(){
         $('.subdept-remove-btn').click(function(e){
             var id = $(this).parents('.subdept-container').data('id');
@@ -300,6 +303,13 @@
             var first_name = $parent.find('.new-user-first-name').val();
             var last_name = $parent.find('.new-user-last-name').val();
             var email = $parent.find('.new-user-email').val();
+            var supercoord = [];
+            $parent.find('.new-user-supercoord:checked').each(function(i,e){
+                var $el = $(e)
+                console.log(e);
+                supercoord.push($el.data('id'));
+            });
+
             $this.attr('disabled','true');
             Dajaxice.apps.portals.general.create_user(function(res){
                 var $el = $this, $el_parent = $el.parents('.add-user-container')
@@ -322,7 +332,7 @@
                 }
                 $el_parent.find('.alert-messages-block .alert-message .text').html(res.message);
                 $el.removeAttr('disabled');
-            }, { 'email' : email, 'first_name' : first_name, 'last_name' : last_name }
+            }, { 'email' : email, 'first_name' : first_name, 'last_name' : last_name,'supercoord':supercoord }
             );
             e.stopPropagation();
         })

@@ -19,7 +19,7 @@ from misc.utils import *  #Import miscellaneous functions
 
 # From Apps
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-from apps.walls.utils import paginate_items, parse_atwho, get_tag_object, query_newsfeed, query_notifs
+from apps.walls.utils import paginate_items, parse_atwho, get_tag_object, query_newsfeed, query_notifs, get_my_posts
 
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
@@ -114,9 +114,9 @@ def get_posts(request, **kwargs):
     user = request.user
 
     if wall_id:
-        posts_list = Post.objects.filter(wall__id = int(wall_id)).order_by('-time_created')
+        posts_list = get_my_posts(user, Wall.objects.filter(id = wall_id)[0]).order_by('-time_created');
     else:
-        posts_list = Post.objects.all().order_by('-time_created')
+        posts_list = get_my_posts(user).order_by('-time_created')
 
     if page:
         items, exhausted = paginate_items(posts_list, **kwargs)
