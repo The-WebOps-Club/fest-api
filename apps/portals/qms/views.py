@@ -7,9 +7,13 @@ from misc.utils import *
 from itertools import chain
 
 # Create your views here.
-def admin_portal(request):
+def erp_analytics(request):
+    """
+        This is incomplete.
+    """
     user = request.user
     erp_profile = user.erp_profile
+    
     if not user.is_staff:
         raise PermissionDenied('You are not allowed here.')
 

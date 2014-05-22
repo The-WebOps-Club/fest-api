@@ -142,7 +142,7 @@ class Page(models.Model):
         return self.name
 
     def related_users(self):
-        return self.user_set()
+        return self.user_set.all()
 
     def profile_pic(self):
         temp = settings.MEDIA_URL + "profile/page/dp/" + self.id
