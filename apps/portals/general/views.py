@@ -14,6 +14,9 @@ def admin_portal(request):
         raise PermissionDenied('You are not allowed here.')
 
     depts = list(chain(erp_profile.supercoord_relations.all(), erp_profile.core_relations.all()))
+    if user.is_superuser:
+        depts = Dept.objects.all()
+        
     local_context = {
         'dept_info': [{
             'dept' : dept,
