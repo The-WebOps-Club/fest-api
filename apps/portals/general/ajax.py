@@ -210,14 +210,12 @@ def create_user(request, email, first_name, last_name, supercoord):
     passwd = User.objects.make_random_password()
     u = User.objects.create_user(username=email, email=email, first_name=first_name, last_name=last_name, password=passwd);
     e = ERPProfile.objects.create(user=u)
-    # inconsistent code. change asap.------
-    for i in supercoord:
-        dept = Dept.objects.filter(id = i)[0]
-        if(dept in erp_profile.core_relations.all()):
+    
+    depts = Dept.objects.filter(id__in=supercoord)
+    for dept in depts:
+        if dept in erp_profile.core_relations.all():
             e.supercoord_relations.add(dept)
             
-    if len(supercoord):
-        e.save();
     #import pdb;pdb.set_trace();
     #--------------------------------------
 

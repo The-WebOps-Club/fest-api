@@ -244,11 +244,22 @@ def get_my_walls(user):
         erp_profile = user
         user = erp_profile.user
         
+    erp_coords = erp_profile.coord_relations.all()
+    erp_supercoords = erp_profile.supercoord_relations.all()
+    erp_cores = erp_profile.core_relations.all()
+    erp_pages = erp_profile.page_relations.all()
+    # Direct relations 
+    #   + All subdepts of my dept 
+    #   + All depts related to my subdepts
     my_query = Q(person=erp_profile) | \
-                Q(subdept__in=erp_profile.coord_relations.all()) | \
-                Q(dept__in=erp_profile.supercoord_relations.all()) | \
-                Q(dept__in=erp_profile.core_relations.all()) | \
-                Q(page__in=erp_profile.page_relations.all())
+                Q(subdept__in=erp_coords) | \
+                Q(dept__in=erp_supercoords) | \
+                Q(dept__in=erp_cores) | \
+                Q(page__in=erp_pages) | \
+                Q(subdept__dept__in=erp_supercoords) | \
+                Q(subdept__dept__in=erp_cores) | \
+                Q(dept__subdepts__in=erp_coords)
+                
     wall_list = Wall.objects.filter(my_query)
     """ # Older method
     wall_list = set()
