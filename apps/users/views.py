@@ -249,7 +249,15 @@ def identity(request, role_type=None, role_id=None):
 		    elif request.user.erp_profile.coord_relations.count():
 		        role_type = "coord"
 		        role_id = request.user.erp_profile.coord_relations.first().id
+            else: # Trying to set role ... but user doesn't have any role !
+                request.session["role"] = "none"
+                request.session["role_dept"] = int(0)
+                request.session["is_core"] = False
+                request.session["is_supercoord"] = False
+                request.session["is_coord"] = False
+                return redirect("apps.home.views.home")
     else:
+
         # Initial validations
         try:
             role_id = int(role_id)
