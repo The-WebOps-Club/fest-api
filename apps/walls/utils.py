@@ -224,11 +224,11 @@ def get_my_posts(access_obj, wall=None):
             if access_obj.is_superuser:
                 my_query = Q(wall=wall)
 
-        return Post.objects.filter(my_query).order_by('-time_created')
+        return Post.objects.filter(my_query).distinct().order_by('-time_created')
     elif isinstance(access_obj, Subdept) or isinstance(access_obj, Dept) or isinstance(access_obj, Page):
         temp = access_obj.access_post
         if wall:
-            return temp.filter(wall=wall).order_by('-time_created')
+            return temp.filter(wall=wall).distinct().order_by('-time_created')
         else:
             return temp.all().order_by('-time_created')
 
@@ -260,7 +260,7 @@ def get_my_walls(user):
                 Q(subdept__dept__in=erp_cores) | \
                 Q(dept__subdepts__in=erp_coords)
                 
-    wall_list = Wall.objects.filter(my_query)
+    wall_list = Wall.objects.filter(my_query).distinct()
     """ # Older method
     wall_list = set()
     wall_list.update(user.access_wall.all())
@@ -292,12 +292,12 @@ def check_access_rights(access_obj, thing):
                 Q(access_pages__in=erp_profile.page_relations.all())
             )
         if isinstance(thing, Post):
-            return Post.objects.filter(my_query).count()
+            return Post.objects.filter(my_query).distinct().count()
         elif isinstance(thing, Wall):
-            return Wall.objects.filter(my_query).count()
+            return Wall.objects.filter(my_query).distinct().count()
     elif isinstance(access_obj, Subdept):
-        return thing.access_subdepts.filter(id=access_obj.id).count()
+        return thing.access_subdepts.filter(id=access_obj.id).distinct().count()
     elif isinstance(access_obj, Dept):
-        return thing.access_depts.filter(id=access_obj.id).count()
+        return thing.access_depts.filter(id=access_obj.id).distinct().count()
     elif isinstance(access_obj, Page):
-        return thing.access_pages.filter(id=access_obj.id).count()
+        return thing.access_pages.filter(id=access_obj.id).distinct().count()
