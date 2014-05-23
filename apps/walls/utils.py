@@ -244,7 +244,7 @@ def get_my_walls(user):
         erp_profile = user
         user = erp_profile.user
         
-    my_query = Q(person=user) | \
+    my_query = Q(person=erp_profile) | \
                 Q(subdept__in=erp_profile.coord_relations.all()) | \
                 Q(dept__in=erp_profile.supercoord_relations.all()) | \
                 Q(dept__in=erp_profile.core_relations.all()) | \
