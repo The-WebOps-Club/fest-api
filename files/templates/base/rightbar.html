@@ -175,7 +175,7 @@
             $parent.find(".data_item").not(".template").remove() // delete elems
             for ( var i = 0; i < Math.min(10, search_list.length); i++ ) { // create elems again
                 $new_element = $template.clone().removeClass("template")
-                $new_element.find(".text").html(search_list[i].name + " <small class='muted'> " + search_list[i].small + "</small>")
+                $new_element.find(".text").html(search_list[i].name)
                 $new_element.find(".display_pic").data("id", search_list[i].id)
                 
                 $parent.append($new_element)

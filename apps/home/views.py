@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 # Apps
 from misc.utils import *  #Import miscellaneous functions
+from apps.walls.utils import query_newsfeed
 # Decorators
 # Models
 from django.contrib.auth.models import User
@@ -42,20 +43,7 @@ def home (request, *args, **kwargs):
 @login_required
 def newsfeed(request): 
     user = request.user
-    
-    notifications_list = Notification.objects.raw("""
-        SELECT a.* 
-        FROM notifications_notification a 
-        WHERE NOT EXISTS (
-            SELECT 1 
-            FROM notifications_notification 
-            WHERE target_object_id = a.target_object_id 
-                AND timestamp > a.timestamp
-        ) 
-        GROUP BY a.target_object_id
-        ORDER BY a.timestamp DESC
-        LIMIT 5
-    """)
+    notifications_list = query_newsfeed(user, page=1)
     
     local_context = {
         "current_page" : "newsfeed",
@@ -69,29 +57,6 @@ def portals(request):
     # print notifs
     local_context = {}
     return render_to_response("pages/portals.html", local_context, context_instance= global_context(request))
-
-@login_required
-def notifications(request):
-    notifications_list = Notification.objects.raw("""
-        SELECT a.* 
-        FROM notifications_notification a 
-        WHERE NOT EXISTS (
-            SELECT 1 
-            FROM notifications_notification 
-            WHERE target_object_id = a.target_object_id 
-                AND timestamp < a.timestamp
-        ) 
-        GROUP BY a.target_object_id
-        ORDER BY a.timestamp
-    """)
-    print [i for i in notifications_list]
-    local_context = {
-        "current_page" : "notifications",
-        #"posts" : Post.objects.order_by("-comments__time_updated", "-time_updated"),
-        # "notifications" : request.user.notifications.all(),
-        "notifications" : notifications_list,
-    }
-    return render_to_response("pages/newsfeed.html", local_context, context_instance= global_context(request))
 
 @login_required
 def read_notification(request, notif_id):

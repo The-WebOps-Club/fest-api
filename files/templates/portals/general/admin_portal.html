@@ -1,0 +1,373 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+<div class='admin_portal-container'>
+    <!-- TEMPLATES -->
+    <div class='card template span12 subdept-container collapser' data-id='-1' style='display:none'>
+        <div class="span12">
+            <div class='data-fetch-subdept'>
+                <h5>
+                    <b class='subdept-name'></b>
+                    <div class="pull-right">
+                        <a class='remove-btn subdept-remove-btn link_no_style' href="javascript:void(0)">
+                        <i class="icon-trash"></i>
+                            <span class="label important label-head ">Delete</span>
+                        </a>
+                        <i class="icon-down collapsed"></i>
+                        <i class="icon-up collapsible"></i>
+                    </div>
+                </h5>
+                <div class='subdept-user-container collapsible span12'></div>
+            </div>
+        </div>
+        <div class='span12 collapsible center'>
+            <select class='user-selector for-subdept select_all_list' style='width:75%' multiple>
+            </select>
+            <button type=submit class='user-selector-btn btn btn-primary for-subdept'>
+                <i class='icon-plus'></i> Add User
+            </button>
+        </div>
+    </div>
+    <div class='page-container card span12 template collapser' style='display:none' data-id='-1'>
+        <div class='span12'>
+            <div class='data-fetch-page '>
+                <h4>
+                    <b class='page-name'></b>
+                    <div class="pull-right">
+                        <a class='remove-btn page-remove-btn link_no_style' href="javascript:void(0)">
+                            <i class="icon-trash"></i>
+                            <span class="label important label-head ">Delete</span>
+                        </a>
+                        <i class="icon-down collapsed"></i>
+                        <i class="icon-up collapsible"></i>
+                    </div>
+                </h4>
+                <div class='page-user-container collapsible span12'></div>
+            </div>
+        </div>
+
+        <div class='span12 collapsible center'>
+            <select name='user-selector-{{ j.id }}' class='user-selector for-page select_all_list' style='width:75%' multiple>
+            </select>
+            <button type=submit class='user-selector-btn btn btn-primary for-page'>
+                <i class='icon-plus'></i> Add User
+            </button>
+        </div>
+    </div>
+
+
+    <div class='card add-user-container span12' style='text-align:center'>
+        <h3><b>Create a new user</b></h3>
+        <div class="row-fluid alert-messages-block" style="display : none;">
+            <br >
+            <div class="alert-message error span12">
+                <p class='text'>
+                </p>
+            </div>
+        </div>
+        <input type="text" class='new-user-first-name new-user-textbox' placeholder='First Name' required>
+        <input type="text" class='new-user-last-name new-user-textbox' placeholder='Last Name' required><br>
+        <input type="email" class='new-user-email new-user-textbox' placeholder='Email' required><br>
+        {% for i in user.erp_profile.core_relations.all %}
+        <input type='checkbox' class='new-user-supercoord' data-id='{{i.id}}'>Add as Supercoord to {{i.name}} department<br>
+        {% endfor %}
+        <button class='btn btn-primary add-user-btn'>Create</button>
+        <div class="row-fluid">
+            <br >
+            <div class="alert-message info span12">
+                <p><strong>Notice !</strong>
+                Be careful whom you add ! They can access things related to {{FEST_NAME}}.<br >
+                After you submit, within 15 minutes, an email will be sent to the person with thier account information.
+                </p>
+            </div>
+        </div>
+    </div>
+    {% for i_dept_info in dept_info %}
+        <div data-id='{{ i_dept_info.dept.id }}' class='span12 card dept-name' style='text-align:center'>
+            <h3>
+                <span class="muted">Department : </span> 
+                {{ i_dept_info.dept.name }}
+            </h3>
+            <div class='span12'>
+                <input type="text" class='add-subdept-name' placeholder="Add a new subdept under this department">
+                <button class='add-subdept-btn btn btn-primary'>Create a Subdept</button>
+            </div>
+        </div>
+        <div class='subdepts-container' data-id='{{i_dept_info.dept.id}}'>
+            {% for j_subdept in i_dept_info.subdepts %}
+                <div class='subdept-placeholder' data-id='{{ j_subdept.id }}' data-name='{{j_subdept.name}}'></div>
+            {% endfor %}
+        </div>
+        
+    {% endfor %}
+    
+    <hr />
+    <div class='span12 card group-head' style='text-align:center'>
+        <h3>Groups
+            <div class='span12'>
+                <input type="text" class='add-page-name' placeholder="Add a new group">
+                <button class='add-page-btn btn btn-primary'>Create a Group</button>
+            </div>
+        </h3> 
+    </div>
+    <div class='pages-container'>
+        {% for i_page in pages %}
+            <div class='page-placeholder' data-id='{{i_page.id}}' data-name='{{i_page.name}}'></div>
+        {% endfor %}
+    </div>
+    
+</div>
+{% endblock %}
+{% block extra_css %}
+<style>
+    .template{
+        display:none;
+    }
+    .collapsed {
+        display : none;
+    }
+    .card{
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 5px;
+        padding-top: 5px;
+        background-color: #EEE;
+        border-bottom: #BBB 2px solid;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    .dept-name, .group-head {
+        margin-top : 30px;
+    }
+    .add-subdept-name, .add-page-name{
+        height:17px;
+        width:40%;
+    }
+    .admin_portal-user-pic{
+        height:26px;
+        width:26px;
+    }
+    .remove-btn{
+        background-color: transparent;
+    }
+    .user-display-name{
+        padding-left:20px;
+        height:20px;
+    }
+    .new-user-textbox{
+        margin-bottom:5px;
+    }
+</style>
+{% endblock %}
+{% block extra_js %}
+<script type='text/javascript'>
+
+    function bindUserAdd(){
+        $('.user-selector-btn.for-subdept').click(function(e){
+            $el = $(this)
+            Dajaxice.apps.portals.general.add_users_to_subdept(function(res){
+                $el.parents('.subdept-container').find('.subdept-user-container').append(res.append_string);
+                $('.display_pic').get_dp();
+                bindUserRemove('subdept');
+            },{'user_ids':$el.parents('.subdept-container').find('select.user-selector').val(),'subdept_id':$el.parents('.subdept-container').data('id')});
+            e.stopPropagation();
+        });
+
+        $('.user-selector-btn.for-page').click(function(e){
+            $el = $(this)
+            Dajaxice.apps.portals.general.add_users_to_page(function(res){
+                $el.parents('.page-container').find('.page-user-container').append(res.append_string);
+                $('.display_pic').get_dp();
+                bindUserRemove('page');
+            },{'user_ids':$el.parents('.page-container').find('select.user-selector').val(),'page_id':$el.parents('.page-container').data('id')});
+            e.stopPropagation();
+        });
+
+    }
+    
+    function bindUserRemove(link){
+        $('.user-remove[data-link='+link+']').click(function(e){
+            $el = $(this);
+            var id = $el.data('id');
+            var l_id = $el.parents('.'+link+'-container').data('id');
+
+            var F;
+            if(link == 'page')
+                F = Dajaxice.apps.portals.general.delete_user_from_page
+            else
+                F = Dajaxice.apps.portals.general.delete_user_from_subdept
+
+            var params = {'user_id':id};
+            params[link+'_id'] = l_id;
+            F(function(res){
+                $('.user-list-item[data-link='+link+'][data-link-id='+l_id+'][data-id='+id+']').remove();
+            },params);
+
+            e.stopPropagation();
+        });
+    }
+    
+    function bindRemove(){
+        $('.subdept-remove-btn').click(function(e){
+            var id = $(this).parents('.subdept-container').data('id');
+            Dajaxice.apps.portals.general.remove_subdept(function(res){
+                $('.subdept-container[data-id='+id+']').remove();
+            },{'subdept_id':id});
+            e.stopPropagation();
+        });
+        $('.page-remove-btn').click(function(e){
+            var id = $(this).parents('.page-container').data('id');
+            Dajaxice.apps.portals.general.remove_page(function(res){
+                $('.page-container[data-id='+id+']').remove();
+            },{'page_id':id});
+            e.stopPropagation();
+        });
+    }
+    function bindCollapser(){
+        $('.collapser').click(function(){
+            var $this = $(this)
+            var a = $this.find('.collapsed')
+            var b = $this.find('.collapsible')
+
+            a.slideDown(200);
+            a.removeClass('collapsed')
+            a.addClass('collapsible')
+
+            
+            b.slideUp(200);
+            b.removeClass('collapsible')
+            b.addClass('collapsed')
+            
+        });
+    }
+    function replaceSubdeptPlaceholder(i, e){
+        var $e = $(e)
+        var $el = $('.subdept-container.template').clone();
+        $el.removeClass('template').css('display', 'block');
+        //$el.data('id', $e.data('id'));
+        $el.attr('data-id',$e.data('id'));
+        $el.find('.subdept-name').html($e.data('name'));
+        $el.find('.user-selector').addClass('select2-pending');
+        $e.closest('.subdepts-container').prepend($el);
+        $e.remove()
+        $('.select2-pending').select2();
+        $('.select2-pending').removeClass('select2-pending').addClass('select2');
+    }   
+    
+    function fetchSubdept(i,e){
+        var $e = $(e)
+        var id = $e.parents('.subdept-container').data('id');
+        Dajaxice.apps.portals.general.get_users_of_subdept( function(res) {
+            $('.subdept-container[data-id='+id+']').find('.subdept-user-container').append(res.append_string);
+            $('.display_pic').get_dp();
+            bindUserRemove('subdept');
+        }, { 'subdept_id' : id } ); 
+    }
+    function replacePagePlaceholder(i,e){
+        var $e = $(e)
+        var $el = $('.page-container.template').clone();
+        $el.removeClass('template').css('display','block');
+        $el.attr('data-id',$e.data('id'));
+        $el.find('.page-name').html($e.data('name'));
+        $el.find('.user-selector').addClass('select2-pending');
+        $e.closest('.pages-container').prepend($el);
+        $e.remove();
+        $('.select2-pending').select2();
+        $('.select2-pending').removeClass('select2-pending').addClass('select2');
+    }
+    function fetchPage (i , e) {
+        var $e = $(e)
+        var id = $e.parents('.page-container').data('id');
+        Dajaxice.apps.portals.general.get_users_of_page( function(res) {
+            $('.page-container[data-id=' + id + ']').find('.page-user-container').append(res.append_string);
+            bindUserRemove('page');
+            $('.display_pic').get_dp();
+        }, { 'page_id' : id } );
+    }
+
+    $(document).ready(function(){
+        $('.subdept-placeholder').each(replaceSubdeptPlaceholder)
+        $('.page-placeholder').each(replacePagePlaceholder)
+
+        // Get current users in the page and subdepts asynchronously
+        setTimeout( function () { $('.data-fetch-subdept').each(fetchSubdept) } , 1 );
+        setTimeout( function () { $('.data-fetch-page').each(fetchPage) } , 1 );
+        
+        bindUserAdd();
+        bindRemove();
+        bindCollapser();
+        $('.add-user-btn').click(function(e){
+            var $this = $(this)
+            var $parent = $this.parents('.add-user-container')
+            var first_name = $parent.find('.new-user-first-name').val();
+            var last_name = $parent.find('.new-user-last-name').val();
+            var email = $parent.find('.new-user-email').val();
+            var supercoord = [];
+            $parent.find('.new-user-supercoord:checked').each(function(i,e){
+                var $el = $(e)
+                supercoord.push($el.data('id'));
+            });
+
+            $this.attr('disabled','true');
+            Dajaxice.apps.portals.general.create_user(function(res){
+                var $el = $this, $el_parent = $el.parents('.add-user-container')
+                if ( res.success ) {
+                    $el_parent.find('.alert-messages-block').css('display', 'block')
+                        .find(".alert-message").addClass("success").removeClass("error")
+                    // added a new user ... need to add to select2
+                    atwho_user_list.push({
+                        "id": res["id"],
+                        "name": res["first_name"] + " " + res["last_name"],
+                        "email": res["email"],
+                        "type": "user",
+                    });
+                    setTimeout(function() {
+                        setup_autocomplete_lists()
+                    }, 1 )
+                } else {
+                    $el_parent.find('.alert-messages-block').css('display', 'block')
+                        .find(".alert-message").addClass("error").removeClass("success")
+                }
+                $el_parent.find('.alert-messages-block .alert-message .text').html(res.message);
+                $el.removeAttr('disabled');
+            }, { 'email' : email, 'first_name' : first_name, 'last_name' : last_name,'supercoord':supercoord }
+            );
+            e.stopPropagation();
+        })
+        $('.add-page-btn').click(function(e){
+            $(this).attr('disabled','true');
+            var $e = $(this)
+            Dajaxice.apps.portals.general.create_page(function(res){
+                $el = $('<div class=\'page-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
+                $('.pages-container').append($el);
+                $('.page-placeholder').each(replacePagePlaceholder);
+                bindUserAdd();
+                bindCollapser();
+                bindRemove();
+                $e.removeAttr('disabled');
+            },{'name':$('.add-page-name').val()});
+            e.stopPropagation();
+        });
+
+        $('.add-subdept-btn').click(function(){
+            $(this).attr('disabled','true');
+            var $e = $(this)
+            var dept_id = $e.parents('.dept-name').data('id')
+            Dajaxice.apps.portals.general.create_subdept(function(res){
+                $el = $('<div class=\'subdept-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
+                $('.subdepts-container[data-id='+dept_id+']').append($el);
+                $('.subdept-placeholder').each(replaceSubdeptPlaceholder);
+                bindUserAdd();
+                bindCollapser();
+                bindRemove();
+                $e.removeAttr('disabled');
+            },{'name':$e.parents('.dept-name').find('.add-subdept-name').val(),'dept_id':dept_id});
+        });
+
+        
+
+    });
+
+</script>
+{% endblock %}

@@ -120,7 +120,18 @@
 	color : inherit;
 	text-decoration : inherit;
 }
-
+.btn.thin-x {
+    margin-left : 0px;
+    margin-right : 0px;
+    padding-left : 2px;
+    padding-right : 2px;
+}
+.btn.thin-y {
+    margin-top : 0px;
+    margin-bottom : 0px;
+    padding-top : 1px;
+    padding-bottom : 1px;
+}
 /* Specific Template styles */
 
 .main_body {

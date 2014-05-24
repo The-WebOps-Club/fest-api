@@ -15,8 +15,8 @@
                     </a></li>
                     {% endcomment %}
                     <li><a href='javascript:void(0)' class='jewelButton notifButton'>
-                    	{% if user.notifications.unread.count != 0 %}
-                    		<span class='label label-info pull-right counter'>{{ user.notifications.unread.count }}</span>
+                    	{% if request.user.notifications.unread.count != 0 %}
+                    		<span class='label label-info pull-right counter'>{{ request.user.notifications.unread.count }}</span>
                     	{% endif %}
                     </a></li>
                 </ul>

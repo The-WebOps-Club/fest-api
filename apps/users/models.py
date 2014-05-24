@@ -20,6 +20,7 @@ from django.core.urlresolvers import reverse
 # Models
 from misc.models import College
 from apps.walls.models import Wall, Post
+from misc.managers import CheckActiveManager
 # Forms
 # View functions
 # Misc
@@ -35,12 +36,20 @@ class Dept(models.Model):
     """ 
         A model having data about specific Departments @ the fest 
     """
+    is_active       = models.BooleanField(default=True)
+
     # Relations with other models
     wall            = models.OneToOneField(Wall, related_name='dept')
     
     # Basic information
     name            = models.CharField(max_length=30, unique=True)
     description     = models.TextField(max_length=500, null=True, blank=True)
+    
+    # Analytics
+    time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    
+    objects = CheckActiveManager()
     
     def __unicode__(self):
         return self.name
@@ -73,6 +82,8 @@ class Subdept(models.Model):
         A model having data about specific SubDepartments @ the fest 
         Every subdept is linked to an event 
     """
+    is_active       = models.BooleanField(default=True)
+
     # Relations with other models
     dept            = models.ForeignKey(Dept, related_name='subdepts')
     wall            = models.OneToOneField(Wall, related_name='subdept')
@@ -81,6 +92,12 @@ class Subdept(models.Model):
     # Basic information
     name            = models.CharField(max_length=30, unique=True)
     description     = models.TextField(max_length=500, null=True, blank=True)
+
+    # Analytics
+    time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+
+    objects = CheckActiveManager()
 
     def __unicode__(self):
         return self.name
@@ -103,6 +120,38 @@ class Subdept(models.Model):
         temp = settings.MEDIA_URL + "profile/subdept/banner/" + self.id
         return temp
 
+class Page(models.Model):
+    """ 
+        A model having data about a page. An equivalent of a group
+    """
+    is_active       = models.BooleanField(default=True)
+
+    # Relations with other models
+    wall            = models.OneToOneField(Wall, related_name='page')
+    
+    # Basic information
+    name            = models.CharField(max_length=30, unique=True)
+    description     = models.TextField(max_length=500, null=True, blank=True)
+
+    # Analytics
+    time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+
+    objects = CheckActiveManager()
+
+    def __unicode__(self):
+        return self.name
+
+    def related_users(self):
+        return self.user_set.all()
+
+    def profile_pic(self):
+        temp = settings.MEDIA_URL + "profile/page/dp/" + self.id
+        return temp
+    def banner_pic(self):
+        temp = settings.MEDIA_URL + "profile/page/banner/" + self.id
+        return temp
+
 class UserProfile(models.Model): # The corresponding auth user
     """
         The model is a basic model for any user who will come into Fest.
@@ -110,6 +159,8 @@ class UserProfile(models.Model): # The corresponding auth user
         It handles the basic 
     
     """
+    is_active       = models.BooleanField(default=True)
+
     user               = models.OneToOneField(User, related_name='profile') # uses name and email from here. username = email
     
     # Basic information
@@ -138,6 +189,8 @@ class UserProfile(models.Model): # The corresponding auth user
     date_created       = models.DateTimeField(auto_now_add=True)
     last_activity_ip   = models.IPAddressField(default="0.0.0.0")
     last_activity_date = models.DateTimeField(default = datetime.datetime(1950, 1, 1))
+
+    objects = CheckActiveManager()
 
     @property
     def fest_id(self):
@@ -199,6 +252,8 @@ class UserProfile(models.Model): # The corresponding auth user
 
 class ERPProfile(models.Model):
     # Relations to other models
+    is_active       = models.BooleanField(default=True)
+
     user            = models.OneToOneField(User, related_name='erp_profile') # uses name and email from here. username = email
     wall            = models.OneToOneField(Wall, related_name='person')
     
@@ -211,6 +266,7 @@ class ERPProfile(models.Model):
     coord_relations = models.ManyToManyField(Subdept, null=True, blank=True, related_name='coord_set')
     supercoord_relations = models.ManyToManyField(Dept, null=True, blank=True, related_name='supercoord_set')
     core_relations  = models.ManyToManyField(Dept, null=True, blank=True, related_name='core_set')
+    page_relations  = models.ManyToManyField(Page, null=True, blank=True, related_name='user_set')
     
     # Other random information for profile
     nickname        = models.CharField(max_length=100, blank=True, null=True)
@@ -223,6 +279,8 @@ class ERPProfile(models.Model):
     winter_stay     = models.CharField(max_length=100, blank=True, null=True)
     summer_stay2    = models.CharField(max_length=100, blank=True, null=True)
     winter_stay2    = models.CharField(max_length=100, blank=True, null=True)
+
+    objects = CheckActiveManager()
 
     @property
     def name(self):
@@ -257,15 +315,8 @@ class ERPProfile(models.Model):
             self_user.email
 
     def related_walls(self):
-        wall_list = set()
-        wall_list.update(self.user.notified_wall.all())
-        for i in self.coord_relations.all():
-            wall_list.update(i.notified_wall.all())
-        for i in self.supercoord_relations.all():
-            wall_list.update(i.notified_wall.all())
-        for i in self.core_relations.all():
-            wall_list.update(i.notified_wall.all())
-        return wall_list
+        from apps.walls.utils import get_my_walls
+        return get_my_walls(self)
 
     # Methods to check for position/role
     def is_coord(self, request):

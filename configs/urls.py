@@ -39,7 +39,6 @@ urlpatterns = patterns('',
     
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'), # Shows newsfeed for a user
-    url(r'^notifications/$', 'apps.home.views.notifications', name='notifications'), # Shows all notifications for a user
     url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
     
     # Notification
@@ -64,6 +63,8 @@ urlpatterns = patterns('',
     url(r'^show/404/$', 'misc.views.err404',  name='err404'),
     url(r'^show/500/$', 'misc.views.err500',  name='err505'),
     #url(r'^setup/$', 'misc.views.setup', name='setup'),
+
+    url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE

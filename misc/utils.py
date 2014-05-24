@@ -9,6 +9,7 @@ from django.utils.timezone import utc
 from django.conf import settings
 # Decorators
 # Apps
+from misc.managers import *
 from misc.strings import *  #Import miscellaneous functions
 from misc.exceptions import *  #Import miscellaneous functions
 from misc.decorators import *  #Import miscellaneous functions
@@ -41,7 +42,7 @@ def global_context(request, token_info=True, user_info=True):
     	else:
         	profile = None
     token = None
-    if token_info:
+    if token_info and settings.USE_GOOGLE_DRIVE:
     	drive = Drive()
     	token = Drive.get_access_token()
     local_context = {

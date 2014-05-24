@@ -14,7 +14,7 @@ from django.db.models import Q
 # Models
 from apps.walls.models import Wall
 from apps.events.models import Event
-from apps.users.models import ERPProfile, Dept, Subdept
+from apps.users.models import ERPProfile, Dept, Subdept, Page
 # Forms
 # View functions
 # Misc
@@ -31,7 +31,7 @@ def create_my_wall(item):
     """
     # Validate arguments
     changed_it = False
-    if not ( type(item) is ERPProfile or type(item) is Dept or type(item) is Subdept ):
+    if not ( type(item) is ERPProfile or type(item) is Dept or type(item) is Subdept or type(item) is Page ):
         raise InvalidArgumentTypeException
     
     # Check if wall exists. If not, create. If it does, check name
@@ -77,4 +77,15 @@ def subdept_pre_save(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Subdept, dispatch_uid="subdept.made.post_save_signal")
 def subdept_post_save(sender, instance, **kwargs):
+    instance.wall.add_notifications([instance])
+
+# ----------------------------------------------------------------------------------
+# ------------------------- PAGE
+
+@receiver(pre_save, sender=Page, dispatch_uid="page.made.pre_save_signal")
+def page_pre_save(sender, instance, **kwargs):
+    create_my_wall(instance)
+
+@receiver(post_save, sender=Page, dispatch_uid="page.made.post_save_signal")
+def page_post_save(sender, instance, **kwargs):
     instance.wall.add_notifications([instance])

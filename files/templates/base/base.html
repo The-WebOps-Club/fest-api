@@ -112,11 +112,14 @@
     <script type="text/javascript" src='{% static "js/jquery.autosize.js" %}'></script>
     <script type="text/javascript" src='{% static "js/local_storage.js" %}'></script>
 
-    {% if expermental %}
-    <script type="text/javascript" src='{% static "modules/ckeditor/ckeditor.js"%}'></script>
+    {% if experimental %}
+        <script>
+            window.CKEDITOR_BASEPATH="{{ SETTINGS.STATIC_URL }}modules/ckeditor/"
+        </script>
+        <script type="text/javascript" src='{% static "modules/ckeditor/ckeditor.js"%}'></script>
+        <!--<script type="text/javascript" src='{% static "modules/ckeditor/adapters/jquery.js"%}'></script>-->
     {% endif %}
-    <!--<script type="text/javascript" src='{% static "modules/ckeditor/adapters/jquery.js"%}'></script>-->
-
+    
     {% endcompress %}
 
     {% block extra_js %}{% endblock %}
@@ -162,7 +165,7 @@
                 })
             }).scroll();
 
-            get_autocomplete_lists("{% static 'json/user_list.json' %}", "{% static 'json/subdept_list.json' %}", "{% static 'json/dept_list.json' %}");
+            get_autocomplete_lists("{% static 'json/user_list.json' %}", "{% static 'json/subdept_list.json' %}", "{% static 'json/dept_list.json' %}", "{% static 'json/page_list.json' %}");
           
     	})
         $(window).bind('load', function () {

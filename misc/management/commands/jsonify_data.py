@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError, NoArgsCommand
 from django.contrib.auth.models import User
 from configs import settings
-from apps.users.models import Dept, Subdept, ERPProfile
+from apps.users.models import Dept, Subdept, Page, ERPProfile
 from apps.walls.models import Wall, Post, Comment
 import json
 import os
@@ -21,9 +21,11 @@ class Command(BaseCommand):
 
         static_files = settings.STATICFILES_DIRS[0]
         data_root = os.path.abspath(os.path.join(static_files, "json"))
-
+        
+        if not os.path.exists(data_root):
+            os.makedirs(data_root)
         #- User list : for Search - file="user_list.json"
-        user_list = list(User.objects.values("id", "first_name", "last_name", "email"))
+        user_list = list(User.objects.values("id", "first_name", "last_name"))
         user_list_file = os.path.abspath(os.path.join(data_root, "user_list.json"))
 
         with open(user_list_file, 'w') as outfile:
@@ -44,8 +46,15 @@ class Command(BaseCommand):
             json.dump(dept_list, outfile)
         self.stdout.write("Dept ... done.")
 
+        #- Dept list : for Search - file="dept_list.json"
+        dept_list = list(Page.objects.values("id", "name"))
+        dept_list_file = os.path.abspath(os.path.join(data_root, "page_list.json"))
+        with open(dept_list_file, 'w') as outfile:
+            json.dump(dept_list, outfile)
+        self.stdout.write("Page ... done.")
+
         #- Dept > Subdept > User dict : for contacts - file="user_structure.json"
-        all_user_list = list(User.objects.values("id", "first_name", "last_name", "email", "erp_profile"))
+        all_user_list = list(User.objects.values("id", "first_name", "last_name", "erp_profile"))
         for i in all_user_list:
             if "erp_profile" in i.keys() and i["erp_profile"]:
                 erp_prof = ERPProfile.objects.get(id=i["erp_profile"])
@@ -72,10 +81,8 @@ class Command(BaseCommand):
 
         for i in all_user_list:
             temp_user = {
-                #"id" : i["id"],
                 "first_name" : i["first_name"],
                 "last_name" : i["last_name"],
-                # "email" : i["email"],
             }
             if "coord_relations" in i.keys():
                 for j in i["coord_relations"]:

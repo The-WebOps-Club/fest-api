@@ -15,6 +15,7 @@ from django.core.urlresolvers import reverse
 # Apps
 # Decorators
 # Models
+#from misc.managers import CheckActiveManager
 # Forms
 # View functions
 # Misc
@@ -24,6 +25,8 @@ import notifications
 # Python
 import random
 
+#### MODELS
+
 # Model for Department forum
 class Wall(models.Model):
     """
@@ -32,6 +35,7 @@ class Wall(models.Model):
         
         @todo : Add analytics to be able to see when each person saw the wall last
     """
+    is_active       = models.BooleanField(default=True)
     
     # Basic information
     name                 = models.CharField(max_length=60)
@@ -40,10 +44,21 @@ class Wall(models.Model):
     notification_users   = models.ManyToManyField(User, null=True, blank=True, related_name='notified_wall')
     notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_wall')
     notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_wall')
+    notification_pages   = models.ManyToManyField('users.Page', null=True, blank=True, related_name='notified_wall')
+    
+    access_users   = models.ManyToManyField(User, null=True, blank=True, related_name='access_wall')
+    access_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='access_wall')
+    access_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='access_wall')
+    access_pages   = models.ManyToManyField('users.Page', null=True, blank=True, related_name='access_wall')
+    access_public  = models.BooleanField(default=False)
     
     # Analytics
     # seen_user            = models.ManyToManyField(User, null=True, blank=True, related_name='seen_wall', through=UserWall)
-
+    time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+    
+    objects = CheckActiveManager()
+    
     def save(self, *args, **kwargs):
         """
             An extended save method to handle   
@@ -63,26 +78,31 @@ class Wall(models.Model):
             return self.subdept
         elif hasattr(self, "dept"): # Dept
             return self.dept
+        elif hasattr(self, "page"): # Dept
+            return self.page
         print "No parent found"
         return temp
     
+    def has_access(self, access_obj):
+        from apps.walls.utils import check_access_rights
+        return check_access_rights(access_obj, self)
+
+    def add_access(self, access_list):
+        from apps.walls.utils import filter_objects
+        list_user, list_subdept, list_dept, list_page = filter_objects(access_list)
+        self.access_users.add(*list_user)
+        self.access_subdepts.add(*list_subdept)
+        self.access_depts.add(*list_dept)
+        self.access_pages.add(*list_page)
+    
     def add_notifications(self, notif_list):
-        from apps.users.models import ERPProfile, Dept, Subdept
-        notifications_user = []
-        notifications_subdept = []
-        notifications_dept = []
-        for i in notif_list: # Adding to lists so addition to db can be done in batch
-            if isinstance(i, User):
-                notifications_user.append(i)
-            elif isinstance(i, ERPProfile):
-                notifications_user.append(i.user)
-            elif isinstance(i, Subdept):
-                notifications_subdept.append(i)
-            elif isinstance(i, Dept):
-                notifications_dept.append(i)
-        self.notification_users.add(*notifications_user)
-        self.notification_subdepts.add(*notifications_subdept)
-        self.notification_depts.add(*notifications_dept)
+        from apps.walls.utils import filter_objects
+        list_user, list_subdept, list_dept, list_page = filter_objects(notif_list)
+        self.notification_users.add(*list_user)
+        self.notification_subdepts.add(*list_subdept)
+        self.notification_depts.add(*list_dept)
+        self.notification_pages.add(*list_page)
+        self.add_access(notif_list) # This is so that they can read and comment also ...
 
     def notify_users(self):
         users = set()
@@ -91,6 +111,8 @@ class Wall(models.Model):
             users.update(dept.related_users())
         for sub_dept in self.notification_subdepts.all():
             users.update(sub_dept.related_users())
+        for page in self.notification_pages.all():
+            users.update(page.related_users())
         return users
     
     def __unicode__(self):
@@ -99,10 +121,6 @@ class Wall(models.Model):
     def get_absolute_url(self):
         return reverse('apps.walls.views.wall', args=(self.pk,))
     
-# class UserWall(models.Model):
-#     """
-#         A through table to associate users that have seen a wall
-#     """
 
 class PostInfo(models.Model):
     """
@@ -110,6 +128,8 @@ class PostInfo(models.Model):
         Used for both Post and Comment
         @todo : Add options to upload a file to any message
     """
+    is_active       = models.BooleanField(default=True)
+
     # Basic data
     description     = models.TextField(blank=True, default='') # The matter of post
     by              = models.ForeignKey(User, related_name='%(class)s_created')
@@ -117,6 +137,8 @@ class PostInfo(models.Model):
     # Analytics
     time_created    = models.DateTimeField(auto_now_add=True)
     time_updated    = models.DateTimeField(auto_now=True)
+    
+    objects = CheckActiveManager()
     
     def __unicode__(self):
         LIMIT = 50
@@ -127,9 +149,6 @@ class PostInfo(models.Model):
         abstract = True
         ordering = ['time_created']
         get_latest_by = 'time_created'
-
-    def __unicode__(self):
-        return self.description
 
 class Comment(PostInfo):
     """
@@ -145,7 +164,7 @@ class Comment(PostInfo):
 
     def send_notif(self, notif_list=None):
         # Had to do this because signals refuse to work.
-        parent_post = self.parent_post.first()
+        parent_post = self.parent_post.first() # There is only one parent_post
         parent_wall = parent_post.wall
         if not notif_list:
             notif_list  = parent_post.notify_users() # Get post notifs
@@ -182,13 +201,18 @@ class Post(PostInfo):
     
     # Relations with other models - Users
     notification_users  = models.ManyToManyField(User, null=True, blank=True, related_name='notified_post')
-    notification_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_post')
+    notification_depts  = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='notified_post')
     notification_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='notified_post')
-    
+    notification_pages  = models.ManyToManyField('users.Page', null=True, blank=True, related_name='notified_post')
+
+    access_users   = models.ManyToManyField(User, null=True, blank=True, related_name='access_post')
+    access_subdepts= models.ManyToManyField('users.Subdept', null=True, blank=True, related_name='access_post')
+    access_depts   = models.ManyToManyField('users.Dept', null=True, blank=True, related_name='access_post')
+    access_pages   = models.ManyToManyField('users.Page', null=True, blank=True, related_name='access_post')
+    access_public  = models.BooleanField(default=False)
+
     liked_users  = models.ManyToManyField(User, null=True, blank=True, related_name='liked_post')
 
-    is_public           = models.BooleanField(default=True)
-    
     # Relations with other models - Comments
     comments            = models.ManyToManyField(Comment, null=True, blank=True, related_name='parent_post')
     comments_count      = models.IntegerField(default=0)
@@ -207,23 +231,26 @@ class Post(PostInfo):
         temp = super(Post, self).save(*args, **kwargs)
         return
 
+    def has_access(self, access_obj):
+        from apps.walls.utils import check_access_rights
+        check_access_rights(access_obj, self)
+        
+    def add_access(self, access_list):
+        from apps.walls.utils import filter_objects
+        list_user, list_subdept, list_dept, list_page = filter_objects(access_list)
+        self.access_users.add(*list_user)
+        self.access_subdepts.add(*list_subdept)
+        self.access_depts.add(*list_dept)
+        self.access_pages.add(*list_page)
+    
     def add_notifications(self, notif_list):
-        from apps.users.models import ERPProfile, Dept, Subdept
-        notifications_user = []
-        notifications_subdept = []
-        notifications_dept = []
-        for i in notif_list:
-            if isinstance(i, User):
-                notifications_user.append(i)
-            elif isinstance(i, ERPProfile):
-                notifications_user.append(i.user)
-            elif isinstance(i, Subdept):
-                notifications_subdept.append(i)
-            elif isinstance(i, Dept):
-                notifications_dept.append(i)
-        self.notification_users.add(*notifications_user)
-        self.notification_subdepts.add(*notifications_subdept)
-        self.notification_depts.add(*notifications_dept)
+        from apps.walls.utils import filter_objects
+        list_user, list_subdept, list_dept, list_page = filter_objects(notif_list)
+        self.notification_users.add(*list_user)
+        self.notification_subdepts.add(*list_subdept)
+        self.notification_depts.add(*list_dept)
+        self.notification_pages.add(*list_page)
+        self.add_access(notif_list) # This is so that they can read and comment also ...
 
     def notify_users(self):
         users = set()
@@ -232,6 +259,8 @@ class Post(PostInfo):
             users.update(dept.related_users())
         for sub_dept in self.notification_subdepts.all():
             users.update(sub_dept.related_users())
+        for page in self.notification_pages.all():
+            users.update(page.related_users())
         return users
 
     def send_notif(self, notif_list=None):
