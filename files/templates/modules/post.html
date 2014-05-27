@@ -2,100 +2,121 @@
 {% load humanize %} 
 {% load markdown_tags %}
 {% load once %}
+{% load check_access %}
 
 {# Remember : "post" and "notification" are keywords used here #}
 
-<div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container">
+<div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container" data-public='{{ post.is_public }}'>
 	<div class="news_post span12">
 		{% if notification %}
-			<div class="row-fluid news_notif_line">
-				{% if notification.unread %}
-					<span class='label warning label-head'>UNREAD</span>
+		<div class="row-fluid news_notif_line">
+			{% if notification.unread %}
+			<span class='label warning label-head'>UNREAD</span>
+			{% endif %}
+			<a class="bold" href="{% if notification.sender.id %}{% url 'profile' notification.actor.id %}{% endif %}">
+				{{ notification.actor.get_full_name|default:"" }}
+			</a>
+			{{ notification.verb }}
+			<a href="{% url 'wall' post.wall.id %}" class="bold">{{ post.wall }}</a>'s Wall
+			<span class="muted small">
+				{{ notification.timestamp|naturaltime }}
+			</span>
+		</div>
+		{% endif %}
+		<div class="news_left">
+			<img src=""
+			alt="{{ post.by.email }}"
+			data-id="{{ post.by.id }}"
+			data-fbid="{{ post.by.profile.id }}"
+			class="news_profile display_pic">
+		</div>
+		<div class="news_main">
+			<div class="news_head">
+				<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
+				<a class="news_profile_name" href="{% url 'profile' post.by.id %}">
+					{{ post.by.get_full_name|default:"" }}
+				</a> 
+				<i class="icon-right"></i>
+				<a href="{% url 'wall' post.wall.id %}">{{ post.wall  }}</a>'s wall. 
+
+				<span class="muted small">
+					{{ post.time_created|naturaltime }}
+				</span>
+
+			</div>
+			<div class="news_body markdown">
+				{% autoescape off %}
+				{% if post.subject %}
+				<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} 
+
+
+					{% with user|check_access:post as admin %}
+					{% if admin %}
+					<a class='post-access-change-btn pull-right link_no_style' href='javascript:void(0)'>
+						{% endif %}
+						<span class="pull-right label notice label-head access-indicator">
+							{% if post.is_public %}
+							PUBLIC
+							{% else %}
+							PRIVATE
+							{% endif %}
+						</span>
+						{% if admin %}
+					</a>
+					{% endif %}
+					{% endwith %}
+
+
+				</p>
 				{% endif %}
-		       	<a class="bold" href="{% if notification.sender.id %}{% url 'profile' notification.actor.id %}{% endif %}">
-		       		{{ notification.actor.get_full_name|default:"" }}
-		       	</a>
-		       	{{ notification.verb }}
-		       	<a href="{% url 'wall' post.wall.id %}" class="bold">{{ post.wall }}</a>'s Wall
-		       	<span class="muted small">
-		       		{{ notification.timestamp|naturaltime }}
-		       	</span>
-		    </div>
-	    {% endif %}
-	    <div class="news_left">
-	        <img src=""
-   		        alt="{{ post.by.email }}"
-		       	data-id="{{ post.by.id }}"
-		       	data-fbid="{{ post.by.profile.id }}"
-	        	class="news_profile display_pic">
-	    </div>
-	    <div class="news_main">
-	        <div class="news_head">
-        		<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
-            	<a class="news_profile_name" href="{% url 'profile' post.by.id %}">
-            		{{ post.by.get_full_name|default:"" }}
-            	</a> 
-            	<i class="icon-right"></i>
-            	<a href="{% url 'wall' post.wall.id %}">{{ post.wall  }}</a>'s wall. 
-            	
-            	<span class="muted small">
-            		{{ post.time_created|naturaltime }}
-            	</span>
-            
-	        </div>
-	        <div class="news_body markdown">
-	        {% autoescape off %}
-                {% if post.subject %}
-                	<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} </p>
-                {% endif %}
-                {{ post.description|markdown }}
-	        {% endautoescape %}
-            </div>
-	        <div class="news_extra"></div>
-	        <div class="news_comment_wrapper">
-	        	<input class="current_page_comments" type="hidden" name="current_page" value="1" />
-	        	<div class="news_comment news_small_bar" >
-	        		<p style="margin : 0px; padding : 0px;">
-	        			<a href="javascript:void(0)" onclick="$(this).closest('.news_comment_wrapper').find('.comment_textarea').focus()">Comment</a>
-	        			 · 
-	        			{% if user in post.liked_users.all %}
-	        				Acknowledged
-	        			{% else %}
-	        				<a href="javascript:void(0)" class="post_like_btn">Acknowledge</a>
-	        			{% endif %}
-	        			{% if post.liked_users.count %}
-	        				 · 
-		        			<a class="" href="javascript:void(0)" rel="twipsy" title="{% for u in post.liked_users.all %}
-		        				{{ u.get_full_name }}
-		        				{% if not forloop.last %}
-		        					{% ifequal forloop.revcounter 2 %} and 
-		        					{% else %}, 
-		        					{% endifequal %}
-		        				{% endif %}
-		        			  {% endfor %} acknowledged"
-		        			><i class="icon-like"></i> <span class="like_number">{{ post.liked_users.count }}</span></a>
-		        		{% endif %}
-	        		</p>
-	        	</div>
-	        	
-	        	{% if post.comments.count > 5 %}
-	        		<div class="news_comment see_more_comments center" >
-	        			See more
-	        		</div>
-	        	{% endif %}
-	        	
-	        	{% for comment in post.comments.all|dictsortreversed:"time_created"|slice:":5" reversed %}
-	            	{% include 'modules/comment.html' %}
-	        	{% endfor %}
-	        	
-	        	<div class="news_comment_placeholder"></div>
-	        	
-	        	{% with new_comment="true" %}
-	        		{% include 'modules/comment.html' %}
-	        	{% endwith %} 
-	    	</div>
-	        
-	    </div>
+				{{ post.description|markdown }}
+				{% endautoescape %}
+			</div>
+			<div class="news_extra"></div>
+			<div class="news_comment_wrapper">
+				<input class="current_page_comments" type="hidden" name="current_page" value="1" />
+				<div class="news_comment news_small_bar" >
+					<p style="margin : 0px; padding : 0px;">
+						<a href="javascript:void(0)" onclick="$(this).closest('.news_comment_wrapper').find('.comment_textarea').focus()">Comment</a>
+						· 
+						{% if user in post.liked_users.all %}
+						Acknowledged
+						{% else %}
+						<a href="javascript:void(0)" class="post_like_btn">Acknowledge</a>
+						{% endif %}
+						{% if post.liked_users.count %}
+						· 
+						<a class="" href="javascript:void(0)" rel="twipsy" title="{% for u in post.liked_users.all %}
+						{{ u.get_full_name }}
+						{% if not forloop.last %}
+						{% ifequal forloop.revcounter 2 %} and 
+						{% else %}, 
+						{% endifequal %}
+						{% endif %}
+						{% endfor %} acknowledged"
+						><i class="icon-like"></i> <span class="like_number">{{ post.liked_users.count }}</span></a>
+						{% endif %}
+					</p>
+				</div>
+
+				{% if post.comments.count > 5 %}
+				<div class="news_comment see_more_comments center" >
+					See more
+				</div>
+				{% endif %}
+
+				{% for comment in post.comments.all|dictsortreversed:"time_created"|slice:":5" reversed %}
+				{% include 'modules/comment.html' %}
+				{% endfor %}
+
+				<div class="news_comment_placeholder"></div>
+
+				{% with new_comment="true" %}
+				{% include 'modules/comment.html' %}
+				{% endwith %} 
+			</div>
+
+		</div>
 	</div>
 </div>
 
@@ -111,7 +132,7 @@
 		padding-bottom : 5px;
 		border-bottom : 1px solid #999;
 	}
-    .news_post {
+	.news_post {
 		transition-property: background;
 		transition-duration: 0.5s;
 		transition-timing-function: linear;
@@ -129,37 +150,45 @@
 		border-radius : 5px
 	}
 	.news_left img.news_profile, .news_left {
-	    float:left;
-	    width : 50px;
-	    height : 50px;
-	    vertical-align: text-top;
+		float:left;
+		width : 50px;
+		height : 50px;
+		vertical-align: text-top;
 	}
 	.news_main {
-	    font-size : 14px;
-	    width : auto;
-	    line-height : 18px;
-	    margin-left : 60px;
+		font-size : 14px;
+		width : auto;
+		line-height : 18px;
+		margin-left : 60px;
 	}
 	.news_main .news_head {
-	    margin-bottom : 5px;
+		margin-bottom : 5px;
 	}
 	.news_main .news_profile_name {
-	    font-weight : bold;
+		font-weight : bold;
 	}
-	
+	.post-access-change-btn{
+		padding-left:5px;
+	}
+	.access-indicator:hover{
+		background-color: #888;
+	}
+	.access-indicator{
+
+	}
 	.news_comment.see_more_comments > .news_comment{
 		display: none;
 	}
 	.news_comment.see_more_comments {
-	    font-size : 11px;
-	    margin-top : 2px;
-	    padding : 3px;
-	    line-height : 13px;
-	    font-weight : bold;
-	    background-color: #f1f0f5;
-	    display : block;
-	    color : #3B5998;
-	    cursor : pointer;
+		font-size : 11px;
+		margin-top : 2px;
+		padding : 3px;
+		line-height : 13px;
+		font-weight : bold;
+		background-color: #f1f0f5;
+		display : block;
+		color : #3B5998;
+		cursor : pointer;
 	}
 	.news_comment.see_more_comments:hover {
 		color : #333;
@@ -169,42 +198,63 @@
 
 <script type="text/javascript">
 	function dajax_get_comments(data){
-        if (!data.exhausted) { 
-        	$value = $("#post_" + data.post_id + " .current_page_comments")
-        	$value.val( parseInt($value.val()) + 1 );
+		if (!data.exhausted) { 
+			$value = $("#post_" + data.post_id + " .current_page_comments")
+			$value.val( parseInt($value.val()) + 1 );
 
-        	$("#post_" + data.post_id + " .see_more_comments").after(data.append_string);
+			$("#post_" + data.post_id + " .see_more_comments").after(data.append_string);
 
-        	$("#post_" + data.post_id + " .see_more_comments").removeClass("disabled").prop("disabled", false).removeData("clicked").html("See more")
-        } else {
-        	$("#post_" + data.post_id + " .see_more_comments").html('No more to load');
-        }
-        on_dom_change()
-        
+			$("#post_" + data.post_id + " .see_more_comments").removeClass("disabled").prop("disabled", false).removeData("clicked").html("See more")
+		} else {
+			$("#post_" + data.post_id + " .see_more_comments").html('No more to load');
+		}
+		on_dom_change()
+
 	}
-    $( document ).ready(function() {
-    	
-	    $(".news_post").mouseover( function() {
-            $(this).find(".news_post_settings").show()
-        })
-        $(".news_post").mouseout( function() {
-            $(this).find(".news_post_settings").hide()
-        })
+	$( document ).ready(function() {
+
+		$(".news_post").mouseover( function() {
+			$(this).find(".news_post_settings").show()
+		})
+		$(".news_post").mouseout( function() {
+			$(this).find(".news_post_settings").hide()
+		})
+
+		$('.post-access-change-btn').click(function(e){
+                var $el = $(this)
+                var post_id = $el.closest(".post_container").data("id")
+                var post_public = $el.closest(".post_container").data("public")
+
+                if(post_public == 'True')
+                    Dajaxice.apps.walls.make_post_private(function(data){
+                        $el.closest(".post_container").data("public","False")
+                        $el.closest(".post_container").find('.access-indicator').html("PRIVATE")
+                    }, {
+                        'post_id' : post_id,
+                    })
+                else
+                    Dajaxice.apps.walls.make_post_public(function(data){
+                        $el.closest(".post_container").data("public","True")
+                        $el.closest(".post_container").find('.access-indicator').html("PUBLIC")
+                    }, {
+                        'post_id' : post_id,
+                    })
+                e.stopPropagation();
+            })
 
 		$(".see_more_comments").click(function(e) {
 			e = e || event;
-        	el = this; $el = $(this)
-        	if ( $el.data("clicked") ) {
+			el = this; $el = $(this)
+			if ( $el.data("clicked") ) {
 				return
 			}
 			post_id = $el.closest(".post_container").data("id")
 			Dajaxice.apps.walls.get_comments(dajax_get_comments, {
-                    'page' : parseInt($('#post_' + post_id + ' .current_page_comments').val())+1,
-                    'post_id' : post_id,
-            })
-            $el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading comments...")
+				'page' : parseInt($('#post_' + post_id + ' .current_page_comments').val())+1,
+				'post_id' : post_id,
+			})
+			$el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading comments...")
 		})
-
 		$(".post_like_btn").click(function() {
 			var $el = $(this)
 			Dajaxice.apps.walls.like_post(function(data) {

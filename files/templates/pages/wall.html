@@ -86,7 +86,7 @@
         on_dom_change()
     }
 
-    function mark_all_unread(){
+    function mark_wall_as_read(){
         Dajaxice.apps.walls.mark_wall_as_read(Dajax.process, {
             'wall_id' : "{{ wall.id }}"
         });
@@ -94,7 +94,7 @@
 
     $( document ).ready(function() {    
         // See More
-        mark_all_unread();
+        mark_wall_as_read();
         $("#main_body_content .see_more_posts").click(function(e) {
             e = e || event;
             el = this; $el = $(this)

@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load check_access %}
 
 {% block content %}
 
@@ -11,7 +12,7 @@
                     <b class='subdept-name'></b>
                     <div class="pull-right">
                         <a class='remove-btn subdept-remove-btn link_no_style' href="javascript:void(0)">
-                        <i class="icon-trash"></i>
+                            <i class="icon-trash"></i>
                             <span class="label important label-head ">Delete</span>
                         </a>
                         <i class="icon-down collapsed"></i>
@@ -77,29 +78,29 @@
             <br >
             <div class="alert-message info span12">
                 <p><strong>Notice !</strong>
-                Be careful whom you add ! They can access things related to {{FEST_NAME}}.<br >
-                After you submit, within 15 minutes, an email will be sent to the person with thier account information.
+                    Be careful whom you add ! They can access things related to {{FEST_NAME}}.<br >
+                    After you submit, within 15 minutes, an email will be sent to the person with thier account information.
                 </p>
             </div>
         </div>
     </div>
     {% for i_dept_info in dept_info %}
-        <div data-id='{{ i_dept_info.dept.id }}' class='span12 card dept-name' style='text-align:center'>
-            <h3>
-                <span class="muted">Department : </span> 
-                {{ i_dept_info.dept.name }}
-            </h3>
-            <div class='span12'>
-                <input type="text" class='add-subdept-name' placeholder="Add a new subdept under this department">
-                <button class='add-subdept-btn btn btn-primary'>Create a Subdept</button>
-            </div>
+    <div data-id='{{ i_dept_info.dept.id }}' class='span12 card dept-name' style='text-align:center'>
+        <h3>
+            <span class="muted">Department : </span> 
+            {{ i_dept_info.dept.name }}
+        </h3>
+        <div class='span12'>
+            <input type="text" class='add-subdept-name' placeholder="Add a new subdept under this department">
+            <button class='add-subdept-btn btn btn-primary'>Create a Subdept</button>
         </div>
-        <div class='subdepts-container' data-id='{{i_dept_info.dept.id}}'>
-            {% for j_subdept in i_dept_info.subdepts %}
-                <div class='subdept-placeholder' data-id='{{ j_subdept.id }}' data-name='{{j_subdept.name}}'></div>
-            {% endfor %}
-        </div>
-        
+    </div>
+    <div class='subdepts-container' data-id='{{i_dept_info.dept.id}}'>
+        {% for j_subdept in i_dept_info.subdepts %}
+        <div class='subdept-placeholder' data-id='{{ j_subdept.id }}' data-name='{{j_subdept.name}}'></div>
+        {% endfor %}
+    </div>
+
     {% endfor %}
     
     <hr />
@@ -113,7 +114,7 @@
     </div>
     <div class='pages-container'>
         {% for i_page in pages %}
-            <div class='page-placeholder' data-id='{{i_page.id}}' data-name='{{i_page.name}}'></div>
+        <div class='page-placeholder' data-id='{{i_page.id}}' data-name='{{i_page.name}}'></div>
         {% endfor %}
     </div>
     
@@ -241,6 +242,31 @@
             
         });
     }
+    /*
+    function bindAccessToggler(){
+        $('.page-access-change-btn').click(function(e){
+            var $el = $(this)
+            var page_id = $el.closest(".page-container").data("id")
+            var page_public = $el.closest(".page-container").data("public")
+
+            if(page_public == 'True')
+                Dajaxice.apps.walls.make_page_private(function(data){
+                    $el.closest(".page-container").data("public","False")
+                    $el.closest(".page-container").find('.access-indicator').html("Private")
+                }, {
+                    'page_id' : page_id,
+                })
+            else
+                Dajaxice.apps.walls.make_page_public(function(data){
+                    $el.closest(".page-container").data("public","True")
+                    $el.closest(".page-container").find('.access-indicator').html("Public")
+                }, {
+                    'page_id' : page_id,
+                })
+
+            e.stopPropagation();
+        })
+    }*/
     function replaceSubdeptPlaceholder(i, e){
         var $e = $(e)
         var $el = $('.subdept-container.template').clone();
@@ -297,6 +323,7 @@
         bindUserAdd();
         bindRemove();
         bindCollapser();
+        //bindAccessToggler();
         $('.add-user-btn').click(function(e){
             var $this = $(this)
             var $parent = $this.parents('.add-user-container')
@@ -314,7 +341,7 @@
                 var $el = $this, $el_parent = $el.parents('.add-user-container')
                 if ( res.success ) {
                     $el_parent.find('.alert-messages-block').css('display', 'block')
-                        .find(".alert-message").addClass("success").removeClass("error")
+                    .find(".alert-message").addClass("success").removeClass("error")
                     // added a new user ... need to add to select2
                     atwho_user_list.push({
                         "id": res["id"],
@@ -327,47 +354,48 @@
                     }, 1 )
                 } else {
                     $el_parent.find('.alert-messages-block').css('display', 'block')
-                        .find(".alert-message").addClass("error").removeClass("success")
+                    .find(".alert-message").addClass("error").removeClass("success")
                 }
                 $el_parent.find('.alert-messages-block .alert-message .text').html(res.message);
                 $el.removeAttr('disabled');
             }, { 'email' : email, 'first_name' : first_name, 'last_name' : last_name,'supercoord':supercoord }
             );
-            e.stopPropagation();
-        })
-        $('.add-page-btn').click(function(e){
-            $(this).attr('disabled','true');
-            var $e = $(this)
-            Dajaxice.apps.portals.general.create_page(function(res){
-                $el = $('<div class=\'page-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
-                $('.pages-container').append($el);
-                $('.page-placeholder').each(replacePagePlaceholder);
-                bindUserAdd();
-                bindCollapser();
-                bindRemove();
-                $e.removeAttr('disabled');
-            },{'name':$('.add-page-name').val()});
-            e.stopPropagation();
-        });
+e.stopPropagation();
+})
+$('.add-page-btn').click(function(e){
+    $(this).attr('disabled','true');
+    var $e = $(this)
+    Dajaxice.apps.portals.general.create_page(function(res){
+        $el = $('<div class=\'page-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
+        $('.pages-container').append($el);
+        $('.page-placeholder').each(replacePagePlaceholder);
+        bindUserAdd();
+        bindCollapser();
+        bindRemove();
+       // bindAccessToggler();
+        $e.removeAttr('disabled');
+    },{'name':$('.add-page-name').val()});
+    e.stopPropagation();
+});
 
-        $('.add-subdept-btn').click(function(){
-            $(this).attr('disabled','true');
-            var $e = $(this)
-            var dept_id = $e.parents('.dept-name').data('id')
-            Dajaxice.apps.portals.general.create_subdept(function(res){
-                $el = $('<div class=\'subdept-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
-                $('.subdepts-container[data-id='+dept_id+']').append($el);
-                $('.subdept-placeholder').each(replaceSubdeptPlaceholder);
-                bindUserAdd();
-                bindCollapser();
-                bindRemove();
-                $e.removeAttr('disabled');
-            },{'name':$e.parents('.dept-name').find('.add-subdept-name').val(),'dept_id':dept_id});
-        });
+$('.add-subdept-btn').click(function(){
+    $(this).attr('disabled','true');
+    var $e = $(this)
+    var dept_id = $e.parents('.dept-name').data('id')
+    Dajaxice.apps.portals.general.create_subdept(function(res){
+        $el = $('<div class=\'subdept-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
+        $('.subdepts-container[data-id='+dept_id+']').append($el);
+        $('.subdept-placeholder').each(replaceSubdeptPlaceholder);
+        bindUserAdd();
+        bindCollapser();
+        bindRemove();
+        $e.removeAttr('disabled');
+    },{'name':$e.parents('.dept-name').find('.add-subdept-name').val(),'dept_id':dept_id});
+});
 
-        
 
-    });
+
+});
 
 </script>
 {% endblock %}

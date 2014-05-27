@@ -10,10 +10,8 @@ import datetime
 
 class Command(BaseCommand):
     """
-        Used to migrate existing comments and posts from v1 to v2 content-editables.
+        Small migration to move some data.
     """
-    help = 'Automatically parses existing markdown based HTML'
-
     def handle(self, edit_all = 'true', debug = 'true',comment_end=-1, post_end=-1,**options):
         
         for p in Post.objects.all() :

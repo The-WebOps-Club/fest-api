@@ -13,7 +13,7 @@ from misc.utils import *  #Import miscellaneous functions
 from django.contrib.auth.models import User
 from apps.walls.models import Wall, Post, Comment
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-from apps.walls.utils import get_my_posts
+from apps.walls.utils import get_my_posts, check_access_rights
 # View functions
 # Misc
 from django.templatetags.static import static
@@ -74,6 +74,8 @@ def wall (request, wall_id=None):
         raise InvalidArgumentValueException("Wall with the `wall_id` " + str(wall_id) + " not found.")
     elif not wall.has_access(user):
         wall_accessible = False
+
+    wall_admin =  user.is_superuser or ( check_access_rights( user, wall ) and user.is_staff )
     
         # Get wall posts
     if not wall_accessible:
@@ -82,13 +84,14 @@ def wall (request, wall_id=None):
         wall_posts = Post.objects.filter(wall=wall).order_by('-time_created')[:5]
     
     wall_parent = wall.parent
-
+    #import pdb;pdb.set_trace();
     local_context = {
         "current_page" : "wall",
         "wall" : wall,
         "showing_user" : wall_parent,
         "wall_posts" : wall_posts,
         "wall_accessible" : wall_accessible,
+        "wall_admin" : wall_admin
     }
     return render_to_response('pages/wall.html', local_context, context_instance= global_context(request))
 

@@ -28,70 +28,70 @@
     
     {% compress js %} 
     <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
-        <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
             <!--[if lt IE 9]>
                   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-       <![endif]-->
+                  <![endif]-->
 
-    {% endcompress %}
-   
-    {% if not SETTINGS.DEBUG %}
-    <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+                  {% endcompress %}
 
-        ga('create', '{{SETTINGS.ANALYTICS_ID}}', '{{ SETTINGS.ANALYTICS_SITE }}');
-        ga('send', 'pageview');
-    </script>
-    {% endif %}
-   
-</head>
+                  {% if not SETTINGS.DEBUG %}
+                  <script>
+                    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-<body>
+                    ga('create', '{{SETTINGS.ANALYTICS_ID}}', '{{ SETTINGS.ANALYTICS_SITE }}');
+                    ga('send', 'pageview');
+                </script>
+                {% endif %}
 
-    {% block topbar %} 
-    	{% include 'base/topbar.html' %} 
+            </head>
 
-	    {% include "base/notifs.html" %}
-	    {% comment %}
-	    	{% include "base/messages.html" %}
-	    	{% include "base/users.html" %}
-	    {% endcomment %}
-	    {% include "base/settings.html" %}
+            <body>
 
-    {% endblock %}
+                {% block topbar %} 
+                {% include 'base/topbar.html' %} 
 
-    <div class="container-fluid below_topbar">
-        {% block full_content %}
-        <div class="row-fluid">
-            {% block left_content %} 
-                <div class="span2 offset1 sidebar fixedbar" >
-                    {% block sidebar %} 
-                	   {% include 'base/sidebar.html' %}
-                    {% endblock %}
+                {% include "base/notifs.html" %}
+                {% comment %}
+                {% include "base/messages.html" %}
+                {% include "base/users.html" %}
+                {% endcomment %}
+                {% include "base/settings.html" %}
+
+                {% endblock %}
+
+                <div class="container-fluid below_topbar">
+                    {% block full_content %}
+                    <div class="row-fluid">
+                        {% block left_content %} 
+                        <div class="span2 offset1 sidebar fixedbar" >
+                            {% block sidebar %} 
+                            {% include 'base/sidebar.html' %}
+                            {% endblock %}
+                        </div>
+
+                        <div id="main_body_content" class="span6 main_body">
+                           {% block content %} {% endblock %}
+                       </div>
+                       {% endblock %}
+                       <div id="rightbar" class="span2 rightbar fixedbar">
+                        {% block rightbar %} 
+                        {% include 'base/rightbar.html' %}
+                        {% endblock %}
+                    </div>
                 </div>
-            
-	            <div id="main_body_content" class="span6 main_body">
-	                {% block content %} {% endblock %}
-	            </div>
-            {% endblock %}
-            <div id="rightbar" class="span2 rightbar fixedbar">
-                {% block rightbar %} 
-                    {% include 'base/rightbar.html' %}
                 {% endblock %}
             </div>
-        </div>
-        {% endblock %}
-    </div>
 
-    {% compress js %}
-    <script type="text/javascript" src="{% static 'js/erp-bootstrap-twipsy.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/erp-bootstrap-alerts.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/erp-bootstrap-buttons.js' %}"></script>
-    <!-- <script type="text/javascript" src="{% static 'js/erp-bootstrap-dropdown.js' %}"></script> -->
-    <script type="text/javascript" src="{% static 'js/erp-bootstrap-popover.js' %}"></script>
+            {% compress js %}
+            <script type="text/javascript" src="{% static 'js/erp-bootstrap-twipsy.js' %}"></script>
+            <script type="text/javascript" src="{% static 'js/erp-bootstrap-alerts.js' %}"></script>
+            <script type="text/javascript" src="{% static 'js/erp-bootstrap-buttons.js' %}"></script>
+            <!-- <script type="text/javascript" src="{% static 'js/erp-bootstrap-dropdown.js' %}"></script> -->
+            <script type="text/javascript" src="{% static 'js/erp-bootstrap-popover.js' %}"></script>
     <!-- <script type="text/javascript" src="{% static 'js/erp-bootstrap-modal.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-scrollspy.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-affix.js' %}"></script>
@@ -103,7 +103,7 @@
     
     
     <script src='{% static "js/select2.js" %}'/>
-        
+
     <script type="text/javascript" src='{% static "js/jquery.caret.js" %}'></script>
     <script type="text/javascript" src='{% static "js/jquery.atwho.js" %}'></script>
     
@@ -113,11 +113,11 @@
     <script type="text/javascript" src='{% static "js/local_storage.js" %}'></script>
 
     {% if experimental %}
-        <script>
-            window.CKEDITOR_BASEPATH="{{ SETTINGS.STATIC_URL }}modules/ckeditor/"
-        </script>
-        <script type="text/javascript" src='{% static "modules/ckeditor/ckeditor.js"%}'></script>
-        <!--<script type="text/javascript" src='{% static "modules/ckeditor/adapters/jquery.js"%}'></script>-->
+    <script>
+        window.CKEDITOR_BASEPATH="{{ SETTINGS.STATIC_URL }}modules/ckeditor/"
+    </script>
+    <script type="text/javascript" src='{% static "modules/ckeditor/ckeditor.js"%}'></script>
+    <!--<script type="text/javascript" src='{% static "modules/ckeditor/adapters/jquery.js"%}'></script>-->
     {% endif %}
     
     {% endcompress %}
@@ -137,12 +137,12 @@
                     $("." + i).popover("hide") 
                 }
             })
-	    }
+        }
         
-	    $( document ).click(function() {
-	    	hide_popups()
-	    })
-	
+        $( document ).click(function() {
+          hide_popups()
+      })
+
         function on_dom_change() {
             $(".resize_textarea").autosize();
             if ( ! ( typeof at_config_file === "undefined" ) )
@@ -155,6 +155,29 @@
             $(".comment_link_render.comment_link").get_link_preview()
             $(".markdown").markdown()
             $("a[rel]").twipsy()
+
+            $('.post-access-change-btn').click(function(e){
+                var $el = $(this)
+                var post_id = $el.closest(".post_container").data("id")
+                var post_public = $el.closest(".post_container").data("public")
+
+                if(post_public == 'True')
+                    Dajaxice.apps.walls.make_post_private(function(data){
+                        $el.closest(".post_container").data("public","False")
+                        $el.closest(".post_container").find('.access-indicator').html("PRIVATE")
+                    }, {
+                        'post_id' : post_id,
+                    })
+                else
+                    Dajaxice.apps.walls.make_post_public(function(data){
+                        $el.closest(".post_container").data("public","True")
+                        $el.closest(".post_container").find('.access-indicator').html("PUBLIC")
+                    }, {
+                        'post_id' : post_id,
+                    })
+                e.stopPropagation();
+            })
+
         }        
         $( document ).ready(function() {
             var $win = $(window), $doc = $(document);
@@ -166,8 +189,8 @@
             }).scroll();
 
             get_autocomplete_lists("{% static 'json/user_list.json' %}", "{% static 'json/subdept_list.json' %}", "{% static 'json/dept_list.json' %}", "{% static 'json/page_list.json' %}");
-          
-    	})
+
+        })
         $(window).bind('load', function () {
             $(".resize_textarea").autosize()
             on_dom_change()

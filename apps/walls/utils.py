@@ -302,3 +302,24 @@ def check_access_rights(access_obj, thing):
         return thing.access_depts.filter(id=access_obj.id).distinct().count()
     elif isinstance(access_obj, Page):
         return thing.access_pages.filter(id=access_obj.id).distinct().count()
+
+def check_admin_access_rights(access_obj, thing):
+    from apps.users.models import Dept, Subdept, Page
+    if isinstance(access_obj, User):
+        import pdb;pdb.set_trace()
+        if (access_obj.is_superuser):
+            return 1
+
+        if( hasattr(thing,"page") and access_obj.is_staff ):
+            return 1
+
+        erp_profile = access_obj.erp_profile
+        my_query = Q(id=thing.id) & ( \
+                Q(wall__dept__in=erp_profile.supercoord_relations.all()) | \
+                Q(wall__dept__in=erp_profile.core_relations.all()) | \
+                Q(by__id = access_obj.id)
+            )
+        
+        my_query = my_query 
+
+        return Post.objects.filter(my_query).distinct().count()
