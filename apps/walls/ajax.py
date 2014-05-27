@@ -60,6 +60,12 @@ def mark_as_read(request, **kwargs):
     return json.dumps({"msg" : "done"})
 
 @dajaxice_register
+def mark_wall_as_read( request, wall ):
+    request.user.notifications.unread().filter( description__contains=='wall:'+wall ).mark_all_as_read()
+    return json.dumps({"msg" : "done"})
+
+
+@dajaxice_register
 def like_post(request, id=None):
     if not id:
         return json.dumps({"msg" : "error"})
