@@ -289,7 +289,8 @@ def check_access_rights(access_obj, thing):
                 Q(access_subdepts__in=erp_profile.coord_relations.all()) | \
                 Q(access_depts__in=erp_profile.supercoord_relations.all()) | \
                 Q(access_depts__in=erp_profile.core_relations.all()) | \
-                Q(access_pages__in=erp_profile.page_relations.all())
+                Q(access_pages__in=erp_profile.page_relations.all()) | \
+                Q(is_public=True)
             )
         if isinstance(thing, Post):
             return Post.objects.filter(my_query).distinct().count()
