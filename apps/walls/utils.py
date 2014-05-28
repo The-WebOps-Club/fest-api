@@ -261,18 +261,6 @@ def get_my_walls(user):
                 Q(dept__subdepts__in=erp_coords)
                 
     wall_list = Wall.objects.filter(my_query).distinct()
-    """ # Older method
-    wall_list = set()
-    wall_list.update(user.access_wall.all())
-    for i in erp_profile.coord_relations.all():
-        wall_list.update(i.access_wall.all())
-    for i in erp_profile.supercoord_relations.all():
-        wall_list.update(i.access_wall.all())
-    for i in erp_profile.core_relations.all():
-        wall_list.update(i.access_wall.all())
-    for i in erp_profile.page_relations.all():
-        wall_list.update(i.access_wall.all())
-    """
     return wall_list
 
 def check_access_rights(access_obj, thing):
@@ -284,16 +272,45 @@ def check_access_rights(access_obj, thing):
         return 1
     if isinstance(access_obj, User):
         erp_profile = access_obj.erp_profile
+        erp_coords = erp_profile.coord_relations.all()
+        erp_supercoords = erp_profile.supercoord_relations.all()
+        erp_cores = erp_profile.core_relations.all()
+        erp_pages = erp_profile.page_relations.all()
+        
         my_query = Q(id=thing.id) & ( \
                 Q(access_users__id__exact=access_obj.id) | \
-                Q(access_subdepts__in=erp_profile.coord_relations.all()) | \
-                Q(access_depts__in=erp_profile.supercoord_relations.all()) | \
-                Q(access_depts__in=erp_profile.core_relations.all()) | \
-                Q(access_pages__in=erp_profile.page_relations.all())
+                Q(access_subdepts__in=erp_coords) | \
+                Q(access_depts__in=erp_supercoords) | \
+                Q(access_depts__in=erp_cores) | \
+                Q(access_pages__in=erp_pages)
             )
-        if isinstance(thing, Post):
+        if isinstance(thing, Post): # To check if obj has access to the post's wall
+            my_query = my_query | \
+                Q(wall__access_users__id__exact=access_obj.id) | \
+                Q(wall__access_subdepts__in=erp_coords) | \
+                Q(wall__access_depts__in=erp_supercoords) | \
+                Q(wall__access_depts__in=erp_cores) | \
+                Q(wall__access_pages__in=erp_pages) | \
+                Q(person=erp_profile) | \
+                Q(subdept__in=erp_coords) | \
+                Q(dept__in=erp_supercoords) | \
+                Q(dept__in=erp_cores) | \
+                Q(page__in=erp_pages) | \
+                Q(subdept__dept__in=erp_supercoords) | \
+                Q(subdept__dept__in=erp_cores) | \
+                Q(dept__subdepts__in=erp_coords)
+
             return Post.objects.filter(my_query).distinct().count()
         elif isinstance(thing, Wall):
+            my_query = my_query | \
+                Q(person=erp_profile) | \
+                Q(subdept__in=erp_coords) | \
+                Q(dept__in=erp_supercoords) | \
+                Q(dept__in=erp_cores) | \
+                Q(page__in=erp_pages) | \
+                Q(subdept__dept__in=erp_supercoords) | \
+                Q(subdept__dept__in=erp_cores) | \
+                Q(dept__subdepts__in=erp_coords)
             return Wall.objects.filter(my_query).distinct().count()
     elif isinstance(access_obj, Subdept):
         return thing.access_subdepts.filter(id=access_obj.id).distinct().count()
