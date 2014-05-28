@@ -94,7 +94,7 @@
                 <button class='add-subdept-btn btn btn-primary'>Create a Subdept</button>
             </div>
         </div>
-        <div class='subdepts-container'>
+        <div class='subdepts-container' data-id='{{i_dept_info.dept.id}}'>
             {% for j_subdept in i_dept_info.subdepts %}
                 <div class='subdept-placeholder' data-id='{{ j_subdept.id }}' data-name='{{j_subdept.name}}'></div>
             {% endfor %}
@@ -353,15 +353,16 @@
         $('.add-subdept-btn').click(function(){
             $(this).attr('disabled','true');
             var $e = $(this)
+            var dept_id = $e.parents('.dept-name').data('id')
             Dajaxice.apps.portals.general.create_subdept(function(res){
                 $el = $('<div class=\'subdept-placeholder\' data-id="'+res.id+'" data-name="'+res.name+'"></div>');
-                $('.subdepts-container').append($el);
+                $('.subdepts-container[data-id='+dept_id+']').append($el);
                 $('.subdept-placeholder').each(replaceSubdeptPlaceholder);
                 bindUserAdd();
                 bindCollapser();
                 bindRemove();
                 $e.removeAttr('disabled');
-            },{'name':$el.parents('.dept-name').find('.add-subdept-name').val(),'dept_id':$el.parents('.dept-name').data('id')});
+            },{'name':$e.parents('.dept-name').find('.add-subdept-name').val(),'dept_id':dept_id});
         });
 
         

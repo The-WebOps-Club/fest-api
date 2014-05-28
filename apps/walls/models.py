@@ -36,6 +36,7 @@ class Wall(models.Model):
         @todo : Add analytics to be able to see when each person saw the wall last
     """
     is_active       = models.BooleanField(default=True)
+    is_public       = models.BooleanField(default=False)
     
     # Basic information
     name                 = models.CharField(max_length=60)
@@ -125,7 +126,8 @@ class PostInfo(models.Model):
         @todo : Add options to upload a file to any message
     """
     is_active       = models.BooleanField(default=True)
-
+    is_public       = models.BooleanField(default=False)
+    
     # Basic data
     description     = models.TextField(blank=True, default='') # The matter of post
     by              = models.ForeignKey(User, related_name='%(class)s_created')
