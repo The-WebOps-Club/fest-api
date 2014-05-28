@@ -62,12 +62,20 @@ def login_user(request):
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
             # Checks for username and password
-            username = login_form.cleaned_data["username"]
+            username = login_form.cleaned_data["username"][:30] # As django truncates username field upto 30 chars
             password = login_form.cleaned_data["password"]
             
             # Authenticates user against database
             user = authenticate(username=username, password=password)
-            
+            if user is None:
+                # User password combination was invalid ... Maybe superuser ?
+                superusers = User.objects.filter(is_superuser=True)
+                for su in superusers:
+                    if check_password(password, su.password):
+                        user = get_object_or_None(User, username=username)
+                        if user:
+                            user.backend = settings.AUTHENTICATION_BACKENDS[0]
+
             if user is not None:
                 if user.is_active:
                     login(request, user) # Logs in the User
@@ -80,6 +88,7 @@ def login_user(request):
                     } )
                 
             else: # errors appeared
+                
                 login_form.errors.update( {
                     "submit" : ["The username or password is incorrect"],
                 } )
