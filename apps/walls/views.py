@@ -72,7 +72,7 @@ def wall (request, wall_id=None):
         # Check wall conditions
     if not wall:
         raise InvalidArgumentValueException("Wall with the `wall_id` " + str(wall_id) + " not found.")
-    elif not wall.has_access(user):
+    elif not wall.has_access(user) and not user.is_superuser:
         wall_accessible = False
 
     wall_admin =  user.is_superuser or ( check_access_rights( user, wall ) and user.is_staff )
