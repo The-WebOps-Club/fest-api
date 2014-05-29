@@ -47,22 +47,22 @@
 
     {% block extra_css %} {{ block.super }}
     <style type="text/css">
-       .news_post {
-          background-color: #f9f9f9;
-      }
+     .news_post {
+      background-color: #f9f9f9;
+  }
 
-      .see_more_posts {
-       cursor : pointer;
-       margin-top : 20px;
-       padding : 20px 20px;
-       vertical-align : middle;
-       background-color : #eee;
-       color : #3B5998;
-   }
-   .see_more_posts:hover {
-       background-color : #dedede;
-       color : #000;
-   }
+  .see_more_posts {
+     cursor : pointer;
+     margin-top : 20px;
+     padding : 20px 20px;
+     vertical-align : middle;
+     background-color : #eee;
+     color : #3B5998;
+ }
+ .see_more_posts:hover {
+     background-color : #dedede;
+     color : #000;
+ }
 </style>
 {% endblock %} 
 
@@ -126,6 +126,55 @@
         }); // set the access token obtained from the server. OAuth2 automatically logs us in.
         gapi.client.setApiKey(developerKey); //set our public api key
         gapi.client.load('drive', 'v2', setup_autocomplete_files ); // ask gapi to load API details for the drive api.
+        //init_button_bar()
+    }
+    
+    function upload_file(fileData, dir_id, callback) {
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+
+        self.progress("10")
+        var reader = new FileReader();
+        reader.readAsBinaryString(fileData);
+        reader.onload = function(e) {
+            var contentType = fileData.type || 'application/octet-stream';
+            var metadata = {
+                'title': fileData.name,
+                'mimeType': contentType,
+                'parents': [{
+                    'id': dir_id,
+                    'kind': 'drive#parentReference'
+                }]
+            };
+
+            var base64Data = btoa(reader.result);
+            var multipartRequestBody =
+                delimiter +
+                'Content-Type: application/json\r\n\r\n' +
+                JSON.stringify(metadata) +
+                delimiter +
+                'Content-Type: ' + contentType + '\r\n' +
+                'Content-Transfer-Encoding: base64\r\n' +
+                '\r\n' +
+                base64Data +
+                close_delim;
+            var request = gapi.client.request({
+                'path': '/upload/drive/v2/files',
+                'method': 'POST',
+                'params': {
+                    'uploadType': 'multipart'
+                },
+                'headers': {
+                    'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+                },
+                'body': multipartRequestBody
+            });
+            callback = callback || function(){}
+            request.execute(function(file) {
+                callback(file)
+            });
+        }
     }
 </script>
 <script type='text/javascript' src='https://apis.google.com/js/client.js?onload=initDrive'></script>

@@ -306,7 +306,7 @@ def check_access_rights(access_obj, thing):
 def check_admin_access_rights(access_obj, thing):
     from apps.users.models import Dept, Subdept, Page
     if isinstance(access_obj, User):
-        import pdb;pdb.set_trace()
+        #import pdb;pdb.set_trace()
         if (access_obj.is_superuser):
             return 1
 
