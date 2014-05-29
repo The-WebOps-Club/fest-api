@@ -143,6 +143,36 @@ class PostInfo(models.Model):
         tail = len(self.description) > LIMIT and '...' or ''
         return self.description[:LIMIT] + tail
 
+    def send_notif(self, notif_list=None):
+        # Had to do this because signals refuse to work.
+        if isinstance(self, Post):
+            post = self
+            notif_verb = "has posted on"
+        elif isinstance(self, Comment):
+            post = self.parent_post.all()[0] # There is only one parent_post
+            notif_verb = "has commented on"
+        wall = post.wall
+        if not notif_list:
+            notif_list  = post.notify_users() # Get post notifs
+            notif_list.update(wall.notify_users()) # Get my wall notifs
+        for recipient in notif_list:
+            # Check if receipient already has notif on this post
+            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=post.id)
+            if curr_notif:
+                curr_notif.mark_as_read()
+            by = self.by
+            # Now create a new unread notif
+            if recipient != by:
+                notifications.notify.send(
+                    sender=by, # The model who wrote the post - USER
+                    recipient=recipient, # The model who sees the post - USER
+                    verb='has commented on', # verb
+                    action_object=self, # the model on which something happened - POST
+                    target=post, # The model which got affected - POST
+                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+                    description = 'wall:' + str(wall.pk),
+                )
+
     class Meta:
         abstract = True
         ordering = ['time_created']
@@ -160,31 +190,7 @@ class Comment(PostInfo):
     class Meta:
         get_latest_by = 'time_created'
 
-    def send_notif(self, notif_list=None):
-        # Had to do this because signals refuse to work.
-        parent_post = self.parent_post.first() # There is only one parent_post
-        parent_wall = parent_post.wall
-        if not notif_list:
-            notif_list  = parent_post.notify_users() # Get post notifs
-            notif_list.update(parent_wall.notify_users()) # Get my wall notifs
-        for recipient in notif_list:
-            # Check if receipient already has notif on this parent_post
-            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=parent_post.id)
-            if curr_notif:
-                curr_notif.mark_as_read()
-            by = self.by
-            # Now create a new unread notif
-            if recipient != by:
-                notifications.notify.send(
-                    sender=by, # The model who wrote the post - USER
-                    recipient=recipient, # The model who sees the post - USER
-                    verb='has commented on', # verb
-                    action_object=self, # the model on which something happened - POST
-                    target=parent_post, # The model which got affected - POST
-                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
-                    description = 'wall:'+format(parent_wall.pk),
-                )
-
+    
 
 
 class Post(PostInfo):
@@ -258,28 +264,6 @@ class Post(PostInfo):
         for page in self.notification_pages.all():
             users.update(page.related_users())
         return users
-
-    def send_notif(self, notif_list=None):
-        # Had to do this because signals refuse to work.
-        if not notif_list:
-            notif_list  = self.notify_users() # Get my notifs
-            notif_list.update(self.wall.notify_users()) # Get my wall notifs
-        for recipient in notif_list:
-            # Check if receipient already has notif on this post
-            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=self.id)
-            if curr_notif:
-                curr_notif.mark_as_read()
-            by = self.by
-            if recipient != by:
-                notifications.notify.send(
-                    sender=by, # The model who wrote the post - USER
-                    recipient=recipient, # The model who sees the post - USER
-                    verb='has posted on', # verb
-                    action_object=self, # the model on which something happened - POST
-                    target=self, # The model which got affected - POST
-                    description = 'wall:'+format(self.wall.pk),
-                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
-                )
 
     def get_absolute_url(self):
         post_str = '#post_' + str(self.pk)

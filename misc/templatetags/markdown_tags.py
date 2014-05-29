@@ -25,7 +25,7 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
     
     """
         # Block level
-            / block_code(str code, str language)
+            x block_code(str code, str language)
             / block_quote(str quote)
             / block_html(str raw_html)
             x header(str text, int level)
@@ -121,7 +121,10 @@ class CustomRenderer(HtmlRenderer, SmartyPants):
                 my_html = "<a target='_blank' href='%s'>%s</a>" % (link, short_link)
             # print my_html
         return my_html
-
+    
+    def block_code(self, text, lang):
+        return text
+    
 # And use the renderer
 renderer = CustomRenderer(flags=
         # misaka.HTML_SKIP_HTML |
@@ -140,7 +143,7 @@ md = misaka.Markdown(renderer,
     extensions=
         misaka.EXT_NO_INTRA_EMPHASIS | # aa_bb_cc does not become italic
         # misaka.EXT_TABLES | 
-        # misaka.EXT_FENCED_CODE | 
+        misaka.EXT_FENCED_CODE | 
         misaka.EXT_AUTOLINK # Autolink http:// and stuff
         # misaka.EXT_STRIKETHROUGH | # Allow strikethough in text
         # misaka.EXT_LAX_SPACING |
