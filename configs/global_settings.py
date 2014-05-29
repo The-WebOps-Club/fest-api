@@ -330,6 +330,7 @@ AUTHENTICATION_BACKENDS = (
     'social.backends.email.EmailAuth',
     'social.backends.username.UsernameAuth',
     'django.contrib.auth.backends.ModelBackend',
+    'apps.users.backends.RootBackend', 
 )
 
 SOCIAL_AUTH_STRATEGY            = 'social.strategies.django_strategy.DjangoStrategy'
