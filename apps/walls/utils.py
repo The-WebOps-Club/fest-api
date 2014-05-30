@@ -285,8 +285,7 @@ def check_access_rights(access_obj, thing):
                 Q(access_subdepts__in=erp_coords) | \
                 Q(access_depts__in=erp_supercoords) | \
                 Q(access_depts__in=erp_cores) | \
-                Q(access_pages__in=erp_pages) | \
-                Q(is_public=True)
+                Q(access_pages__in=erp_pages)
             )
         if isinstance(thing, Post): 
             # + Access to the wall of this post

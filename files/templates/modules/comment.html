@@ -2,7 +2,6 @@
 {% load humanize %} 
 {% load once %}
 {% load markdown_tags %}
-{% load strip_first_p %}
 
 <div {% if not new_comment %} id="comment_{{ comment.pk }}" data-id="{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
     <div class="news_comment_left">
