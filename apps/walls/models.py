@@ -81,7 +81,6 @@ class Wall(models.Model):
             return self.dept
         elif hasattr(self, "page"): # Dept
             return self.page
-        print "No parent found"
         return temp
     
     def has_access(self, access_obj):

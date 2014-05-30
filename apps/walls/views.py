@@ -59,10 +59,8 @@ def wall (request, wall_id=None):
         try:
             wall_id = int(wall_id)
         except ValueError:
-            print wall_id, "could not convert to int"
             wall_id = None
         if not ( type(wall_id) is int ):
-            print "wall_id :", wall_id, type(wall_id)
             raise InvalidArgumentTypeException("`wall_id` type is wrong. Expected an integer. Got : " + str(wall_id))
         wall = get_object_or_None(Wall, id=wall_id)
 
@@ -100,11 +98,8 @@ def my_wall(request, owner_type, owner_id):
     try:
         owner_id = int(owner_id)
     except ValueError:
-        print owner_id, "could not convert to int"
         owner_id = None
     if not ( type(owner_type) is str or type(owner_type) is unicode ):
-        print owner_id, type(owner_id)
-        print owner_type, type(owner_type)
         raise InvalidArgumentTypeException("owner_id : " + str(owner_id) + " is of type " + type(owner_id) + " ... owner_type" + str(owner_type) + " is of type " + type(owner_type))
     owner_type = owner_type.lower()
     wall_id = None

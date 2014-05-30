@@ -1,9 +1,6 @@
 
 import misaka
 from misaka import HtmlRenderer, SmartyPants
-from pygments import highlight, lexers, formatters
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters import HtmlFormatter
 from django import template
 from django.conf import settings
 from misc.utils import *  #Import miscellaneous functions

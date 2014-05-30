@@ -1,7 +1,6 @@
 # Django
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
-from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 # Apps
@@ -16,17 +15,9 @@ from django.contrib.auth.models import User
 # Misc
 from annoying.functions import get_object_or_None
 # Python
-import json
-import httplib2
-import pprint
-import os
 # For google Drive
-from oauth2client.client import flow_from_clientsecrets, Credentials
-from oauth2client.django_orm import Storage
+from oauth2client.client import Credentials
 from oauth2client import xsrfutil
-from apiclient.discovery import build
-from apiclient.http import MediaFileUpload
-from apiclient import http, errors
 
 
 #-------------------------------------------------------------
@@ -52,7 +43,6 @@ def picker(request):
     PARENT_FOLDER_ID = settings.GOOGLE_DRIVE_ROOT_FOLDER_ID
     drive = Drive()
     token = Drive.get_access_token()
-    print Drive
     return render_to_response('pages/picker.html',locals(), context_instance=global_context(request))
 
 @login_required

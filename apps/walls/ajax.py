@@ -1,7 +1,6 @@
 # For simple dajax(ice) functionalities
 from dajaxice.decorators import dajaxice_register
 from dajaxice.utils import deserialize_form
-from dajax.core import Dajax
 
 # From Django
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -29,17 +28,7 @@ from annoying.functions import get_object_or_None
 
 
 # -------------------------------------------------------------
-# TEST FUNCTIONS
-@dajaxice_register
-def hello_world(request):
-    """
-        Used for testing Dajax + Dajaxice
-    """
-    dajax = Dajax()
-    dajax.assign('body','innerHTML', "Hello world !")
-    #dajax.alert("Hello World!")
-    return dajax.json()
-    
+# TEST FUNCTIONS    
 @dajaxice_register
 def hello(request):
     """
@@ -323,7 +312,6 @@ def create_comment(request, post_id, data):
     try:
         post_id = int(post_id)
     except ValueError:
-        print post_id, "could not convert to int"
         post_id = None
     if not ( type(post_id) is int ):
         raise InvalidArgumentTypeException("argument `post_id` should be of type integer")

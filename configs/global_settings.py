@@ -41,7 +41,7 @@ THIRD_PARTY_APPS = (
     
     # ajax functionality
     'dajaxice',
-    'dajax',
+    # 'dajax',
     
     # For programming ease
     'post_office',
@@ -61,6 +61,9 @@ THIRD_PARTY_APPS = (
 
     # Celery - task scheduling
     # 'djcelery',
+
+    # Simple stuff
+    'exportdata', # used to generate csv files from models
 )
 API_APPS = (
     'misc',

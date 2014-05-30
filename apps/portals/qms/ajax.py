@@ -1,6 +1,5 @@
 # For simple dajax(ice) functionalities
 from dajaxice.decorators import dajaxice_register
-from dajax.core import Dajax
 
 # For rendering templates
 from django.template import RequestContext
@@ -25,15 +24,6 @@ from post_office import mail
 import os
 from django.core.management import call_command
 
-@dajaxice_register
-def hello_world(request):
-    """
-        Used for testing Dajax + Dajaxice
-    """
-    dajax = Dajax()
-    dajax.assign('body','innerHTML', "Hello world !")
-    #dajax.alert("Hello World!")
-    return dajax.json()
     
 @dajaxice_register
 def hello(request):
