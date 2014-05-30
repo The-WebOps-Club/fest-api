@@ -30,8 +30,7 @@ def require_email(strategy, details, user=None, is_new=False, *args, **kwargs):
 def save_profile_picture(strategy, user, response, details, is_new=False, *args, **kwargs):
     if strategy.backend.name == 'facebook':
         url = 'http://graph.facebook.com/{0}/picture'.format(response['id'])
-        print url
-
+        
         profile = user.profile
         profile.fb_id
         #profile.save()

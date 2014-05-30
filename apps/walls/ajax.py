@@ -323,7 +323,6 @@ def create_comment(request, post_id, data):
     try:
         post_id = int(post_id)
     except ValueError:
-        print post_id, "could not convert to int"
         post_id = None
     if not ( type(post_id) is int ):
         raise InvalidArgumentTypeException("argument `post_id` should be of type integer")

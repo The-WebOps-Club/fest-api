@@ -32,5 +32,4 @@ def erp_analytics(request):
         'page_count' : Page.objects.count(), 
            
     }
-    print depts
     return render_to_response('portals/general/admin_portal.html', local_context, context_instance= global_context(request))

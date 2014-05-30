@@ -6,7 +6,7 @@
 
 {# Remember : "post" and "notification" are keywords used here #}
 
-<div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container" data-public='{{ post.is_public }}'>
+<div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container">
 	<div class="news_post span12">
 		{% if notification %}
 		<div class="row-fluid news_notif_line">
@@ -49,8 +49,7 @@
 				{% if post.subject %}
 				<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} 
 
-
-					{% with user|check_access:post as admin %}
+					<!--{% with user|check_access:post as admin %}
 					{% if admin %}
 					<a class='post-access-change-btn pull-right link_no_style' href='javascript:void(0)'>
 						{% endif %}
@@ -65,7 +64,7 @@
 					</a>
 					{% endif %}
 					{% endwith %}
-
+					-->
 
 				</p>
 				{% endif %}
@@ -220,7 +219,7 @@
 			$(this).find(".news_post_settings").hide()
 		})
 
-		$('.post-access-change-btn').click(function(e){
+		/*$('.post-access-change-btn').click(function(e){
                 var $el = $(this)
                 var post_id = $el.closest(".post_container").data("id")
                 var post_public = $el.closest(".post_container").data("public")
@@ -241,7 +240,7 @@
                     })
                 e.stopPropagation();
             })
-
+		*/
 		$(".see_more_comments").click(function(e) {
 			e = e || event;
 			el = this; $el = $(this)
@@ -257,6 +256,11 @@
 		})
 		$(".post_like_btn").click(function() {
 			var $el = $(this)
+			if ( ! $el.closest(".post_container").data("id") ) {
+				alert("Oops, there seems to be some error. Please refresh and try again.")
+				return
+			}
+
 			Dajaxice.apps.walls.like_post(function(data) {
 				if ( data["msg"] == "error" )
 					alert("Acknowledging the post failed. Please refresh to try again")

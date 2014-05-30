@@ -61,6 +61,9 @@ THIRD_PARTY_APPS = (
 
     # Celery - task scheduling
     # 'djcelery',
+
+    # Simple stuff
+    'exportdata', # used to generate csv files from models
 )
 API_APPS = (
     'misc',

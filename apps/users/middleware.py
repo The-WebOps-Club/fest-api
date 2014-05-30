@@ -17,8 +17,6 @@ class CustomSocialAuthExceptionMiddleware(SocialAuthExceptionMiddleware):
         self.strategy = getattr(request, 'social_strategy', None)
         if self.strategy is None or self.raise_exception(request, exception):
             return
-        print "---------------------------------------"
-        print exception
         return redirect('misc.views.err404', kwargs={'messages':['Ouchie. Social', message]})
         if isinstance(exception, AuthAlreadyAssociated):
             return redirect('misc.views.err404', kwargs={'messages':['Ouchie. Social', message]})

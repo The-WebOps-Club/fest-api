@@ -231,7 +231,6 @@ def create_user(request, email, first_name, last_name, supercoord):
             },
             headers = {},
         )
-        # print "Error : The email id", e.user.email, "was not found. UserProfile id : ", e.id
     # refresh json lists.
 
     call_command('jsonify_data')
