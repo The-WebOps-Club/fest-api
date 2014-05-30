@@ -6,6 +6,7 @@
 """
 # Django
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.dispatch import receiver
@@ -105,14 +106,16 @@ class Wall(models.Model):
         self.add_access(notif_list) # This is so that they can read and comment also ...
 
     def notify_users(self):
-        users = set()
-        users.update(self.notification_users.all())
-        for dept in self.notification_depts.all():
-            users.update(dept.related_users())
-        for sub_dept in self.notification_subdepts.all():
-            users.update(sub_dept.related_users())
-        for page in self.notification_pages.all():
-            users.update(page.related_users())
+        notif_depts = self.notification_depts.all()
+        notif_subdepts = self.notification_subdepts.all()
+        notif_pages = self.notification_pages.all()
+        return User.objects.filter( \
+            Q(id__in=self.notification_users.values_list('id', flat=True)) | \
+            Q(erp_profile__page_relations__in=notif_pages) | \
+            Q(erp_profile__core_relations__in=notif_depts) | \
+            Q(erp_profile__supercoord_relations__in=notif_depts) | \
+            Q(erp_profile__coord_relations__in=notif_subdepts) 
+        )
         return users
     
     def __unicode__(self):
@@ -254,16 +257,17 @@ class Post(PostInfo):
         self.add_access(notif_list) # This is so that they can read and comment also ...
 
     def notify_users(self):
-        users = set()
-        users.update(self.notification_users.all())
-        for dept in self.notification_depts.all():
-            users.update(dept.related_users())
-        for sub_dept in self.notification_subdepts.all():
-            users.update(sub_dept.related_users())
-        for page in self.notification_pages.all():
-            users.update(page.related_users())
-        return users
-
+        notif_depts = self.notification_depts.all()
+        notif_subdepts = self.notification_subdepts.all()
+        notif_pages = self.notification_pages.all()
+        return User.objects.filter( \
+            Q(id__in=self.notification_users.values_list('id', flat=True)) | \
+            Q(erp_profile__page_relations__in=notif_pages) | \
+            Q(erp_profile__core_relations__in=notif_depts) | \
+            Q(erp_profile__supercoord_relations__in=notif_depts) | \
+            Q(erp_profile__coord_relations__in=notif_subdepts) 
+        )
+        
     def get_absolute_url(self):
         post_str = '#post_' + str(self.pk)
         return reverse('apps.walls.views.wall', args=(self.wall.pk,)) + post_str
