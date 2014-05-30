@@ -105,18 +105,21 @@ class Wall(models.Model):
         self.notification_pages.add(*list_page)
         self.add_access(notif_list) # This is so that they can read and comment also ...
 
-    def notify_users(self):
+    def notify_users_query(self):
         notif_depts = self.notification_depts.all()
         notif_subdepts = self.notification_subdepts.all()
         notif_pages = self.notification_pages.all()
-        return User.objects.filter( \
+        query = ( \
             Q(id__in=self.notification_users.values_list('id', flat=True)) | \
             Q(erp_profile__page_relations__in=notif_pages) | \
             Q(erp_profile__core_relations__in=notif_depts) | \
             Q(erp_profile__supercoord_relations__in=notif_depts) | \
             Q(erp_profile__coord_relations__in=notif_subdepts) 
         )
-        return users
+        return query
+        
+    def notify_users(self):
+        return User.objects.filter( self.notiy_users_query )
     
     def __unicode__(self):
         return self.name
@@ -155,8 +158,8 @@ class PostInfo(models.Model):
             notif_verb = "has commented on"
         wall = post.wall
         if not notif_list:
-            notif_list  = post.notify_users() # Get post notifs
-            notif_list.update(wall.notify_users()) # Get my wall notifs
+            # Get my wall and posts which I am to get notifs for
+            notif_list  = User.objects.filter(post.notify_users() | wall.notify_users())
         for recipient in notif_list:
             # Check if receipient already has notif on this post
             curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=post.id)
@@ -256,17 +259,21 @@ class Post(PostInfo):
         self.notification_pages.add(*list_page)
         self.add_access(notif_list) # This is so that they can read and comment also ...
 
-    def notify_users(self):
+    def notify_users_query(self):
         notif_depts = self.notification_depts.all()
         notif_subdepts = self.notification_subdepts.all()
         notif_pages = self.notification_pages.all()
-        return User.objects.filter( \
+        query = ( \
             Q(id__in=self.notification_users.values_list('id', flat=True)) | \
             Q(erp_profile__page_relations__in=notif_pages) | \
             Q(erp_profile__core_relations__in=notif_depts) | \
             Q(erp_profile__supercoord_relations__in=notif_depts) | \
             Q(erp_profile__coord_relations__in=notif_subdepts) 
         )
+        return query
+        
+    def notify_users(self):
+        return User.objects.filter( self.notiy_users_query )
         
     def get_absolute_url(self):
         post_str = '#post_' + str(self.pk)
