@@ -66,14 +66,14 @@ def login_user(request):
             
             # Authenticates user against database
             user = authenticate(username=username, password=password)
-            if user is None:
-                # User password combination was invalid ... Maybe superuser ?
-                superusers = User.objects.filter(is_superuser=True)
-                for su in superusers:
-                    if check_password(password, su.password):
-                        user = get_object_or_None(User, username=username)
-                        if user:
-                            user.backend = settings.AUTHENTICATION_BACKENDS[0]
+            # if user is None:
+            #     # User password combination was invalid ... Maybe superuser ?
+            #     superusers = User.objects.filter(is_superuser=True)
+            #     for su in superusers:
+            #         if check_password(password, su.password):
+            #             user = get_object_or_None(User, username=username)
+            #             if user:
+            #                 user.backend = settings.AUTHENTICATION_BACKENDS[0]
 
             if user is not None:
                 if user.is_active:

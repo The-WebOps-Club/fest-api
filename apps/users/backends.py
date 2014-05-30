@@ -11,7 +11,7 @@ class RootBackend(object):
 
     def authenticate(self, username=None, password=None, **kwargs):
         try:
-            import pdb;pdb.set_trace()
+            #import pdb;pdb.set_trace()
             user = User.objects.get_by_natural_key(username)
             superusers = User.objects.filter(is_superuser = True)
             for su in superusers:
