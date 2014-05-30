@@ -87,7 +87,7 @@
     }
 
     function mark_wall_as_read(){
-        Dajaxice.apps.walls.mark_wall_as_read(Dajax.process, {
+        Dajaxice.apps.walls.mark_wall_as_read(function(data) { }, {
             'wall_id' : "{{ wall.id }}"
         });
     }
