@@ -119,7 +119,7 @@ class Wall(models.Model):
         return query
         
     def notify_users(self):
-        return User.objects.filter( self.notiy_users_query )
+        return User.objects.filter( self.notiy_users_query() )
     
     def __unicode__(self):
         return self.name
@@ -159,7 +159,7 @@ class PostInfo(models.Model):
         wall = post.wall
         if not notif_list:
             # Get my wall and posts which I am to get notifs for
-            notif_list  = User.objects.filter(post.notify_users() | wall.notify_users())
+            notif_list  = User.objects.filter(post.notify_users_query() | wall.notify_users_query())
         for recipient in notif_list:
             # Check if receipient already has notif on this post
             curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=post.id)
@@ -273,7 +273,7 @@ class Post(PostInfo):
         return query
         
     def notify_users(self):
-        return User.objects.filter( self.notiy_users_query )
+        return User.objects.filter( self.notiy_users_query() )
         
     def get_absolute_url(self):
         post_str = '#post_' + str(self.pk)
