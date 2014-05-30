@@ -11,7 +11,7 @@ from misc import strings
 from misc.constants import HOSTEL_CHOICES, BRANCH_CHOICES
 # Decorators
 # Models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, check_password
 from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
 from apps.walls.models import Wall, Post
 # Forms
