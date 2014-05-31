@@ -489,9 +489,9 @@ body {
   min-width: 940px;
   /*overflow: auto;*/
   font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: normal;
-  line-height: 14px;
+  line-height: 12px;
   color: #333333;
 }
 .container {
@@ -1127,9 +1127,9 @@ blockquote p:after {
 }*/
 blockquote small {
   display: block;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 300;
-  line-height: 14px;
+  line-height: 12px;
   color: #999999;
 }
 /*blockquote small:before {
@@ -1143,7 +1143,7 @@ address {
 code, pre {
   padding: 0 3px 2px;
   font-family: Monaco, Andale Mono, Courier New, monospace;
-  font-size: 12px;
+  font-size: 11px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -1157,8 +1157,8 @@ pre {
   display: block;
   padding: 6.5px;
   margin: 0 0 14px;
-  line-height: 14px;
-  font-size: 12px;
+  line-height: 13px;
+  font-size: 11px;
   border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.15);
   -webkit-border-radius: 3px;
@@ -1181,7 +1181,7 @@ fieldset {
 fieldset legend {
   display: block;
   padding-left: 150px;
-  font-size: 16.5px;
+  font-size: 12px;
   line-height: 1;
   color: #333333;
   *padding: 0 0 5px 145px;
