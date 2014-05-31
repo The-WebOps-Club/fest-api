@@ -354,121 +354,95 @@ def check_admin_access_rights(access_obj, thing):
 """
     class PermissionStack
 
-    Coordinates a bunch of gateway functions and is ideal for
-    permission models that continuously decrease
-    their domains of access.
+    Coordinates a bunch of query builder functions and is ideal for
+    complex permission models.
+
+    Use a flag( a unique number ) to identify different types of posts.
 
     Methods:
         For initializing.
-        setGateway( function, index )
-        removeGateway( function, index )
+        addSubQueryBuilder( function, index )
 
         For running.
-        getAccess( accessor, accessee )
+        getFilteredQuery( accessor, accessee )
+
+    Class Properties:
+        sub_queries :   holds the list of subquery-flaglist tuples. 
+                        each entry looks like this [ sub_query, [FLAG_1, FLAG_2, ... ] ]
+
+        flag_parameter: the name of the SQL parameter or attribute that is being
+                        used for storing the flag(identifier). By default 'access_specifier'.
+
 
 """
 class PermissionStack( object ):
 
-    gateways = {};
-
-    def setGateway( self, func, flag ):
-        if not isinstance( flag, int ):
-            raise Exception('only integers for flag variables.')
-        self.gateways[flag] = func
-
-    def removeGateway( self, flag ):
-        self.gateways[flag] = None;
-
-    def getAccess( self, accessor, accessee ):
-        access = 0
-        for flag in self.gateways.keys():
-            # if the user already has all the permissions that will be set by the 
-            # following function then don't execute it.
-            # This is an optimisation strategy to prevent too many queries
-            if PermissionStack.compareFlags( access, flag ):
-                continue
-
-            if self.gateways[flag] is None or self.gateways[flag]( accessor, accessee ):
-                access |= flag
-
-        return access
+    sub_queries = [];
+    flag_parameter = 'access_specfier'
 
     """
-        compareFlags
+        Adds a subquery builder function
         Arguments:
-            accessorFlag: the access flag of the accessor 
-            accesseeFlag: the access flag of the accessee
+            func: the function to add.
+            flaglist: the flags to affect.
 
         Returns:
-            True if accessorFlag has all the bits of the accessee flag.
-            False otherwise
-
-        Usage:
-            used for testing if a given accessor has more permissions
-            than the accessee.
+            None always
+    """
+    def addSubQueryBuilder( self, func, flaglist ):
+        self.sub_queries.append( [ flaglist, func ] )
 
     """
-    @staticmethod
-    def compareFlags( accessorFlag, accesseeFlag ):
-        significant = accessorFlag & accesseeFlag
-        return (significant == accesseeFlag)
+        Returns the full query by appending all the subqueries 
+        returned by each of the builder functions.
 
-    """
-        always_true
         Arguments:
-            accessor: the accessor object trying to access the accessee object.
-            accessee: the accessee object trying to be accessed by the accessor object.
+            accessor:   the accessor object( mostly User )
+            accessee:   the destination object type( mostly Post )
 
         Returns:
-            True always
-
-        Usage:
-            used if a given set of bits are to always be set.
-            This functions acts as a more meaningful alternative to lambda:True
-
+            the full query. a django Q object.
     """
-    @staticmethod
-    def always_true( accessor, accessee ):
-        return True
+    def getFilteredQuery( self, accessor, accessee ):
+        queries = []
+        for flaglist,sub_query in self.sub_queries:
+            flag_filters = [ Q( ( flag_parameter, x ) ) for x in flaglist ]
+            full_flag_filter = reduce( operator.or_, flag_filters )
 
-    """
-        always_false
-        Arguments:
-            accessor: the accessor object trying to access the accessee object.
-            accessee: the accessee object trying to be accessed by the accessor object.
+            query,status = sub_query( accessor, accessee )
+            if status == 'CONDITIONAL':
+                # use the query object as there seem to be conditions attached to it.
+                queries.push( query & full_flag_filter )
+            elif status == 'ALLOW_ALL':
+                # don't use query allow all objects within scope.
+                queries.push( full_flag_filter )
+            elif status == 'BLOCK_ALL':
+                # don't do anything.
+                pass
 
-        Returns:
-            False always
-
-        Usage:
-            used if a given set of bits are to never be set.
-            This functions acts as a more meaningful alternative to lambda:False
-
-    """
-    @staticmethod
-    def always_false( accessor, accessee ):
-        return False
+        return reduce( operator.or_, queries )
+    
 
 """
 
-    PostPermissionGateways
+    PostPermissionSubqueries
 
     A namespace of static functions designed
-    to form the permission gateways for 
+    to form the permission subqueries for 
     deciding the access level of a user 
     w.r.t a post.
 
 """
-class PostPermissionGateways( object ):
+class PostPermissionSubqueries( object ):
     @staticmethod
     def checkPublicAccess( user, post ):
-        return user.is_authenticated()
+        if( user.is_authenticated ):
+            return Q(),'ALLOW_ALL'
+        else:
+            return Q(),'BLOCK_ALL'
 
     """
-        Utility Methods. These will be aggregated to form more meaningful contstructs.
-    """
-    """
-    Checks if the person is part of the wall.
+        Checks if the person is part of the wall.
     """
     @staticmethod
     def checkWallAccess( user, post ):
@@ -478,7 +452,7 @@ class PostPermissionGateways( object ):
         erp_cores = erp_profile.core_relations.all()
         erp_pages = erp_profile.page_relations.all()
 
-        my_query = Q(id=thing.id) & ( \
+        my_query = ( \
                 Q(wall__person=erp_profile) | \
                 Q(wall__subdept__in=erp_coords) | \
                 Q(wall__dept__in=erp_supercoords) | \
@@ -486,9 +460,10 @@ class PostPermissionGateways( object ):
                 Q(wall__page__in=erp_pages) | \
                 Q(wall__subdept__dept__in=erp_supercoords) | \
                 Q(wall__subdept__dept__in=erp_cores) | \
-                Q(wall__dept__subdepts__in=erp_coords)
+                Q(wall__dept__subdepts__in=erp_coords \
+                )
 
-        return Post.objects.filter(my_query).distinct().count()
+        return my_query,'CONDITIONAL'
 
     """
         Checks if the person is part of the access group of a post or it's wall
@@ -500,7 +475,7 @@ class PostPermissionGateways( object ):
         erp_supercoords = erp_profile.supercoord_relations.all()
         erp_cores = erp_profile.core_relations.all()
         erp_pages = erp_profile.page_relations.all()
-        my_query = Q(id=thing.id) & ( \
+        my_query = ( \
                 Q(access_users__id__exact=access_obj.id) | \
                 Q(access_subdepts__in=erp_coords) | \
                 Q(access_depts__in=erp_supercoords) | \
@@ -521,16 +496,31 @@ class PostPermissionGateways( object ):
                 Q(wall__dept__subdepts__in=erp_coords) \
                 )
 
-        return Post.objects.filter(my_query).distinct().count()
+        return my_query,'CONDITIONAL'
 
+    """
+        Let the creator of posts see his/her
+        own posts. Call this and set all flags.
+    """
     @staticmethod
     def checkCreatorAccess( user, post ):
-        return (post.by == user)
+        return Q( by__id = user.id ),'CONDITIONAL'
 
+    """
+        If staff or superuser, request PermissionStack to allow user
+        to see all the objects with the associated flags.
+    """
     @staticmethod
     def checkStaffAccess( user, post ):
-        return user.is_staff
+        if( user.is_staff ):
+            return Q(),'ALLOW_ALL'
+        else:
+            return Q(),'BLOCK_ALL'
 
     @staticmethod
     def checkSuperuserAccess( user, post ):
-        return user.is_superuser
+        if( user.is_superuser ):
+            return Q(),'ALLOW_ALL'
+        else:
+            return Q(),'BLOCK_ALL'
+
