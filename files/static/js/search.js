@@ -4,7 +4,7 @@ $('#topbar_search_input').focus(function(){
 	$('#search-suggestion').show();
 });
 
-$('body').click(function(){
+$('.below_topbar').click(function(){
 	$('#search-suggestion').hide();
 });
 
@@ -47,8 +47,11 @@ $('#topbar_search_input').on('input', function(){
 	$('#subdept_results').html(subdept_append_str);
 
 	var post_append_str = "";
+	if (query.length < 3) { $('#post_results').html("<li>Type more than 3 characters to search</li>"); return;}
 	Dajaxice.apps.search.query( 
 		function(data){
+			data = data.splice(0,3);
+			if (data.length === 0) {post_append_str = '<li>No matching results</li>';}
 			$.each(data, function(i, obj){
 				if (!obj.subject) {
 					obj.subject = "";
