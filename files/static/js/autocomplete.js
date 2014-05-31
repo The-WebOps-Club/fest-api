@@ -199,14 +199,15 @@ function setup_autocomplete_lists() {
     }
     if(contentEditableActive)
         at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><img src=\""+site_url+"static/img/neutral.png\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name}</li>"
-  
-    $("#topbar_search_input").atwho({
-        at: "",
-        data: all_list,
-        tpl: "<li data-value='${name}' data-id='${id}' data-type='${type}'>${name}</li>",
-        show_the_at: false,
-        callbacks: goto_wall,
-    })
+    
+    // Commented out for search.js
+    // $("#topbar_search_input").atwho({
+    //     at: "",
+    //     data: all_list,
+    //     tpl: "<li data-value='${name}' data-id='${id}' data-type='${type}'>${name}</li>",
+    //     show_the_at: false,
+    //     callbacks: goto_wall,
+    // })
 
     $(".atwho_at_config").atwho(at_config)
 
