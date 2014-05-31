@@ -437,9 +437,9 @@ class PostPermissionSubqueries( object ):
     @staticmethod
     def checkPublicAccess( user, post ):
         if( user.is_authenticated ):
-            return Q(),'ALLOW_ALL'
+            return ( Q(), 'ALLOW_ALL' )
         else:
-            return Q(),'BLOCK_ALL'
+            return ( Q(), 'BLOCK_ALL' )
 
     """
         Checks if the person is part of the wall.
@@ -460,10 +460,10 @@ class PostPermissionSubqueries( object ):
                 Q(wall__page__in=erp_pages) | \
                 Q(wall__subdept__dept__in=erp_supercoords) | \
                 Q(wall__subdept__dept__in=erp_cores) | \
-                Q(wall__dept__subdepts__in=erp_coords \
+                Q(wall__dept__subdepts__in=erp_coords) \
                 )
 
-        return my_query,'CONDITIONAL'
+        return ( my_query, 'CONDITIONAL' )
 
     """
         Checks if the person is part of the access group of a post or it's wall
@@ -496,7 +496,7 @@ class PostPermissionSubqueries( object ):
                 Q(wall__dept__subdepts__in=erp_coords) \
                 )
 
-        return my_query,'CONDITIONAL'
+        return (my_query,'CONDITIONAL')
 
     """
         Let the creator of posts see his/her
@@ -504,7 +504,7 @@ class PostPermissionSubqueries( object ):
     """
     @staticmethod
     def checkCreatorAccess( user, post ):
-        return Q( by__id = user.id ),'CONDITIONAL'
+        return ( Q( by__id = user.id ),'CONDITIONAL' )
 
     """
         If staff or superuser, request PermissionStack to allow user
@@ -513,14 +513,14 @@ class PostPermissionSubqueries( object ):
     @staticmethod
     def checkStaffAccess( user, post ):
         if( user.is_staff ):
-            return Q(),'ALLOW_ALL'
+            return ( Q(), 'ALLOW_ALL' )
         else:
-            return Q(),'BLOCK_ALL'
+            return ( Q(), 'BLOCK_ALL' )
 
     @staticmethod
     def checkSuperuserAccess( user, post ):
         if( user.is_superuser ):
-            return Q(),'ALLOW_ALL'
+            return ( Q(), 'ALLOW_ALL' )
         else:
-            return Q(),'BLOCK_ALL'
+            return ( Q(), 'BLOCK_ALL' )
 
