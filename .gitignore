@@ -27,6 +27,7 @@ restart-project.sh
 venv
 deps
 tmp
+temp
 
 # User specific files
 files/media/*
