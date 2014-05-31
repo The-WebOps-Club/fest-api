@@ -50,8 +50,12 @@ $('#topbar_search_input').on('input', function(){
 	Dajaxice.apps.search.query( 
 		function(data){
 			$.each(data, function(i, obj){
-				console.log(obj);
-				post_append_str += "<li><a href='"+obj.url+"'><i class='icon-post'> </i><span class='text'>"+obj.author+" on "+obj.wall+"</span><span class='category'>"+obj.description+"</span></a></li>";
+				if (!obj.subject) {
+					obj.subject = "";
+				} else {
+					obj.subject = "<strong>"+obj.subject+"</strong>:<br>";
+				}
+				post_append_str += "<li class='post'><a href='"+obj.url+"'><span class='text'>"+obj.author+"</span><i class='icon-right'></i><span class='text'>"+obj.wall+"</span><br>"+obj.created+"<br>"+obj.subject+obj.description+"</a></li>";
 			});
 			$('#post_results').html(post_append_str);
 		},
