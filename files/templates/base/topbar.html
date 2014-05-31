@@ -24,8 +24,15 @@
                 </ul>
                 <ul class='nav topbar_searchbar searchbar'>
                     <li>
-                        <input class='input-xxlarge' id='topbar_search_input' name='' type='text' placeholder='Search for people, events and pages'>
-                        <button type='submit'></button>
+                        <div class="fbSearch">
+                            <input class='input-xxlarge' id='topbar_search_input' name='' type='text' placeholder='Search for people, events and pages'>
+                            <button type='submit' id='search-button'></button>
+                            <div class="suggest" style="display:none;" id="search-suggestion">
+                                <ul>
+                                <li>Start typing to search</li>
+                                </ul>
+                            </div>
+                        </div>
                     </li>
                 </ul>
                 <div class='span1 pull-right'></div>
@@ -88,4 +95,115 @@
     
 }
 
+
+.fbSearch .suggest 
+{
+    position:absolute;
+    background:#F30;
+    float:left;
+    background:#ffffff;
+    width:338px;
+    border:1px solid #333333;
+    margin-top:0px;
+
+}
+.fbSearch .suggest  ul , .fbSearch .suggest li ,  .fbSearch .suggest a
+{
+    padding:0px;
+    list-style:none;
+    float:left;
+    margin:0px;
+}
+.fbSearch .suggest li
+{
+    
+     padding:4px 5px;
+     border-bottom:1px solid #FFF;
+     border-top:1px solid #FFF;
+     
+     width:328px;
+    
+}
+.fbSearch .suggest li:hover
+{
+    background:#6d84b4;
+    border-bottom:1px solid #3b5998;
+    border-top:1px solid #3b5998;
+    color:#FFF;
+}
+.fbSearch .suggest li:hover .text , .fbSearch .suggest li:hover .category  , .fbSearch .suggest li:hover  .subtext
+{
+    color:#fff;
+}
+.fbSearch .suggest img
+{
+    margin-right:8px;
+}
+.fbSearch .suggest .text
+{
+    color:#000;
+    font-weight:bold;
+    font-size:12px;
+    margin-bottom:3px;
+}
+.fbSearch .suggest .header , .fbSearch .suggest  .header:hover
+{
+    background:#f2f2f2;
+    width:328px;
+    padding:2px 5px;
+    border:none;
+    border-top: 1px solid #e2e2e2;
+    color:#000;
+}
+.fbSearch .suggest  .header:hover .text
+{
+    color:#000;
+}
+.fbSearch .suggest a
+{
+    width:100%;
+    height: 100%;
+}
+.fbSearch .suggest a .text
+{
+    color:#3b5998;
+    background:none;
+    width:280px;
+}
+.fbSearch .suggest .category
+{
+    color:#737373;
+    width:280px;
+    font-weight:normal;
+    font-size:11px;
+    margin-bottom:3px;
+}
+.fbSearch .suggest .subtext
+{
+    font-size:9px;
+    color:#a6a6a6;
+}
+.fbSearch .suggest .more , .fbSearch .suggest .more:hover
+{
+    text-align:center;
+    font-size:10px;
+    padding-top:10px;
+    padding-bottom:10px;
+    border-top: 1px solid #e2e2e2;
+    border-bottom:1px solid #3b5998;
+}
+.fbSearch .suggest .more span
+{
+    width:328px;
+    
+}
+.fbSearch .suggest .more img 
+{
+    float:none;
+}
+.topbar div > ul a:hover, .nav a:hover {
+    color: #ffffff;
+    text-decoration: none;
+    background-color: #6d84b4;
+}
 </style>
