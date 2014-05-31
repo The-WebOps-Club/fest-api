@@ -124,6 +124,10 @@ class Wall(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('apps.walls.views.wall', args=(self.pk,))
+    
+
 class PostInfo(models.Model):
     """
         Defines the PostInfo class. The model which has some kind of data about a message.
@@ -178,6 +182,9 @@ class PostInfo(models.Model):
                     description = 'wall:' + str(wall.pk),
                 )
 
+    def get_absolute_url(self):
+        post_str = '#post_' + str(self.parent_post.all()[0].pk)
+        return reverse('apps.walls.views.wall', args=(self.parent_post.all()[0].wall.pk,)) + post_str
     class Meta:
         abstract = True
         ordering = ['time_created']
