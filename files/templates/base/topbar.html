@@ -25,11 +25,20 @@
                 <ul class='nav topbar_searchbar searchbar'>
                     <li>
                         <div class="fbSearch">
-                            <input class='input-xxlarge' id='topbar_search_input' name='' type='text' placeholder='Search for people, events and pages'>
+                            <input class='input-xxlarge' id='topbar_search_input' name='' type='text' placeholder='Search for people, departments and posts'>
                             <button type='submit' id='search-button'></button>
                             <div class="suggest" style="display:none;" id="search-suggestion">
                                 <ul>
-                                <li>Start typing to search</li>
+                                <div id="idle">
+                                    <li>Start typing to search</li>     
+                                </div>
+                                <div id="topbar_search_input_results" style="display:none;">
+                                    <li class="header"><span class="text">People</span></li>
+                                    <div id="user_results"></div>
+                                    <li class="header"><span class="text">Departments</span></li><div id="dept_results"></div>
+                                    <li class="header"><span class="text">Subdepartments</span></li><div id="subdept_results"></div>
+                                    <li class="header"><span class="text">Posts</span></li><div id="post_results"></div>
+                                </div>
                                 </ul>
                             </div>
                         </div>
@@ -105,6 +114,7 @@
     width:338px;
     border:1px solid #333333;
     margin-top:0px;
+    z-index: 999999;
 
 }
 .fbSearch .suggest  ul , .fbSearch .suggest li ,  .fbSearch .suggest a
