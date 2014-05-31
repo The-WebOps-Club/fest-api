@@ -2,7 +2,6 @@
 {% load humanize %} 
 {% load once %}
 {% load markdown_tags %}
-{% load strip_first_p %}
 
 <div {% if not new_comment %} id="comment_{{ comment.pk }}" data-id="{{ comment.pk }}" {% endif %} class="news_comment {% if new_comment %} create_comment {% endif %}">
     <div class="news_comment_left">
@@ -27,22 +26,22 @@
 					    	data-postid="{{ post.id }}"
 					    	placeholder="Post your comment here. @ to tag people, # to tag a file" style='display:none'></textarea>
 						<div class="span12 comment_links" style="display : none">
-							<!--<a href="javascript:void(0)" class="btn small attach_doc_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
+							<!--<a href="javascript:void(0)" class="btn small attach_doc_btn invisible" data-placement="below" rel="twipsy" title="Insert a file from google drive">
 								<i class="icon-attach"></i>
 							</a>
 							
-							<a href="javascript:void(0)" class="btn small attach_pic_btn" data-placement="below" rel="twipsy" title="Attach a Picture">
+							<a href="javascript:void(0)" class="btn small attach_pic_btn invisible" data-placement="below" rel="twipsy" title="Attach a Picture">
 								<i class="icon-pic"></i>
 							</a>
 							
-							<a href="javascript:void(0)" class="btn small attach_link_btn" data-placement="below" rel="twipsy" title="Insert a Link">
+							<a href="javascript:void(0)" class="btn small attach_link_btn invisible" data-placement="below" rel="twipsy" title="Insert a Link">
 								<i class="icon-link"></i>
 							</a>
 							
-							<a href="javascript:void(0)" class="btn small attach_emoticon_btn" data-placement="below" rel="twipsy" title="Insert a Smiley">
+							<a href="javascript:void(0)" class="btn small attach_emoticon_btn invisible" data-placement="below" rel="twipsy" title="Insert a Smiley">
 								<i class="icon-smile"></i>
-							</a>-->
-
+							</a>
+							-->
 							<a href="javascript:void(0)" class="btn primary post_btn">
 								&nbsp;
 									<i class="icon-textbox-circle"></i>&nbsp; Post

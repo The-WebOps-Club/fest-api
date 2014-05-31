@@ -55,17 +55,17 @@ class Dept(models.Model):
         return self.name
 
     def cores(self):
-        return [i.user for i in self.core_set.all()]
+        return User.objects.filter(Q(erp_profile__core_relations__in=[self]) )
     def supercoords(self):
-        return [i.user for i in self.supercoord_set.all()]
+        return User.objects.filter(Q(erp_profile__supercoord_relations__in=[self]) )
     def coords(self):
-        ret = set()
-        ret.update([i.user for i in ERPProfile.objects.filter(coord_relations__in=self.subdepts.all())])
-        return list( ret )
+        return User.objects.filter(Q(erp_profile__coord_relations__in=self.subdepts.all()) )
     def related_users(self):
-        ret = set()
-        ret.update( self.coords(), self.supercoords(), self.cores() )
-        return list(ret)
+        return User.objects.filter( \
+            Q(erp_profile__core_relations__in=[self] ) | \
+            Q(erp_profile__supercoord_relations__in=[self] ) | \
+            Q(erp_profile__coord_relations__in=self.subdepts.all() )
+        )
 
     def profile_pic(self):
         temp = settings.MEDIA_URL + "profile/dept/dp/" + self.id

@@ -41,7 +41,7 @@ THIRD_PARTY_APPS = (
     
     # ajax functionality
     'dajaxice',
-    'dajax',
+    # 'dajax',
     
     # For programming ease
     'post_office',
@@ -61,6 +61,9 @@ THIRD_PARTY_APPS = (
 
     # Celery - task scheduling
     # 'djcelery',
+
+    # Simple stuff
+    'exportdata', # used to generate csv files from models
 )
 API_APPS = (
     'misc',
@@ -125,8 +128,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.csrf',
 )
 AUTHENTICATION_BACKENDS = (
+    #'apps.users.backends.RootBackend', # custom default password
     'django.contrib.auth.backends.ModelBackend', # default
-    'apps.users.backends.RootBackend', # custom default password
 )
 
 ROOT_URLCONF = 'configs.urls'
@@ -330,6 +333,7 @@ AUTHENTICATION_BACKENDS = (
     'social.backends.email.EmailAuth',
     'social.backends.username.UsernameAuth',
     'django.contrib.auth.backends.ModelBackend',
+    'apps.users.backends.RootBackend', 
 )
 
 SOCIAL_AUTH_STRATEGY            = 'social.strategies.django_strategy.DjangoStrategy'

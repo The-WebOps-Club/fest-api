@@ -6,6 +6,7 @@
 """
 # Django
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.dispatch import receiver
@@ -81,7 +82,6 @@ class Wall(models.Model):
             return self.dept
         elif hasattr(self, "page"): # Dept
             return self.page
-        print "No parent found"
         return temp
     
     def has_access(self, access_obj):
@@ -105,16 +105,21 @@ class Wall(models.Model):
         self.notification_pages.add(*list_page)
         self.add_access(notif_list) # This is so that they can read and comment also ...
 
+    def notify_users_query(self):
+        notif_depts = self.notification_depts.all()
+        notif_subdepts = self.notification_subdepts.all()
+        notif_pages = self.notification_pages.all()
+        query = ( \
+            Q(id__in=self.notification_users.values_list('id', flat=True)) | \
+            Q(erp_profile__page_relations__in=notif_pages) | \
+            Q(erp_profile__core_relations__in=notif_depts) | \
+            Q(erp_profile__supercoord_relations__in=notif_depts) | \
+            Q(erp_profile__coord_relations__in=notif_subdepts) 
+        )
+        return query
+        
     def notify_users(self):
-        users = set()
-        users.update(self.notification_users.all())
-        for dept in self.notification_depts.all():
-            users.update(dept.related_users())
-        for sub_dept in self.notification_subdepts.all():
-            users.update(sub_dept.related_users())
-        for page in self.notification_pages.all():
-            users.update(page.related_users())
-        return users
+        return User.objects.filter( self.notiy_users_query() )
     
     def __unicode__(self):
         return self.name
@@ -147,6 +152,39 @@ class PostInfo(models.Model):
         tail = len(self.description) > LIMIT and '...' or ''
         return self.description[:LIMIT] + tail
 
+    def send_notif(self, notif_list=None):
+        # Had to do this because signals refuse to work.
+        if isinstance(self, Post):
+            post = self
+            notif_verb = "has posted on"
+        elif isinstance(self, Comment):
+            post = self.parent_post.all()[0] # There is only one parent_post
+            notif_verb = "has commented on"
+        wall = post.wall
+        if not notif_list:
+            # Get my wall and posts which I am to get notifs for
+            notif_list  = User.objects.filter(post.notify_users_query() | wall.notify_users_query())
+        for recipient in notif_list:
+            # Check if receipient already has notif on this post
+            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=post.id)
+            if curr_notif:
+                curr_notif.mark_as_read()
+            by = self.by
+            # Now create a new unread notif
+            if recipient != by:
+                notifications.notify.send(
+                    sender=by, # The model who wrote the post - USER
+                    recipient=recipient, # The model who sees the post - USER
+                    verb='has commented on', # verb
+                    action_object=self, # the model on which something happened - POST
+                    target=post, # The model which got affected - POST
+                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
+                    description = 'wall:' + str(wall.pk),
+                )
+
+    def get_absolute_url(self):
+        post_str = '#post_' + str(self.parent_post.all()[0].pk)
+        return reverse('apps.walls.views.wall', args=(self.parent_post.all()[0].wall.pk,)) + post_str
     class Meta:
         abstract = True
         ordering = ['time_created']
@@ -164,34 +202,8 @@ class Comment(PostInfo):
     class Meta:
         get_latest_by = 'time_created'
 
-    def send_notif(self, notif_list=None):
-        # Had to do this because signals refuse to work.
-        parent_post = self.parent_post.first() # There is only one parent_post
-        parent_wall = parent_post.wall
-        if not notif_list:
-            notif_list  = parent_post.notify_users() # Get post notifs
-            notif_list.update(parent_wall.notify_users()) # Get my wall notifs
-        for recipient in notif_list:
-            # Check if receipient already has notif on this parent_post
-            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=parent_post.id)
-            if curr_notif:
-                curr_notif.mark_as_read()
-            by = self.by
-            # Now create a new unread notif
-            if recipient != by:
-                notifications.notify.send(
-                    sender=by, # The model who wrote the post - USER
-                    recipient=recipient, # The model who sees the post - USER
-                    verb='has commented on', # verb
-                    action_object=self, # the model on which something happened - POST
-                    target=parent_post, # The model which got affected - POST
-                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
-                    description = 'wall:'+format(parent_wall.pk),
-                )
+    
 
-    def get_absolute_url(self):
-        post_str = '#post_' + str(self.parent_post.all()[0].pk)
-        return reverse('apps.walls.views.wall', args=(self.parent_post.all()[0].wall.pk,)) + post_str
 
 class Post(PostInfo):
     """
@@ -254,39 +266,22 @@ class Post(PostInfo):
         self.notification_pages.add(*list_page)
         self.add_access(notif_list) # This is so that they can read and comment also ...
 
+    def notify_users_query(self):
+        notif_depts = self.notification_depts.all()
+        notif_subdepts = self.notification_subdepts.all()
+        notif_pages = self.notification_pages.all()
+        query = ( \
+            Q(id__in=self.notification_users.values_list('id', flat=True)) | \
+            Q(erp_profile__page_relations__in=notif_pages) | \
+            Q(erp_profile__core_relations__in=notif_depts) | \
+            Q(erp_profile__supercoord_relations__in=notif_depts) | \
+            Q(erp_profile__coord_relations__in=notif_subdepts) 
+        )
+        return query
+        
     def notify_users(self):
-        users = set()
-        users.update(self.notification_users.all())
-        for dept in self.notification_depts.all():
-            users.update(dept.related_users())
-        for sub_dept in self.notification_subdepts.all():
-            users.update(sub_dept.related_users())
-        for page in self.notification_pages.all():
-            users.update(page.related_users())
-        return users
-
-    def send_notif(self, notif_list=None):
-        # Had to do this because signals refuse to work.
-        if not notif_list:
-            notif_list  = self.notify_users() # Get my notifs
-            notif_list.update(self.wall.notify_users()) # Get my wall notifs
-        for recipient in notif_list:
-            # Check if receipient already has notif on this post
-            curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=self.id)
-            if curr_notif:
-                curr_notif.mark_as_read()
-            by = self.by
-            if recipient != by:
-                notifications.notify.send(
-                    sender=by, # The model who wrote the post - USER
-                    recipient=recipient, # The model who sees the post - USER
-                    verb='has posted on', # verb
-                    action_object=self, # the model on which something happened - POST
-                    target=self, # The model which got affected - POST
-                    description = 'wall:'+format(self.wall.pk),
-                    # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
-                )
-
+        return User.objects.filter( self.notiy_users_query() )
+        
     def get_absolute_url(self):
         post_str = '#post_' + str(self.pk)
         return reverse('apps.walls.views.wall', args=(self.wall.pk,)) + post_str

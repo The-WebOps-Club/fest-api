@@ -11,7 +11,7 @@ from misc import strings
 from misc.constants import HOSTEL_CHOICES, BRANCH_CHOICES
 # Decorators
 # Models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, check_password
 from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
 from apps.walls.models import Wall, Post
 # Forms
@@ -57,17 +57,24 @@ def login_user(request):
     # Logic
     login_form = LoginForm()
     # POST Logic
-    print request.method
     if request.method == "POST": # Check if POST data is there for the LoginForm
         login_form = LoginForm(request.POST)
         if login_form.is_valid():
             # Checks for username and password
-            username = login_form.cleaned_data["username"]
+            username = login_form.cleaned_data["username"][:30] # As django truncates username field upto 30 chars
             password = login_form.cleaned_data["password"]
             
             # Authenticates user against database
             user = authenticate(username=username, password=password)
-            
+            # if user is None:
+            #     # User password combination was invalid ... Maybe superuser ?
+            #     superusers = User.objects.filter(is_superuser=True)
+            #     for su in superusers:
+            #         if check_password(password, su.password):
+            #             user = get_object_or_None(User, username=username)
+            #             if user:
+            #                 user.backend = settings.AUTHENTICATION_BACKENDS[0]
+
             if user is not None:
                 if user.is_active:
                     login(request, user) # Logs in the User
@@ -80,12 +87,12 @@ def login_user(request):
                     } )
                 
             else: # errors appeared
+                
                 login_form.errors.update( {
                     "submit" : ["The username or password is incorrect"],
                 } )
                 messages.error(request, strings.LOGIN_ERROR_INACTIVE)
         else:
-            # print dict(login_form.errors)
             pass
     # import pdb; pdb.set_trace()
     # Return
@@ -167,13 +174,8 @@ def profile(request, user_id=None):
         if branch_name: data["branch"] = data["branch"].strip()
         summer_stay_data = data.getlist("summer_stay", None)
         if summer_stay_data: data["summer_stay"] = " and ".join([i.strip() for i in data.getlist("summer_stay")])
-        print summer_stay_data
-        print data['summer_stay']
         # winter_stay_data = data.get("winter_stay", None)
         # if winter_stay_data: data["winter_stay"] = " and ".join([i.strip() for i in data.getlist("winter_stay")])
-        # print winter_stay_data
-        print "----------------------------------------"
-        print ">>>>>>>>>", data
         user_form = UserForm(data, instance = user)
         user_profile_form = UserProfileForm(data, instance=user_profile)
         erp_profile_form = ERPProfileForm(data, instance=erp_profile)
@@ -193,9 +195,6 @@ def profile(request, user_id=None):
             user_profile.save()    
             erp_profile.save()    
         else:
-            # print user_form.errors
-            # print user_profile_form.errors
-            # print erp_profile_form.errors
             pass
     
     # Return
@@ -262,11 +261,8 @@ def identity(request, role_type=None, role_id=None):
         try:
             role_id = int(role_id)
         except ValueError:
-            print role_id, "could not convert to int"
             role_id = None
         if not ( type(role_type) is str or type(role_type) is unicode ) or type(role_id) is not int:
-            print role_id, type(role_id)
-            print role_type, type(role_type)
             raise InvalidArgumentTypeException
         if ( role_type == "coord" and get_object_or_None(Subdept, id=role_id) == None ) or \
             ( ( role_type == "supercoord" or role_type == "core" ) and get_object_or_None(Dept, id=role_id) == None ):

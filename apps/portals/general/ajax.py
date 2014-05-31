@@ -1,6 +1,5 @@
 # For simple dajax(ice) functionalities
 from dajaxice.decorators import dajaxice_register
-from dajax.core import Dajax
 
 # For rendering templates
 from django.template import RequestContext
@@ -32,15 +31,6 @@ def admins_only(in_func):
         in_func(request, *args, **kwargs )
     return out_func
 
-@dajaxice_register
-def hello_world(request):
-    """
-        Used for testing Dajax + Dajaxice
-    """
-    dajax = Dajax()
-    dajax.assign('body','innerHTML', "Hello world !")
-    #dajax.alert("Hello World!")
-    return dajax.json()
     
 @dajaxice_register
 def hello(request):
@@ -200,7 +190,7 @@ def create_user(request, email, first_name, last_name, supercoord):
     #import pdb;pdb.set_trace();
     if not email or not first_name or not last_name:
         return json.dumps({'message' : '<b>Error :</b> All fields are required'});
-    elif User.objects.filter(email=email).count() + User.objects.filter(username=email).count():
+    elif User.objects.filter(email=email).count() + User.objects.filter(username=email[:30]).count():
         return json.dumps({'message':'<b>Error :</b> Account with ' + email + ' already exists'});
     try:
         validate_email( email )
@@ -208,7 +198,7 @@ def create_user(request, email, first_name, last_name, supercoord):
         return json.dumps({'message':'<b>Error :</b> Please enter a valid email address'});
 
     passwd = User.objects.make_random_password()
-    u = User.objects.create_user(username=email, email=email, first_name=first_name, last_name=last_name, password=passwd);
+    u = User.objects.create_user(username=email[:30], email=email, first_name=first_name, last_name=last_name, password=passwd);
     e = ERPProfile.objects.create(user=u)
     
     depts = Dept.objects.filter(id__in=supercoord)
@@ -231,7 +221,6 @@ def create_user(request, email, first_name, last_name, supercoord):
             },
             headers = {},
         )
-        # print "Error : The email id", e.user.email, "was not found. UserProfile id : ", e.id
     # refresh json lists.
 
     call_command('jsonify_data')

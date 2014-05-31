@@ -54,7 +54,6 @@ def newsfeed(request):
 @login_required
 def portals(request):
     # notifications = request.user.notifications.unread()
-    # print notifs
     local_context = {}
     return render_to_response("pages/portals.html", local_context, context_instance= global_context(request))
 
@@ -72,10 +71,8 @@ def read_notification(request, notif_id):
     try:
         notif_id = int(notif_id)
     except ValueError:
-        print notif_id, "could not convert to int"
         notif_id = None
     if not ( type(notif_id) is int ):
-        print "notif_id :", notif_id, type(wall_id)
         raise InvalidArgumentTypeException
     try:
         notif = user.notifications.get(id = notif_id)

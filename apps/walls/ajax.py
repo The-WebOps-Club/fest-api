@@ -1,7 +1,6 @@
 # For simple dajax(ice) functionalities
 from dajaxice.decorators import dajaxice_register
 from dajaxice.utils import deserialize_form
-from dajax.core import Dajax
 
 # From Django
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -19,7 +18,7 @@ from misc.utils import *  #Import miscellaneous functions
 
 # From Apps
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
-from apps.walls.utils import paginate_items, parse_atwho, get_tag_object, query_newsfeed, query_notifs, get_my_posts
+from apps.walls.utils import paginate_items, parse_atwho, get_tag_object, query_newsfeed, query_notifs, get_my_posts, check_access_rights, check_admin_access_rights
 
 # Ajax post & comment
 from django.shortcuts import get_object_or_404
@@ -29,17 +28,7 @@ from annoying.functions import get_object_or_None
 
 
 # -------------------------------------------------------------
-# TEST FUNCTIONS
-@dajaxice_register
-def hello_world(request):
-    """
-        Used for testing Dajax + Dajaxice
-    """
-    dajax = Dajax()
-    dajax.assign('body','innerHTML', "Hello world !")
-    #dajax.alert("Hello World!")
-    return dajax.json()
-    
+# TEST FUNCTIONS    
 @dajaxice_register
 def hello(request):
     """
@@ -64,6 +53,51 @@ def mark_wall_as_read( request, wall_id ):
     request.user.notifications.unread().filter( description__contains = 'wall:'+wall_id ).mark_all_as_read()
     return json.dumps({"msg" : "done"})
 
+"""
+Dosent make sense.
+@dajaxice_register
+def make_page_public( request, page_id ):
+
+    wall = Wall.objects.get( page__id = page_id )
+    if not ((request.user.is_superuser) or  request.user.is_staff):
+        return json.dumps({"msg":"No Access Rights"})
+
+    wall.is_public = True;
+    wall.save();
+    return json.dumps({"msg" : "done"})
+
+@dajaxice_register
+def make_page_private( request, page_id ):
+    wall = Wall.objects.get( page__id = page_id )
+    if not ((request.user.is_superuser) or request.user.is_staff):
+        return json.dumps({"msg":"No Access Rights"})
+
+    wall.is_public = False;
+    wall.save();
+    return json.dumps({"msg" : "done"})
+
+"""
+
+@dajaxice_register
+def make_post_public( request, post_id ):
+
+    post = Post.objects.get(id=post_id)
+    if not (check_admin_access_rights( request.user, post )):
+        return json.dumps({"msg":"No Access Rights"})
+
+    post.is_public = True;
+    post.save();
+    return json.dumps({"msg" : "done"})
+
+@dajaxice_register
+def make_post_private( request, post_id ):
+    post = Post.objects.get(id=post_id)
+    if not (check_admin_access_rights( request.user, post )):
+        return json.dumps({"msg":"No Access Rights"})
+
+    post.is_public = False;
+    post.save();
+    return json.dumps({"msg" : "done"})
 
 @dajaxice_register
 def like_post(request, id=None):
@@ -278,7 +312,6 @@ def create_comment(request, post_id, data):
     try:
         post_id = int(post_id)
     except ValueError:
-        print post_id, "could not convert to int"
         post_id = None
     if not ( type(post_id) is int ):
         raise InvalidArgumentTypeException("argument `post_id` should be of type integer")
