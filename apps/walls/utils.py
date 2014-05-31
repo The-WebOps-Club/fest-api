@@ -374,22 +374,22 @@ class PermissionStack( object ):
     def setGateway( self, func, flag ):
         if not isinstance( flag, int ):
             raise Exception('only integers for flag variables.')
-        gateways[flag] = func
+        self.gateways[flag] = func
 
     def removeGateway( self, flag ):
-        gateways[flag] = None;
+        self.gateways[flag] = None;
 
     def getAccess( self, accessor, accessee ):
         access = 0
-        for flag in gateways.keys():
+        for flag in self.gateways.keys():
             # if the user already has all the permissions that will be set by the 
             # following function then don't execute it.
             # This is an optimisation strategy to prevent too many queries
             if PermissionStack.compareFlags( access, flag ):
                 continue
 
-            if gateways[flag] is None or gateways[flag]( accessor, accessee ):
-                access |= index
+            if self.gateways[flag] is None or self.gateways[flag]( accessor, accessee ):
+                access |= flag
 
         return access
 
