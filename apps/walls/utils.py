@@ -349,3 +349,188 @@ def check_admin_access_rights(access_obj, thing):
         my_query = my_query 
 
         return Post.objects.filter(my_query).distinct().count()
+
+
+"""
+    class PermissionStack
+
+    Coordinates a bunch of gateway functions and is ideal for
+    permission models that continuously decrease
+    their domains of access.
+
+    Methods:
+        For initializing.
+        setGateway( function, index )
+        removeGateway( function, index )
+
+        For running.
+        getAccess( accessor, accessee )
+
+"""
+class PermissionStack( object ):
+
+    gateways = {};
+
+    def setGateway( self, func, flag ):
+        if not isinstance( flag, int ):
+            raise Exception('only integers for flag variables.')
+        gateways[flag] = func
+
+    def removeGateway( self, flag ):
+        gateways[flag] = None;
+
+    def getAccess( self, accessor, accessee ):
+        access = 0
+        for flag in gateways.keys():
+            # if the user already has all the permissions that will be set by the 
+            # following function then don't execute it.
+            # This is an optimisation strategy to prevent too many queries
+            if PermissionStack.compareFlags( access, flag ):
+                continue
+
+            if gateways[flag] is None or gateways[flag]( accessor, accessee ):
+                access |= index
+
+        return access
+
+    """
+        compareFlags
+        Arguments:
+            accessorFlag: the access flag of the accessor 
+            accesseeFlag: the access flag of the accessee
+
+        Returns:
+            True if accessorFlag has all the bits of the accessee flag.
+            False otherwise
+
+        Usage:
+            used for testing if a given accessor has more permissions
+            than the accessee.
+
+    """
+    @staticmethod
+    def compareFlags( accessorFlag, accesseeFlag ):
+        significant = accessorFlag & accesseeFlag
+        return (significant == accesseeFlag)
+
+    """
+        always_true
+        Arguments:
+            accessor: the accessor object trying to access the accessee object.
+            accessee: the accessee object trying to be accessed by the accessor object.
+
+        Returns:
+            True always
+
+        Usage:
+            used if a given set of bits are to always be set.
+            This functions acts as a more meaningful alternative to lambda:True
+
+    """
+    @staticmethod
+    def always_true( accessor, accessee ):
+        return True
+
+    """
+        always_false
+        Arguments:
+            accessor: the accessor object trying to access the accessee object.
+            accessee: the accessee object trying to be accessed by the accessor object.
+
+        Returns:
+            False always
+
+        Usage:
+            used if a given set of bits are to never be set.
+            This functions acts as a more meaningful alternative to lambda:False
+
+    """
+    @staticmethod
+    def always_false( accessor, accessee ):
+        return False
+
+"""
+
+    PostPermissionGateways
+
+    A namespace of static functions designed
+    to form the permission gateways for 
+    deciding the access level of a user 
+    w.r.t a post.
+
+"""
+class PostPermissionGateways( object ):
+    @staticmethod
+    def checkPublicAccess( user, post ):
+        return user.is_authenticated()
+
+    """
+        Utility Methods. These will be aggregated to form more meaningful contstructs.
+    """
+    """
+    Checks if the person is part of the wall.
+    """
+    @staticmethod
+    def checkWallAccess( user, post ):
+        erp_profile = access_obj.erp_profile
+        erp_coords = erp_profile.coord_relations.all()
+        erp_supercoords = erp_profile.supercoord_relations.all()
+        erp_cores = erp_profile.core_relations.all()
+        erp_pages = erp_profile.page_relations.all()
+
+        my_query = Q(id=thing.id) & ( \
+                Q(wall__person=erp_profile) | \
+                Q(wall__subdept__in=erp_coords) | \
+                Q(wall__dept__in=erp_supercoords) | \
+                Q(wall__dept__in=erp_cores) | \
+                Q(wall__page__in=erp_pages) | \
+                Q(wall__subdept__dept__in=erp_supercoords) | \
+                Q(wall__subdept__dept__in=erp_cores) | \
+                Q(wall__dept__subdepts__in=erp_coords)
+
+        return Post.objects.filter(my_query).distinct().count()
+
+    """
+        Checks if the person is part of the access group of a post or it's wall
+    """
+    @staticmethod
+    def checkWallAndTagAccess( user, post ):
+        erp_profile = access_obj.erp_profile
+        erp_coords = erp_profile.coord_relations.all()
+        erp_supercoords = erp_profile.supercoord_relations.all()
+        erp_cores = erp_profile.core_relations.all()
+        erp_pages = erp_profile.page_relations.all()
+        my_query = Q(id=thing.id) & ( \
+                Q(access_users__id__exact=access_obj.id) | \
+                Q(access_subdepts__in=erp_coords) | \
+                Q(access_depts__in=erp_supercoords) | \
+                Q(access_depts__in=erp_cores) | \
+                Q(access_pages__in=erp_pages) | \
+                Q(wall__access_users__id__exact=access_obj.id) | \
+                Q(wall__access_subdepts__in=erp_coords) | \
+                Q(wall__access_depts__in=erp_supercoords) | \
+                Q(wall__access_depts__in=erp_cores) | \
+                Q(wall__access_pages__in=erp_pages) | \
+                Q(wall__person=erp_profile) | \
+                Q(wall__subdept__in=erp_coords) | \
+                Q(wall__dept__in=erp_supercoords) | \
+                Q(wall__dept__in=erp_cores) | \
+                Q(wall__page__in=erp_pages) | \
+                Q(wall__subdept__dept__in=erp_supercoords) | \
+                Q(wall__subdept__dept__in=erp_cores) | \
+                Q(wall__dept__subdepts__in=erp_coords) \
+                )
+
+        return Post.objects.filter(my_query).distinct().count()
+
+    @staticmethod
+    def checkCreatorAccess( user, post ):
+        return (post.by == user)
+
+    @staticmethod
+    def checkStaffAccess( user, post ):
+        return user.is_staff
+
+    @staticmethod
+    def checkSuperuserAccess( user, post ):
+        return user.is_superuser

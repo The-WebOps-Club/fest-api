@@ -130,16 +130,16 @@ class PostInfo(models.Model):
         Used for both Post and Comment
         @todo : Add options to upload a file to any message
     """
-    is_active       = models.BooleanField(default=True)
-    is_public       = models.BooleanField(default=False)
+    is_active           = models.BooleanField(default=True)
+    access_specifier    = models.IntegerField( default=1 )
     
     # Basic data
-    description     = models.TextField(blank=True, default='') # The matter of post
-    by              = models.ForeignKey(User, related_name='%(class)s_created')
+    description         = models.TextField(blank=True, default='') # The matter of post
+    by                  = models.ForeignKey(User, related_name='%(class)s_created')
 
     # Analytics
-    time_created    = models.DateTimeField(auto_now_add=True)
-    time_updated    = models.DateTimeField(auto_now=True)
+    time_created        = models.DateTimeField(auto_now_add=True)
+    time_updated        = models.DateTimeField(auto_now=True)
     
     objects = CheckActiveManager()
     
