@@ -128,7 +128,7 @@
     	authToken = "{{ google_access_token }}"
         fest_fbid = "{{ SETTINGS.FEST_FBID }}"
         
-        var contentEditableActive = {{ experimental }};   //flag to switch between markdown and native html.
+        var contentEditableActive = {{ experimental|default:"false" }};   //flag to switch between markdown and native html.
 
         function hide_popups(except) {
             ["userButton", "messageButton", "notifButton", "settingButton", "attach_link_btn", "attach_emoticon_btn"].forEach(function(i) {
