@@ -266,10 +266,20 @@ def create_post(request, wall_id, post_form):
     data = deserialize_form(post_form)
    
     post_text = data["new_post"]
-    post_subject = data["new_post_subject"]
+    
+    post_subject = data.get("new_post_subject", "")
     post_text, notification_list = parse_atwho(post_text)
-
-    new_post = Post.objects.create(subject=post_subject, description=post_text, wall=wall, by=request.user)
+    rendered_post_text = Template(
+        '''
+            {%load markdown_tags%}
+            {%autoescape off%}
+                {{ post_text|markdown }}
+            {%endautoescape%}
+        '''
+    ).render(RequestContext(request, { 
+        'post_text' : post_text
+    }))
+    new_post = Post.objects.create(subject=post_subject, description=rendered_post_text, wall=wall, by=request.user)
     
     new_post.add_notifications(notification_list)
     if wall.parent:
@@ -290,6 +300,7 @@ def quick_post(request, post_form):
     # create a new post
     append_string = ""
     data = deserialize_form(post_form)
+    post_subject = data.get("new_post_subject", "")
     post_text = data["quick_post"]
     post_text, notification_list = parse_atwho(post_text)
 
@@ -301,7 +312,19 @@ def quick_post(request, post_form):
             obj_wall =  obj.wall
         else:
             obj_wall =  obj.erp_profile.wall
-        new_post = Post.objects.create(description=post_text, wall=obj_wall, by=request.user)
+    
+        rendered_post_text = Template(
+           '''
+                {%load markdown_tags%}
+                {%autoescape off%}
+                    {{ post_text|markdown }}
+                {%endautoescape%}
+            '''
+        ).render(RequestContext(request, { 
+            'post_text' : post_text
+        }))
+ 
+        new_post = Post.objects.create(description=rendered_post_text, wall=obj_wall, by=request.user)
         new_post.add_notifications(notification_list)
         if obj_wall.parent:
             new_post.add_notifications([obj_wall.parent, request.user]) # add to and from
@@ -337,9 +360,17 @@ def create_comment(request, post_id, data):
 
     comment_text, notification_list = parse_atwho(comment_text)
 
-    rendered_comment = Template('{%load markdown_tags%}{%autoescape off%}{{comment_text|markdown}}{%endautoescape%}').render(RequestContext(request,{'comment_text':comment_text}))
-
-    new_comment = Comment.objects.create(description=rendered_comment, by=request.user)
+    rendered_comment_text = Template(
+        '''
+            {%load markdown_tags%}
+            {%autoescape off%}
+                {{ comment_text|markdown }}
+            {%endautoescape%}
+        '''
+    ).render(RequestContext(request, { 
+        'comment_text' : comment_text
+    }))
+    new_comment = Comment.objects.create(description=rendered_comment_text, by=request.user)
     post.comments.add(new_comment)
     
     post.add_notifications(notification_list)
