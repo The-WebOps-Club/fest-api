@@ -79,13 +79,13 @@ def make_page_private( request, page_id ):
 """
 
 @dajaxice_register
-def make_post_public( request, post_id ):
+def chage_post_access( request, post_id, access_specifier ):
 
     post = Post.objects.get(id=post_id)
     if not (check_admin_access_rights( request.user, post )):
         return json.dumps({"msg":"No Access Rights"})
 
-    post.is_public = True;
+    post.access_specifier = access_specifier;
     post.save();
     return json.dumps({"msg" : "done"})
 
