@@ -15,6 +15,7 @@ from notifications.models import Notification
 # Ajax post & comment
 from apps.walls.models import Wall, Post, Comment
 from annoying.functions import get_object_or_None
+from apps.misc.constants import POST_TYPE
 import json
 import re
 
@@ -193,7 +194,12 @@ def query_notifs(user, **kwargs):
     notif_list = Notification.objects.raw(notif_query)
     return notif_list
 
-def get_my_posts(access_obj, wall=None):
+
+"""
+    Old implementation of get_my_posts.
+    Check below for the newer impelemetation
+"""
+def OLD_get_my_posts(access_obj, wall=None):
     """
         Checks all relations from a user to the posts in this wall
     """
@@ -231,6 +237,35 @@ def get_my_posts(access_obj, wall=None):
             return temp.filter(wall=wall).distinct().order_by('-time_created')
         else:
             return temp.all().order_by('-time_created')
+
+"""
+    A newer get_my_posts designed on the PermissionStack class.
+    Uses an already initialized PermissionStack instance to 
+    build a query that retreives the Post objects significant
+    to the user.
+"""
+def get_my_posts(access_obj, wall=None):
+
+    from apps.users.models import Dept, Subdept, Page
+
+    if isinstance(access_obj, User):
+        
+        stack = DEFAULT_POST_PERMISSION_STACK
+        my_query = stack.get_filtered_query( access_obj, Post )
+
+        if wall:
+            my_query = Q(wall=wall) & my_query
+            if access_obj.is_superuser:
+                my_query = Q(wall=wall)
+
+        return Post.objects.filter(my_query).distinct().order_by('-time_created')
+    elif isinstance(access_obj, Subdept) or isinstance(access_obj, Dept) or isinstance(access_obj, Page):
+        temp = access_obj.access_post
+        if wall:
+            return temp.filter(wall=wall).distinct().order_by('-time_created')
+        else:
+            return temp.all().order_by('-time_created')
+
 
 def get_my_walls(user):
     """
@@ -348,7 +383,7 @@ def check_admin_access_rights(access_obj, thing):
         
         my_query = my_query 
 
-        return Post.objects.filter(my_query).distinct().count()
+        return Post.objects.filter( my_query ).distinct().count()
 
 
 """
@@ -389,7 +424,7 @@ class PermissionStack( object ):
         Returns:
             None always
     """
-    def addSubQueryBuilder( self, func, flaglist ):
+    def add_subquery_builder( self, func, flaglist ):
         self.sub_queries.append( [ flaglist, func ] )
 
     """
@@ -403,7 +438,7 @@ class PermissionStack( object ):
         Returns:
             the full query. a django Q object.
     """
-    def getFilteredQuery( self, accessor, accessee ):
+    def get_filtered_query( self, accessor, accessee ):
         queries = []
         for flaglist,sub_query in self.sub_queries:
             flag_filters = [ Q( ( flag_parameter, x ) ) for x in flaglist ]
@@ -435,8 +470,8 @@ class PermissionStack( object ):
 """
 class PostPermissionSubqueries( object ):
     @staticmethod
-    def checkPublicAccess( user, post ):
-        if( user.is_authenticated ):
+    def check_public_access( user, post ):
+        if( user.is_authenticated() ):
             return ( Q(), 'ALLOW_ALL' )
         else:
             return ( Q(), 'BLOCK_ALL' )
@@ -445,7 +480,7 @@ class PostPermissionSubqueries( object ):
         Checks if the person is part of the wall.
     """
     @staticmethod
-    def checkWallAccess( user, post ):
+    def check_wall_access( user, post ):
         erp_profile = access_obj.erp_profile
         erp_coords = erp_profile.coord_relations.all()
         erp_supercoords = erp_profile.supercoord_relations.all()
@@ -469,7 +504,7 @@ class PostPermissionSubqueries( object ):
         Checks if the person is part of the access group of a post or it's wall
     """
     @staticmethod
-    def checkWallAndTagAccess( user, post ):
+    def check_wall_and_tag_access( user, post ):
         erp_profile = access_obj.erp_profile
         erp_coords = erp_profile.coord_relations.all()
         erp_supercoords = erp_profile.supercoord_relations.all()
@@ -503,7 +538,7 @@ class PostPermissionSubqueries( object ):
         own posts. Call this and set all flags.
     """
     @staticmethod
-    def checkCreatorAccess( user, post ):
+    def check_creator_access( user, post ):
         return ( Q( by__id = user.id ),'CONDITIONAL' )
 
     """
@@ -511,16 +546,26 @@ class PostPermissionSubqueries( object ):
         to see all the objects with the associated flags.
     """
     @staticmethod
-    def checkStaffAccess( user, post ):
+    def check_staff_access( user, post ):
         if( user.is_staff ):
             return ( Q(), 'ALLOW_ALL' )
         else:
             return ( Q(), 'BLOCK_ALL' )
 
     @staticmethod
-    def checkSuperuserAccess( user, post ):
+    def check_superuser_access( user, post ):
         if( user.is_superuser ):
             return ( Q(), 'ALLOW_ALL' )
         else:
             return ( Q(), 'BLOCK_ALL' )
+
+    @staticmethod
+    def build_post_permissions_stack():
+        stack = PermissionStack()
+        stack.addSubQueryBuilder( PostPermissionSubqueries.check_public_access,[ POST_TYPE['PUBLIC'] ])
+        stack.addSubQueryBuilder( PostPermissionSubqueries.check_wall_and_tag_access,[ POST_TYPE['PUBLIC'], POST_TYPE['PRIVATE_AND_TAGGED'] ])
+        stack.addSubQueryBuilder( PostPermissionSubqueries.check_wall_access,[ POST_TYPE['PUBLIC'], POST_TYPE['PRIVATE_AND_TAGGED'], POST_TYPE['PRIVATE'] ])
+        stack.addSubQueryBuilder( PostPermissionSubqueries.check_creator_access,[ POST_TYPE['PUBLIC'], POST_TYPE['PRIVATE_AND_TAGGED'], POST_TYPE['PRIVATE'], POST_TYPE['TAGGED'] ])
+        satck.addSubQueryBuilder( PostPermissionSubqueries.check_superuser_access, [ POST_TYPE['PUBLIC'], POST_TYPE['PRIVATE_AND_TAGGED'], POST_TYPE['PRIVATE'], POST_TYPE['TAGGED'] ])
+        return stack
 

@@ -102,3 +102,11 @@ HOSTEL_CHOICES  =(
     ("Sarayu", "Sarayu"),
 )
     
+# post types enumeration....
+
+POST_TYPES = {
+    'PUBLIC': 1,
+    'PRIVATE_AND_TAGGED': 2,
+    'PRIVATE': 3,
+    'TAGGED': 4,
+}
