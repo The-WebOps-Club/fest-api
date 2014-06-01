@@ -37,7 +37,7 @@
 					{{ post.by.get_full_name|default:"" }}
 				</a> 
 				<i class="icon-right"></i>
-				<a href="{% url 'wall' post.wall.id %}">{{ post.wall  }}</a>'s wall. 
+				<a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a>'s wall. 
 
 				<span class="muted small">
 					{{ post.time_created|naturaltime }}
