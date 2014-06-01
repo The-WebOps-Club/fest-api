@@ -81,12 +81,12 @@
 	.notif.unread {
 		background-color : #ffffe5;
 	}
-	/*.if_unread {
+	.notif .if_unread {
 		display : none;
 	}
 	.notif.unread .if_unread {
-		display : inherit;
-	}*/
+		display : inline;
+	}
 	.notif:hover {
 		background-color : #f0f0f0;
 	}
@@ -106,7 +106,7 @@
 
 <script>
 	function click_handler_mark_notif_read($els) {
-		$els.click( function() {
+		$els.click( function(e) {
 			var $el = $(this);
 			if ( $el.data("clicked") ) 
 				return
@@ -127,6 +127,8 @@
 				)
 			}
 			$el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading more notifications")
+			e.preventDefault()
+			e.stopPropagation()
 		})
 	}
 	function dajax_get_notifs(data){

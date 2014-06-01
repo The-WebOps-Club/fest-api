@@ -10,7 +10,7 @@
     data-target="{{ notification.target.id }}" 
     data-wall="{{ notification.target.wall.id }}"
     id="notif_{{ notification.id }}">
-    <a href="javascript:void(0)" class="link_no_style" data-val="{{ notification.id }}">
+    <a href="{% url 'read_notification' notification.id %}" class="link_no_style" data-val="{{ notification.id }}">
     	<div class="profile_pic">
 	        <img class='profile_dp display_pic ' src="" alt='{{ notification.actor.email }}' data-id='{{ notification.actor.id }}' data-fbid='{{ notification.actor.profile.id }}' />
 	    </div>
@@ -25,8 +25,10 @@
 	    <div class="notif_foot">
 	        {{ notification.timestamp|naturaltime }}
 	        <span class='if_unread'>
-	        	· <a href="javascript:void(0)" class="mark_notifs_read_pending" data-val="all">Mark Read</a>
+	        	· 
 	        </span>
+	        <a href="javascript:void(0)" class="if_unread mark_notifs_read_pending" data-val="{{ notification.id }}">Mark Read</a>
+	        
 	    </div>
 	</a>
 </div>
