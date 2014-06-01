@@ -10,7 +10,7 @@
 		</span>
 		<span class="pull-right notifs_link"> | </span>
 		<span class="pull-right notifs_link" id="notifs_read">
-			<a href="{% url 'read_notification' 'all' %}">Mark all Read</a>
+			<a href="javascript:void(0)" class="mark_notifs_read" data-val="all">Mark all Read</a>
 		</span>
 	</div>
 </div>
@@ -163,6 +163,20 @@
 			if ( parseInt($('.popover_notifs .current_page_notifs').val()) == 0 ) {
 				$(".popover_notifs .see_more_notifs").click()
 			}
+
+			$(".popover_notifs .mark_notifs_read").click( function() {
+				var $el = $(this);
+				if ( $el.data("clicked") ) 
+					return
+				Dajaxice.apps.walls.read_notif( function ( data ) {
+					if ( data.error ) {
+						alert('An error occured and your notifications were not marked as read! Please try again.')
+						console.log(data.error)
+					}
+					$el.removeClass("disabled").prop("disabled", false).removeData("clicked")
+				}, {'notif_id' : $(this).data('val') } )
+				$el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading more notifications")
+			})
 		})
 	});
 	

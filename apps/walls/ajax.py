@@ -40,19 +40,27 @@ def hello(request):
 # -------------------------------------------------------------
 # GENERAL AJAXED FUNCTIONS
 @dajaxice_register
-def mark_as_read(request, **kwargs):
-    all_notifs = user.notifications.unread()
-    for i in all_notifs:
+def read_notif(request, notif_id, wall_id=None):
+    user = request.user
+    if notif_id == "all":
+        notifs_list = user.notifications.unread()
+    elif wall_id:
+        notifs_list = user.notifications.unread().filter( description__contains = 'wall:'+wall_id )
+    else:
+        try:
+            notif_id = int(notif_id)
+        except ValueError:
+            return json.dumps( { 'error' : 'notif_id was not an integer' } )
+        notifs_list = user.notifications.filter(id = notif_id)
+        if notifs_list.count() == 0:
+            return json.dumps( { 'error' : 'no notif with the given notif_id was found' } )
+
+    for i in notifs_list:
         i.public = False
         i.save()
-    all_notifs.mark_all_as_read()
-    return json.dumps({"msg" : "done"})
-
-@dajaxice_register
-def mark_wall_as_read( request, wall_id ):
-    request.user.notifications.unread().filter( description__contains = 'wall:'+wall_id ).mark_all_as_read()
-    return json.dumps({"msg" : "done"})
-
+    notifs_list.mark_all_as_read()
+    return json.dumps( { 'success' : 'Successfully marked as read' } )
+    
 """
 Dosent make sense.
 @dajaxice_register

@@ -140,7 +140,7 @@
         
         $( document ).click(function() {
           hide_popups()
-      })
+        })
 
         function on_dom_change() {
             $(".resize_textarea").autosize();
@@ -178,7 +178,26 @@
             })
 
         }        
+        
+        function scroll_to_div($div) {
+            if ( typeof($div) === "string" || $div instanceof String) { // to make sure bad input dont come
+                if ( $div[0] == '#' )
+                    $div = $($div)
+                else
+                    $div = $('#' + $div)
+            }
+            $('html, body').animate({
+                scrollTop: $div.offset().top - 40,
+                scrollLeft: $div.offset().left,
+            }, 500);
+            console.log($div)
+            $div.children().first().addClass("temp-highlight");
+        }
+
         $( document ).ready(function() {
+            var hash = window.location.hash;
+            scroll_to_div(hash)
+            
             var $win = $(window), $doc = $(document);
             $win.scroll(function(){
                 $(".fixedbar").css({
@@ -191,8 +210,16 @@
 
         })
         $(window).bind('load', function () {
+            var hash = window.location.hash;
+            scroll_to_div(hash)
+            
             $(".resize_textarea").autosize()
             on_dom_change()
+        })
+        .bind('hashchange', function(e) {
+            var hash = window.location.hash;
+            e.preventDefault();
+            scroll_to_div(hash)
         })
     </script>
 

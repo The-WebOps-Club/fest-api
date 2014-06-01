@@ -87,7 +87,13 @@
     }
 
     function mark_wall_as_read(){
-        Dajaxice.apps.walls.mark_wall_as_read(function(data) { }, {
+        Dajaxice.apps.walls.read_notif(function(data) { 
+            if ( data.error ) {
+                alert('An error occured and your notifications were not marked as read! Please try again.')
+                console.log(data.error)
+            }
+        }, {
+            'notif_id' : 'wall',
             'wall_id' : "{{ wall.id }}"
         });
     }
