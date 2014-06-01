@@ -1,6 +1,7 @@
 from haystack import indexes
 from models import Post
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.utils.html import strip_tags
 
 class PostIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
@@ -29,3 +30,6 @@ class PostIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_url(self, obj):
     	return obj.get_absolute_url()
+
+    def prepare_description(self, obj):
+        return strip_tags(obj.description)

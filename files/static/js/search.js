@@ -45,7 +45,7 @@ $('#topbar_search_input').on('input', function(){
 		}
 	});
 	$('#subdept_results').html(subdept_append_str);
-
+	$('#post_results').html("<i class='icon-loading-line'></i> Loading results");
 	var post_append_str = "";
 	if (query.length < 3) { $('#post_results').html("<li>Type more than 3 characters to search</li>"); return;}
 	Dajaxice.apps.search.query( 

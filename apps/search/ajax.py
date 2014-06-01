@@ -22,8 +22,6 @@ def hello(request, query):
     #html_content = render_to_string("dash/task_tables/coord_you.html", query_dictionary, RequestContext(request))
     return json.dumps({'query': query})
 
-
-
 @dajaxice_register
 def query(request, query):
 	results = SearchQuerySet().filter(content=query)
