@@ -107,8 +107,8 @@
 {% once post_styles_and_scripts %}
 
 <div class="hidden post_settings_title">
-    <div class="settings_title_inner">
-        <span class="bold settings_title">Post Settings</span>
+    <div class="post_settings_title_inner">
+        <span class="bold post_settings_title">Post Settings</span>
     </div>
 </div>
 
@@ -121,15 +121,15 @@
                 Visibility:
             </div>
             
-            <div class='setting access-specifier' data-access='0' onclick = 'do_change_access()'><a href='javascript:void(0)'>Public</a></div>
-            <div class='setting access-specifier' data-access='1' onclick = 'do_change_access()'><a href='javascript:void(0)'>Only Wall and Tagged</a></div>
-			<div class='setting access-specifier' data-access='2' onclick = 'do_change_access()'><a href='javascript:void(0)'>Only Wall(Private)</a></div>
+            <div class='setting access-specifier' data-access='1' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)'>Public</a></div>
+            <div class='setting access-specifier' data-access='2' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)'>Only Wall and Tagged</a></div>
+			<div class='setting access-specifier' data-access='3' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)'>Only Wall(Private)</a></div>
         </div>
         <div class='frame_wait invisible'>
         	<div class="breaktitle">
-                Loading:
+                Loading...
             </div>
-        	<div class='setting access-specifier' data-access='0' onclick = 'do_change_access()'><a href='javascript:void(0)'>Changing Access. Please wait.</a></div>
+        	<div class='setting'><a href='javascript:void(0)'>Changing Access. Please wait.</a></div>
         </div>
     </div>
 </div>
@@ -247,32 +247,36 @@
 
 	function pre_change_access( el ){
 		var $el = $(el)
-		el.closest('.settings_contents_inner').find('.frame_main').children().addClass('invisible')
-		el.closest('.settings_contents_inner').find('.frame_wait').children().removeClass('invisible')
+		$el.closest('.settings_contents_inner').find('.frame_main').addClass('invisible')
+		$el.closest('.settings_contents_inner').find('.frame_wait').removeClass('invisible')
 
 	}
 	// make the AJAX call.
-	function change_access_sepcifier( el, callback ){
+	function change_access_specifier( el, callback ){
 		var $el = $(el)
 		var post_id = $el.closest('.settings_contents_inner').data('post-id');
 		var access_specifier = $el.data('access');
-		Dajaxice.apps.walls.change_access_sepcifier(function( response ){
+		console.log(post_id);
+		console.log(access_specifier);
+		console.log($el)
+		Dajaxice.apps.walls.change_post_access(function( response ){
 			if(!response.msg.localeCompare('done')){
-				callback( el )
+				callback( el, access_specifier )
 			}
 		},{post_id:post_id,access_specifier:access_specifier});
 	}
 	// reset UI on finish.
-	function post_change_access( el ){
+	function post_change_access( el, access_specifier ){
 		var $el = $(el)
-		$el.closest('.settings_contents_inner').find('.frame_main').children().removeClass('selected').removeClass('invisible')
-		$el.closest('.settings_contents_inner').find('.frame_wait').children().removeClass('selected').addClass('invisible')
+		$el.closest('.settings_contents_inner').find('.access-specifier').children().removeClass('selected')
+		$el.closest('.settings_contents_inner').find('.frame_wait').addClass('invisible')
+		$el.closest('.settings_contents_inner').find('.frame_main').removeClass('invisible')
 		$el.closest('.settings_contents_inner').find('.access-specifier[data-access='+access_specifier+']').children().addClass('selected')
 	}
 	// function to be called when a DOM element is clicked.
-	function do_change_access( ){
+	function do_change_access(){
 		pre_change_access( this );
-		change_access_sepcifier( this, post_change_access );
+		change_access_specifier( this, post_change_access );
 	}
 	// utility function to bind this flow to all elements with tag access-specifers.
 	function bind_access_specifiers( el ){
@@ -369,8 +373,9 @@
         	var $el = $(".post_settings_content").clone()
         	console.log($el)
         	console.log(access)
+        	console.log(post_id)
         	$el.find('.access-specifier[data-access='+access+']').children().addClass('selected');
-        	$el.find('.settings_contents_inner').data('post-id',post_id);
+        	$el.find('.settings_contents_inner').attr('data-post-id',post_id);
         	return $el.html()
     	}
 

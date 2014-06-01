@@ -87,7 +87,7 @@ def make_page_private( request, page_id ):
 """
 
 @dajaxice_register
-def chage_post_access( request, post_id, access_specifier ):
+def change_post_access( request, post_id, access_specifier ):
 
     post = Post.objects.get(id=post_id)
     if not (check_admin_access_rights( request.user, post )):
