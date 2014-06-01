@@ -199,6 +199,7 @@
 
 <script type="text/javascript">
 	function dajax_get_comments(data){
+		exhausted = data.exhausted;
 		if (!data.exhausted) { 
 			$value = $("#post_" + data.post_id + " .current_page_comments")
 			$value.val( parseInt($value.val()) + 1 );
@@ -214,8 +215,11 @@
 				temp_plural = "s"
 			$temp.removeClass("disabled").prop("disabled", false).removeData("clicked")
 				.html( temp_no + " comment" + temp_plural + " hidden. See more")
-		} else {
-			$("#post_" + data.post_id + " .see_more_comments").html('No more to load');
+			if ( temp_no == 0 )
+				exhausted = 1
+		} 
+		if ( exhausted == 1 ) {
+			$("#post_" + data.post_id + " .see_more_comments").html('No more to load').unbind("click").removeClass("see_more_comments");
 		}
 		on_dom_change()
 
