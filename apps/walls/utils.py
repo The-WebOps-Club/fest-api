@@ -180,7 +180,11 @@ def query_notifs(user, **kwargs):
                 WHERE b.target_object_id = a.target_object_id 
                     AND b.timestamp > a.timestamp
                     AND b.recipient_id=%(user_id)d
-            ) ) AND a.recipient_id=%(user_id)d )
+            """
+    if notif_unread != None:
+        notif_query += """AND b.unread = %(notif_unread)s """
+    notif_query += """
+            ) ) )
             GROUP BY a.target_object_id 
             ORDER BY a.unread DESC, a.timestamp DESC
         """
