@@ -284,7 +284,8 @@ def check_access_rights(access_obj, thing):
         erp_pages = erp_profile.page_relations.all()
         
         # Have access to the thing directly
-        my_query = Q(id=thing.id) & ( \
+        id_query = Q(id=thing.id)
+        my_query =  ( \
                 Q(access_users__id__exact=access_obj.id) | \
                 Q(access_subdepts__in=erp_coords) | \
                 Q(access_depts__in=erp_supercoords) | \
@@ -310,7 +311,7 @@ def check_access_rights(access_obj, thing):
                 Q(wall__subdept__dept__in=erp_supercoords) | \
                 Q(wall__subdept__dept__in=erp_cores) | \
                 Q(wall__dept__subdepts__in=erp_coords)
-
+            my_query = my_query & id_query
             return Post.objects.filter(my_query).distinct().count()
         elif isinstance(thing, Wall):
             # + Directly related to the wall
@@ -325,6 +326,7 @@ def check_access_rights(access_obj, thing):
                 Q(subdept__dept__in=erp_supercoords) | \
                 Q(subdept__dept__in=erp_cores) | \
                 Q(dept__subdepts__in=erp_coords)
+            my_query = my_query & id_query
             return Wall.objects.filter(my_query).distinct().count()
     elif isinstance(access_obj, Subdept):
         return thing.access_subdepts.filter(id=access_obj.id).distinct().count()
