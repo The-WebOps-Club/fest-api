@@ -15,9 +15,11 @@
                     </a></li>
                     {% endcomment %}
                     <li><a href='javascript:void(0)' class='jewelButton notifButton'>
-                    	{% if request.user.notifications.unread.count != 0 %}
-                    		<span class='label label-info pull-right counter'>{{ request.user.notifications.unread.count }}</span>
-                    	{% endif %}
+                    	{% with request.user.notifications.unread.count as notif_count %}
+                            {% if notif_count != 0 %}
+                        		<span class='label label-info pull-right counter'>{{ notif_count }}</span>
+                        	{% endif %}
+                        {% endwith %}
                     </a></li>
                 </ul>
                 <ul class='nav topbar_searchbar searchbar'>

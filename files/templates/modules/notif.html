@@ -3,14 +3,14 @@
 {% load markdown_tags %}
 {% load once %}
 
-
-<div class="notif {% if notification.unread and notification.public %}unread{% endif %}" 
+<div class="notif {% if notification.unread %}unread{% endif %}" 
     data-actor="{{ notification.actor.id }}" 
     data-recipient="{{ notification.recipient.id }}"
     data-action-object="{{ notification.action_object.id }}" 
     data-target="{{ notification.target.id }}" 
-    data-wall="{{ notification.target.wall.id }}">
-    <a href="javascript:void(0)" class="link_no_style mark_notifs_read" style="display : block; width : 100%; height : 100%;" data-val="{{ notification.id }}">
+    data-wall="{{ notification.target.wall.id }}"
+    id="notif_{{ notification.id }}">
+    <a href="javascript:void(0)" class="link_no_style" data-val="{{ notification.id }}">
     	<div class="profile_pic">
 	        <img class='profile_dp display_pic ' src="" alt='{{ notification.actor.email }}' data-id='{{ notification.actor.id }}' data-fbid='{{ notification.actor.profile.id }}' />
 	    </div>
@@ -24,7 +24,9 @@
 	    </div>
 	    <div class="notif_foot">
 	        {{ notification.timestamp|naturaltime }}
-	        · <a href="javascript:void(0)" class="mark_notifs_read" data-val="all">Mark Read</a>
+	        <span class='if_unread'>
+	        	· <a href="javascript:void(0)" class="mark_notifs_read_pending" data-val="all">Mark Read</a>
+	        </span>
 	    </div>
 	</a>
 </div>

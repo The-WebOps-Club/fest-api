@@ -81,6 +81,12 @@
 	.notif.unread {
 		background-color : #ffffe5;
 	}
+	/*.if_unread {
+		display : none;
+	}
+	.notif.unread .if_unread {
+		display : inherit;
+	}*/
 	.notif:hover {
 		background-color : #f0f0f0;
 	}
@@ -99,6 +105,30 @@
 
 
 <script>
+	function click_handler_mark_notif_read($els) {
+		$els.click( function() {
+			var $el = $(this);
+			if ( $el.data("clicked") ) 
+				return
+			Dajaxice.apps.walls.read_notif( function ( data ) {
+				if ( data.error ) {
+					alert('An error occured and your notifications were not marked as read! Please try again.')
+					console.log(data.error)
+				}
+				$el.removeClass("disabled").prop("disabled", false).removeData("clicked")
+			}, {'notif_id' : $(this).data('val') } )
+			if ( $(this).data('val') == "all" ) {
+				$(".notif").removeClass("unread")
+				$(".notifButton .counter").remove()
+			} else {
+				$el.closest(".notif").removeClass("unread")
+				$(".notifButton .counter").text(
+					parseInt($(".notifButton .counter").text()) - 1
+				)
+			}
+			$el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading more notifications")
+		})
+	}
 	function dajax_get_notifs(data){
 		if (!data.exhausted) {
 	        $(".notifs_contents_inner .see_more_notifs").before(data.append_string);
@@ -111,6 +141,8 @@
         	$(".notifs_contents_inner .see_more_notifs").html('No more to load');
     	}
     	// on_dom_change()
+    	click_handler_mark_notif_read($(".mark_notifs_read_pending"))
+    	$(".mark_notifs_read_pending").addClass(".mark_notifs_read").removeClass(".mark_notifs_read_pending")
 	}
 	function notifs_title() {
 		return $(".notifs_title").html()
@@ -163,20 +195,7 @@
 			if ( parseInt($('.popover_notifs .current_page_notifs').val()) == 0 ) {
 				$(".popover_notifs .see_more_notifs").click()
 			}
-
-			$(".popover_notifs .mark_notifs_read").click( function() {
-				var $el = $(this);
-				if ( $el.data("clicked") ) 
-					return
-				Dajaxice.apps.walls.read_notif( function ( data ) {
-					if ( data.error ) {
-						alert('An error occured and your notifications were not marked as read! Please try again.')
-						console.log(data.error)
-					}
-					$el.removeClass("disabled").prop("disabled", false).removeData("clicked")
-				}, {'notif_id' : $(this).data('val') } )
-				$el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading more notifications")
-			})
+			click_handler_mark_notif_read($(".popover_notifs .mark_notifs_read"))
 		})
 	});
 	
