@@ -76,10 +76,12 @@ def wall (request, wall_id=None):
     wall_admin =  user.is_superuser or ( check_access_rights( user, wall ) and user.is_staff )
     
         # Get wall posts
-    if not wall_accessible:
-        wall_posts = get_my_posts(user, wall)[:5]
-    if wall_accessible:
-        wall_posts = Post.objects.filter(wall=wall).order_by('-time_created')[:5]
+    #if not wall_accessible:
+    #    wall_posts = get_my_posts(user, wall)[:5]
+    #if wall_accessible:
+    #    wall_posts = Post.objects.filter(wall=wall).order_by('-time_created')[:5]
+    # single function to get all relevant posts.
+    wall_posts = get_my_posts(user, wall)[:5]
     
     wall_parent = wall.parent
     #import pdb;pdb.set_trace();
