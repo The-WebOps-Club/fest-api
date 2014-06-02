@@ -14,6 +14,7 @@ from apps.users.models import UserProfile, ERPProfile, Dept, Subdept, Page
 from notifications.models import Notification
 # Ajax post & comment
 from apps.walls.models import Wall, Post, Comment
+from apps.walls.permissions import PermissionStack, DEFAULT_POST_PERMISSION_STACK
 from annoying.functions import get_object_or_None
 import json
 import re
@@ -199,7 +200,12 @@ def query_notifs(user, **kwargs):
     notif_list = Notification.objects.raw(notif_query)
     return notif_list
 
-def get_my_posts(access_obj, wall=None):
+
+"""
+    Old implementation of get_my_posts.
+    Check below for the newer impelemetation
+"""
+def OLD_get_my_posts(access_obj, wall=None):
     """
         Checks all relations from a user to the posts in this wall
     """
@@ -237,6 +243,35 @@ def get_my_posts(access_obj, wall=None):
             return temp.filter(wall=wall).distinct().order_by('-time_created')
         else:
             return temp.all().order_by('-time_created')
+
+"""
+    A newer get_my_posts designed on the PermissionStack class.
+    Uses an already initialized PermissionStack instance to 
+    build a query that retreives the Post objects significant
+    to the user.
+"""
+def get_my_posts(access_obj, wall=None):
+
+    from apps.users.models import Dept, Subdept, Page
+
+    if isinstance(access_obj, User):
+        
+        stack = DEFAULT_POST_PERMISSION_STACK
+        my_query = stack.get_filtered_query( access_obj, Post )
+
+        if wall:
+            my_query = Q(wall=wall) & my_query
+            if access_obj.is_superuser:
+                my_query = Q(wall=wall)
+
+        return Post.objects.filter(my_query).distinct().order_by('-time_created')
+    elif isinstance(access_obj, Subdept) or isinstance(access_obj, Dept) or isinstance(access_obj, Page):
+        temp = access_obj.access_post
+        if wall:
+            return temp.filter(wall=wall).distinct().order_by('-time_created')
+        else:
+            return temp.all().order_by('-time_created')
+
 
 def get_my_walls(user):
     """
@@ -354,4 +389,8 @@ def check_admin_access_rights(access_obj, thing):
         
         my_query = my_query 
 
-        return Post.objects.filter(my_query).distinct().count()
+        return Post.objects.filter( my_query ).distinct().count()
+
+
+
+

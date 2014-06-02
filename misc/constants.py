@@ -1,3 +1,4 @@
+
 GENDER_CHOICES = (
     ('M', 'Male'), 
     ('F', 'Female')
@@ -102,3 +103,12 @@ HOSTEL_CHOICES  =(
     ("Sarayu", "Sarayu"),
 )
     
+# post types enumeration....
+
+POST_TYPE = {
+    'PUBLIC': 1,
+    'PRIVATE_AND_TAGGED': 2,
+    'PRIVATE': 3,
+    'TAGGED': 4,
+}
+

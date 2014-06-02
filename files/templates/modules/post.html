@@ -6,7 +6,7 @@
 
 {# Remember : "post" and "notification" are keywords used here #}
 
-<div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container">
+<div id="post_{{ post.id }}" data-id="{{ post.id }}" class="row-fluid post_container" data-access="{{ post.access_specifier }}">
 	<div class="news_post span12">
 		{% if notification %}
 		<div class="row-fluid news_notif_line">
@@ -32,7 +32,7 @@
 		</div>
 		<div class="news_main">
 			<div class="news_head">
-				<i class="icon-chevron-down pull-right news_post_settings" style="display : none;"></i>
+				<i class="icon-chevron-down pull-right news_post_settings post-settings-btn" style="display : none;"></i>
 				<a class="news_profile_name" href="{% url 'profile' post.by.id %}">
 					{{ post.by.get_full_name|default:"" }}
 				</a> 
@@ -121,7 +121,37 @@
 	</div>
 </div>
 
+
 {% once post_styles_and_scripts %}
+
+<div class="hidden post_settings_title">
+    <div class="post_settings_title_inner">
+        <span class="bold post_settings_title">Post Settings</span>
+    </div>
+</div>
+
+<div class="hidden post_settings_content">
+    <div class="settings_contents_inner" data-post-id = '-1'>
+
+        <div class='frame_main'>
+        <div class='breakpoint'></div>
+            <div class="breaktitle">
+                Visibility:
+            </div>
+            
+            <div class='setting access-specifier' data-access='1' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)'>Public</a></div>
+            <div class='setting access-specifier' data-access='2' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)'>Only Wall and Tagged</a></div>
+			<div class='setting access-specifier' data-access='3' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)'>Only Wall(Private)</a></div>
+        </div>
+        <div class='frame_wait invisible'>
+        	<div class="breaktitle">
+                Loading...
+            </div>
+        	<div class='setting'><a href='javascript:void(0)'>Changing Access. Please wait.</a></div>
+        </div>
+    </div>
+</div>
+
 <style>
 	.news_notif_line {
 		padding-bottom : 10px;
@@ -177,6 +207,9 @@
 	.access-indicator{
 
 	}
+	.invisible{
+		display: none;
+	}
 	.news_comment.see_more_comments > .news_comment{
 		display: none;
 	}
@@ -224,6 +257,51 @@
 		on_dom_change()
 
 	}
+
+	/*
+	*	A set of functions handling access changing.
+	*/
+
+
+	function pre_change_access( el ){
+		var $el = $(el)
+		$el.closest('.settings_contents_inner').find('.frame_main').addClass('invisible')
+		$el.closest('.settings_contents_inner').find('.frame_wait').removeClass('invisible')
+
+	}
+	// make the AJAX call.
+	function change_access_specifier( el, callback ){
+		var $el = $(el)
+		var post_id = $el.closest('.settings_contents_inner').data('post-id');
+		var access_specifier = $el.data('access');
+		console.log(post_id);
+		console.log(access_specifier);
+		console.log($el)
+		Dajaxice.apps.walls.change_post_access(function( response ){
+			if(!response.msg.localeCompare('done')){
+				callback( el, access_specifier )
+			}
+		},{post_id:post_id,access_specifier:access_specifier});
+	}
+	// reset UI on finish.
+	function post_change_access( el, access_specifier ){
+		var $el = $(el)
+		$el.closest('.settings_contents_inner').find('.access-specifier').children().removeClass('selected')
+		$el.closest('.settings_contents_inner').find('.frame_wait').addClass('invisible')
+		$el.closest('.settings_contents_inner').find('.frame_main').removeClass('invisible')
+		$el.closest('.settings_contents_inner').find('.access-specifier[data-access='+access_specifier+']').children().addClass('selected')
+	}
+	// function to be called when a DOM element is clicked.
+	function do_change_access(){
+		pre_change_access( this );
+		change_access_specifier( this, post_change_access );
+	}
+	// utility function to bind this flow to all elements with tag access-specifers.
+	function bind_access_specifiers( el ){
+		$('.access-specifier').click( do_change_access );
+	}
+
+
 	$( document ).ready(function() {
 
 		$(".news_post").mouseover( function() {
@@ -283,6 +361,42 @@
 			$el.after("Acknowledged")
 			$el.remove()
 		})
+		$(".post-settings-btn").click( function(e) {
+			console.log('clicked')
+			e.stopPropagation();
+			hide_popups()
+			$(this).popover("show")
+    	})
+    	$(".post-settings-btn").popover({
+        	"animate": true,
+        	"delayIn": 200,
+        	"delayOut": 200,
+        	"placement": "below",
+        	"html": true,
+        	"title": settings_title,
+        	"content": settings_content,
+        	"trigger": "manual",
+        	"myClass": "popover_post_settings"
+    	})
+    	function settings_title() {
+    		return $(".post_settings_title").html()
+
+    	}
+
+    	function settings_content() {
+       		console.log(this)
+    		var access  = $(this).closest('.post_container').data('access')
+    		var post_id  = $(this).closest('.post_container').data('id')
+
+        	var $el = $(".post_settings_content").clone()
+        	console.log($el)
+        	console.log(access)
+        	console.log(post_id)
+        	$el.find('.access-specifier[data-access='+access+']').children().addClass('selected');
+        	$el.find('.settings_contents_inner').attr('data-post-id',post_id);
+        	return $el.html()
+    	}
+
 	})
 </script>
 {% endonce %}

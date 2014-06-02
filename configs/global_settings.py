@@ -1,4 +1,6 @@
 import os, sys, django, random, re
+#import apps.walls.utils
+
 gettext = lambda s: s
 
 
@@ -529,3 +531,4 @@ HAYSTACK_CONNECTIONS = {
         'URL': 'http://127.0.0.1:8983/solr'
     },
 }
+#DEFAULT_POST_PERMISSION_STACK = PostPermissionSubqueries.build_post_permissions_stack()
