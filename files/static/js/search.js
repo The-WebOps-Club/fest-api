@@ -45,7 +45,7 @@ $('#topbar_search_input').on('input', function(){
 		}
 	});
 	$('#subdept_results').html(subdept_append_str);
-	$('#post_results').html("<i class='icon-loading-line'></i> Loading results");
+	$('#post_results').html("<li><i class='icon-loading-line'></i> Loading results</li>");
 	var post_append_str = "";
 	if (query.length < 3) { $('#post_results').html("<li>Type more than 3 characters to search</li>"); return;}
 	Dajaxice.apps.search.query( 
@@ -58,8 +58,9 @@ $('#topbar_search_input').on('input', function(){
 				} else {
 					obj.subject = "<strong>"+obj.subject+"</strong>:<br>";
 				}
-				post_append_str += "<li class='post'><a href='"+obj.url+"'><span class='text'>"+obj.author+"</span><i class='icon-right'></i><span class='text'>"+obj.wall+"</span><br>"+obj.created+"<br>"+obj.subject+obj.description+"</a></li>";
+				post_append_str += "<li class='post'><a href='"+obj.url+"'><span class='text'>"+obj.author+"</span> <i class='icon-right'> </i> <span class='text'>"+obj.wall+"</span><br>"+obj.created+"<br>"+obj.subject+obj.description+"</a></li>";
 			});
+			if (post_append_str === "") post_append_str = '<li>No matching results</li>';
 			$('#post_results').html(post_append_str);
 		},
 		{'query': query}

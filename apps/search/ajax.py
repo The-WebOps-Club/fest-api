@@ -14,6 +14,8 @@ import json
 
 from haystack.query import SearchQuerySet
 
+from apps.walls.utils import get_my_posts
+
 @dajaxice_register
 def hello(request, query):
     """
@@ -24,6 +26,10 @@ def hello(request, query):
 
 @dajaxice_register
 def query(request, query):
+	user = request.user
 	results = SearchQuerySet().filter(content=query)
 	results_list = [q.get_stored_fields() for q in results]
+	for post in results_list:
+		print post
+	posts = get_my_posts(user)
 	return json.dumps(results_list)
