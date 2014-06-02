@@ -1,5 +1,5 @@
 var user_result = "<li><a href='#'><img src='img/biyi.jpg' /><span class='text'>Biyi Adetunji</span><span class='category'>Lekki, Lagos, Nigeria</span></a></li>";
-
+var exceed_flag = false;
 $('#topbar_search_input').focus(function(){
 	$('#search-suggestion').show();
 });
@@ -50,6 +50,7 @@ $('#topbar_search_input').on('input', function(){
 	if (query.length < 3) { $('#post_results').html("<li>Type more than 3 characters to search</li>"); return;}
 	Dajaxice.apps.search.query( 
 		function(data){
+			if (data.length > 3) exceed_flag = true;
 			data = data.splice(0,3);
 			if (data.length === 0) {post_append_str = '<li>No matching results</li>';}
 			$.each(data, function(i, obj){
@@ -59,8 +60,10 @@ $('#topbar_search_input').on('input', function(){
 					obj.subject = "<strong>"+obj.subject+"</strong>:<br>";
 				}
 				post_append_str += "<li class='post'><a href='"+obj.url+"'><span class='text'>"+obj.author+"</span> <i class='icon-right'> </i> <span class='text'>"+obj.wall+"</span><br>"+obj.created+"<br>"+obj.subject+obj.description+"</a></li>";
+				
 			});
-			if (post_append_str === "") post_append_str = '<li>No matching results</li>';
+			if (exceed_flag) post_append_str += "<li class='post'><a href='/search?q="+query+"'><span class='text'>More results</span></a></li>";
+			if (post_append_str === "") post_append_str = '<li class=>No matching results</li>';
 			$('#post_results').html(post_append_str);
 		},
 		{'query': query}

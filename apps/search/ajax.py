@@ -29,7 +29,8 @@ def query(request, query):
 	user = request.user
 	results = SearchQuerySet().filter(content=query)
 	results_list = [q.get_stored_fields() for q in results]
+	accessible_posts_id = [post.id for post in get_my_posts(user)]
 	for post in results_list:
-		print post
-	posts = get_my_posts(user)
+		if post['post_id'] not in accessible_posts_id:
+			results_list.remove(post)
 	return json.dumps(results_list)

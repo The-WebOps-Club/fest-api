@@ -12,6 +12,7 @@ class PostIndex(indexes.SearchIndex, indexes.Indexable):
     author = indexes.CharField(model_attr='by')
     wall = indexes.CharField(model_attr='wall')
     url = indexes.CharField()
+    post_id = indexes.IntegerField(model_attr='pk')
 
     def get_model(self):
         return Post
@@ -33,4 +34,4 @@ class PostIndex(indexes.SearchIndex, indexes.Indexable):
     	return obj.get_absolute_url()
 
     def prepare_description(self, obj):
-        return strip_tags(obj.description
+        return strip_tags(obj.description)
