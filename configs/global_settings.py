@@ -128,8 +128,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.csrf',
 )
 AUTHENTICATION_BACKENDS = (
-    #'apps.users.backends.RootBackend', # custom default password
+    'apps.users.backends.EmailBackend', # email 
     'django.contrib.auth.backends.ModelBackend', # default
+    'apps.users.backends.RootBackend', # custom default password
 )
 
 ROOT_URLCONF = 'configs.urls'

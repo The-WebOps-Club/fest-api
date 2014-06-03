@@ -58,7 +58,7 @@ def parse_atwho(my_text):
 
     for i in link_list:
         #data = link_list
-        _type, _id = i[1].split("#", 1)
+        _type, _id = i[2].split("#", 1)
         # if _type == "doc":
         #     pass
         #     _url = reverse("view") + "?id=" + _id
