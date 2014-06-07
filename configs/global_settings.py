@@ -16,7 +16,7 @@ DJANGO_VERSION = django.get_version()
 
 ALLOWED_HOSTS = ['*']
 
-
+PERMISSION_COMMAND = False
 #Absolute URL where the site has been hosted. Don't forget the trailing slash.
 SITE_URL = 'http://localhost:8000/'
 
