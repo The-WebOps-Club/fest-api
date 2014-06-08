@@ -225,7 +225,8 @@ def create_user(request, email, first_name, last_name, supercoord):
 
     call_command('jsonify_data')
     call_command('collectstatic', interactive=False)
-    
+    if settings.PERMISSION_COMMAND:
+        os.system('/home/saarango/git/fest-api/runscript')
     return json.dumps( { 
         'message' : 'Successfully created <b>' + email + '</b>. <br />An email will be sent with the password to the given email address in 15mins.<br/>Please ask them to check spam !<br /> IF they do not get an email, ask them to use the forgot password to create a password',
         'success' : 'yes',
