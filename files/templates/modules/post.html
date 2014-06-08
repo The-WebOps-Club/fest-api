@@ -48,24 +48,6 @@
 				{% autoescape off %}
 				{% if post.subject %}
 				<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} 
-
-					<!--{% with user|check_access:post as admin %}
-					{% if admin %}
-					<a class='post-access-change-btn pull-right link_no_style' href='javascript:void(0)'>
-						{% endif %}
-						<span class="pull-right label notice label-head access-indicator">
-							{% if post.is_public %}
-							PUBLIC
-							{% else %}
-							PRIVATE
-							{% endif %}
-						</span>
-						{% if admin %}
-					</a>
-					{% endif %}
-					{% endwith %}
-					-->
-
 				</p>
 				{% endif %}
 				{{ post.description }}

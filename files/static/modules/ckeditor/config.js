@@ -4,37 +4,35 @@
  */
 
 CKEDITOR.editorConfig = function( config ) {
-	// Define changes to default configuration here.
-	// For complete reference see:
 	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
 
 	// The toolbar groups arrangement, optimized for two toolbar rows.
 	config.toolbarGroups = [
-		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
-		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
-		{ name: 'links' },
+		//{ name: 'clipboard',   groups: [ /*'clipboard', */'undo' ] },
+		//{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
+		{ name: 'links'},
 		{ name: 'insert' },
-		{ name: 'forms' },
-		{ name: 'tools' },
-		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
-		{ name: 'others' },
-		'/',
+		//{ name: 'forms' },
+		//{ name: 'tools' },
+		//{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
+		//{ name: 'others' },
+		//'/',
 		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
+		{ name: 'paragraph',   groups: [ 'list', 'indent', ] },
 		{ name: 'styles' },
-		{ name: 'colors' },
-		{ name: 'about' }
+//		{ name: 'colors' },
 	];
 
 	// Remove some buttons provided by the standard plugins, which are
 	// not needed in the Standard(s) toolbar.
-	config.removeButtons = 'Underline,Subscript,Superscript';
+	config.removeButtons = 'horizontalrule,table,Format,Strike,Subscript,Superscript,Anchor';
 	config.resize_enabled = true;
 	// Set the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';
 
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
-	config.skin = 'kama';
-	config.extraPlugins = 'resize,attach';
+	config.skin = 'moono';
+	config.extraPlugins = 'resize,attach,';
+	config.removePlugins = 'horizontalrule,table,liststyle,tabletools,contextmenu,specialchar,Strike,Subscript,Superscript,Anchor';
 };

@@ -604,8 +604,8 @@
         $inputor = this.$inputor;
         if ($inputor.attr('contentEditable') === 'true') {
           class_name = "atwho-view-flag atwho-view-flag-" + (this.get_opt('alias') || this.at);
-          content_node = "" + content + "<span contenteditable='false'>&nbsp;<span>";
-          insert_node = "<span contenteditable='false' class='" + class_name + "'>" + content_node + "</span>";
+          content_node = "" + content ;//+ "<span contenteditable='false'>&nbsp;<span>";
+          insert_node = "<span oninput='' class='" + class_name + "'>" + content_node + "</span>";
           $insert_node = $(insert_node, this.oDocument).data('atwho-data-item', $li.data('item-data'));
           if (this.oDocument.selection) {
             $insert_node = $("<span contenteditable='true'></span>", this.oDocument).html($insert_node);

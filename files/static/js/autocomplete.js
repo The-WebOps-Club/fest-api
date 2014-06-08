@@ -198,7 +198,8 @@ function setup_autocomplete_lists() {
         max_len: 20,
     }
     if(contentEditableActive)
-        at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><img src=\""+site_url+"static/img/neutral.png\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name}</li>"
+        //at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><img src=\""+site_url+"static/img/neutral.png\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name}</li>"
+        at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><i class=\"icon-user\"></i>${name}</a>'>${name}</li>"
   
     $("#topbar_search_input").atwho({
         at: "",

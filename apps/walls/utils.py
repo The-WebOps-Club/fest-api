@@ -53,17 +53,11 @@ def parse_atwho(my_text):
     #markdown_link_regex = re.compile("\[.*?\] \((.*?) \".*?\"\)", re.IGNORECASE) # need  to test this.
     markdown_link_regex = re.compile("\[([^\]]+)\]\(([^)\"]+)(?: \\\"([^\\\"]+)\\\")?\)", re.IGNORECASE)
     direct_link_regex = re.compile("data-notify=\\\"([^\\\"]+)\\\"", re.IGNORECASE)
-    link_list = []
-    link_list = markdown_link_regex.findall(my_text) + direct_link_regex.findall(my_text)
+    link_list = [i[2] for i in markdown_link_regex.findall(my_text)]
+    link_list += [i for i in direct_link_regex.findall(my_text)]
 
     for i in link_list:
-        #data = link_list
-        _type, _id = i[2].split("#", 1)
-        # if _type == "doc":
-        #     pass
-        #     _url = reverse("view") + "?id=" + _id
-        # else:
-        #     _url = reverse("my_wall", kwargs={"owner_type":_type, "owner_id":_id})
+        _type, _id = i.split("#", 1)
         if _type == "user":
             notification_list.append(User.objects.get(id=_id))
         elif _type == "subdept":
