@@ -27,12 +27,17 @@ restart-project.sh
 venv
 deps
 tmp
+temp
 
 # User specific files
 files/media/*
 files/static-collected/*
 files/static/img/fest_pics/*
 files/static/json/*
+files/templates/base/meta.html
+static-permission.sh
+runscript.c
+runscript
 # General configs
 configs/settings.py
 configs/settings.bak*

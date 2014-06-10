@@ -119,10 +119,14 @@ class Wall(models.Model):
         return query
         
     def notify_users(self):
-        return User.objects.filter( self.notiy_users_query() )
+        return User.objects.filter( self.notiy_users_query() ).distinct()
     
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('apps.walls.views.wall', args=(self.pk,))
+    
 
 class PostInfo(models.Model):
     """
@@ -159,7 +163,7 @@ class PostInfo(models.Model):
         wall = post.wall
         if not notif_list:
             # Get my wall and posts which I am to get notifs for
-            notif_list  = User.objects.filter(post.notify_users_query() | wall.notify_users_query())
+            notif_list  = User.objects.filter(post.notify_users_query() | wall.notify_users_query()).distinct()
         for recipient in notif_list:
             # Check if receipient already has notif on this post
             curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=post.id)
@@ -178,6 +182,9 @@ class PostInfo(models.Model):
                     description = 'wall:' + str(wall.pk),
                 )
 
+    def get_absolute_url(self):
+        post_str = '#post_' + str(self.parent_post.all()[0].pk)
+        return reverse('apps.walls.views.wall', args=(self.parent_post.all()[0].wall.pk,)) + post_str
     class Meta:
         abstract = True
         ordering = ['time_created']
@@ -273,7 +280,7 @@ class Post(PostInfo):
         return query
         
     def notify_users(self):
-        return User.objects.filter( self.notiy_users_query() )
+        return User.objects.filter( self.notiy_users_query() ).distinct()
         
     def get_absolute_url(self):
         post_str = '#post_' + str(self.pk)

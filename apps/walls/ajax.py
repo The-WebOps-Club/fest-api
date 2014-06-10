@@ -40,19 +40,27 @@ def hello(request):
 # -------------------------------------------------------------
 # GENERAL AJAXED FUNCTIONS
 @dajaxice_register
-def mark_as_read(request, **kwargs):
-    all_notifs = user.notifications.unread()
-    for i in all_notifs:
+def read_notif(request, notif_id, wall_id=None):
+    user = request.user
+    if notif_id == "all":
+        notifs_list = user.notifications.unread()
+    elif wall_id:
+        notifs_list = user.notifications.unread().filter( description__contains = 'wall:'+wall_id )
+    else:
+        try:
+            notif_id = int(notif_id)
+        except ValueError:
+            return json.dumps( { 'error' : 'notif_id was not an integer' } )
+        notifs_list = user.notifications.filter(id = notif_id)
+        if notifs_list.count() == 0:
+            return json.dumps( { 'error' : 'no notif with the given notif_id was found' } )
+
+    for i in notifs_list:
         i.public = False
         i.save()
-    all_notifs.mark_all_as_read()
-    return json.dumps({"msg" : "done"})
-
-@dajaxice_register
-def mark_wall_as_read( request, wall_id ):
-    request.user.notifications.unread().filter( description__contains = 'wall:'+wall_id ).mark_all_as_read()
-    return json.dumps({"msg" : "done"})
-
+    notifs_list.mark_all_as_read()
+    return json.dumps( { 'success' : 'Successfully marked as read' } )
+    
 """
 Dosent make sense.
 @dajaxice_register
@@ -258,10 +266,20 @@ def create_post(request, wall_id, post_form):
     data = deserialize_form(post_form)
    
     post_text = data["new_post"]
-    post_subject = data["new_post_subject"]
+    
+    post_subject = data.get("new_post_subject", "")
     post_text, notification_list = parse_atwho(post_text)
-
-    new_post = Post.objects.create(subject=post_subject, description=post_text, wall=wall, by=request.user)
+    rendered_post_text = Template(
+        '''
+            {%load markdown_tags%}
+            {%autoescape off%}
+                {{ post_text|markdown }}
+            {%endautoescape%}
+        '''
+    ).render(RequestContext(request, { 
+        'post_text' : post_text
+    }))
+    new_post = Post.objects.create(subject=post_subject, description=rendered_post_text, wall=wall, by=request.user)
     
     new_post.add_notifications(notification_list)
     if wall.parent:
@@ -282,6 +300,7 @@ def quick_post(request, post_form):
     # create a new post
     append_string = ""
     data = deserialize_form(post_form)
+    post_subject = data.get("new_post_subject", "")
     post_text = data["quick_post"]
     post_text, notification_list = parse_atwho(post_text)
 
@@ -293,7 +312,19 @@ def quick_post(request, post_form):
             obj_wall =  obj.wall
         else:
             obj_wall =  obj.erp_profile.wall
-        new_post = Post.objects.create(description=post_text, wall=obj_wall, by=request.user)
+    
+        rendered_post_text = Template(
+           '''
+                {%load markdown_tags%}
+                {%autoescape off%}
+                    {{ post_text|markdown }}
+                {%endautoescape%}
+            '''
+        ).render(RequestContext(request, { 
+            'post_text' : post_text
+        }))
+ 
+        new_post = Post.objects.create(description=rendered_post_text, wall=obj_wall, by=request.user)
         new_post.add_notifications(notification_list)
         if obj_wall.parent:
             new_post.add_notifications([obj_wall.parent, request.user]) # add to and from
@@ -329,9 +360,17 @@ def create_comment(request, post_id, data):
 
     comment_text, notification_list = parse_atwho(comment_text)
 
-    rendered_comment = Template('{%load markdown_tags%}{%autoescape off%}{{comment_text|markdown}}{%endautoescape%}').render(RequestContext(request,{'comment_text':comment_text}))
-
-    new_comment = Comment.objects.create(description=rendered_comment, by=request.user)
+    rendered_comment_text = Template(
+        '''
+            {%load markdown_tags%}
+            {%autoescape off%}
+                {{ comment_text|markdown }}
+            {%endautoescape%}
+        '''
+    ).render(RequestContext(request, { 
+        'comment_text' : comment_text
+    }))
+    new_comment = Comment.objects.create(description=rendered_comment_text, by=request.user)
     post.comments.add(new_comment)
     
     post.add_notifications(notification_list)

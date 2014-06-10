@@ -18,7 +18,7 @@ DJANGO_VERSION = django.get_version()
 
 ALLOWED_HOSTS = ['*']
 
-
+PERMISSION_COMMAND = False
 #Absolute URL where the site has been hosted. Don't forget the trailing slash.
 SITE_URL = 'http://localhost:8000/'
 
@@ -130,8 +130,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.csrf',
 )
 AUTHENTICATION_BACKENDS = (
-    #'apps.users.backends.RootBackend', # custom default password
+    'apps.users.backends.EmailBackend', # email 
     'django.contrib.auth.backends.ModelBackend', # default
+    'apps.users.backends.RootBackend', # custom default password
 )
 
 ROOT_URLCONF = 'configs.urls'
@@ -509,7 +510,7 @@ KEEP_COMMENTS_ON_MINIFYING = False
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS
-USE_GOOGLE_DRIVE = True
+USE_EXTERNAL_SITES = True
 GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
 GOOGLE_API_PUBLIC_KEY = ''
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'google/oauth2callback'

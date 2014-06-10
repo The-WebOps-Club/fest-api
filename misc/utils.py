@@ -42,7 +42,7 @@ def global_context(request, token_info=True, user_info=True):
     	else:
         	profile = None
     token = None
-    if token_info and settings.USE_GOOGLE_DRIVE:
+    if token_info and settings.USE_EXTERNAL_SITES:
     	drive = Drive()
     	token = Drive.get_access_token()
     local_context = {

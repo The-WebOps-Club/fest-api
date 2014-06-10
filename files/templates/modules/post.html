@@ -52,15 +52,18 @@
 				{% autoescape off %}
 				{% if post.subject %}
 				<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} 
+<<<<<<< HEAD
 
 					<a class='post-access-change-btn pull-right link_no_style' href='javascript:void(0)'>
 						<span class="pull-right label notice label-head access-indicator" data-access='{{ post.access_specifier }}'>
 							
 						</span>
 					</a>
+=======
+>>>>>>> e16b98ed67495ee990226c44ef69a7f69ab884f0
 				</p>
 				{% endif %}
-				{{ post.description|markdown }}
+				{{ post.description }}
 				{% endautoescape %}
 			</div>
 			<div class="news_extra"></div>
@@ -90,20 +93,22 @@
 					</p>
 				</div>
 
-				{% if post.comments.count > 5 %}
-				<div class="news_comment see_more_comments center" >
-					See more
-				</div>
-				{% endif %}
-
+				{% with post_count=post.comments.count %}
+					{% if post_count > 5 %}
+						<div class="news_comment see_more_comments center" >
+							<span class='hidden_number'>{{ post_count|add:"-5" }}</span> comment{{ post_count|pluralize }} hidden. See more
+						</div>
+					{% endif %}
+				{% endwith %}
+				
 				{% for comment in post.comments.all|dictsortreversed:"time_created"|slice:":5" reversed %}
-				{% include 'modules/comment.html' %}
+					{% include 'modules/comment.html' %}
 				{% endfor %}
 
 				<div class="news_comment_placeholder"></div>
 
 				{% with new_comment="true" %}
-				{% include 'modules/comment.html' %}
+					{% include 'modules/comment.html' %}
 				{% endwith %} 
 			</div>
 
@@ -177,20 +182,24 @@
 		vertical-align: text-top;
 	}
 	.news_main {
-		font-size : 14px;
 		width : auto;
-		line-height : 18px;
+		/*line-height : 18px;*/
 		margin-left : 60px;
 	}
 	.news_main .news_head {
 		margin-bottom : 5px;
+		font-size : 14px;
 	}
 	.news_main .news_profile_name {
 		font-weight : bold;
 	}
 	.post-access-change-btn{
+<<<<<<< HEAD
 		padding-left:5px;
 
+=======
+		padding-left : 5px;
+>>>>>>> e16b98ed67495ee990226c44ef69a7f69ab884f0
 	}
 	.access-indicator:hover{
 		background-color: #888;
@@ -233,15 +242,27 @@
 
 <script type="text/javascript">
 	function dajax_get_comments(data){
+		exhausted = data.exhausted;
 		if (!data.exhausted) { 
 			$value = $("#post_" + data.post_id + " .current_page_comments")
 			$value.val( parseInt($value.val()) + 1 );
 
 			$("#post_" + data.post_id + " .see_more_comments").after(data.append_string);
 
-			$("#post_" + data.post_id + " .see_more_comments").removeClass("disabled").prop("disabled", false).removeData("clicked").html("See more")
-		} else {
-			$("#post_" + data.post_id + " .see_more_comments").html('No more to load');
+			var $temp = $("#post_" + data.post_id + " .see_more_comments")
+			var temp_no = parseInt($temp.find(".hidden_number").text()) - $(data.append_string).filter(".news_comment").length
+			var temp_plural
+			if ( temp_no == 1 )
+				temp_plural = ""
+			else 
+				temp_plural = "s"
+			$temp.removeClass("disabled").prop("disabled", false).removeData("clicked")
+				.html( temp_no + " comment" + temp_plural + " hidden. See more")
+			if ( temp_no == 0 )
+				exhausted = 1
+		} 
+		if ( exhausted == 1 ) {
+			$("#post_" + data.post_id + " .see_more_comments").html('No more to load').unbind("click").removeClass("see_more_comments");
 		}
 		on_dom_change()
 
@@ -359,7 +380,7 @@
 				'page' : parseInt($('#post_' + post_id + ' .current_page_comments').val())+1,
 				'post_id' : post_id,
 			})
-			$el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html("<i class='icon-loading-line'></i> Loading comments...")
+			$el.addClass("disabled").prop("disabled", true).data("clicked", "yes").html($el.html().replace("See more", "<i class='icon-loading-line'></i> Loading comments..." ))
 		})
 		$(".post_like_btn").click(function() {
 			var $el = $(this)

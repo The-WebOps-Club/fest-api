@@ -132,8 +132,31 @@
     padding-top : 1px;
     padding-bottom : 1px;
 }
-/* Specific Template styles */
 
+.temp-highlight {
+    -webkit-animation: temp-highlight-anim 5s linear;
+            animation: temp-highlight-anim 5s linear;
+}
+@keyframes temp-highlight-anim {
+    from { 
+        background-color : #d9d9d9; 
+        border : 2px solid #000;
+    }
+    to { 
+        background-color: inherit; 
+    }
+}
+@-webkit-keyframes temp-highlight-anim { /* Safari and Chrome */
+    from { 
+        background-color : #d9d9d9; 
+        border : 2px solid #000;
+    }
+    to { 
+        background-color: inherit; 
+    }
+}
+
+/* Specific Template styles */
 .main_body {
     border-left-color: rgb(204, 204, 204);
     border-left-style: solid;
@@ -325,3 +348,5 @@ form .clearfix.success .input-prepend .add-on, form .clearfix.success .input-app
 
     text-overflow: -o-ellipsis-lastline;
 }
+
+

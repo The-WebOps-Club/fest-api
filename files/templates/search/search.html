@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-
+{% load markdown_tags %}
 {% block content %}
     <h2>Search</h2>
 
@@ -19,7 +19,7 @@
             <ul>
             {% for result in page.object_list %}
                     <li>
-                        <a href="{{ result.object.get_absolute_url }}">{{ result.object.subject }}</a>
+                        <a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a>
                     </li>
                 {% empty %}
                     <p>No results found.</p>

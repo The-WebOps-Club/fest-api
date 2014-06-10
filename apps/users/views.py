@@ -206,8 +206,8 @@ def profile(request, user_id=None):
         "profile_wall" : erp_profile.wall,
         "read_only" : read_only,
         "showing_user" : user_form.instance,
-        "HOSTEL_CHOICES" : [i[0] for i in HOSTEL_CHOICES],
-        "BRANCH_CHOICES" : [i[0] for i in BRANCH_CHOICES],
+        "HOSTEL_CHOICES" : HOSTEL_CHOICES,
+        "BRANCH_CHOICES" : BRANCH_CHOICES,
     }
     return render_to_response("pages/profile.html", local_context, context_instance= global_context(request))
 

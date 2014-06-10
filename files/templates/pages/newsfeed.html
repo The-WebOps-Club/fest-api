@@ -96,49 +96,7 @@
 	#status_media .menu_item.active .menu_link + .selection_caret {
 	    visibility : visible;
 	}
-	div.news_post hr {
-	}
-	.news_left img.news_profile, .news_left {
-	    float:left;
-	    width : 50px;
-	    height : 50px;
-	    vertical-align: text-top;
-	}
-	.news_main {
-	    font-size : 14px;
-	    width : auto;
-	    line-height : 18px;
-	    margin-left : 60px;
-	}
-	.news_main .news_head {
-	    margin-bottom : 5px;
-	}
-	.news_main .news_profile_name {
-	    font-weight : bold;
-	}
-	.news_comment {
-	    margin-top : 2px;
-	    background-color: #EEE;
-	    padding : 5px;
-	    display : block;
-	}
-	.news_comment .news_comment_left, .news_comment .news_comment_left .news_comment_profile {
-	    height : 32px;
-	    width : 32px;
-	    float : left;
-	}
-	.news_comment .news_comment_body {
-	    font-size : 12px;
-	    line-height : 15px;
-	    margin-left : 40px;
-	    min-height : 32px;
-	}
-	.news_comment .news_comment_body .news_comment_info {
-	    font-size : 11px;
-	    line-height : 13px;
-	    color : #666;
-	    margin-top : 5px;
-	}
+	
 	.see_more_notifications {
 		cursor : pointer;
 		margin-top : 20px;
@@ -188,6 +146,9 @@
 		        $("#main_body_content .see_more_notifications").click();
 		    }	
 		}).scroll();
+		if( use_external_sites ) {
+     	   $.getScript("\x3Cscript type='text/javascript' src='https://apis.google.com/js/client.js?onload=initDrive'>\x3C/scripts>");
+    	}
 	})
 	function initDrive( ){
         gapi.auth.setToken({
@@ -197,6 +158,6 @@
         gapi.client.setApiKey(developerKey); //set our public api key
         gapi.client.load('drive', 'v2', setup_autocomplete_files ); // ask gapi to load API details for the drive api.
     }
+    
 </script>
-<script type='text/javascript' src='https://apis.google.com/js/client.js?onload=initDrive'></script>
 {% endblock %}

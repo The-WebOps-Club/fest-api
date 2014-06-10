@@ -29,69 +29,69 @@
     {% compress js %} 
     <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-            <!--[if lt IE 9]>
-                  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-                  <![endif]-->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-                  {% endcompress %}
+          {% endcompress %}
 
-                  {% if not SETTINGS.DEBUG %}
-                  <script>
-                    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+          {% if not SETTINGS.DEBUG %}
+          <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-                    ga('create', '{{SETTINGS.ANALYTICS_ID}}', '{{ SETTINGS.ANALYTICS_SITE }}');
-                    ga('send', 'pageview');
-                </script>
-                {% endif %}
+            ga('create', '{{SETTINGS.ANALYTICS_ID}}', '{{ SETTINGS.ANALYTICS_SITE }}');
+            ga('send', 'pageview');
+        </script>
+        {% endif %}
 
-            </head>
+    </head>
 
-            <body>
+    <body>
 
-                {% block topbar %} 
-                {% include 'base/topbar.html' %} 
+        {% block topbar %} 
+        {% include 'base/topbar.html' %} 
 
-                {% include "base/notifs.html" %}
-                {% comment %}
-                {% include "base/messages.html" %}
-                {% include "base/users.html" %}
-                {% endcomment %}
-                {% include "base/settings.html" %}
+        {% include "base/notifs.html" %}
+        {% comment %}
+        {% include "base/messages.html" %}
+        {% include "base/users.html" %}
+        {% endcomment %}
+        {% include "base/settings.html" %}
 
-                {% endblock %}
+        {% endblock %}
 
-                <div class="container-fluid below_topbar">
-                    {% block full_content %}
-                    <div class="row-fluid">
-                        {% block left_content %} 
-                        <div class="span2 offset1 sidebar fixedbar" >
-                            {% block sidebar %} 
-                            {% include 'base/sidebar.html' %}
-                            {% endblock %}
-                        </div>
-
-                        <div id="main_body_content" class="span6 main_body">
-                           {% block content %} {% endblock %}
-                       </div>
-                       {% endblock %}
-                       <div id="rightbar" class="span2 rightbar fixedbar">
-                        {% block rightbar %} 
-                        {% include 'base/rightbar.html' %}
-                        {% endblock %}
-                    </div>
+        <div class="container-fluid below_topbar">
+            {% block full_content %}
+            <div class="row-fluid">
+                {% block left_content %} 
+                <div class="span2 offset1 sidebar fixedbar" >
+                    {% block sidebar %} 
+                    {% include 'base/sidebar.html' %}
+                    {% endblock %}
                 </div>
+
+                <div id="main_body_content" class="span6 main_body">
+                   {% block content %} {% endblock %}
+               </div>
+               {% endblock %}
+               <div id="rightbar" class="span2 rightbar fixedbar">
+                {% block rightbar %} 
+                {% include 'base/rightbar.html' %}
                 {% endblock %}
             </div>
+        </div>
+        {% endblock %}
+    </div>
 
-            {% compress js %}
-            <script type="text/javascript" src="{% static 'js/erp-bootstrap-twipsy.js' %}"></script>
-            <script type="text/javascript" src="{% static 'js/erp-bootstrap-alerts.js' %}"></script>
-            <script type="text/javascript" src="{% static 'js/erp-bootstrap-buttons.js' %}"></script>
-            <!-- <script type="text/javascript" src="{% static 'js/erp-bootstrap-dropdown.js' %}"></script> -->
-            <script type="text/javascript" src="{% static 'js/erp-bootstrap-popover.js' %}"></script>
+    {% compress js %}
+    <script type="text/javascript" src="{% static 'js/erp-bootstrap-twipsy.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/erp-bootstrap-alerts.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/erp-bootstrap-buttons.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/erp-bootstrap-dropdown.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'js/erp-bootstrap-popover.js' %}"></script>
     <!-- <script type="text/javascript" src="{% static 'js/erp-bootstrap-modal.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-scrollspy.js' %}"></script> -->
     <script type="text/javascript" src="{% static 'js/erp-bootstrap-affix.js' %}"></script>
@@ -127,8 +127,8 @@
     	static_url = "{{ SETTINGS.STATIC_URL }}"
     	authToken = "{{ google_access_token }}"
         fest_fbid = "{{ SETTINGS.FEST_FBID }}"
-        
-        var contentEditableActive = {{ experimental }};   //flag to switch between markdown and native html.
+        use_external_sites = "{{ SETTINGS.USE_EXTERNAL_SITES }}"
+        var contentEditableActive = "true";   //flag to switch between markdown and native html.
 
         function hide_popups(except) {
             ["userButton", "messageButton", "notifButton", "settingButton", "attach_link_btn", "attach_emoticon_btn", "post-settings-btn"].forEach(function(i) {
@@ -140,7 +140,7 @@
         
         $( document ).click(function() {
           hide_popups()
-      })
+        })
 
         function on_dom_change() {
             $(".resize_textarea").autosize();
@@ -179,7 +179,29 @@
             $('.post_container').each(function(n,e){bind_access_indicator(e)});
             $('.post_container').trigger('access_changed')
         }        
+        
+        function scroll_to_div($div) {
+            if ( typeof($div) === "string" || $div instanceof String) { // to make sure bad input dont come
+                if ( ! $div )
+                    return
+                if ( $div[0] == '#' )
+                    $div = $($div)
+                else
+                    $div = $('#' + $div)
+            }
+            if ( $div ) {
+                $('html, body').animate({
+                    scrollTop: $div.offset().top - 40,
+                    scrollLeft: $div.offset().left,
+                }, 500);
+                $div.children().first().addClass("temp-highlight");
+            }
+        }
+
         $( document ).ready(function() {
+            var hash = window.location.hash;
+            scroll_to_div(hash)
+            
             var $win = $(window), $doc = $(document);
             $win.scroll(function(){
                 $(".fixedbar").css({
@@ -192,8 +214,16 @@
 
         })
         $(window).bind('load', function () {
+            var hash = window.location.hash;
+            scroll_to_div(hash)
+            
             $(".resize_textarea").autosize()
             on_dom_change()
+        })
+        .bind('hashchange', function(e) {
+            var hash = window.location.hash;
+            e.preventDefault();
+            scroll_to_div(hash)
         })
     </script>
 
