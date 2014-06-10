@@ -52,15 +52,12 @@
 				{% autoescape off %}
 				{% if post.subject %}
 				<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} 
-<<<<<<< HEAD
 
 					<a class='post-access-change-btn pull-right link_no_style' href='javascript:void(0)'>
 						<span class="pull-right label notice label-head access-indicator" data-access='{{ post.access_specifier }}'>
 							
 						</span>
 					</a>
-=======
->>>>>>> e16b98ed67495ee990226c44ef69a7f69ab884f0
 				</p>
 				{% endif %}
 				{{ post.description }}
@@ -194,12 +191,7 @@
 		font-weight : bold;
 	}
 	.post-access-change-btn{
-<<<<<<< HEAD
-		padding-left:5px;
-
-=======
 		padding-left : 5px;
->>>>>>> e16b98ed67495ee990226c44ef69a7f69ab884f0
 	}
 	.access-indicator:hover{
 		background-color: #888;
