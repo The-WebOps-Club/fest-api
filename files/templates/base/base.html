@@ -176,7 +176,8 @@
                     })
                 e.stopPropagation();
             })
-
+            $('.post_container').each(function(n,e){bind_access_indicator(e)});
+            $('.post_container').trigger('access_changed')
         }        
         $( document ).ready(function() {
             var $win = $(window), $doc = $(document);
