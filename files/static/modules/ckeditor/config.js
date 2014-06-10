@@ -4,35 +4,41 @@
  */
 
 CKEDITOR.editorConfig = function( config ) {
-	// http://docs.ckeditor.com/#!/api/CKEDITOR.config
+	// Define changes to default configuration here. For example:
+	// config.language = 'fr';
+	// config.uiColor = '#AADC6E';
+	// The toolbar groups arrangement, optimized for a single toolbar row.
 
-	// The toolbar groups arrangement, optimized for two toolbar rows.
+	config.language = 'en';
+
 	config.toolbarGroups = [
-		//{ name: 'clipboard',   groups: [ /*'clipboard', */'undo' ] },
-		//{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
-		{ name: 'links'},
+		{ name: 'document' },
+		{ name: 'clipboard' },
+		{ name: 'editing' },
+		{ name: 'forms' },
+		{ name: 'basicstyles' },
+		{ name: 'paragraph' },
+		{ name: 'links' },
 		{ name: 'insert' },
-		//{ name: 'forms' },
-		//{ name: 'tools' },
-		//{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
-		//{ name: 'others' },
-		//'/',
-		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
-		{ name: 'paragraph',   groups: [ 'list', 'indent', ] },
 		{ name: 'styles' },
-//		{ name: 'colors' },
+		{ name: 'colors' },
+		{ name: 'tools' },
+		{ name: 'others' },
+		{ name: 'about' }
 	];
 
-	// Remove some buttons provided by the standard plugins, which are
-	// not needed in the Standard(s) toolbar.
-	config.removeButtons = 'horizontalrule,table,Format,Strike,Subscript,Superscript,Anchor';
-	config.resize_enabled = true;
-	// Set the most common block elements.
-	config.format_tags = 'p;h1;h2;h3;pre';
+	// The default plugins included in the basic setup define some buttons that
+	// are not needed in a basic editor. They are removed here.
+	//config.removeButtons = 'Cut,Copy,Paste,Undo,Redo,Unlink,Anchor,Strike,Subscript,Superscript';
+	config.removeButtons = 'Unlink,Anchor,Strike,Subscript,Superscript';
+	
+	// Dialog windows are also simplified.
+	config.removeDialogTabs = 'link:advanced,image:link,image:advanced';
 
-	// Simplify the dialog windows.
-	config.removeDialogTabs = 'image:advanced;link:advanced';
-	config.skin = 'moono';
-	config.extraPlugins = 'resize,attach,';
-	config.removePlugins = 'horizontalrule,table,liststyle,tabletools,contextmenu,specialchar,Strike,Subscript,Superscript,Anchor';
+	config.removePlugins = 'a11yhelp,about,clipboard,div,find,flash,format,forms,horizontalrule,iframe,magicline,newpage,pagebreak,pastefromword,pastetext,preview,scayt,showblocks,smiley,specialchar,stylescombo,table,tabletools,wsc';
+	config.removePlugins += ',link,image';
+ 	//config.extraPlugins = 'post_btn';
+	
+	config.toolbar = 'Full'
+	//config.toolbarLocation = 'top'
 };

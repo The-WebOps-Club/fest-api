@@ -508,7 +508,7 @@ KEEP_COMMENTS_ON_MINIFYING = False
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS
-USE_GOOGLE_DRIVE = True
+USE_EXTERNAL_SITES = True
 GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
 GOOGLE_API_PUBLIC_KEY = ''
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'google/oauth2callback'

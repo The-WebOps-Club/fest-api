@@ -196,10 +196,17 @@ function setup_autocomplete_lists() {
         tpl: "<li data-value='[${name}](${type}#${id} \"${type}#${id}\")'>${name}</li>",
         show_the_at: true,
         max_len: 20,
+        callbacks : { 
+            before_insert : function(value, $li) {
+                $val = $('<span>' + value + '</span>')
+                $val.find('.atwho-name').text($val.find('atwho-name').text())
+                return $(value).html()
+            }
+        }
     }
     if(contentEditableActive)
         //at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><img src=\""+site_url+"static/img/neutral.png\" style=\"width:16px;height:16px\">${name}</a><span></span>'>${name}</li>"
-        at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><i class=\"icon-user\"></i>${name}</a>'>${name}</li>"
+        at_config.tpl = "<li data-value='<a href=\""+site_url+"wall/${type}/${id}\" data-notify=\"${type}#${id}\"><i class=\"icon-user\"></i><span class=\"atwho-name\">${name}</span></a>'>${name}</li>"
   
     $("#topbar_search_input").atwho({
         at: "",
@@ -251,6 +258,8 @@ function setup_autocomplete_lists() {
 
 
     $.fn.get_dp = function(size){
+        if ( use_external_sites == "false" || !use_external_sites )
+            return
         var $els = this
         $.each($els, function(i, v) {
             var $v = $(v)
@@ -296,6 +305,8 @@ function setup_autocomplete_lists() {
 	    var elarray = {};
 	    $.each($els, function(i, v) {
 	        var $v = $(v);
+            var $v_html = $(v).html
+            'https?://(www\.|)youtube\.com/watch\?\S*v=(?P<youtube>[A-Za-z0-9_=-]+)\S*'
 	        var service = $v.data("service");
 	        var id = $v.data("link-id");
 
