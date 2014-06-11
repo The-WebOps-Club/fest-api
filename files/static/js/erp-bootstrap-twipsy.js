@@ -65,7 +65,6 @@
   Twipsy.prototype = {
 
     show: function() {
-      console.log('in show');
       var pos
         , actualWidth
         , actualHeight

@@ -33,7 +33,7 @@
 		<div class="news_main">
 			<div class="news_head">
 				{%if user|check_access:post %}
-					<a href='javascript:void(0)'>
+					<a href='javascript:void(0)' >
 						<i class="icon-settings pull-right news_post_settings post-settings-btn" style="display : none;"></i>
 					</a>
 				{%endif%}
@@ -203,6 +203,7 @@
 	.popover{
 		z-index:999;
 	}
+
 	.invisible{
 		display: none;
 	}
@@ -398,7 +399,7 @@
 			e.stopPropagation();
 			hide_popups()
 			$(this).popover("show")
-			$('a[rel=twipsy]').twipsy();
+			$('[rel=twipsy]').twipsy();
     	})
     	$(".post-settings-btn").popover({
         	"animate": true,

@@ -154,7 +154,10 @@
             $(".display_pic").get_dp()
             $(".comment_link_render.comment_link").get_link_preview()
             $(".markdown").markdown()
-            $("a[rel]").twipsy()
+
+            $('[rel=twipsy]').twipsy();
+
+            $("a[rel]").twipsy()    // remove if everything is all right.( duplicate of the above statement )
 
             $('.post-access-change-btn').click(function(e){
                 var $el = $(this)
