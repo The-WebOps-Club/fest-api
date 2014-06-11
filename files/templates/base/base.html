@@ -133,7 +133,8 @@
         function hide_popups(except) {
             ["userButton", "messageButton", "notifButton", "settingButton", "attach_link_btn", "attach_emoticon_btn", "post-settings-btn"].forEach(function(i) {
                 if ( !except || except.indexOf(i) == -1 ) {
-                    $("." + i).popover("hide") 
+                    if(!($('.popover:hover').length))
+                        $("." + i).popover("hide") 
                 }
             })
         }

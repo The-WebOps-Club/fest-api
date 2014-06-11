@@ -282,8 +282,8 @@ def create_post(request, wall_id, post_form):
         'post_text' : post_text
     }))
     new_post = Post.objects.create(subject=post_subject, description=rendered_post_text, wall=wall, by=request.user)
-    
-    if( hasattr(new_post, 'person') ):
+
+    if( hasattr( wall, 'person' ) ):
         new_post.access_specifier = POST_TYPE['PUBLIC']
     else:
         new_post.access_specifier = POST_TYPE['PRIVATE_AND_TAGGED']
