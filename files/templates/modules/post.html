@@ -398,6 +398,7 @@
 			e.stopPropagation();
 			hide_popups()
 			$(this).popover("show")
+			$('a[rel]').twipsy();
     	})
     	$(".post-settings-btn").popover({
         	"animate": true,
@@ -412,7 +413,6 @@
     	})
     	function settings_title() {
     		return $(".post_settings_title").html()
-
     	}
 
     	function settings_content() {

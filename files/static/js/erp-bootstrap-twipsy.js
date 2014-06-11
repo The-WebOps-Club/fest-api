@@ -120,7 +120,9 @@
 
         // ERP Modification.
         // Make it cleaner asap.
-        $tip.find('a[rel]').twipsy();
+        //
+        // $tip.find('a[rel]').twipsy();
+        //
         // ----------------
 
 
