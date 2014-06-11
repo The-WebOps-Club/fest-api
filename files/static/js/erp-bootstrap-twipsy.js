@@ -65,6 +65,7 @@
   Twipsy.prototype = {
 
     show: function() {
+      console.log('in show');
       var pos
         , actualWidth
         , actualHeight
@@ -84,6 +85,8 @@
           .remove()
           .css({ top: 0, left: 0, display: 'block' })
           .prependTo(document.body)
+
+        
 
         pos = $.extend({}, this.$element.offset(), {
           width: this.$element[0].offsetWidth
@@ -114,6 +117,13 @@
           .css(tp)
           .addClass(placement)
           .addClass('in')
+
+        // ERP Modification.
+        // Make it cleaner asap.
+        $tip.find('a[rel]').twipsy();
+        // ----------------
+
+
       }
     }
 

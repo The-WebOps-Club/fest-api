@@ -135,7 +135,7 @@ class PostInfo(models.Model):
         @todo : Add options to upload a file to any message
     """
     is_active           = models.BooleanField(default=True)
-    access_specifier    = models.IntegerField( default=1 )
+    access_specifier    = models.IntegerField( default=2 )
     
     # Basic data
     description         = models.TextField(blank=True, default='') # The matter of post

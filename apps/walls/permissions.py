@@ -61,9 +61,11 @@ class PermissionStack( object ):
             full_flag_filter = reduce( operator.or_, flag_filters )
 
             query,status = sub_query( accessor, accessee )
+
             print status
             print 'for'
             print flaglist
+            
             if status == 'CONDITIONAL':
                 # use the query object as there seem to be conditions attached to it.
                 queries.append( query & full_flag_filter )
