@@ -50,16 +50,15 @@
 			</div>
 			<div class="news_body markdown">
 				{% autoescape off %}
-				{% if post.subject %}
-				<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} 
-
+				<p class='subject_head'>
+					{% if post.subject %}
+						<span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} 
+					{% endif %}
 					<a class='post-access-change-btn pull-right link_no_style' href='javascript:void(0)'>
 						<span class="pull-right label notice label-head access-indicator" data-access='{{ post.access_specifier }}'>
-							
 						</span>
 					</a>
 				</p>
-				{% endif %}
 				{{ post.description }}
 				{% endautoescape %}
 			</div>
