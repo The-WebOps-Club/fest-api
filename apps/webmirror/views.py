@@ -32,6 +32,6 @@ def get_data( request, pk ):
 	try:
 		blob = DataBlob.objects.get( pk = pk )
 	except Exception:
-		return json.dumps({'msg':'NOBLOB','content':'Webmirror Exception: No data'})
+		return HttpResponse(json.dumps({'msg':'NOBLOB','content':'Webmirror Exception: No data'}))
 
 	return HttpResponse(json.dumps({'msg':'DONE','content':blob.data}))
