@@ -24,11 +24,11 @@ def set_data( request, pk ):
 	
 
 	try:
-		blob = DataBlob.objects.get( pk = pk )
+		blob = DataBlob.objects.get( ref = format(pk) )
 	except Exception:
 		if( not tokens.validate( token, scope.access_all() ) ):
 			return set_universal_access(HttpResponse(json.dumps({'msg':'NOAUTH'})))
-		blob = DataBlob.objects.create( data = '' )
+		blob = DataBlob.objects.create( data = '', ref = format(pk) )
 
 	if( not tokens.validate( token, scope.access_obj( blob ) ) ):
 		return set_universal_access(HttpResponse(json.dumps({'msg':'NOAUTH'})))
@@ -43,7 +43,7 @@ def get_data( request, pk ):
 
 	response = None;
 	try:
-		blob = DataBlob.objects.get( pk = pk )
+		blob = DataBlob.objects.get( ref = format(pk) )
 	except Exception:
 		return set_universal_access(HttpResponse(json.dumps({'msg':'NOBLOB','content':'Webmirror Exception: No data'})))
 
