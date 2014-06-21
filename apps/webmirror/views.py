@@ -24,8 +24,13 @@ def set_data( request, pk ):
 
 	blob.data = data
 	blob.save()
-	return HttpResponse(json.dumps({'msg':'DONE'}))
 
+	response = HttpResponse(json.dumps({'msg':'DONE'}))
+	response["Access-Control-Allow-Origin"] = "*"  
+    response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"  
+    response["Access-Control-Max-Age"] = "1000"  
+    response["Access-Control-Allow-Headers"] = "*"
+    return response
 
 def get_data( request, pk ):
 
@@ -34,4 +39,9 @@ def get_data( request, pk ):
 	except Exception:
 		return HttpResponse(json.dumps({'msg':'NOBLOB','content':'Webmirror Exception: No data'}))
 
-	return HttpResponse(json.dumps({'msg':'DONE','content':blob.data}))
+	response = HttpResponse(json.dumps({'msg':'DONE','content':blob.data}))
+	response["Access-Control-Allow-Origin"] = "*"  
+    response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"  
+    response["Access-Control-Max-Age"] = "1000"  
+    response["Access-Control-Allow-Headers"] = "*"
+    return response
