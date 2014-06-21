@@ -75,6 +75,7 @@ API_APPS = (
     'apps.events',
     'apps.docs',
     'apps.webmirror',
+    'apps.portals.events',
     'apps.portals.general',
 
 )
