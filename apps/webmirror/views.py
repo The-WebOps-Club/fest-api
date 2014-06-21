@@ -8,6 +8,13 @@ from apps.webmirror.models import DataBlob
 
 from access_tokens import tokens, scope
 
+def set_universal_access( response ):
+	response["Access-Control-Allow-Origin"] = "*"  
+	response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"  
+	response["Access-Control-Max-Age"] = "1000"  
+	response["Access-Control-Allow-Headers"] = "*"
+	return response
+
 @csrf_exempt
 def set_data( request, pk ):
 	blob = None
@@ -20,28 +27,20 @@ def set_data( request, pk ):
 		blob = DataBlob.objects.create( data = '' )
 
 	if( not tokens.validate( token, scope.access_obj( blob ) ) ):
-		return HttpResponse(json.dumps({'msg':'NOAUTH'}))
+		return set_universal_access(HttpResponse(json.dumps({'msg':'NOAUTH'})))
 
 	blob.data = data
 	blob.save()
 
-	response = HttpResponse(json.dumps({'msg':'DONE'}))
-	response["Access-Control-Allow-Origin"] = "*"  
-	response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"  
-	response["Access-Control-Max-Age"] = "1000"  
-	response["Access-Control-Allow-Headers"] = "*"
-	return response
+	return set_universal_access(HttpResponse(json.dumps({'msg':'DONE'})))
+	
 
 def get_data( request, pk ):
 
+	response = None;
 	try:
 		blob = DataBlob.objects.get( pk = pk )
 	except Exception:
-		return HttpResponse(json.dumps({'msg':'NOBLOB','content':'Webmirror Exception: No data'}))
+		return set_universal_access(HttpResponse(json.dumps({'msg':'NOBLOB','content':'Webmirror Exception: No data'})))
 
-	response = HttpResponse(json.dumps({'msg':'DONE','content':blob.data}))
-	response["Access-Control-Allow-Origin"] = "*"  
-	response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"  
-	response["Access-Control-Max-Age"] = "1000"  
-	response["Access-Control-Allow-Headers"] = "*"
-	return response
+	return set_universal_access(HttpResponse(json.dumps({'msg':'DONE','content':blob.data})))
