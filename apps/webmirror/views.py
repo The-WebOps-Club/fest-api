@@ -21,14 +21,18 @@ def set_data( request, pk ):
 	data = request.POST['data']
 	token = request.POST['token']
 
+	
+
 	try:
 		blob = DataBlob.objects.get( pk = pk )
 	except Exception:
+		if( not tokens.validate( token, scope.access_all() ) ):
+			return set_universal_access(HttpResponse(json.dumps({'msg':'NOAUTH'})))
 		blob = DataBlob.objects.create( data = '' )
 
 	if( not tokens.validate( token, scope.access_obj( blob ) ) ):
 		return set_universal_access(HttpResponse(json.dumps({'msg':'NOAUTH'})))
-
+	
 	blob.data = data
 	blob.save()
 
