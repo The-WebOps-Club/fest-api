@@ -92,3 +92,5 @@ EXPERIMENTAL_MODE = "true" # NOTE : should be a string
 SEND_EMAIL = True
     # Dajaxice
 # DAJAXICE_MEDIA_PREFIX = "2015/erptest/dajaxice"
+
+SEND_NOTIF_EMAILS = True
