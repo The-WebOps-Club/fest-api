@@ -14,6 +14,7 @@ from django.db.models.signals import post_save
 from django.core.signals import request_finished
 from django.core.urlresolvers import reverse
 # Apps
+from post_office import mail
 # Decorators
 # Models
 #from misc.managers import CheckActiveManager
@@ -25,7 +26,7 @@ from annoying.functions import get_object_or_None
 import notifications
 # Python
 import random
-
+import datetime
 #### MODELS
 
 # Model for Department forum
@@ -164,6 +165,7 @@ class PostInfo(models.Model):
         if not notif_list:
             # Get my wall and posts which I am to get notifs for
             notif_list  = User.objects.filter(post.notify_users_query() | wall.notify_users_query()).distinct()
+        mail_list = []
         for recipient in notif_list:
             # Check if receipient already has notif on this post
             curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=post.id)
@@ -175,16 +177,37 @@ class PostInfo(models.Model):
                 notifications.notify.send(
                     sender=by, # The model who wrote the post - USER
                     recipient=recipient, # The model who sees the post - USER
-                    verb='has commented on', # verb
+                    verb=notif_verb, # verb
                     action_object=self, # the model on which something happened - POST
                     target=post, # The model which got affected - POST
                     # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
                     description = 'wall:' + str(wall.pk),
                 )
+                notification = Bunch(
+                    actor = by,
+                    verb = notif_verb,
+                    target = post,
+                    action_object = self,
+                    timestamp = datetime.datetime.now()
+                )
+
+                if recipient.profile.send_mails:
+                    unsubscribe_link = recipient.profile.create_unsubscribe_link()
+                    mail_list.append({
+                        'sender': settings.DEFAULT_FROM_EMAIL,
+                        'recipients': [recipient.email],
+                        'template': 'notification.email',
+                        'context': {'user': recipient, 'notification': notification, 'FEST_NAME': settings.FEST_NAME, 'SITE_URL': settings.SITE_URL, 'unsubscribe_link': unsubscribe_link},
+                        'headers': {'List-Unsubscribe': unsubscribe_link},
+                        })
+
+        if settings.SEND_NOTIF_EMAILS:
+            mail.send_many(mail_list)
 
     def get_absolute_url(self):
         post_str = '#post_' + str(self.parent_post.all()[0].pk)
         return reverse('apps.walls.views.wall', args=(self.parent_post.all()[0].wall.pk,)) + post_str
+    
     class Meta:
         abstract = True
         ordering = ['time_created']

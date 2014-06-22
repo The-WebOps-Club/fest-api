@@ -36,7 +36,8 @@ urlpatterns = patterns('',
     url(r'^profile$', 'apps.users.views.profile', name='profile'),
     url(r'^identity/(?P<role_type>\w+)/(?P<role_id>\d+)$', 'apps.users.views.identity', name='identity'), # Changes identity of the user
     url(r'^identity$', 'apps.users.views.identity', name='identity'),
-    
+    # Email unsubscribe
+    url(r'^unsubscribe/(?P<username>[\w.@+-]+)/(?P<token>[\w.:\-_=]+)/$', 'apps.users.views.unsubscribe'),
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'), # Shows newsfeed for a user
     url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
@@ -102,6 +103,7 @@ urlpatterns = patterns('',
     url(r'^webmirror/set/(?P<pk>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.set_data'),
     url(r'^webmirror/cluster/get/(?P<cluster>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.get_cluster'),
 
+    url(r'^email/$', 'apps.walls.views.email_test', name='email'),
 
 )
 

@@ -1,0 +1,2 @@
+[{{FEST_NAME}} ERP] - {{ notification.actor.get_full_name|default:"" }}
+{{ notification.verb|default:"" }} {{ notification.target.wall|default:"" }}

@@ -1,0 +1,217 @@
+{% extends 'base/base.html' %}
+{% load staticfiles %}
+
+{% block title %} {{ FEST_NAME }} {% endblock %}
+
+{% block topbar %}
+    <div class='topbar' id='login_topbar' >
+        <div class='topbar-inner' id='login_topbar_inner'>
+            <div class='container-fluid'>
+                <div class='row-fluid' id='login_row'>
+                    <div class='span4 offset1'>
+                        <a class='brand big_brand bold' href='{{ SITE_URL }}'>{{ FEST_NAME }}</a>
+                    </div>
+                    <div class='span6' id='login_box'>
+                        
+                        {% if current_page == "login" %}
+                            <form class='span9 pull-right' action='{% url "login" %}' method='POST' id='login_form'  autocomplete="on">
+                                {% csrf_token %}
+                                <div class='span5 input_box'>
+                                    <label for='id_username'>Email ID</label><br />
+                                    <input type='text' name='username' id='id_username' required='true' autofocus class='input-large' value='{{ login_form.username.value|default_if_none:"" }}'><br />
+                                </div>
+                                <div class='span5 input_box'>
+                                    <label for='id_password'>Password</label><br />
+                                    <input type='password' name='password' id='id_password' placeholder='Password' required='true' class='input-large' value='{{ login_form.password.value|default_if_none:"" }}'><br />
+                                    <a id='forgot_passwd' href='{% url "password_reset" %}'>Forgotten Password</a>
+                                </div>
+                                <div class='span2 submit_box'>
+                                    <label for="id_submit"></label><br />
+                                    <a href='#' id="id_submit" class='btn primary static small'>Log in</a>
+                                </div>
+                            </form>
+                        {% elif current_page == "associate" %}
+                            <h2 class="white right_text pull-right"> 
+                            {% if facebook_association == 0 %}
+                                You need to associate your facebook account
+                            {% else %}
+                                <a href="{{ SITE_URL }}">
+                                Skip to main site  >
+                                <!-- <i class="icon-chevron-right icon-white"></i> -->
+                                </a>
+                            {% endif %}</h2>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block full_content %}
+    <div class='row-fluid below_loginbar'>
+        <div class='span5 offset1'>
+            <img src="{% static 'img/fest_pics/login_page_logo.jpg' %}" style="width : 100%; height : auto;"/>
+            {% if current_page == "login" %}
+            {% elif current_page == "associate" %}
+            {% endif %}
+        </div>
+        <div class='span5 offset'>
+            <div class='row-fluid'>
+                <div class='span8 offset2'>
+                    {% block right_login_content %}
+	                    <p>
+	                            <h3 class="center"> You have been unsubscribed. You wont recieve any furthur mails from {{FEST_NAME}}</h3>
+	                            <br /><br />
+	                           
+	                        <br />
+	                        <a class='zocial facebook full_width' 
+	                         {% if facebook_association == 0 %} style="border : 2px solid red" {% endif %}
+	                         href="{% url 'social:begin' 'facebook' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Facebook</a>
+	                        <br />
+	                        <a class='zocial google full_width' href="{% url 'social:begin' 'google-oauth2' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Google</a>
+	                        <br />
+	                        <a class="zocial twitter full_width" href="{% url 'social:begin' 'twitter' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Twitter</a>
+	                        <br />
+	                        {% if current_page == "associate" %}
+	                            <br /><br />
+	                            <div class="bold center">OR</div>
+	                            <br />
+	                            <a class="zocial logout full_width" href="{% url 'logout' %}">Sign Out</a>
+	                        {% endif %}
+	                    </p>
+	                {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<link href="{% static 'css/zocial.css' %}" rel="stylesheet" media="screen">
+
+<style>
+    .zocial, a.zocial {
+        margin : 1.5em 0px;
+    }
+    .below_topbar {
+        margin-top : 0px;
+    }
+    .right_text {
+        padding: 5px 10px 7px;
+        margin: 15px 0 0 0;
+    }
+    .below_loginbar {
+        margin-top : 100px;
+    }
+    #login_topbar,
+    #login_topbar_inner {
+        height: 82px;
+    }
+    #login_row {
+        padding-top: 10px;
+        color : white;
+    }
+    #login_box { 
+        padding-top: 0px;
+        font-size : 11px;
+    }
+    #login_form {
+        float : right;
+    }
+    #login_form .input_box {
+        padding : 0px 5px;
+    }
+    #login_form .submit_box {
+        padding : 0px 5px;
+    }
+    #login_form .submit_box .btn {
+        margin : 5px;
+        white-space: nowrap;
+        font-size : 12px;
+    }
+    #login_form .input_box input{
+        margin-top : 5px;
+        margin-bottom : 5px;
+        margin-left : 0px;
+        margin-right : 5px;
+    }
+    #login_form a#forgot_passwd {
+        color: rgb(152, 169, 202);
+        text-decoration :none;
+        cursor : pointer;
+    }
+    #login_form a#forgot_passwd:hover {
+        color: white;
+        text-decoration :none;
+    }
+    .topbar .big_brand {
+        font-size : 40px;
+    }
+
+    .topbar {
+       /*position : fixed;*/
+       z-index : 1;
+    }
+    .below_topbar > div {
+        padding-top : 5px;
+    }
+    @media (min-width: 940px) {
+        .topbar {
+           position : fixed;
+        }
+        .below_topbar {
+            margin-top : 40px;
+        }
+    }
+    .topbar div > ul.nav.links li.topbar_profile a, .nav.links li.topbar_profile a {
+        padding: 0px 0px 0px 0px;
+        margin: 5px 0 0 0px;
+    }
+    .topbar div > ul.nav.links li.topbar_profile a .profile_name, .nav.links li.topbar_profile a .profile_name {
+        padding: 0px 0px 0px 0px;
+        margin: 5px 5px 0px 0px;
+        max-width: 175px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+    .topbar .profile_dp {
+        height : 23px;
+        width : 23px;
+        margin: 3px 5px 3px 3px;
+    }
+
+</style>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+    <script>
+    $( document ).ready(function() {    
+        // Form submission 
+        function login_form_submit() {
+            $('form#login_form').submit();
+        }
+        $("#id_submit").click(login_form_submit);
+        $('form#login_form input').on('keyup', function(e) {
+            if (e.which == 13) {
+                login_form_submit();
+                e.preventDefault();
+            }
+        });
+        {% for k, v in login_form.errors.items %}
+            $("form#login_form #id_{{ k }}").addClass("error")
+                                            .popover({
+                "title" : function() { return "Error" },
+                "content" : function() { return "{% for i in v %} {{i}} {% endfor %}" },
+                "placement" : "below",
+            })
+        {% endfor %}
+    });
+    </script>
+{% endblock %}

@@ -535,3 +535,5 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
 #     },
 # }
 #DEFAULT_POST_PERMISSION_STACK = PostPermissionSubqueries.build_post_permissions_stack()
+
+SEND_NOTIF_EMAILS = True
