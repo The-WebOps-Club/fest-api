@@ -50,9 +50,7 @@ Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif;"><span style="font
 {% autoescape off %} 
 {{ notification.action_object.description|striptags }} 
 {% endautoescape %}
-</span></td></tr></tbody></table></div><table cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tbody><tr><td style="padding:20px 10px 3px 0px;"><table cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tbody><tr><td valign="middle" style="width:100%;"><a href="" style="color: #3b5998;text-decoration: none"><span style="color:#141823=
-;font-size:14px;line-height:20px;font-family:Helvetica
-Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif;">{{ notification.timestamp }}</span></a></td></tr></tbody></table></td><td style="padding:20px 10px 3px
+</span></td></tr></tbody></table></div><table cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tbody><tr><td style="padding:20px 10px 3px 0px;"><table cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tbody><tr><td valign="middle" style="width:100%;"><a href="" style="color: #3b5998;text-decoration: none"><span style="color:#141823;font-size:14px;line-height:20px;font-family:Helvetica Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif;">{{ notification.timestamp }}</span> </a></td></tr></tbody></table></td><td style="padding:20px 10px 3px
 0px;"></td>
 </tr>
 <tr>
@@ -71,7 +69,7 @@ Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif;">{{ notification.t
 <tr>
 <td style="width:132px;">
 <a href="" style="color: #3b5998;text-decoration: none">
-<table cellspacing="0" cellpadding="0" width="100%" bgcolor="#4c649b" style="border-collapse:collapse;border-width:1px;border-style:solid;display:block;border-radius:3px;-webkit-border-radius:3px;-moz-border-radius:3px;font-size:14px;background:-webkit-gradient(linear, left top, left bottom,color-stop(0%,rgba(77,106,162,1)),color-stop(64%,rgba(60,90,152,1)));border-color:#485a83;" class="btn_confirm">
+<table cellspacing="0" cellpadding="0" width="100%" bgcolor="#4c649b" style="border-collapse:collapse;border-width:1px;border-style:solid;display:block;border-radius:3px;-webkit-border-radius:3px;-moz-border-radius:3px;font-size:14px;background:-webkit-gradient(linear, left top, left bottom,color-stop(0%,rgba(77,106,162,1)),color-stop(64%,rgba(60,90,152,1)));border-color:#485a83;" class="btn_confirm"> 
 <tbody>
 <tr>
 <td height="7" colspan="3" style="line-height:7px;">&nbsp;</td>
@@ -79,7 +77,7 @@ Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif;">{{ notification.t
 <tr>
 <td width="16" style="display:block;width:16px;">&nbsp;</td>
 <td width="100%" style="text-align:center;">
-<a href="{{SITE_URL|slice:':-1'}}{{notification.target.get_absolute_url}}" style="color: #3b5998;text-decoration: none;display: block">
+<a href="{{SITE_URL|slice:':-1'}}{{notification.target.get_absolute_url}}" style="color: #3b5998;text-decoration: none;display: block"> 
 <center>
 <font size="3">
 <span style="font-family:Helvetica Neue,arial,sans-serif;font=
@@ -152,10 +150,6 @@ ght:16px;text-align:left;">This message was sent to <a href="mailto:{{user.email
 </tr>
 </tbody>
 </table>
-<span style="width:100%;">
-<img src="https://www.facebook.com/email_open_log_=
-pic.php?mid=9d35503G5af34aca9e32G0G147G5420318c" style="border:0;width:1px;height:1px;">
-</span>
 </td>
 </tr>
 </tbody>
