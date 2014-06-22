@@ -307,4 +307,3 @@ class Github:
             http = httplib2.Http()
             credential._refresh(http.request)
             return credential.access_token
-

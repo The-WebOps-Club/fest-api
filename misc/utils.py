@@ -45,6 +45,7 @@ def global_context(request, token_info=True, user_info=True):
     if token_info and settings.USE_EXTERNAL_SITES:
     	drive = Drive()
     	token = Drive.get_access_token()
+        
     local_context = {
         'user' : request.user,
         'erp_profile' : erp_profile,

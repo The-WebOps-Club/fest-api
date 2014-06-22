@@ -49,6 +49,10 @@ class Dept(models.Model):
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     
+    # Storage
+    directory_id    = models.CharField( max_length = 100, null=True, blank=True )
+    
+
     objects = CheckActiveManager()
     
     def __unicode__(self):
@@ -97,6 +101,10 @@ class Subdept(models.Model):
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
 
+    # Storage
+    directory_id    = models.CharField( max_length = 100, null=True, blank=True )
+    
+
     objects = CheckActiveManager()
 
     def __unicode__(self):
@@ -136,6 +144,9 @@ class Page(models.Model):
     # Analytics
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
+
+    # Storage
+    directory_id    = models.CharField( max_length = 100, null=True, blank=True )
 
     objects = CheckActiveManager()
 
