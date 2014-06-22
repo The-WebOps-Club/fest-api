@@ -19,7 +19,7 @@ class Command(BaseCommand):
         for post in Post.objects.all():
 
             try:
-                if(has_attr(post.wall,'person')):
+                if(hasattr(post.wall,'person')):
                     post.access_specifier = 1
                 else:
                     post.access_specifier = 2
