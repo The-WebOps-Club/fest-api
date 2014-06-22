@@ -21,7 +21,6 @@ from access_tokens import tokens, scope
 @dajaxice_register
 def set_data( request, pk, data, token ):
 
-
 	blob = None
 	try:
 		blob = DataBlob.objects.get( pk = pk )

@@ -100,6 +100,8 @@ urlpatterns = patterns('',
     #WebMirror
     url(r'^webmirror/get/(?P<pk>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.get_data'),
     url(r'^webmirror/set/(?P<pk>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.set_data'),
+    url(r'^webmirror/cluster/get/(?P<cluster>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.get_cluster'),
+
 
 )
 

@@ -14,12 +14,15 @@ class Command(BaseCommand):
     """
     help = 'Automatically parses existing markdown based HTML'
 
-    def handle(self, level = 1, **options):
+    def handle(self,  **options):
 
-        for post in Post.objects.all() :
+        for post in Post.objects.all():
+
             try:
-                post.access_specifier = level
+                if(has_attr(post.wall,'person')):
+                    post.access_specifier = 1
+                else:
+                    post.access_specifier = 2
                 post.save()
             except Exception as e:
-                if debug:
-                    print(e.message);
+                print(e.message);

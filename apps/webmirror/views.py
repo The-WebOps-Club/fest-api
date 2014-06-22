@@ -48,3 +48,17 @@ def get_data( request, pk ):
 		return set_universal_access(HttpResponse(json.dumps({'msg':'NOBLOB','content':'Webmirror Exception: No data'})))
 
 	return set_universal_access(HttpResponse(json.dumps({'msg':'DONE','content':blob.data})))
+
+def get_cluster( request, cluster ):
+
+	response = None;
+	try:
+		blobs = DataBlob.objects.filter( cluster = format(cluster) )
+	except Exception:
+		return set_universal_access(HttpResponse(json.dumps({'msg':'NOBLOB','content':'Internal Error'})))
+
+	data = {};
+	for i in blobs:
+		data[i.ref] = i.data
+
+	return set_universal_access(HttpResponse(json.dumps({'msg':'DONE','data':data})))
