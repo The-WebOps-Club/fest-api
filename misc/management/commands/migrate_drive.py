@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError, NoArgsCommand
 from django.contrib.auth.models import User
-from apps.users.models import Dept, Subdept, ERPProfile
+from apps.users.models import Dept, Subdept, ERPProfile, Page
 from apps.walls.models import Comment, Post
 from django.conf import settings
 from django.template import Template,Context
@@ -8,6 +8,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from apps.portals.general.utils import attach_drive_to_entity, share_drive
 import datetime
+from apps.docs.utils import Drive
 
 class Command(BaseCommand):
     """
