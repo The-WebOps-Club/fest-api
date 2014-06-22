@@ -23,7 +23,7 @@
 <tr>
 <td valign="middle" align="left">
 <span style="display:block;height:32px;overflow:hidden;width:32px">
-<img alt="{{FEST_NAME}} Logo" src="{%static 'img/fest_pics/favicon.ico' %}" style="width:32px;height:32px;border:0;">
+<img alt="{{FEST_NAME}} Logo" src="{{SITE_URL:':-1'}}{%static 'img/fest_pics/favicon.ico' %}" style="width:32px;height:32px;border:0;">
 </span>
 </td>
 <td valign="middle" style="padding:12px; width:100%">
@@ -80,8 +80,7 @@ Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif;"><span style="font
 <a href="{{SITE_URL|slice:':-1'}}{{notification.target.get_absolute_url}}" style="color: #3b5998;text-decoration: none;display: block"> 
 <center>
 <font size="3">
-<span style="font-family:Helvetica Neue,arial,sans-serif;font=
--style:normal;white-space:nowrap;font-size:14px;color:#ffffff;">View
+<span style="font-family:Helvetica Neue,;font-style:normal;white-space:nowrap;font-size:14px;color:#ffffff;">View
 and reply on ERP</span>
 </font>
 </center>
@@ -113,8 +112,7 @@ and reply on ERP</span>
 </td>
 </tr>
 <tr>
-<td id="thanks" style="padding-bottom:30px;font-size:16px;line-height:24px;color:#141823=
-;font-family:Helvetica Neue,arial,sans-serif;">Thanks, <br>The {{FEST_NAME}} WebOps Team</td>
+<td id="thanks" style="padding-bottom:30px;font-size:16px;line-height:24px;color:#141823;font-family:Helvetica Neue,arial,sans-serif;">Thanks, <br>The {{FEST_NAME}} WebOps Team</td>
 </tr>
 <tr>
 <td style="">
