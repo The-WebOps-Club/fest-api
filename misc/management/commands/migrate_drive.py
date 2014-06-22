@@ -10,6 +10,8 @@ from apps.portals.general.utils import attach_drive_to_entity, share_drive
 import datetime
 from apps.docs.utils import Drive
 
+import time
+
 class Command(BaseCommand):
     """
         Used to migrate existing subdepts and depts to a newer drive-linked version.
@@ -23,5 +25,8 @@ class Command(BaseCommand):
         entity_set = list(Dept.objects.all()) + list(Subdept.objects.all()) + list(Page.objects.all())
 
         for entity in entity_set:
-            attach_drive_to_entity( drive, entity )
+            time.sleep(2)
+            print "executing ", entity.name
+            if not entity.directory_id:
+                attach_drive_to_entity( drive, entity )
             share_drive( drive, entity )

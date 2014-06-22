@@ -1,6 +1,6 @@
 # utils.py
 from django.conf import settings
-from apps.users.models import Subdept, Dept
+from apps.users.models import Subdept, Dept, Page
 from django.contrib.auth.models import User
 
 def attach_drive_to_entity( drive, entity ):
@@ -31,7 +31,7 @@ def share_drive( drive, entity, directory_id = None ):
 
 	directory_id = entity.directory_id
 	if directory_id is None :
-			raise ValueError('Entity does not have a drive reference. Attach drive to entity first.')
+		raise ValueError('Entity does not have a drive reference. Attach drive to entity first.')
 
 	profile_set = [];
 	if( isinstance(entity, Subdept) ):
