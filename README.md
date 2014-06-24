@@ -30,7 +30,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	- In terminal type 'python manage.py syncdb' followed by 'python manage.py migrate'. If these 2 worked your database settings worked fine
 
 
-3. Tastypie (NOT NEEDED for ERP)
+4. Tastypie (NOT NEEDED for ERP)
     - Till now, tastypie(v1.11) has some issues with through tables.
     - Need to replace (in the save_m2m function ~line 2300): 
      
@@ -50,7 +50,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 				})
 		```
 
-4.   Setup Social Accounts : (NOT NEEDED for ERP)
+4.  Setup Social Accounts : (NOT NEEDED for ERP)
 	. FACEBOOK
 		- Add your facebook credentials (token, key) into settings
 
