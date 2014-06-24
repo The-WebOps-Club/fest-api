@@ -25,7 +25,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 2. Change the following in the fest-api/configs/sample.setting.py
 
 	- Change the filename to setings.py
-	- Set the database settings (If you need details on how to do this read 8.a. If you are having problems with mysql installation follow 6.b)
+	- Set the database settings (If you need details on how to do this read 8.a. If you are having problems with mysql installation follow 8.b)
 	- (specific to ERP) In globalsettings.py set  'USE_EXTERNAL_SITES' to False 
 	- In terminal type 'python manage.py syncdb' followed by 'python manage.py migrate'. If these 2 worked your database settings worked fine
 
