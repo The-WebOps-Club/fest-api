@@ -20,15 +20,18 @@ def set_data( request, pk ):
 	blob = None
 	data = request.POST['data']
 	token = request.POST['token']
+	cluster = None
 
+	if( 'cluster' in request.POST ):
+		cluster = request.POST['cluster']
 	
 
 	try:
-		blob = DataBlob.objects.get( ref = format(pk) )
+		blob = DataBlob.objects.get( ref = format(pk), cluster = format(cluster) )
 	except Exception:
 		if( not tokens.validate( token, scope.access_all() ) ):
 			return set_universal_access(HttpResponse(json.dumps({'msg':'NOAUTH'})))
-		blob = DataBlob.objects.create( data = '', ref = format(pk) )
+		blob = DataBlob.objects.create( data = '', ref = format(pk), cluster = format(cluster) )
 
 	if( not tokens.validate( token, scope.access_obj( blob ) ) ):
 		return set_universal_access(HttpResponse(json.dumps({'msg':'NOAUTH'})))
