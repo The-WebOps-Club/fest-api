@@ -51,6 +51,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 		```
 
 4.  Setup Social Accounts : (NOT NEEDED for ERP)
+
 	. FACEBOOK
 		- Add your facebook credentials (token, key) into settings
 
@@ -171,13 +172,14 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	- go to files/static/img/ . Create a folder called fest_pics and paste the photo there (since the src attribute for that photo is files/static/img/fest_pics)
 
 
-8.g. The following error is showing on the browser - 
-		- The storage backend of the staticfiles finder <class 'django.contrib.staticfiles.finders.DefaultStorageFinder'> doesn't have a valid location.
+8.g. The following error is showing on the browser -  The storage backend of the staticfiles finder <class 'django.contrib.staticfiles.finders.DefaultStorageFinder'> doesn't have a valid location.
 
-In global_settings.py remove the following line in Staic_file_finders 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+ 	- In global_settings.py remove the following line in Staic_file_finders 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 
 
-8.h. Some Module like apiclient, south or any app mentioned in the Third-Party-Apps in globalsetings.py is not installed. Google 'install apiclient library' or whatever the module name is and type the command that you find in any of the results in terminal
+8.h. Some Module like apiclient, south or any app mentioned in the Third-Party-Apps in globalsetings.py is not installed. 
+
+	- Google 'install apiclient library' or whatever the module name is and type the command that you find in any of the results in terminal
 
 
 ------------------------------------------------------------------------------------------------------
