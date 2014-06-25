@@ -36,6 +36,7 @@ def global_context(request, token_info=True, user_info=True):
     """
     erp_profile = None
     profile = None
+    drive_folders = None
     if user_info and hasattr(request.user, "erp_profile"):
     	erp_profile = request.user.erp_profile
     	drive_folders = []
