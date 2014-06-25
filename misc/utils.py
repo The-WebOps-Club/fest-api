@@ -36,8 +36,8 @@ def global_context(request, token_info=True, user_info=True):
     """
     erp_profile = None
     profile = None
-    if user_info:
-    	erp_profile = request.user.erp_profile if hasattr(request.user, "erp_profile") else None
+    if user_info and hasattr(request.user, "erp_profile"):
+    	erp_profile = request.user.erp_profile
     	drive_folders = []
         entity_list = list(erp_profile.coord_relations.all()) + \
                     list(erp_profile.supercoord_relations.all()) + \
