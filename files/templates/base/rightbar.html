@@ -14,6 +14,7 @@
        </div>
     </div>
     <hr />
+    {% comment %}
     <div class='row-fluid right_search'>
         <div class='contact_searchbar searchbar span12'>  
             <input class='input' id='rightbar_search_input' type='text' placeholder=' Search for stuff ...'>
@@ -31,18 +32,35 @@
 	                </div>
 	            </a>
             </div>
-            {% comment %}
                 For ajax loading ... use this template
                 {% with name="template" %}
                     {% include "modules/right_data_item.html" %}
                 {% endwith %}
-            {% endcomment %}
         </div>
     </div>
+    {% endcomment %}
+
+    <div class="row-fluid">
+        <div id='docs_links' class='span12 links'>
+            <div class='group_link_head'>DOCS</div>
+            <ul class='group_link vertical'>
+                {% for drive in drive_folders %}
+                    <li class="">
+                    <a href="https://drive.google.com/#folders/{{ drive.1 }}" target="_blank">
+                        <i class='icon-folder'></i> <span>{{drive.0}}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
  </div></div>   
 
 <style>
-.rightbar .right_quick_post {
+.rightbar {
+    padding: 10px 10px;
+    overflow-y : auto;  
 }
 .rightbar .right_quick_post .quick_post_to {
     width : 100%;
@@ -105,6 +123,20 @@
 }
 .data_item {
     cursor : pointer;
+}
+.rightbar .group_link_head, .group_head {
+    color: #999;
+    font-size: 9px;
+    font-weight: bold;
+    padding-top : 10px;
+}
+.rightbar ul.group_link.vertical > li.active {
+    font-weight : bold;
+    background-color: rgb(216, 223, 234);
+}
+.rightbar ul.group_link.vertical > li.active a:hover, .rightbar ul.group_link.vertical > li.active:hover {
+    font-weight : bold;
+    background-color: rgb(216, 223, 234);
 }
 </style>
 

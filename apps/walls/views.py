@@ -23,6 +23,7 @@ from annoying.functions import get_object_or_None
 import os
 import notifications
 
+@login_required
 def wall (request, wall_id=None):
     """
         Renders a Wall. It can be of User, Department, subdepartment etc.
@@ -95,6 +96,7 @@ def wall (request, wall_id=None):
     }
     return render_to_response('pages/wall.html', local_context, context_instance= global_context(request))
 
+@login_required
 def my_wall(request, owner_type, owner_id):
     # Initial validations
     try:
