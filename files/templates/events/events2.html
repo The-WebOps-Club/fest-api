@@ -7,7 +7,7 @@
 
 
 {{message}} <br />
-
+<p id="message"> </p> </br>
 {% if event_list %}
 	{% for event in event_list %}
 		<button type="button" onclick="Dajaxice.apps.events.show_tabs(show_tabs_js, {'event_name':'{{event}}'})">{{event}}</button> 
@@ -21,18 +21,30 @@
 <br /> <br />
 <div id="event_name"></div><br /><br />
 <div id="event_tabs"></div><br /><br />
-<div id="event_tabs_description"></div>
+<h3 id="selected_event_tab"></h3><br />
+
+<!--DELETE TAB -->
+<div id="delete_tab_button" style="visibility:hidden;">
+<form action = "" method = "post">
+ {%  csrf_token %} 
+<input id="eventName_hidden" type="hidden" name="eventName" value="">
+<input id="eventTabName_hidden" type="hidden" name="event_tab_name" value="">
+<input type="submit" name="delete_tab" value="Delete Tab">
+</form>
+</div> &nbsp
+
+<div id="edit_tab_button"></div><br />
+<div id="event_tabs_description"> </div>
+
+<!--ADD TAB -->
 <div id="add_new_tab_form" style="visibility:hidden;">
-
-
 <form name="add_tab_form" method="post" action="" onsubmit="validateAddNewTabForm()">
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_name"><br>
 Description: <textarea name="tab_description" rows="20" cols="40"></textarea>
 <input id="event_name_hidden" type="hidden" name="event_name" value="">
-<input type="submit" value="Create Tab">
+<input type="submit" value="Create Tab" name="addNewTab">
 </form>
-
 </div>
 
 <script>
@@ -52,13 +64,21 @@ function show_tabs_js(data){
 
 
 function show_tabs_description_js(data){
+    document.getElementById("selected_event_tab").innerHTML = data.event_tab_name;
+
+    document.getElementById("eventName_hidden").value = data.event_name;
+    document.getElementById("eventTabName_hidden").value = data.event_tab_name;
+    document.getElementById("delete_tab_button").style.visibility="visible";
+
     document.getElementById("event_tabs_description").innerHTML = data.description;
 }
+
 function add_new_tab_js(event_name){
     document.getElementById("event_name_hidden").value = event_name;
     document.getElementById("add_new_tab_form").style.visibility="visible";
     return;
 }
+
 function validateAddNewTabForm() {
     var x = document.forms["add_tab_form"]["tab_name"].value;
     if (x==null || x=="") {
@@ -66,6 +86,8 @@ function validateAddNewTabForm() {
         return false;
     }
 }
+
+
 </script>
 
 

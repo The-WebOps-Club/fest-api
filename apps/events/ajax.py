@@ -39,7 +39,8 @@ def show_tabs_description(request,event_name,event_tab):
     event_object=Event.objects.get(name=event_name)
     event_tab=EventTab.objects.get(name=event_tab,event=event_object)
     description=event_tab.content
-    return simplejson.dumps({'description': description})
+    return simplejson.dumps({'description': description,'event_name':event_name,'event_tab_name': event_tab.name})
+
 
 
 

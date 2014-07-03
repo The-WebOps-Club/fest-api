@@ -22,25 +22,32 @@ from misc.utils import global_context
 
 
 from apps.events.models import Event, EventTab
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
-
-def add_tabs( request ):
+@login_required
+def portal_main2( request ):
 	message=""
-	if request.method == 'POST' and request.POST['tab_name']!='':
-		print "dd"
-    		event_tab=EventTab()
-		event_tab.name=request.POST['tab_name']
-		event_tab.content=request.POST['tab_description']
-		event_tab.event=Event.objects.get(name=request.POST['event_name'])
-		event_tab.save()
-		message="Event Tab successfully added"
+	if request.method == 'POST' and "addNewTab" in request.POST:
+		if request.POST['tab_name']!='' :
+			print "yuu"
+	    		event_tab=EventTab()
+			event_tab.name=request.POST['tab_name']
+			event_tab.content=request.POST['tab_description']
+			event_tab.event=Event.objects.get(name=request.POST['event_name'])
+			event_tab.save()
+			message="The " + request.POST['tab_name'] + " tab has been successfully added to the " + request.POST['event_name'] + " event"
 	    
-
+	if request.method == 'POST' and "delete_tab" in request.POST:
+		print "dd"
+		event_object=Event.objects.get(name=request.POST['eventName'])
+		event_tab=EventTab.objects.get(name=request.POST['event_tab_name'],event=event_object)
+		event_tab.delete()
+    		message="The "+ request.POST['event_tab_name']+" tab in the event " + request.POST['eventName']+ " has been successfully deleted"
 	events=Event.objects.all()
 	event_list=[]
 	for i in events:
 		event_list=event_list+[i.name]
 	
+
 	context_dict = {'event_list':event_list,'message':message}
-	return render_to_response('events/events2.html', context_dict, context_instance = global_context(request))
+	return render_to_response('portals/events/events2.html', context_dict, context_instance = global_context(request))
