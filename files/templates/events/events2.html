@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+{% load check_access %}
+{% block content %}
+{% load dajaxice_templatetags %}
+{% dajaxice_js_import %}
+{%  csrf_token %}
+
+
+{{message}} <br />
+
+{% if event_list %}
+	{% for event in event_list %}
+		<button type="button" onclick="Dajaxice.apps.events.show_tabs(show_tabs_js, {'event_name':'{{event}}'})">{{event}}</button> 
+        {% endfor %}
+{% else %}
+            <strong>There are no categories present.</strong>
+{% endif %}
+            
+
+
+<br /> <br />
+<div id="event_name"></div><br /><br />
+<div id="event_tabs"></div><br /><br />
+<div id="event_tabs_description"></div>
+<div id="add_new_tab_form" style="visibility:hidden;">
+
+
+<form name="add_tab_form" method="post" action="" onsubmit="validateAddNewTabForm()">
+{%  csrf_token %}
+Tab Name: <input type="text" name="tab_name"><br>
+Description: <textarea name="tab_description" rows="20" cols="40"></textarea>
+<input id="event_name_hidden" type="hidden" name="event_name" value="">
+<input type="submit" value="Create Tab">
+</form>
+
+</div>
+
+<script>
+
+function show_tabs_js(data){
+    document.getElementById("event_name").innerHTML = "<h2>"+data.event_name+"</h2>";
+    var arr = data.tabs_names_list.split(","); 
+    var len = arr.length;
+    var text = "",i;
+
+    for (i=0; i < len; i++) {
+    text += '<button type="button" onclick="Dajaxice.apps.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\'})">'+arr[i]+'</button>' + " ";
+    }
+    text += '<button type="button" onclick="add_new_tab_js(\''+data.event_name+'\')"> +Add New Tab </button>' + " ";
+    document.getElementById("event_tabs").innerHTML = text;
+    }
+
+
+function show_tabs_description_js(data){
+    document.getElementById("event_tabs_description").innerHTML = data.description;
+}
+function add_new_tab_js(event_name){
+    document.getElementById("event_name_hidden").value = event_name;
+    document.getElementById("add_new_tab_form").style.visibility="visible";
+    return;
+}
+function validateAddNewTabForm() {
+    var x = document.forms["add_tab_form"]["tab_name"].value;
+    if (x==null || x=="") {
+        alert("New Event Tab Name must be filled.");
+        return false;
+    }
+}
+</script>
+
+
+
+
+
+
+
+{% endblock %}

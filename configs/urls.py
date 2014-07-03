@@ -67,6 +67,7 @@ urlpatterns = patterns('',
 
     url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
     url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
+    url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
