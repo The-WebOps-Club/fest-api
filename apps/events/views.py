@@ -22,9 +22,9 @@ from misc.utils import global_context
 
 
 from apps.events.models import Event, EventTab
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def portal_main2( request ):
 	message=""
 #If add tab button was pressed
@@ -68,4 +68,4 @@ def portal_main2( request ):
 	
 
 	context_dict = {'event_list':event_list,'message':message}
-	return render_to_response('portals/events/events2.html', context_dict, context_instance = global_context(request))
+	return render_to_response('events/events2.html', context_dict, context_instance = global_context(request))
