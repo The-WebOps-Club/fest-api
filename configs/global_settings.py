@@ -66,6 +66,10 @@ THIRD_PARTY_APPS = (
 
     # Simple stuff
     'exportdata', # used to generate csv files from models
+
+    # Mobile and Mainsite API
+    'rest_framework',
+    'rest_framework.authtoken',
 )
 API_APPS = (
     'misc',
@@ -77,6 +81,7 @@ API_APPS = (
     'apps.webmirror',
     'apps.portals.events',
     'apps.portals.general',
+    'apps.api',
 
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
@@ -537,3 +542,14 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
 #DEFAULT_POST_PERMISSION_STACK = PostPermissionSubqueries.build_post_permissions_stack()
 
 SEND_NOTIF_EMAILS = True
+
+# API Preferences
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+
+}

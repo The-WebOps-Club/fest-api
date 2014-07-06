@@ -131,7 +131,7 @@ def query_newsfeed(user, **kwargs):
             GROUP BY a.target_object_id
             ORDER BY a.timestamp DESC
         """
-    if start_item and end_item :
+    if start_item >= 0 and end_item :
         notification_query += "LIMIT %(start_item)d,%(end_item)s"
     
     notification_query = notification_query % {"user_id" : user.id, 
