@@ -118,7 +118,8 @@ urlpatterns = patterns('',
     # API
     url(r'^api-web-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
-    url(r'^api/', include(router.urls)),
+    url(r'^api/mobile/', include(router.urls)),
+    url(r'^api-docs/', include('rest_framework_swagger.urls')),
 )
 
 # 400 & 500

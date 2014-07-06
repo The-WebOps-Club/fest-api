@@ -7,25 +7,29 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 
-from apps.walls.utils import query_newsfeed
+from apps.walls.utils import query_notifs, query_newsfeed
 
 
 class NotificationViewSet(viewsets.ViewSet):
     """
-        method: GET
-        params: 
-            page: Start page number
-            limit: number of items in each page
-        authorization: Token
+        Return Notifications to an authenticated User
+        page -- Start page number
+        limit -- number of items in each page
+        type --  type of notification
     """
     def list(self, request):
-        page = int(request.GET['page'])
-        limit = int(request.GET['limit'])
-        newsfeed = query_newsfeed(request.user, page=page, max_items=limit)
+        page = int(request.QUERY_PARAMS.get('page', 0))
+        limit = int(request.QUERY_PARAMS.get('limit', 10))
+        notif_type = request.QUERY_PARAMS.get('type', 'all')
+        if notif_type == 'all':
+            notifs = query_newsfeed(request.user, page=page, max_items=limit)
+        else:
+            notifs = query_notifs(request.user, page=page, max_items=limit, notif_type=notif_type)
         json = []
-        for notif in newsfeed:
+        for notif in notifs:
             item = {}
             item['id'] = notif.id
+            item['unread'] = notif.unread
             item['actor'] = {}
             item['actor']['name'] = notif.actor.get_full_name()
             item['actor']['id'] = notif.actor.id
@@ -51,17 +55,17 @@ class NotificationViewSet(viewsets.ViewSet):
         return Response(json)
 
     # Standard API methods. Kept for future reference
-    def create(self, request):
-        pass
+    #def create(self, request):
+    #    pass
 
-    def retrieve(self, request, pk=None):
-        pass
+    #def retrieve(self, request, pk=None):
+    #    pass
 
-    def update(self, request, pk=None):
-        pass
+    #def update(self, request, pk=None):
+    #    pass
 
-    def partial_update(self, request, pk=None):
-        pass
+    #def partial_update(self, request, pk=None):
+    #    pass
 
-    def destroy(self, request, pk=None):
-        pass
+    #def destroy(self, request, pk=None):
+    #    pass

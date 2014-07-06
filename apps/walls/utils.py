@@ -183,7 +183,7 @@ def query_notifs(user, **kwargs):
             GROUP BY a.target_object_id 
             ORDER BY a.unread DESC, a.timestamp DESC
         """
-    if start_item and end_item :
+    if start_item >= 0 and end_item :
         notif_query += "LIMIT %(start_item)d,%(end_item)s"
 
     notif_query = notif_query.replace("\n", "") % { "user_id" : user.id, 
