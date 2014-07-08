@@ -25,7 +25,7 @@ from apps.events.models import Event, EventTab
 from django.contrib.auth.decorators import login_required
 
 @login_required
-def portal_main2( request ):
+def add_tabs( request ):
 	message=""
 #If add tab button was pressed
 	if request.method == 'POST' and "addNewTab" in request.POST:

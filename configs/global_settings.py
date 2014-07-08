@@ -74,10 +74,7 @@ API_APPS = (
     'apps.walls',
     'apps.events',
     'apps.docs',
-    'apps.webmirror',
-    'apps.portals.events',
     'apps.portals.general',
-
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 
@@ -86,7 +83,7 @@ INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #'django.contrib.staticfiles.finders.DefaultStorageFinder',
     'dajaxice.finders.DajaxiceFinder',
     'compressor.finders.CompressorFinder',
 )
@@ -182,7 +179,7 @@ DATE_INPUT_FORMATS = (
 # -------------------------------------------------------------------
 # Paths for static, media and templates
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(PROJECT_PATH, "files", "static-collected")
+STATIC_ROOT = os.path.join(PROJECT_PATH, "files", "static")
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_PATH, "files", "media")
 EMAIL_ROOT = os.path.join(PROJECT_PATH, "files", "emails") # Contains email files for Post Office
@@ -513,7 +510,7 @@ KEEP_COMMENTS_ON_MINIFYING = False
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS
-USE_EXTERNAL_SITES = True
+USE_EXTERNAL_SITES = False
 GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
 GOOGLE_API_PUBLIC_KEY = ''
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'google/oauth2callback'
@@ -535,5 +532,3 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
 #     },
 # }
 #DEFAULT_POST_PERMISSION_STACK = PostPermissionSubqueries.build_post_permissions_stack()
-
-SEND_NOTIF_EMAILS = True
