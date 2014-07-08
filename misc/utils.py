@@ -9,7 +9,6 @@ from django.utils.timezone import utc
 from django.conf import settings
 # Decorators
 # Apps
-import apps
 from misc.managers import *
 from misc.strings import *  #Import miscellaneous functions
 from misc.exceptions import *  #Import miscellaneous functions
@@ -60,11 +59,10 @@ def global_context(request, token_info=True, user_info=True):
         	profile = request.user.profile
     	else:
         	profile = None
-    # token = None
-    # if token_info and settings.USE_EXTERNAL_SITES:
-    # 	drive = Drive()
-    # 	token = Drive.get_access_token()
-    
+    token = None
+    if token_info and settings.USE_EXTERNAL_SITES:
+    	drive = Drive()
+    	token = Drive.get_access_token()
     local_context = {
         'user' : request.user,
         'erp_profile' : erp_profile,
@@ -117,8 +115,3 @@ def valid_phone_number(num_string):
 
 # ------------------ SIMPLE UTILS
 #----------------------------------------------------------------------
-
-# A small helper class to create custom attributes
-class Bunch:
-    def __init__(self, **kwds):
-        self.__dict__.update(kwds)
