@@ -10,7 +10,7 @@
 <p id="message"> </p> </br>
 {% if event_list %}
 	{% for event in event_list %}
-		<button type="button" onclick="Dajaxice.apps.events.show_tabs(show_tabs_js, {'event_name':'{{event}}'})">{{event}}</button> 
+		<button type="button" onclick="Dajaxice.apps.events.show_tabs(show_tabs_js, {'event_name':'{{event}}','username':'{{user.username}}'})">{{event}}</button> 
         {% endfor %}
 {% else %}
             <strong>There are no categories present.</strong>
@@ -75,11 +75,14 @@ function show_tabs_js(data){
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
-
+    
     for (i=0; i < len; i++) {
-    text += '<button type="button" onclick="Dajaxice.apps.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\'})">'+arr[i]+'</button>' + " ";
+    text += '<button type="button" onclick="Dajaxice.apps.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'})">'+arr[i]+'</button>' + " ";
     }
-    text += '<button type="button" onclick="add_new_tab_js(\''+data.event_name+'\')"> +Add New Tab </button>' + " ";
+
+    //The add_new_tab button is shown only if user has permission
+    if (data.has_perm=="yes"){
+    text += '<button type="button" onclick="add_new_tab_js(\''+data.event_name+'\')"> +Add New Tab </button>' + " ";}
     document.getElementById("event_tabs").innerHTML = text;
     }
 
@@ -90,10 +93,13 @@ function show_tabs_description_js(data){
 //delete tab button
     document.getElementById("eventName_hidden").value = data.event_name;
     document.getElementById("eventTabName_hidden").value = data.event_tab_name;
+	//DELETE and EDIT button displayed only  if user has permission
+    if (data.has_perm=="yes"){
     document.getElementById("delete_tab_button").style.visibility="visible";
 
 //edit tab button    
     document.getElementById("edit_tab_div").innerHTML = '<button type="button" onclick="edit_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Name or Description</button> On clicking this button Form appears at bottom of the page';
+    }
 
     document.getElementById("event_tabs_description").innerHTML = data.description;
 }
