@@ -1,0 +1,352 @@
+/* FB Buttons */
+.jewels a {
+    height : 15px;
+    width : 5px;
+    padding: 5px 20px 5px;
+    margin: 5px 0 0 0px;
+}
+.jewels a.userButton.open {
+    background-image: url(../img/fb_icons.png)!important;
+    background-repeat: no- repeat!important;
+    background-size: auto!important;
+    background- position: 0 -354px!important;
+}
+.jewels a.userButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat;
+    background- size: auto;
+    background-position: -25px -255px;
+}
+.jewels a.messageButton.open {
+    background-image: url(../img/fb_icons.png)!important;
+    background-repeat: no- repeat!important;
+    background-size: auto!important;
+    background- position: -27px -322px!important;
+}
+.jewels a.messageButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: -73px -102px;
+}
+.jewels a.notifButton.open {
+    background-image: url(../img/fb_icons.png)!important;
+    background-repeat: no-repeat!important;
+    background-size: auto!important;
+    background-position: -67px -322px;
+}
+.jewels a.notifButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: -75px -185px;
+}
+.topbar div > ul.nav.links a.settingButton, 
+.nav.links a.settingButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat!important;
+    background-size: auto!important;
+    background-position: -80px 0!important;
+    height : 15px;
+    padding: 5px 10px 10px;
+    margin: 5px 0 0 0px;
+}
+.searchbar button {
+    background-image: url(../img/fb_icons_2.png);
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: -62px -3px;
+    background-color: #fff;
+    border: 0;
+    cursor: pointer;
+    display: block;
+    height: 23px;
+    padding: 0;
+    position: absolute;
+    right: 1px;
+    top: 1px;
+    width: 22px;
+}
+.nav a.privacyButton {
+    background-image: url(../img/fb_icons.png);
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: -37px -407px;
+    height: 9px;
+    margin-top: 11px;
+    padding : 0px;
+    width: 12px;
+}
+/* Generic styles */
+.bold {
+    font-weight : 800;
+}
+.strike {
+    text-decoration: line-through;
+}
+.underline {
+    text-decoration: underline;
+}
+.black {
+    color : black;
+}
+.white {
+    color : white;
+}
+.center {
+    text-align : center;
+}
+.small {
+	font-size : 10px;
+}
+.huge {
+	font-size : 80px;
+	line-height : 100px;
+}
+.opacity_half {
+    opacity : 0.5;
+}
+.full_width {
+    width :100%;
+}
+.affix {
+  position: fixed;
+}
+.link_no_style {
+	color : inherit;
+	text-decoration : inherit;
+}
+.link_no_style:hover {
+	color : inherit;
+	text-decoration : inherit;
+}
+.btn.thin-x {
+    margin-left : 0px;
+    margin-right : 0px;
+    padding-left : 2px;
+    padding-right : 2px;
+}
+.btn.thin-y {
+    margin-top : 0px;
+    margin-bottom : 0px;
+    padding-top : 1px;
+    padding-bottom : 1px;
+}
+
+.temp-highlight {
+    -webkit-animation: temp-highlight-anim 5s linear;
+            animation: temp-highlight-anim 5s linear;
+}
+@keyframes temp-highlight-anim {
+    from { 
+        background-color : #d9d9d9; 
+        border : 2px solid #000;
+    }
+    to { 
+        background-color: inherit; 
+    }
+}
+@-webkit-keyframes temp-highlight-anim { /* Safari and Chrome */
+    from { 
+        background-color : #d9d9d9; 
+        border : 2px solid #000;
+    }
+    to { 
+        background-color: inherit; 
+    }
+}
+
+/* Specific Template styles */
+.main_body {
+    border-left-color: rgb(204, 204, 204);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: rgb(204, 204, 204);
+    border-right-style: solid;
+    border-right-width: 1px;
+    padding: 10px 10px;
+}
+.counter {
+    opacity : 1;
+    font-size : 10px;
+    background-color: #d8dfea;
+    color: #3b5998;
+}
+.counter.loading {
+    opacity : 1;
+    background-color: transparent;
+}
+.topbar .counter {
+    font-size : 9px;
+    font-weight : 300;
+    background-color: #dd3333;
+    line-height : 11px;
+    float : right;
+    margin-top : -5px;
+    color: #ffffff;
+    position : absolute;
+}
+.icon-rotate {
+    background-image: url(../img/loading.png);
+    height: 12px;
+    width: 12px;
+    z-index : 99;
+    background-color: transparent;
+    -webkit-animation: rotateSpinner 1.2s linear infinite;
+}
+@-webkit-keyframes rotateSpinner {
+    0% {
+        -webkit-transform:rotate(0deg)
+    }
+    100% {
+        -webkit-transform:rotate(360deg)
+    }
+}
+label {
+    vertical-align: middle;
+}
+.popover {
+    z-index : 99999;
+}
+.popover .inner{
+    opacity : 1;
+    background-color : #fff;
+}
+.popover .title{
+    opacity : 1;
+    background-color : #fff;
+}.hidden {
+    display : none;
+}
+.popover.jewel_popover .inner {
+    width : 400px;
+    max-height : 50%;
+}
+.popover.jewel_popover .inner .content {
+    margin : 0px;
+    padding : 0px;
+}
+.fixedbar {
+            transition: margin 0.2s;
+         -o-transition: margin 0.2s;
+        -ms-transition: margin 0.2s;
+       -mox-transition: margin 0.2s;
+    -webkit-transition: margin 0.2s;
+}
+
+/* Extended bootstrap */
+.label.label-head {
+    font-size : 10px;
+}
+form .error > label, 
+form .error .help-block, 
+form .error .help-inline {
+  color: #dd3c10;
+}
+form input.error, form textarea.error {
+  color: #dd3c10;
+  border-color: #dd3c10;
+}
+form input.error:focus, form textarea.error:focus {
+  border-color: #ad2f0d;
+  -webkit-box-shadow: 0 0 6px #f37f60;
+  -moz-box-shadow: 0 0 6px #f37f60;
+  box-shadow: 0 0 6px #f37f60;
+}
+form .error .input-prepend .add-on, form .error .input-append .add-on {
+  color: #dd3c10;
+  background-color: #ffebe8;
+  border-color: #ad2f0d;
+}
+form .warning > label, form .warning .help-block, form .warning .help-inline {
+  color: #e2c822;
+}
+form .warning input, form .warning textarea {
+  color: #e2c822;
+  border-color: #e2c822;
+}
+form .warning input:focus, form .warning textarea:focus {
+  border-color: #b9a318;
+  -webkit-box-shadow: 0 0 6px #eede7c;
+  -moz-box-shadow: 0 0 6px #eede7c;
+  box-shadow: 0 0 6px #eede7c;
+}
+form .clearfix.warning .input-prepend .add-on, form .clearfix.warning .input-append .add-on {
+  color: #e2c822;
+  background-color: #fff9d7;
+  border-color: #b9a318;
+}
+form .clearfix.success > label, form .clearfix.success .help-block, form .clearfix.success .help-inline {
+  color: #3b6e22;
+}
+form .clearfix.success input, form .clearfix.success textarea {
+  color: #3b6e22;
+  border-color: #3b6e22;
+}
+form .clearfix.success input:focus, form .clearfix.success textarea:focus {
+  border-color: #264716;
+  -webkit-box-shadow: 0 0 6px #65bc3a;
+  -moz-box-shadow: 0 0 6px #65bc3a;
+  box-shadow: 0 0 6px #65bc3a;
+}
+form .clearfix.success .input-prepend .add-on, form .clearfix.success .input-append .add-on {
+  color: #3b6e22;
+  background-color: #3b6e22;
+  border-color: #264716;
+}
+
+
+/* Extended select-2 */
+.select2-container-multi ul.select2-choices {
+    outline: 0;
+    color: #666666;
+    border: 1px solid #d4dae8;
+    -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+    -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+    -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+    -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+    transition: border linear 0.2s, box-shadow linear 0.2s;
+    -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.select2-container-multi ul.select2-choices:focus,
+.select2-container-multi ul.select2-choices:active {
+    border-color: rgba(82, 168, 236, 0.8);
+    -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+    -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+
+/* ------ VIDOE ------------ */
+.video_comment .left {
+    padding-right : 20px;
+}
+.video_comment .right {
+}
+.video_comment .right .title {
+    overflow : hidden;
+    text-overflow : ellipsis;
+    white-space : nowrap;
+    height : 20px;
+    width : 100%;
+    line-height : 20px;
+    font-size : 14px;
+    margin-bottom : 10px;
+}
+.video_comment .right .desc {
+    overflow : hidden;
+    text-overflow : ellipsis;
+    /*white-space : nowrap;*/
+    width : 100%;
+    max-height :70px;
+    
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical; 
+
+    text-overflow: -o-ellipsis-lastline;
+}
+
+
