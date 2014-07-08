@@ -30,7 +30,7 @@ def add_tabs( request ):
 #If add tab button was pressed
 	if request.method == 'POST' and "addNewTab" in request.POST:
 		if request.POST['tab_name']!='' and  request.POST['tab_name'][0]!=' ':
-			print "yuu"
+			
 	    		event_tab=EventTab()
 			event_tab.name=request.POST['tab_name']
 			event_tab.content=request.POST['tab_description']
@@ -39,7 +39,7 @@ def add_tabs( request ):
 			message="The " + request.POST['tab_name'] + " tab has been successfully added to the " + request.POST['event_name'] + " event"
 #If delete tab button was pressed	    
 	if request.method == 'POST' and "delete_tab" in request.POST:
-		print "dd"
+		
 		event_object=Event.objects.get(name=request.POST['eventName'])
 		event_tab=EventTab.objects.get(name=request.POST['event_tab_name'],event=event_object)
 		event_tab.delete()
@@ -57,7 +57,6 @@ def add_tabs( request ):
 			event_tab.event=Event.objects.get(name=request.POST['event_Name_edit_form'])
 			event_tab.save()
 
-			print "qqqqqqqqu"
 			message="The " + request.POST['tab_Name'] + " tab from the event " + request.POST['event_Name_edit_form'] + "  has been successfully Edited."
 
 
@@ -69,3 +68,6 @@ def add_tabs( request ):
 
 	context_dict = {'event_list':event_list,'message':message}
 	return render_to_response('events/events2.html', context_dict, context_instance = global_context(request))
+
+
+
