@@ -17,10 +17,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class WallSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wall
+	fields=('id','name','is_public','time_updated','cache_updated')
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
+	fields=('id','is_active','access_specifier','description','by','time_created','time_updated','subject','comments')
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:

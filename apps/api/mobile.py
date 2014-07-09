@@ -7,8 +7,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 
-from apps.walls.utils import query_notifs, query_newsfeed
-
+from apps.walls.utils import query_notifs, query_newsfeed,get_my_walls,get_my_posts
+from apps.walls.models import Wall
+from apps.api.serializers import *
 
 class NotificationViewSet(viewsets.ViewSet):
     """
@@ -69,3 +70,32 @@ class NotificationViewSet(viewsets.ViewSet):
 
     #def destroy(self, request, pk=None):
     #    pass
+
+class WallsViewSet(viewsets.ViewSet):
+	
+	def list(self,request):
+		walls = get_my_walls(request.user)
+		wallserializer=WallSerializer(walls,many=True)
+	        return Response(wallserializer.data)
+
+
+
+class PostsViewSet(viewsets.ViewSet):
+	def list(self,request):
+		wall_id = request.QUERY_PARAMS.get('id')
+		if(wall_id==None):
+			return Response({"error":"enter wall id"})		
+		wall= Wall.objects.filter(id=wall_id)				
+		posts = get_my_posts(request.user,wall)
+		postserializer = PostSerializer(posts,many=True)
+		for i in range(len(postserializer.data)):
+			postserializer.data[i]["description"]=HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data[i]["description"].strip()))
+
+		return Response(postserializer.data)
+			
+
+
+
+
+
+
