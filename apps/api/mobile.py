@@ -13,13 +13,13 @@ from apps.api.serializers import *
 
 class NotificationViewSet(viewsets.ViewSet):
     """
-        Return notifications to an authenticated User
-        page -- Start page number, Int
-        limit -- number of items in each page: Int
-        type --  type of notification: read, unread, all
+        Return Notifications to an authenticated User
+        page -- Start page number
+        limit -- number of items in each page
+        type --  type of notification
     """
     def list(self, request):
-        page = int(request.QUERY_PARAMS.get('page', 1))
+        page = int(request.QUERY_PARAMS.get('page', 0))
         limit = int(request.QUERY_PARAMS.get('limit', 10))
         notif_type = request.QUERY_PARAMS.get('type', 'all')
         if notif_type == 'all':
