@@ -22,6 +22,7 @@ from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 from misc.models import College
 from apps.walls.models import Wall, Post
 from misc.managers import CheckActiveManager
+
 # Forms
 # View functions
 # Misc
@@ -202,7 +203,12 @@ class UserProfile(models.Model): # The corresponding auth user
     # Fest organizational info
     # is_core            = models.BooleanField(default=False)
     # is_hospi           = models.BooleanField(default=False)
-    
+  
+
+
+  #Events registerd
+
+#events_registered  = models.ManyToManyField(Event, null=True, blank=True, related_name='participant')
     # Analytics information
     date_created       = models.DateTimeField(auto_now_add=True)
     last_activity_ip   = models.IPAddressField(default="0.0.0.0")
