@@ -110,7 +110,7 @@ def participant_profile(request,username,user_profile_form):
 	
 	# validating user_profile_form
 	if user_profile_form.is_valid():
-		forms_successfully_validated=1
+		forms_successfully_validated = 1
 	else:
 		for field in user_profile_form:
 			for error in field.errors:
