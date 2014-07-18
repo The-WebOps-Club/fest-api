@@ -145,6 +145,8 @@ def participant_registration(request, password_recheck_form,user_form,user_profi
     	p = User.objects.get(username=login_details_form.cleaned_data['username'])
     except User.DoesNotExist:
     	forms_successfully_validated+=1
+    except KeyError:
+	message=message+""
     else:
     	message=message+"The chosen username exists. Please select something else <br />\n"
 #validating if password re-entered correctly 
