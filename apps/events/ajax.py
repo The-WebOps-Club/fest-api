@@ -59,7 +59,10 @@ def permission(event_object,user_object):
 	if hasattr(user_object,'erp_profile'):
 		a=5
 	else:
-		return "participant"
+		if event_object.has_tdp:
+			return "participant_event_has_tdp"
+		else:
+			return "participant"
 	if events_dept in user_object.erp_profile.core_relations.all() or qms_dept in user_object.erp_profile.core_relations.all():
 		return "yes"
 	else:

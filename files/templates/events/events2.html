@@ -109,7 +109,10 @@ function show_tabs_description_js(data){
     if (data.has_perm=="participant"){
     document.getElementById("registration_tab").innerHTML = '<button type="button" onclick="Dajaxice.apps.events.register(register_js, {\'event_name\':\''+data.event_name+'\',\'username\':\'{{user.username}}\'})">'+data.event_name+'</button>' 
 
+}
 
+    if (data.has_perm=="participant_event_has_tdp"){
+    document.getElementById("registration_tab").innerHTML = "www.example.com"
 }
     document.getElementById("event_tabs_description").innerHTML = data.description;
 }
