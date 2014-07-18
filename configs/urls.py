@@ -90,6 +90,9 @@ urlpatterns = patterns('',
     #url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
     #url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
 
+
+    #Participant - Login/registration - testing (Akshay Utture)
+    url(r'^participant_registration_or_login/$','apps.users.views.participant_registration_or_login', name='participant_registration_or_login'),
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
     

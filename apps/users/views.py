@@ -298,6 +298,15 @@ def unsubscribe(request, username, token):
     """ 
     User is immediately unsubscribed if they are logged in as username, or
     if they came from an unexpired unsubscribe link. Otherwise, they are
+
+
+
+
+
+
+
+
+
     redirected to the login page and unsubscribed as soon as they log in.
     """
  
@@ -314,3 +323,20 @@ def unsubscribe(request, username, token):
     # Otherwise redirect to login page
     next_url = reverse('apps.users.views.unsubscribe', kwargs={'username': username, 'token': token,})
     return HttpResponseRedirect('%s?next=%s' % (reverse('login'), next_url))
+
+
+
+
+
+
+
+from apps.users.forms import LoginForm,UserProfileForm,UserForm
+    
+def participant_registration_or_login(request):
+    
+    loginform=LoginForm()
+    userform=UserForm()
+    userprofileform=UserProfileForm()
+    context_dict={'loginform':loginform,'userform':userform,'userprofileform':userprofileform}
+    return render_to_response('pages/participant_registration_or_login.html', context_dict, context_instance = global_context(request))
+
