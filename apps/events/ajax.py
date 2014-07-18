@@ -68,9 +68,6 @@ def permission(event_object,user_object):
 	else:
 		return "no"
 
-
-
-
 @dajaxice_register
 def register(request,event_name,username):
     user_object=User.objects.get(username=username)

@@ -116,23 +116,31 @@ def participant_profile(request,username,user_profile_form):
 			for error in field.errors:
 				message=message+field.html_name+" : "+error+"<br />\n"
 	
-	if forms_successfully_validated==1:
-		message=''
-		new_user=User.objects.get(username=username)  
-		new_user_profile=UserProfile()
-		new_user_profile.gender= user_profile_form.cleaned_data['gender']
-		new_user_profile.dob= user_profile_form.cleaned_data['dob']
-		new_user_profile.mobile_number= user_profile_form.cleaned_data['mobile_number']
-		new_user_profile.branch= user_profile_form.cleaned_data['branch']
-		new_user_profile.college= user_profile_form.cleaned_data['college']
-		new_user_profile.college_roll= user_profile_form.cleaned_data['college_roll']
-		new_user_profile.school_student= user_profile_form.cleaned_data['school_student']
-		new_user_profile.want_accomodation= user_profile_form.cleaned_data['want_accomodation']
-		new_user_profile.user=new_user
-		new_user_profile.save()
-		login_success="yes"
-		new_user.is_active=True
-		alert_message="Registered successfully"
-	
-	return json.dumps({'message': message,'alert_message':alert_message,'login_success':login_success})
+	new_user.first_name=user_form.cleaned_data['first_name']
+	new_user.last_name=user_form.cleaned_data['last_name']
+	new_user.email=user_form.cleaned_data['email']
+	new_user.save()
+
+	new_user_profile=UserProfile()
+	new_user_profile.gender= user_profile_form.cleaned_data['gender']
+	new_user_profile.dob= user_profile_form.cleaned_data['dob']
+	new_user_profile.mobile_number= user_profile_form.cleaned_data['mobile_number']
+	new_user_profile.branch= user_profile_form.cleaned_data['branch']
+	new_user_profile.college= user_profile_form.cleaned_data['college']
+	new_user_profile.college_roll= user_profile_form.cleaned_data['college_roll']
+	new_user_profile.school_student= user_profile_form.cleaned_data['school_student']
+	new_user_profile.want_accomodation= user_profile_form.cleaned_data['want_accomodation']
+	new_user_profile.user=new_user
+	new_user_profile.save()
+	#the next 3 lines creates a blank erp_profile for this user since other pages and features cannot be accessed without an erp_profile. but not needed actually
+	#	erp_prof=ERPProfile()
+	#	erp_prof.user=new_user
+	#	erp_prof.save()
+
+	if forms_successfully_validated == 1:
+		alert_message="Registered successfully. Now please login"
+	else:
+		alert_message="The form has errors. Error details are at the top of the registration form"
+
+	return simplejson.dumps({'message': message,'alert_message':alert_message})
 
