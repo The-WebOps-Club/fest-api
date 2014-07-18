@@ -37,6 +37,12 @@
 <!--EDIT TAB BUTTON-->
 <div id="edit_tab_div"></div><br />
 
+
+<!--registration_tab -->
+<div id="registration_tab"> </div><br />
+
+
+
 <!--ADD NEW TAB FORM -->
 <div id="add_new_tab_form" style="visibility:hidden;">
 <form name="add_tab_form" method="post" action="" onsubmit="validateAddNewTabForm()">
@@ -61,7 +67,6 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <input type="submit" value="Edit Tab" name="EditTab">
 </form>
 </div>
-
 
 
 
@@ -100,7 +105,12 @@ function show_tabs_description_js(data){
 //edit tab button    
     document.getElementById("edit_tab_div").innerHTML = '<button type="button" onclick="edit_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Name or Description</button> On clicking this button Form appears at bottom of the page';
     }
+//shows the register button if user is a participant
+    if (data.has_perm=="participant"){
+    document.getElementById("registration_tab").innerHTML = '<button type="button" onclick="Dajaxice.apps.events.register(register_js, {\'event_name\':\''+data.event_name+'\',\'username\':\'{{user.username}}\'})">'+data.event_name+'</button>' 
 
+
+}
     document.getElementById("event_tabs_description").innerHTML = data.description;
 }
 
@@ -121,6 +131,13 @@ function edit_tab_js(event_name,event_tab_name,description){
     document.getElementById("message").innerHTML="Edit Tab form at the bottom of the page";
     return;
 }
+
+
+function register_js(data){
+    alert(data.message);
+}
+
+
 
 function validateAddNewTabForm() {
     var x = document.forms["add_tab_form"]["tab_name"].value;

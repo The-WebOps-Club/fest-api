@@ -35,6 +35,7 @@ def show_tabs(request,event_name,username):
     event_object=Event.objects.get(name=event_name)
     user_object=User.objects.get(username=username)
     has_perm = permission(event_object,user_object)
+    print has_perm
     tabs_object_list=event_object.eventtab_set.all()
 #tabs_names_list is a string with a set of event-tab-names -separated by commas
     tabs_names_list=''
@@ -58,9 +59,23 @@ def permission(event_object,user_object):
 	if hasattr(user_object,'erp_profile'):
 		a=5
 	else:
-		return "no"
+		return "participant"
 	if events_dept in user_object.erp_profile.core_relations.all() or qms_dept in user_object.erp_profile.core_relations.all():
 		return "yes"
 	else:
 		return "no"
+
+
+
+
+@dajaxice_register
+def register(request,event_name,username):
+    user_object=User.objects.get(username=username)
+    userprofile_object=UserProfile.objects.get(user=user_object)
+    event_object=Event.objects.get(name=event_name)
+    event_object.participants_registered.add(userprofile_object)
+    event_object.save()
+    return simplejson.dumps({'message':event_name+username})
+
+
 
