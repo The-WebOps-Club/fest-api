@@ -177,7 +177,7 @@ class UserProfile(models.Model): # The corresponding auth user
     
     # Basic information
     gender             = models.CharField(max_length=1, choices=GENDER_CHOICES, default='F')
-    dob                = models.DateField(null=True, blank=True)
+    dob                = models.DateField(null=True, blank=True, help_text='Date format should be dd-mm-yyyy')
     mobile_number      = models.CharField(max_length=15, blank=True, null=True, help_text='Please enter your current mobile number')
     
     # College info

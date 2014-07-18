@@ -55,6 +55,10 @@ def show_tabs_description(request,event_name,event_tab,has_perm):
 def permission(event_object,user_object):
 	events_dept=Dept.objects.get(name='events')
 	qms_dept=Dept.objects.get(name='qms')
+	if hasattr(user_object,'erp_profile'):
+		a=5
+	else:
+		return "no"
 	if events_dept in user_object.erp_profile.core_relations.all() or qms_dept in user_object.erp_profile.core_relations.all():
 		return "yes"
 	else:

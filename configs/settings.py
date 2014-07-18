@@ -90,4 +90,4 @@ HTML_MINIFY = False
 EXPERIMENTAL_MODE = "true" # NOTE : should be a string
 SEND_EMAIL = True
     # Dajaxice
-# DAJAXICE_MEDIA_PREFIX = "2015/erptest/dajaxice"
+# DAJAXICE_MEDIA_PREFIX = "/2015/erptest/dajaxice"
