@@ -85,11 +85,13 @@ urlpatterns = patterns('',
 
     url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
     url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
-    
-    # events portal
-    #url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
-    #url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
+    url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
 
+    #Event Tabs (backend only)
+    url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
+
+    #Participant - Login/registration - testing (Akshay Utture)
+    url(r'^participant_registration_or_login/$','apps.users.views.participant_registration_or_login', name='participant_registration_or_login'),
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
     

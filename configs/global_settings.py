@@ -43,7 +43,7 @@ THIRD_PARTY_APPS = (
     
     # ajax functionality
     'dajaxice',
-    # 'dajax',
+    #'dajax',
     
     # For programming ease
     'post_office',
