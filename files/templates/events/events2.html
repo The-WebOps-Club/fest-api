@@ -25,14 +25,7 @@
 <div id="event_tabs_description"> </div><br />
 
 <!--DELETE TAB BUTTON-->
-<div id="delete_tab_button" style="visibility:hidden;">
-<form action = "" method = "post">
- {%  csrf_token %} 
-<input id="eventName_hidden" type="hidden" name="eventName" value="">
-<input id="eventTabName_hidden" type="hidden" name="event_tab_name" value="">
-<input type="submit" name="delete_tab" value="Delete Tab">
-</form>
-</div> &nbsp
+<div id="delete_tab_button"></div> &nbsp
 
 <!--EDIT TAB BUTTON-->
 <div id="edit_tab_div"></div><br />
@@ -82,7 +75,7 @@ function show_tabs_js(data){
     document.getElementById("add_new_tab_form").style.visibility="hidden";
     document.getElementById("registration_tab").innerHTML = ' ' 
     document.getElementById("edit_tab_div").innerHTML = ' '
-    document.getElementById("delete_tab_button").style.visibility="hidden";
+    document.getElementById("delete_tab_button").innerHTML = ' '
     document.getElementById("selected_event_tab").innerHTML = ' '
     document.getElementById("event_tabs_description").innerHTML = ' '
 
@@ -105,12 +98,11 @@ function show_tabs_description_js(data){
     document.getElementById("selected_event_tab").innerHTML = data.event_tab_name;
 
 //delete tab button
-    document.getElementById("eventName_hidden").value = data.event_name;
-    document.getElementById("eventTabName_hidden").value = data.event_tab_name;
+    
 	//DELETE and EDIT button displayed only  if user has permission
     if (data.has_perm=="yes"){
-    document.getElementById("delete_tab_button").style.visibility="visible";
-
+    document.getElementById("delete_tab_button").innerHTML = '<button type="button" onclick="Dajaxice.apps.events.delete_tab(delete_tab_js,{\'event_name\':\''+data.event_name+'\',\'event_tab_name\':\''+data.event_tab_name+'\'})"> Delete Tab </button> ';
+    
 //edit tab button    
     document.getElementById("edit_tab_div").innerHTML = '<button type="button" onclick="edit_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Name or Description</button> On clicking this button Form appears at bottom of the page';
     }
@@ -130,6 +122,19 @@ function add_new_tab_js(event_name){
     document.getElementById("event_name_hidden").value = event_name;
     document.getElementById("add_new_tab_form").style.visibility="visible";
     return;
+}
+
+function delete_tab_js(data){
+    alert(data.message);
+    document.getElementById("edit_tab_form").style.visibility="hidden";
+    document.getElementById("add_new_tab_form").style.visibility="hidden";
+    document.getElementById("edit_tab_div").innerHTML = ' '
+    document.getElementById("delete_tab_button").innerHTML = ' '
+    document.getElementById("selected_event_tab").innerHTML = ' '
+    document.getElementById("event_tabs_description").innerHTML = ' '
+    document.getElementById("event_tabs").innerHTML = ' '
+    document.getElementById("event_name").innerHTML = ' '
+
 }
 
 function edit_tab_js(event_name,event_tab_name,description){
