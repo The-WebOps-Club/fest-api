@@ -36,13 +36,7 @@ def add_tabs( request ):
 			event_tab.event=Event.objects.get(name=request.POST['event_name'])
 			event_tab.save()
 			message="The " + request.POST['tab_name'] + " tab has been successfully added to the " + request.POST['event_name'] + " event"
-#If delete tab button was pressed	    
-	if request.method == 'POST' and "delete_tab" in request.POST:
-		
-		event_object=Event.objects.get(name=request.POST['eventName'])
-		event_tab=EventTab.objects.get(name=request.POST['event_tab_name'],event=event_object)
-		event_tab.delete()
-    		message="The "+ request.POST['event_tab_name']+" tab in the event " + request.POST['eventName']+ " has been successfully deleted"
+
 #If edit tab button was pressed
 	if request.method == 'POST' and "EditTab" in request.POST:
 		if request.POST['tab_Name']!='' and  request.POST['tab_Name'][0]!=' ':
