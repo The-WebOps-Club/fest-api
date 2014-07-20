@@ -81,4 +81,9 @@ def register(request,event_name,username):
     return simplejson.dumps({'message':event_name+username})
 
 
-
+@dajaxice_register
+def delete_tab(request,event_name,event_tab_name):
+    event_object=Event.objects.get(name=event_name)
+    event_tab=EventTab.objects.get(name=event_tab_name,event=event_object)
+    event_tab.delete()
+    return simplejson.dumps({'message':'The event-tab '+event_tab_name+' from the event '+event_name+' has been deleted'})
