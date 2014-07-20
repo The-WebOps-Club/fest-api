@@ -77,6 +77,15 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 
 function show_tabs_js(data){
     document.getElementById("event_name").innerHTML = "<h2>"+data.event_name+"</h2>";
+
+    document.getElementById("edit_tab_form").style.visibility="hidden";
+    document.getElementById("add_new_tab_form").style.visibility="hidden";
+    document.getElementById("registration_tab").innerHTML = ' ' 
+    document.getElementById("edit_tab_div").innerHTML = ' '
+    document.getElementById("delete_tab_button").style.visibility="hidden";
+    document.getElementById("selected_event_tab").innerHTML = ' '
+    document.getElementById("event_tabs_description").innerHTML = ' '
+
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
@@ -107,7 +116,7 @@ function show_tabs_description_js(data){
     }
 //shows the register button if user is a participant
     if (data.has_perm=="participant"){
-    document.getElementById("registration_tab").innerHTML = '<button type="button" onclick="Dajaxice.apps.events.register(register_js, {\'event_name\':\''+data.event_name+'\',\'username\':\'{{user.username}}\'})">'+Register+'</button>' 
+    document.getElementById("registration_tab").innerHTML = '<button type="button" onclick="Dajaxice.apps.events.register(register_js, {\'event_name\':\''+data.event_name+'\',\'username\':\'{{user.username}}\'})">Register</button>' 
 
 }
 
