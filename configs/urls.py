@@ -20,7 +20,7 @@ admin.autodiscover()
 # Dajax
 from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 dajaxice_autodiscover()
-
+    
 # REST API
 from rest_framework.routers import DefaultRouter
 from apps.api import mobile
@@ -28,6 +28,7 @@ router = DefaultRouter()
 router.register(r'notifications', mobile.NotificationViewSet, base_name="notifications")
 router.register(r'walls',mobile.WallsViewSet,base_name="walls")
 router.register(r'posts',mobile.PostsViewSet,base_name="posts")
+router.register(r'comments',mobile.CommentsViewSet,base_name="comments")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------

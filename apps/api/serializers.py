@@ -22,11 +22,11 @@ class WallSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-	fields=('id','is_active','access_specifier','description','by','time_created','time_updated','subject','comments')
-
+        fields = ('id','is_active','subject','description','time_created','time_updated','comments')
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
+        fields=('id','is_active','access_specifier','description','by','time_created','time_updated','liked_users')
 
 #class NotificationSerializer(serializers.Serializer):
 #    id = serializers.IntegerField()
