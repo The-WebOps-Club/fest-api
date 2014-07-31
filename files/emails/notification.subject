@@ -1,1 +1,1 @@
-[{{FEST_NAME}} ERP] {{ subject|strip }}
+{% load newlines %}[{{FEST_NAME}} ERP] {{ subject.strip|default:"No Subject"|remove_newlines }}
