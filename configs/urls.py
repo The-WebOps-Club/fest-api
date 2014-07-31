@@ -20,6 +20,15 @@ admin.autodiscover()
 # Dajax
 from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 dajaxice_autodiscover()
+    
+# REST API
+from rest_framework.routers import DefaultRouter
+from apps.api import mobile
+router = DefaultRouter()
+router.register(r'notifications', mobile.NotificationViewSet, base_name="notifications")
+router.register(r'walls',mobile.WallsViewSet,base_name="walls")
+router.register(r'posts',mobile.PostsViewSet,base_name="posts")
+router.register(r'comments',mobile.CommentsViewSet,base_name="comments")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
@@ -66,7 +75,10 @@ urlpatterns = patterns('',
     #url(r'^setup/$', 'misc.views.setup', name='setup'),
 
     url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
-    url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
+    
+    # events portal
+    #url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
+    #url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
@@ -102,9 +114,15 @@ urlpatterns = patterns('',
     url(r'^webmirror/get/(?P<pk>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.get_data'),
     url(r'^webmirror/set/(?P<pk>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.set_data'),
     url(r'^webmirror/cluster/get/(?P<cluster>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.get_cluster'),
-
+    
+    #For Testing out email templates
     url(r'^email/$', 'apps.walls.views.email_test', name='email'),
 
+    # API
+    url(r'^api-web-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
+    url(r'^api/mobile/', include(router.urls)),
+    url(r'^api-docs/', include('rest_framework_swagger.urls')),
 )
 
 # 400 & 500
@@ -125,3 +143,4 @@ handler500 = 'misc.views.err500'
 skip_last_activity_date = [
     # Your expressions go here ... for LastActivityDatabaseMiddleware
 ]
+
