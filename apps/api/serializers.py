@@ -17,7 +17,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class WallSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wall
-	fields=('id','name','is_public','time_updated','cache_updated')
+        fields=('id','name','is_public','time_updated','cache_updated')
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
