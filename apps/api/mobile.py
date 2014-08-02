@@ -25,7 +25,44 @@ class NotificationViewSet(viewsets.ViewSet):
 		page = int(request.QUERY_PARAMS.get('page', 0))
 		limit = int(request.QUERY_PARAMS.get('limit', 10))
 		notif_type = request.QUERY_PARAMS.get('type', 'all')
-		return Response(response_notificationviewset(request,notif_type,page,limit))
+		message=''
+		data=[]
+		json=[]
+		if notif_type == 'all':
+			notifs = query_newsfeed(request.user, page=page, max_items=limit)
+		else:
+			notifs = query_notifs(request.user, page=page, max_items=limit, notif_type=notif_type)
+		if not notifs:
+			message='no notifications to be displayed'
+			return Response(viewset_response(message,data))
+		for notif in notifs:
+			item = {}
+			item['id'] = notif.id
+			item['unread'] = notif.unread
+			item['actor'] = {}
+			item['actor']['name'] = notif.actor.get_full_name()
+			item['actor']['id'] = notif.actor.id
+			item['verb'] = notif.verb
+			item['wall'] = {}
+			item['wall']['name'] = notif.target.wall.name
+			item['wall']['id'] = notif.target.wall.id
+			if notif.verb == "has commented on":
+				target_type = "post"
+				target_name = notif.target.subject
+				target_id = notif.target.id
+			elif notif.verb == "has posted on":
+				target_type = "wall"
+				target_name = item['wall']['name']
+				target_id = item['wall']['id']
+			item['target'] = {}
+			item['target']['type'] = target_type 
+			item['target']['name'] = target_name
+			item['target']['id'] = target_id
+			item['description'] = HTMLParser.HTMLParser().unescape(strip_tags(notif.action_object.description.strip()))
+			item['timestamp'] = notif.timestamp
+			json.append(item)
+		data=json
+		return Response(viewset_response(message,data))
 
 	# Standard API methods. Kept for future reference
 	#def create(self, request):
@@ -46,7 +83,15 @@ class NotificationViewSet(viewsets.ViewSet):
 class WallsViewSet(viewsets.ViewSet):
 	
 	def list(self,request):
-		return Response(response_wallsviewset(request))
+		message=''
+		data=[]
+		walls = get_my_walls(request.user)
+		if not walls :
+			message='no walls to be displayed'
+			return Response(viewset_response(message,data))
+		wallserializer=WallSerializer(walls,many=True)
+		data=wallserializer.data
+		return Response(viewset_response(message,data))
 
 
 
@@ -55,7 +100,30 @@ class PostsViewSet(viewsets.ViewSet):
 		wall_id=request.QUERY_PARAMS.get('wall_id')
 		offset=request.QUERY_PARAMS.get('offset')
 		limit=request.QUERY_PARAMS.get('limit')
-		return Response(response_postviewset(request,wall_id,offset,limit))
+		message=''
+		data=[]
+		if not wall_id:
+			message='please enter wall id'
+			return Response(viewset_response(message,data))
+		wall= Wall.objects.filter(id=wall_id)
+		if not wall:
+			message='no wall with that id exists'
+			return Response(viewset_response(message,data))
+		posts = get_my_posts(request.user,wall,offset,limit)
+		try:
+			if posts['error']:
+				message=posts['error']
+				return Response(viewset_response(message,data))
+		except:
+			pass
+		if not posts:
+			message='no post with that id exists'
+			return Response(viewset_response(message,data))
+		postserializer = PostSerializer(posts,many=True)
+		for i in range(len(postserializer.data)):
+			postserializer.data[i]["description"]=HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data[i]["description"].strip()))
+		data=postserializer.data
+		return Response(viewset_response(message,data))
 	
 	def create(self,request):
 		wall_id=request.QUERY_PARAMS.get('wall_id')
@@ -74,7 +142,24 @@ class CommentsViewSet(viewsets.ViewSet):
 		post_id=request.QUERY_PARAMS.get('post_id')
 		offset=request.QUERY_PARAMS.get('offset')
 		limit=request.QUERY_PARAMS.get('limit')
-		return Response(response_commentviewset(request,post_id,offset,limit))		
+		data=[]
+		message=''
+		if not post_id:
+		   message='please enter post id'
+		   return Response(viewset_response(message,data))	
+		post=Post.objects.filter(id=post_id)
+		if not post:
+			message='no post with that id exists'
+			return Response(viewset_response(message,data))
+		comments = get_comments(request.user,post[0],offset,limit)
+		if not comments:
+			message='no comments to be displayed'
+			return Response(viewset_response(message,data))
+		commentserializer=CommentSerializer(comments,many=True)
+		for i in range(len(commentserializer.data)):
+			commentserializer.data[i]["description"]=HTMLParser.HTMLParser().unescape(strip_tags(commentserializer.data[i]["description"].strip()))
+		data=commentserializer.data
+		return Response(viewset_response(message,data))		
 
 
 
