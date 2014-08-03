@@ -117,6 +117,8 @@ urlpatterns = patterns('',
     
     #For Testing out email templates
     url(r'^email/$', 'apps.walls.views.email_test', name='email'),
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': settings.STATIC_ROOT}),
 
     # API
     url(r'^api-web-auth/', include('rest_framework.urls', namespace='rest_framework')),
@@ -132,7 +134,7 @@ handler500 = 'misc.views.err500'
 # This is to test out DEBUG = False in localhost
 # REMEMBER : Should be commented out on server !
 # if settings.DEBUG or ( ( settings.SITE_URL.find("localhost") != -1 or settings.SITE_URL.find("127.0.") != -1 ) and not settings.DEBUG ):
-#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #     # Explicit settings patch for debug_toolbar for Django 1.6
 #     # http://django-debug-toolbar.readthedocs.org/en/1.0/installation.html#explicit-setup
 #     import debug_toolbar
