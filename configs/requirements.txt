@@ -18,8 +18,6 @@ django-post-office==0.8.4
 google-api-python-client==1.2
 haystack==0.15
 httplib2==0.9
-ipdb==0.8
-ipython==2.1.0
 jsonfield==0.9.20
 misaka==1.0.2
 oauthlib==0.6.1

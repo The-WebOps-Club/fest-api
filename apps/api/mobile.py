@@ -77,10 +77,13 @@ class WallsViewSet(viewsets.ViewSet):
 	
 	def list(self,request):
 		walls = get_my_walls(request.user)
-		if not walls :
-			return Response({"error:no walls to be displayed"})
-		wallserializer=WallSerializer(walls,many=True)
-		return Response(wallserializer.data)
+		#if walls is None:
+			#return Response({"error:no walls to be displayed"})
+		try:
+			wallserializer=WallSerializer(walls,many=True)
+			return Response(wallserializer.data)
+		except Exception, e:
+			return Response({"error":True})
 
 
 

@@ -77,7 +77,7 @@ API_APPS = (
     'apps.home', 
     'apps.users',
     'apps.walls',
-    #'apps.events',
+    'apps.events',
     'apps.docs',
     'apps.webmirror',
     'apps.portals.events',
