@@ -11,7 +11,7 @@ from rest_framework.renderers import JSONRenderer
 from apps.walls.utils import query_notifs, query_newsfeed,get_my_walls,get_my_posts,get_comments
 from apps.walls.models import Wall,Post
 from apps.api.serializers import *
-from apps.walls.ajax import create_post
+from apps.walls.ajax import create_post,create_comment
 from apps.api.utils import *
 
 class NotificationViewSet(viewsets.ViewSet):
@@ -160,7 +160,18 @@ class CommentsViewSet(viewsets.ViewSet):
 		for i in range(len(commentserializer.data)):
 			commentserializer.data[i]["description"]=HTMLParser.HTMLParser().unescape(strip_tags(commentserializer.data[i]["description"].strip()))
 		data=commentserializer.data
-		return Response(viewset_response(message,data))		
+		return Response(viewset_response(message,data))	
+
+	def create(self,request):
+		post_id=request.QUERY_PARAMS.get('post_id')
+		created=0
+		comment=request.POST
+		comment=urllib.urlencode(comment,True)
+		created=create_comment(request, post_id, comment)
+		if created:
+			return Response('created')
+		else:
+			return Response('not created')
 
 
 
