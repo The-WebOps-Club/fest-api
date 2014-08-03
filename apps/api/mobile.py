@@ -129,12 +129,20 @@ class PostsViewSet(viewsets.ViewSet):
 	def create(self,request):
 		wall_id=request.QUERY_PARAMS.get('wall_id')
 		post=request.POST
+		message=''
+		data=[]
+		new_post_subject=str(request.POST['new_post_subject'])
+		if not new_post_subject:
+			message='please enter text to post'
+			return Response(viewset_response(message,data))
+		data.append(new_post_subject)
 		post=urllib.urlencode(post,True)
 		created=create_post(request,wall_id,post)
 		if created:
-			return Response('created')
+			return Response(viewset_response(message,data))
 		else:
-			return Response('not created')
+			message='an error has occured while trying to comment'
+			return Response(message,data)
 	#def delete(self,request):
 	#	pass
 
@@ -164,14 +172,22 @@ class CommentsViewSet(viewsets.ViewSet):
 
 	def create(self,request):
 		post_id=request.QUERY_PARAMS.get('post_id')
+		message=''
+		data=[]
 		created=0
 		comment=request.POST
+		comment_text=str(request.POST['comment'])
+		if not comment_text:
+			message='please enter text to comment'
+			return Response(viewset_response(message,data))
+		data.append(comment_text)
 		comment=urllib.urlencode(comment,True)
 		created=create_comment(request, post_id, comment)
 		if created:
-			return Response('created')
+			return Response(viewset_response(message,data))
 		else:
-			return Response('not created')
+			message='an error has occured while trying to comment'
+			return Response(message,data)
 
 
 
