@@ -46,14 +46,9 @@ class NotificationViewSet(viewsets.ViewSet):
 			item['wall'] = {}
 			item['wall']['name'] = notif.target.wall.name
 			item['wall']['id'] = notif.target.wall.id
-			if notif.verb == "has commented on":
-				target_type = "post"
-				target_name = notif.target.subject
-				target_id = notif.target.id
-			elif notif.verb == "has posted on":
-				target_type = "wall"
-				target_name = item['wall']['name']
-				target_id = item['wall']['id']
+                        target_type = "post"
+                        target_name = notif.target.subject
+                        target_id = notif.target.id
 			item['target'] = {}
 			item['target']['type'] = target_type 
 			item['target']['name'] = target_name
