@@ -23,12 +23,14 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id','is_active','subject','description','time_created','time_updated','comments')
+        depth = 2
+
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields=('id','is_active','access_specifier','description','by','time_created','time_updated','liked_users')
-
-#class NotificationSerializer(serializers.Serializer):
+        depth = 1
+#class NotificatioSerializer(serializers.Serializer):
 #    id = serializers.IntegerField()
 #    actor = serializers.CharField()
 #    actor_id = serializers.IntegerField()

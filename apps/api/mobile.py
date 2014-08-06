@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 
+from apps.walls.models import Post
 from apps.walls.utils import query_notifs, query_newsfeed,get_my_walls,get_my_posts,get_comments
 from apps.walls.models import Wall,Post
 from apps.api.serializers import *
@@ -46,9 +47,9 @@ class NotificationViewSet(viewsets.ViewSet):
 			item['wall'] = {}
 			item['wall']['name'] = notif.target.wall.name
 			item['wall']['id'] = notif.target.wall.id
-                        target_type = "post"
-                        target_name = notif.target.subject
-                        target_id = notif.target.id
+			target_type = "post"
+			target_name = notif.target.subject
+			target_id = notif.target.id
 			item['target'] = {}
 			item['target']['type'] = target_type 
 			item['target']['name'] = target_name
@@ -76,6 +77,9 @@ class NotificationViewSet(viewsets.ViewSet):
 	#    pass
 
 class WallsViewSet(viewsets.ViewSet):
+	"""
+	Return walls of an user
+	"""
 	
 	def list(self,request):
 		message=''
@@ -90,11 +94,18 @@ class WallsViewSet(viewsets.ViewSet):
 
 class PostsViewSet(viewsets.ViewSet):
 	def list(self,request):
+		"""
+		Return posts to an authenticated User
+		limit -- number of items to be returned
+		offset -- offset
+		wall_id --  wall id or post id
+		"""
+		message=''
+		data=[]
 		wall_id=request.QUERY_PARAMS.get('wall_id')
 		offset=request.QUERY_PARAMS.get('offset')
 		limit=request.QUERY_PARAMS.get('limit')
-		message=''
-		data=[]
+	
 		if not wall_id:
 			message='please enter wall id'
 			return Response(viewset_response(message,data))
@@ -117,7 +128,8 @@ class PostsViewSet(viewsets.ViewSet):
 			postserializer.data[i]["description"]=HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data[i]["description"].strip()))
 		data=postserializer.data
 		return Response(viewset_response(message,data))
-	
+
+
 	def create(self,request):
 		wall_id=request.QUERY_PARAMS.get('wall_id')
 		post=request.POST
@@ -148,19 +160,26 @@ class CommentsViewSet(viewsets.ViewSet):
 		if not post_id:
 		   message='please enter post id'
 		   return Response(viewset_response(message,data))	
-		post=Post.objects.filter(id=post_id)
-		if not post:
+		try:	
+			post=Post.objects.get(id=int(post_id))
+		except DoesNotExist:
+		# TODO : add check_access rights or post 
 			message='no post with that id exists'
 			return Response(viewset_response(message,data))
-		comments = get_comments(request.user,post[0],offset,limit)
-		if not comments:
-			message='no comments to be displayed'
-			return Response(viewset_response(message,data))
-		commentserializer=CommentSerializer(comments,many=True)
-		for i in range(len(commentserializer.data)):
-			commentserializer.data[i]["description"]=HTMLParser.HTMLParser().unescape(strip_tags(commentserializer.data[i]["description"].strip()))
-		data=commentserializer.data
-		return Response(viewset_response(message,data))	
+		postserializer=PostSerializer(post)
+		postserializer.data["description"]=HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data["description"].strip()))
+		data=postserializer.data
+		return Response(viewset_response(message,data))
+		
+		#if not comments:
+		#	message='no comments to be displayed'
+		#	return Response(viewset_response(message,data))
+		#commentserializer=CommentSerializer(comments,many=True)
+		#print commentserializer
+		#for i in range(len(commentserializer.data)):
+		#	commentserializer.data[i]["description"]=HTMLParser.HTMLParser().unescape(strip_tags(commentserializer.data[i]["description"].strip()))
+		#data=commentserializer.data
+		#return Response(viewset_response(message,data))	
 
 	def create(self,request):
 		post_id=request.QUERY_PARAMS.get('post_id')
