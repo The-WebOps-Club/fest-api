@@ -73,7 +73,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 5. Setup Database Appropriately :
 	. Management command `add_colleges` is used to populate some data - Colleges from Shaastra 2014 (optional) (In other words type 'python manage.py add_colleges') 
 	. Management command `update_email_templates` is used to update email templates and store onto the database for Django Post office (optional)
-	. Management command `populate_db` can be used to get dummy data 
+	. Management command `populate_db` can be used to get dummy data (IMPORTANT)
 	. Management command `jsonify_data` is used by atwho for data. Autogenerates some json objects which are easy to use
 	. Management command `jsonify_data` is used to fix all permissions for the users in the beginning
 	
@@ -141,10 +141,9 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
         	'PORT': '',
 	- In terminal type 'python manage.py syncdb' followed by 'python manage.py migrate'. If these 2 worked your database settings worked fine	
 
-8.c. If pip is not installed - type the following in the terminal
+8.c. If pip is not installed check the following link
 
-	- python get-pip.py
-	- pip install -U pip
+http://pip.readthedocs.org/en/latest/installing.html
 		
 
 8.d. If an older version of django is installed or you are unsure of the version. Type the following in terminal
