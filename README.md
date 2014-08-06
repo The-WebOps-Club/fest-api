@@ -71,10 +71,15 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
     
 
 5. Setup Database Appropriately :
-	. Management command `add_colleges` is used to populate some data - Colleges from Shaastra 2014 (optional) (In other words type 'python manage.py add_colleges') 
+6. 
+	. Management command `add_colleges` is used to populate some data - Colleges from Shaastra 2014 (optional) (In other words type 'python manage.py add_colleges')
+
 	. Management command `update_email_templates` is used to update email templates and store onto the database for Django Post office (optional)
+	
 	. Management command `populate_db` can be used to get dummy data (IMPORTANT)
+	
 	. Management command `jsonify_data` is used by atwho for data. Autogenerates some json objects which are easy to use
+	
 	. Management command `jsonify_data` is used to fix all permissions for the users in the beginning
 	
 6. Haystack and Solr
