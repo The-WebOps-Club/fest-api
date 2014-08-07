@@ -153,19 +153,6 @@ function edit_some_tab_js(event_name,event_tab_name,description){
 
 function register_js(data){
     alert(data.message);
-<<<<<<< HEAD
-=======
-}
-
-
-
-function validateAddNewTabForm() {
-    var x = document.forms["add_tab_form"]["tab_name"].value;
-    if (x==null || x=="" || x[0]==" ") {
-        alert("New Event Tab Name must be filled. 1st letter cannot be a space");
-        return false;
-    }
->>>>>>> Participant event registration added. Event model modified to include the particpants_registered field
 }
 
 function edit_tab_js(data){
@@ -173,6 +160,18 @@ function edit_tab_js(data){
     if (x==null || x=="" || x[0]==" ") {
         alert("Event Tab Name must be filled. 1st letter cannot be a space");
         return false;
+    }
+    else{
+    alert(data.message);
+    document.getElementById("edit_tab_form").style.visibility="hidden";
+    document.getElementById("add_new_tab_form").style.visibility="hidden";
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_tabs").innerHTML = ' ';
+    document.getElementById("event_name").innerHTML = ' ';
+dajaxice instead of views.py
     }
     else{
     alert(data.message);
