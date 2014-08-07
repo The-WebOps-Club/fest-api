@@ -87,3 +87,41 @@ def delete_tab(request,event_name,event_tab_name):
     event_tab=EventTab.objects.get(name=event_tab_name,event=event_object)
     event_tab.delete()
     return simplejson.dumps({'message':'The event-tab '+event_tab_name+' from the event '+event_name+' has been deleted'})
+
+
+from dajaxice.utils import deserialize_form
+from apps.events.models import Event, EventTab
+
+@dajaxice_register
+def add_tab(request,add_tab_form):
+    add_tab_form=deserialize_form(add_tab_form)
+    message=""
+    if add_tab_form['tab_name']!='' and  add_tab_form['tab_name'][0]!=' ':
+		event_tab=EventTab()
+		event_tab.name=add_tab_form['tab_name']
+		event_tab.content=add_tab_form['tab_description']
+		event_tab.event=Event.objects.get(name=add_tab_form['event_name'])
+		event_tab.save()
+		message="The " + add_tab_form['tab_name'] + " tab has been successfully added to the " + add_tab_form['event_name'] + " event"
+    return simplejson.dumps({'message': message})
+
+
+
+@dajaxice_register
+def edit_tab(request,edit_tab_form):
+    edit_tab_form=deserialize_form(edit_tab_form)
+    message=""
+    if edit_tab_form['tab_Name']!='' and  edit_tab_form['tab_Name'][0]!=' ':
+			event_object=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
+			event_Tab=EventTab.objects.get(name=edit_tab_form['event_tab_Name_edit_form'],event=event_object)
+			event_Tab.delete()
+
+			event_tab=EventTab()
+			event_tab.name=edit_tab_form['tab_Name']
+			event_tab.content=edit_tab_form['tab_Description']
+			event_tab.event=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
+			event_tab.save()
+
+			message="The " + edit_tab_form['tab_Name'] + " tab from the event " + edit_tab_form['event_Name_edit_form'] + "  has been successfully Edited."
+
+    return simplejson.dumps({'message': message})

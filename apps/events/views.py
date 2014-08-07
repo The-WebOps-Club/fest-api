@@ -26,33 +26,6 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def add_tabs( request ):
 	message=""
-#If add tab button was pressed
-	if request.method == 'POST' and "addNewTab" in request.POST:
-		if request.POST['tab_name']!='' and  request.POST['tab_name'][0]!=' ':
-			
-	    		event_tab=EventTab()
-			event_tab.name=request.POST['tab_name']
-			event_tab.content=request.POST['tab_description']
-			event_tab.event=Event.objects.get(name=request.POST['event_name'])
-			event_tab.save()
-			message="The " + request.POST['tab_name'] + " tab has been successfully added to the " + request.POST['event_name'] + " event"
-
-#If edit tab button was pressed
-	if request.method == 'POST' and "EditTab" in request.POST:
-		if request.POST['tab_Name']!='' and  request.POST['tab_Name'][0]!=' ':
-			event_object=Event.objects.get(name=request.POST['event_Name_edit_form'])
-			event_Tab=EventTab.objects.get(name=request.POST['event_tab_Name_edit_form'],event=event_object)
-			event_Tab.delete()
-
-			event_tab=EventTab()
-			event_tab.name=request.POST['tab_Name']
-			event_tab.content=request.POST['tab_Description']
-			event_tab.event=Event.objects.get(name=request.POST['event_Name_edit_form'])
-			event_tab.save()
-
-			message="The " + request.POST['tab_Name'] + " tab from the event " + request.POST['event_Name_edit_form'] + "  has been successfully Edited."
-
-
 	events=Event.objects.all()
 	event_list=[]
 	for i in events:
