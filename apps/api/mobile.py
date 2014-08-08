@@ -170,6 +170,8 @@ class CommentsViewSet(viewsets.ViewSet):
 			return Response(viewset_response(message,data))
 		postserializer=PostSerializer(post)
 		postserializer.data["description"]=HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data["description"].strip()))
+		for j in range(len(postserializer.data["comments"])):
+			postserializer.data["comments"][j]["description"] = HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data["comments"][j]["description"].strip()))
 		data=postserializer.data
 		return Response(viewset_response(message,data))
 		
