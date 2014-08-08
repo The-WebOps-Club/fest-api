@@ -126,6 +126,8 @@ class PostsViewSet(viewsets.ViewSet):
 		postserializer = PostSerializer(posts,many=True)
 		for i in range(len(postserializer.data)):
 			postserializer.data[i]["description"]=HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data[i]["description"].strip()))
+			for j in range(len(postserializer.data[i]["comments"])):
+				postserializer.data[i]["comments"][j]["description"] = HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data[i]["comments"][j]["description"].strip()))
 		data=postserializer.data
 		return Response(viewset_response(message,data))
 
