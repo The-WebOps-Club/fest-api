@@ -22,7 +22,7 @@ class WallSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ('id','is_active','subject','description','time_created','time_updated','comments', 'by')
+        fields = ('id','is_active', 'by', 'subject','description','time_created','time_updated','comments')
         depth = 2
 
 class CommentSerializer(serializers.ModelSerializer):
