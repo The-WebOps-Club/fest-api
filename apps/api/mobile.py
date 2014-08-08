@@ -93,6 +93,12 @@ class WallsViewSet(viewsets.ViewSet):
 		return Response(viewset_response(message,data))
 
 class PostsViewSet(viewsets.ViewSet):
+
+                """
+                    Creates a new post
+                    wall_id -- wall id
+                    post_data -- the post data
+                """
 	def list(self,request):
 		"""
 		Return posts to an authenticated User
@@ -137,12 +143,12 @@ class PostsViewSet(viewsets.ViewSet):
 		post=request.POST
 		message=''
 		data=[]
-		new_post_subject=str(request.POST['new_post_subject'])
-		if not new_post_subject:
-			message='please enter text to post'
+		post_data=str(request.QUERY_PARAMS['post_data'])
+		if not post_data:
+			message='please send data to post'
 			return Response(viewset_response(message,data))
-		data.append(new_post_subject)
-		post=urllib.urlencode(post,True)
+		data.append(post_data)
+		post=urllib.urlencode(post_data,True)
 		created=create_post(request,wall_id,post)
 		if created:
 			return Response(viewset_response(message,data))
