@@ -20,7 +20,7 @@ class NotificationViewSet(viewsets.ViewSet):
 		Return Notifications to an authenticated User
 		page -- Start page number
 		limit -- number of items in each page
-		type --  type of notification
+		type --  type of notification to get
 	"""
 	def list(self, request):
 		page = int(request.QUERY_PARAMS.get('page', 0))
