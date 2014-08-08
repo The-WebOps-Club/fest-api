@@ -109,7 +109,7 @@ class PostsViewSet(viewsets.ViewSet):
 		if not wall_id:
 			message='please enter wall id'
 			return Response(viewset_response(message,data))
-		wall= Wall.objects.filter(id=wall_id)
+		wall= Wall.objects.filter(id=int(wall_id))
 		if not wall:
 			message='no wall with that id exists'
 			return Response(viewset_response(message,data))
@@ -162,7 +162,7 @@ class CommentsViewSet(viewsets.ViewSet):
 		   return Response(viewset_response(message,data))	
 		try:	
 			post=Post.objects.get(id=int(post_id))
-		except DoesNotExist:
+		except Post.DoesNotExist:
 		# TODO : add check_access rights or post 
 			message='no post with that id exists'
 			return Response(viewset_response(message,data))
