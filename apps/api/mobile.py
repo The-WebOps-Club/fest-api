@@ -143,12 +143,12 @@ class PostsViewSet(viewsets.ViewSet):
 		post=request.POST
 		message=''
 		data=[]
-		post_data=str(request.QUERY_PARAMS['post_data'])
-		if not post_data:
-			message='please send data to post'
+		new_post_subject=str(request.POST['new_post_subject'])
+		if not new_post_subject:
+			message='please enter text to post'
 			return Response(viewset_response(message,data))
-		data.append(post_data)
-		post=urllib.urlencode(post_data,True)
+		data.append(new_post_subject)
+		post=urllib.urlencode(post,True)
 		created=create_post(request,wall_id,post)
 		if created:
 			return Response(viewset_response(message,data))
