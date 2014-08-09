@@ -1,0 +1,35 @@
+
+{% extends 'base/base.html' %}
+{% load static %}
+{% load check_access %}
+{% block content %}
+{% load dajaxice_templatetags %}
+{% dajaxice_js_import %}
+{%  csrf_token %}
+
+
+
+{% if user.is_authenticated %}
+<!--REGISTRATION FORM-->
+<h2>REGISTRATION FORM - your registration won't be complete without filling this form</h2>
+<div id="form_errors" style="color:red"> </div>
+<form action="" method="post" id="user_profile_form" accept-charset="utf-8">
+    {{ userprofileform.as_p }}
+    <p><input type="button" onclick="Dajaxice.apps.users.participant_registration(participant_registration_js,{'username':'{{user.username}}','user_profile_form':$('#user_profile_form').serialize(true)})" value="Register"/></p>
+</form>
+
+
+<script>
+
+function participant_registration_js(data){
+    alert(data.alert_message);
+    document.getElementById("form_errors").innerHTML = data.message;  
+    if (data.login_success=="yes")
+    {
+    	window.location.assign("http://localhost:8000/participant_registration_or_login4/");
+    }
+}
+</script>
+
+{% else %} You are not authenticated to see this page {% endif %}
+{% endblock %}
