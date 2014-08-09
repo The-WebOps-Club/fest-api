@@ -340,3 +340,29 @@ def participant_registration_or_login(request):
     context_dict={'loginform':loginform,'userform':userform,'userprofileform':userprofileform}
     return render_to_response('pages/participant_registration_or_login.html', context_dict, context_instance = global_context(request))
 
+
+
+def participant_registration_or_login2(request):
+	context_dict={}
+	return render_to_response('pages/participant_registration_or_login2.html', context_dict, context_instance = global_context(request))
+	
+	
+def participant_registration_or_login3(request):
+	request.user.is_active=False
+	loginform=LoginForm()
+	userform = UserForm()
+	userprofileform=UserProfileForm()
+	context_dict={'loginform':loginform,'userform':userform,'userprofileform':userprofileform}
+	return render_to_response('pages/participant_registration_or_login3.html', context_dict, context_instance = global_context(request))
+	
+	
+@login_required
+def participant_registration_or_login4(request):
+	context_dict={}
+		
+	if hasattr(request.user,"profile"):
+		a=5
+	else:
+		return redirect("participant_registration_or_login3")
+			
+	return render_to_response('pages/participant_registration_or_login4.html', context_dict, context_instance = global_context(request))
