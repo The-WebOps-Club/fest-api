@@ -136,7 +136,6 @@ def participant_profile(request,username,user_profile_form):
 	#	erp_prof=ERPProfile()
 	#	erp_prof.user=new_user
 	#	erp_prof.save()
-
 	if forms_successfully_validated == 1:
 		alert_message="Registered successfully. Now please login"
 	else:
