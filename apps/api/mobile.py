@@ -93,12 +93,6 @@ class WallsViewSet(viewsets.ViewSet):
 		return Response(viewset_response(message,data))
 
 class PostsViewSet(viewsets.ViewSet):
-
-                """
-                    Creates a new post
-                    wall_id -- wall id
-                    post_data -- the post data
-                """
 	def list(self,request):
 		"""
 		Return posts to an authenticated User
