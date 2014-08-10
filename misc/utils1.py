@@ -9,6 +9,7 @@ from django.utils.timezone import utc
 from django.conf import settings
 # Decorators
 # Apps
+import apps
 from misc.managers import *
 from misc.strings import *  #Import miscellaneous functions
 from misc.exceptions import *  #Import miscellaneous functions
@@ -35,35 +36,34 @@ def global_context(request, token_info=True, user_info=True):
     """
     erp_profile = None
     profile = None
-    drive_folders = []
     if user_info and hasattr(request.user, "erp_profile"):
-    	erp_profile = request.user.erp_profile if hasattr(request.user, "erp_profile") else None
+    	erp_profile = request.user.erp_profile
     	drive_folders = []
-        if erp_profile:
-            entity_list = list(erp_profile.coord_relations.all()) + \
+        entity_list = list(erp_profile.coord_relations.all()) + \
                     list(erp_profile.supercoord_relations.all()) + \
                     list(erp_profile.page_relations.all())
-            if list(erp_profile.core_relations.all()):
-                entity_list += list(apps.users.models.Dept.objects.all())
-            for entity in entity_list:
-                drive_folders.append(
-                    (entity.name, entity.directory_id)
-                )
+        if list(erp_profile.core_relations.all()):
+            entity_list += list(apps.users.models.Dept.objects.all())
+        for entity in entity_list:
+            drive_folders.append(
+                (entity.name, entity.directory_id)
+            )
         if hasattr(request.user, "profile"):
         	profile = request.user.profile
     	else:
         	profile = None
-
-    token = None
-    if token_info and settings.USE_EXTERNAL_SITES:
-    	drive = Drive()
-    	token = Drive.get_access_token()
+    # token = None
+    # if token_info and settings.USE_EXTERNAL_SITES:
+    # 	drive = Drive()
+    # 	token = Drive.get_access_token()
+    
     local_context = {
         'user' : request.user,
         'erp_profile' : erp_profile,
         'user_profile' : profile,
         'session' : request.session,
-        'google_access_token' : token,
+        # 'google_access_token' : token,
+        'drive_folders': drive_folders,
         'experimental' : settings.EXPERIMENTAL_MODE,
         'SITE_URL' : settings.SITE_URL,
         'FEST_NAME' : settings.FEST_NAME,
@@ -108,3 +108,8 @@ def valid_phone_number(num_string):
 
 # ------------------ SIMPLE UTILS
 #----------------------------------------------------------------------
+
+# A small helper class to create custom attributes
+class Bunch:
+    def __init__(self, **kwds):
+        self.__dict__.update(kwds)

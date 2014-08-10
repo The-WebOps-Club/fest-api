@@ -38,5 +38,13 @@ def save_profile_picture(strategy, user, response, details, is_new=False, *args,
 def check_existing_user(strategy, details, response, uid, user=None, *args, **kwargs):
     if user:
         return {'is_new': False}
+
+    try:
+	if(strategy.session_get('type') == 'participant'):
+	    return;
+	
+    except:
+	pass;
+
     return redirect('apps.users.views.first_login_required')
 
