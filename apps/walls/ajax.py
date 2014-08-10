@@ -266,7 +266,6 @@ def create_post(request, wall_id, post_form):
     # create a new post
     append_string = ""
     data = deserialize_form(post_form)
-   
     post_text = data["new_post"]
     
     post_subject = data.get("new_post_subject", "")
