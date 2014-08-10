@@ -38,7 +38,7 @@ DJANGO_APPS = (
 THIRD_PARTY_APPS = (
     # For development ease of use
     'south',
-    'debug_toolbar',
+    #'debug_toolbar',
     'django_extensions',
     
     # ajax functionality
