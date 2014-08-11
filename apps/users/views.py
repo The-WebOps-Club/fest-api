@@ -10,6 +10,7 @@ from misc.utils import *  #Import miscellaneous functions
 from misc import strings
 from misc.constants import HOSTEL_CHOICES, BRANCH_CHOICES
 # Decorators
+from django.views.decorators.csrf import csrf_exempt
 # Models
 from django.contrib.auth.models import User, check_password
 from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
@@ -21,7 +22,7 @@ from forms import LoginForm, UserProfileForm, ERPProfileForm, UserForm
 from annoying.functions import get_object_or_None
 # Python
 import os
-
+@csrf_exempt
 def login_user(request):
     """ 
         A view to handle the baisc login methods in ERP
@@ -48,7 +49,10 @@ def login_user(request):
             - Authenticates and logs in a django.contrib.auth.User
 
     """
+
     if request.user.is_authenticated(): # Check if user is already logged in
+	if( ("type" in request.GET) and (request.GET["type"] == 'participant')):
+	    return HttpResponseRedirect(settings.STANDARD_AUTH_LOGIN_REDIRECT_URL)
         if hasattr(request.session, "role"):
             return redirect("apps.home.views.home")
         else:
@@ -80,7 +84,9 @@ def login_user(request):
                     login(request, user) # Logs in the User
                     #if ( not hasattr(user, "erp_profile") ): # No erp_profile ! Ask them to fill up forms
                     #    return HttpResponseRedirect(reverse("profile")) # Redirect to home page    
-                    return HttpResponseRedirect(reverse("identity")) # Redirect to home page
+		    if( ("type" in request.GET) and (request.GET["type"] == 'participant')):
+			return HttpResponseRedirect(settings.STANDARD_AUTH_LOGIN_REDIRECT_URL)
+		    return HttpResponseRedirect(reverse("identity")) # Redirect to home page
                 else:
                     login_form.errors.update( {
                         "submit" : ["The user has been deactivated."],

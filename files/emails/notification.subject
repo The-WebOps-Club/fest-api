@@ -1,1 +1,1 @@
-[{{FEST_NAME}} ERP] {{ subject }} 
+[{{FEST_NAME}} ERP] {{ subject|strip }}
