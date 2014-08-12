@@ -370,3 +370,6 @@ class ERPProfile(models.Model):
 
     def get_absolute_url(self):
         return reverse('apps.users.views.profile', args=(self.user.pk,))
+
+
+

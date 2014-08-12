@@ -13,7 +13,7 @@ from django.utils import timezone
 # Decorators
 # Models
 from apps.walls.models import Wall, Post
-from apps.users.models import User
+from apps.users.models import UserProfile
 # Forms
 # View functions
 # Misc
