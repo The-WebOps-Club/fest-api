@@ -38,7 +38,7 @@ DJANGO_APPS = (
 THIRD_PARTY_APPS = (
     # For development ease of use
     'south',
-    'debug_toolbar',
+    #'debug_toolbar',
     'django_extensions',
     
     # ajax functionality
@@ -66,17 +66,23 @@ THIRD_PARTY_APPS = (
 
     # Simple stuff
     'exportdata', # used to generate csv files from models
+
+    # Mobile and Mainsite API
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_swagger',
 )
 API_APPS = (
     'misc',
     'apps.home', 
     'apps.users',
     'apps.walls',
-    #'apps.events',
+    'apps.events',
     'apps.docs',
     'apps.webmirror',
     'apps.portals.events',
     'apps.portals.general',
+    'apps.api',
 
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
@@ -537,3 +543,32 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
 #DEFAULT_POST_PERMISSION_STACK = PostPermissionSubqueries.build_post_permissions_stack()
 
 SEND_NOTIF_EMAILS = True
+
+# API Preferences
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+	'rest_framework.authentication.BasicAuthentication',
+	'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+
+}
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [], # List URL namespaces to ignore
+    "api_version": '0.1',  # Specify your API's version
+    "api_path": "/",  # Specify the path to your API not a root level
+    "enabled_methods": [  # Specify which methods to enable in Swagger UI
+        'get',
+        'post',
+        'put',
+        'patch',
+        'delete'
+    ],
+    "api_key": '', # An API key
+    "is_authenticated": False,  # Set to True to enforce user authentication,
+    "is_superuser": False,  # Set to True to enforce admin only access
+}

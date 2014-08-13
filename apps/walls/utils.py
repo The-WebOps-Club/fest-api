@@ -130,9 +130,14 @@ def query_newsfeed(user, **kwargs):
             ) ) AND a.recipient_id=%(user_id)d )
             GROUP BY a.target_object_id
             ORDER BY a.timestamp DESC
+<<<<<<< HEAD
      """
 #DT
     if start_item and end_item :
+=======
+        """
+    if start_item >= 0 and end_item :
+>>>>>>> 8e76c1b5561c4a8ed5e94342f6a32f52870b1f31
         notification_query += "LIMIT %(start_item)d,%(end_item)s"
 #DT   
     notification_query = notification_query % {"user_id" : user.id, 
@@ -181,9 +186,16 @@ def query_notifs(user, **kwargs):
         notif_query += """AND b.unread = %(notif_unread)s """
     notif_query += """
             ) ) )
+<<<<<<< HEAD
                   """
 #dt
     if start_item and end_item :
+=======
+            GROUP BY a.target_object_id 
+            ORDER BY a.unread DESC, a.timestamp DESC
+        """
+    if start_item >= 0 and end_item :
+>>>>>>> 8e76c1b5561c4a8ed5e94342f6a32f52870b1f31
         notif_query += "LIMIT %(start_item)d,%(end_item)s"
 
     notif_query = notif_query.replace("\n", "") % { "user_id" : user.id, 
@@ -244,7 +256,19 @@ def OLD_get_my_posts(access_obj, wall=None):
     build a query that retreives the Post objects significant
     to the user.
 """
-def get_my_posts(access_obj, wall=None):
+def get_my_posts(access_obj, wall=None,offset=0,limit=None):
+    try:
+        offset=int(offset)
+    except:
+            offset=0
+    try:
+        limit=int(limit)
+    except:
+        limit=None
+    if offset<0 or (limit<0 and limit is not None) :
+        return ({'error':'offset and limit should be possitive',})
+    if limit is not None:
+        limit+=offset
 
     from apps.users.models import Dept, Subdept, Page
 
@@ -258,14 +282,16 @@ def get_my_posts(access_obj, wall=None):
             if access_obj.is_superuser:
                 my_query = Q(wall=wall)
 
-        return Post.objects.filter(my_query).distinct().order_by('-time_created')
+        return Post.objects.filter(my_query).distinct().order_by('-time_created')[offset:limit]
+         
+
+
     elif isinstance(access_obj, Subdept) or isinstance(access_obj, Dept) or isinstance(access_obj, Page):
         temp = access_obj.access_post
         if wall:
-            return temp.filter(wall=wall).distinct().order_by('-time_created')
+            return temp.filter(wall=wall).distinct().order_by('-time_created')[offset:limit]       
         else:
-            return temp.all().order_by('-time_created')
-
+            return temp.all().order_by('-time_created')[offset:limit]
 
 def get_my_walls(user):
     """
@@ -386,5 +412,25 @@ def check_admin_access_rights(access_obj, thing):
         return Post.objects.filter( my_query ).distinct().count()
 
 
+def get_comments(access_obj,post,offset=0,limit=5):
+    if not check_access_rights(access_obj,post):
+        return ({'error':'you do not have access to this post'})
+    try:
+        limit=int(limit)
+    except:
+        limit = 5
+    try:
+        offset=int(offset)
+    except:
+        offset=0
+    if offset<0 or limit<0 :
+        return ({'error':'offset and limit should be possitive',})
+    limit+=offset
+    return Comment.objects.filter(parent_post=post).order_by('time_created').distinct()[offset:limit]
+
+
+    
+
+        
 
 

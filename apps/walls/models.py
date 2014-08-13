@@ -197,7 +197,7 @@ class PostInfo(models.Model):
                         'sender': settings.DEFAULT_FROM_EMAIL,
                         'recipients': [recipient.email],
                         'template': 'notification.email',
-                        'context': {'subject': post.subject, 'user': recipient, 'notification': notification, 'FEST_NAME': settings.FEST_NAME, 'SITE_URL': settings.SITE_URL, 'unsubscribe_link': unsubscribe_link},
+                        'context': {'subject': post.subject.strip(), 'user': recipient, 'notification': notification, 'FEST_NAME': settings.FEST_NAME, 'SITE_URL': settings.SITE_URL, 'unsubscribe_link': unsubscribe_link},
                         'headers': {'List-Unsubscribe': unsubscribe_link},
                         })
 

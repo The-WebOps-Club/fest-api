@@ -146,18 +146,20 @@
 		        $("#main_body_content .see_more_notifications").click();
 		    }	
 		}).scroll();
-		if( use_external_sites ) {
-     	   $.getScript("\x3Cscript type='text/javascript' src='https://apis.google.com/js/client.js?onload=initDrive'>\x3C/scripts>");
-    	}
+		//if( use_external_sites ) {
+     	   		//$.getScript("\x3Cscript type='text/javascript' src='https://apis.google.com/js/client.js?onload=initDrive'>\x3C/scripts>");
+    		//}
 	})
+/*
 	function initDrive( ){
-        gapi.auth.setToken({
-            access_token: authToken,
-            expires_in: 2000
-        }); // set the access token obtained from the server. OAuth2 automatically logs us in.
-        gapi.client.setApiKey(developerKey); //set our public api key
-        gapi.client.load('drive', 'v2', setup_autocomplete_files ); // ask gapi to load API details for the drive api.
-    }
-    
+        	gapi.auth.setToken({
+            		access_token: authToken,
+            		expires_in: 2000
+        	}); // set the access token obtained from the server. OAuth2 automatically logs us in.
+        	gapi.client.setApiKey(developerKey); //set our public api key
+        	gapi.client.load('drive', 'v2', setup_autocomplete_files ); // ask gapi to load API details for the drive api.
+  
+  	}
+*/   
 </script>
 {% endblock %}
