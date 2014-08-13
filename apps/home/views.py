@@ -29,10 +29,10 @@ def home (request, *args, **kwargs):
          - Redirects to login page if not logged in
     """
     user = request.user
-    
+#DT
     if settings.SOCIAL_AUTH_FORCE_FB and user.social_auth.filter(provider="facebook").count() == 0:
         return redirect("apps.users.views.associate")
-
+#DT
     if user.is_authenticated(): # Check if user is already logged in
         if "role" not in request.session.keys():
             return HttpResponseRedirect(reverse("identity")) # Redirect to home page

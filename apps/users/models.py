@@ -7,6 +7,32 @@
 
 """
 # Django
+from django.template.context import Context, RequestContext
+from django.shortcuts import HttpResponseRedirect, resolve_url
+from django.core.urlresolvers import reverse, resolve
+from django.contrib import messages
+from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.utils.encoding import force_str
+from django.utils.timezone import utc
+from django.conf import settings
+# Decorators
+# Apps
+import apps
+from misc.managers import *
+from misc.strings import *  #Import miscellaneous functions
+from misc.exceptions import *  #Import miscellaneous functions
+from misc.decorators import *  #Import miscellaneous functions
+from apps.docs.utils import Drive, Github
+# Models
+from django.db import models
+from django.contrib.auth.models import User, Group
+# Forms
+# View functions
+# Misc
+# Python
+from functools import wraps
+import datetime
+import json
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -308,9 +334,10 @@ class ERPProfile(models.Model):
     winter_stay     = models.CharField(max_length=100, blank=True, null=True)
     summer_stay2    = models.CharField(max_length=100, blank=True, null=True)
     winter_stay2    = models.CharField(max_length=100, blank=True, null=True)
-
+    
+    drive_folders = models.TextField(max_length=100, blank=True, null=True)
     objects = CheckActiveManager()
-
+    
     @property
     def name(self):
         return self.user.get_full_name()
@@ -370,3 +397,26 @@ class ERPProfile(models.Model):
 
     def get_absolute_url(self):
         return reverse('apps.users.views.profile', args=(self.user.pk,))
+    
+#populating drive_folders (text field)    
+    def populate(self):
+	erp_profile = None
+	profile = None
+	entity_list = list(self.coord_relations.all()) + \
+		list(self.supercoord_relations.all()) + \
+		list(self.page_relations.all())
+	if list(self.core_relations.all()):
+	    entity_list += list(apps.users.models.Dept.objects.all())
+	stri=''
+	for entity in entity_list:
+	    stri+=(entity.name+':'+str(entity.directory_id)+';')
+	str_unicode = unicode(stri)
+	self.drive_folders = str_unicode
+	self.save()
+	 
+#reads the populated text field then returns array of entity.name and entity.directory_id  
+    def read_string(self):
+        arr= []
+	arr= [el.split(':') for el in self.drive_folders.split(';')]
+	return arr[:-1]
+

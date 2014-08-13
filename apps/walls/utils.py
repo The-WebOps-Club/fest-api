@@ -130,10 +130,11 @@ def query_newsfeed(user, **kwargs):
             ) ) AND a.recipient_id=%(user_id)d )
             GROUP BY a.target_object_id
             ORDER BY a.timestamp DESC
-        """
+     """
+#DT
     if start_item and end_item :
         notification_query += "LIMIT %(start_item)d,%(end_item)s"
-    
+#DT   
     notification_query = notification_query % {"user_id" : user.id, 
         "start_item" : start_item, 
         "end_item" :  end_item,
@@ -180,9 +181,8 @@ def query_notifs(user, **kwargs):
         notif_query += """AND b.unread = %(notif_unread)s """
     notif_query += """
             ) ) )
-            GROUP BY a.target_object_id 
-            ORDER BY a.unread DESC, a.timestamp DESC
-        """
+                  """
+#dt
     if start_item and end_item :
         notif_query += "LIMIT %(start_item)d,%(end_item)s"
 
@@ -194,7 +194,7 @@ def query_notifs(user, **kwargs):
     notif_list = Notification.objects.raw(notif_query)
     return notif_list
 
-
+#dt
 """
     Old implementation of get_my_posts.
     Check below for the newer impelemetation
