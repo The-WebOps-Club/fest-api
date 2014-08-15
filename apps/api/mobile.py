@@ -20,7 +20,7 @@ class NotificationViewSet(viewsets.ViewSet):
 		Return Notifications to an authenticated User
 		page -- Start page number
 		limit -- number of items in each page
-		type --  type of notification
+		type --  type of notification to get
 	"""
 	def list(self, request):
 		page = int(request.QUERY_PARAMS.get('page', 0))
@@ -109,7 +109,7 @@ class PostsViewSet(viewsets.ViewSet):
 		if not wall_id:
 			message='please enter wall id'
 			return Response(viewset_response(message,data))
-		wall= Wall.objects.filter(id=wall_id)
+		wall= Wall.objects.filter(id=int(wall_id))
 		if not wall:
 			message='no wall with that id exists'
 			return Response(viewset_response(message,data))
@@ -126,6 +126,8 @@ class PostsViewSet(viewsets.ViewSet):
 		postserializer = PostSerializer(posts,many=True)
 		for i in range(len(postserializer.data)):
 			postserializer.data[i]["description"]=HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data[i]["description"].strip()))
+			for j in range(len(postserializer.data[i]["comments"])):
+				postserializer.data[i]["comments"][j]["description"] = HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data[i]["comments"][j]["description"].strip()))
 		data=postserializer.data
 		return Response(viewset_response(message,data))
 
@@ -162,12 +164,14 @@ class CommentsViewSet(viewsets.ViewSet):
 		   return Response(viewset_response(message,data))	
 		try:	
 			post=Post.objects.get(id=int(post_id))
-		except DoesNotExist:
+		except Post.DoesNotExist:
 		# TODO : add check_access rights or post 
 			message='no post with that id exists'
 			return Response(viewset_response(message,data))
 		postserializer=PostSerializer(post)
 		postserializer.data["description"]=HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data["description"].strip()))
+		for j in range(len(postserializer.data["comments"])):
+			postserializer.data["comments"][j]["description"] = HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data["comments"][j]["description"].strip()))
 		data=postserializer.data
 		return Response(viewset_response(message,data))
 		
