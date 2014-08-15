@@ -24,6 +24,7 @@ from post_office import mail
 from misc.utils import *
 from annoying.functions import get_object_or_None
 import notifications
+from apps.api.gcm import send_push
 # Python
 import random
 import datetime
@@ -166,6 +167,10 @@ class PostInfo(models.Model):
             # Get my wall and posts which I am to get notifs for
             notif_list  = User.objects.filter(post.notify_users_query() | wall.notify_users_query()).distinct()
         mail_list = []
+        message={} # to send push notifications
+        message['message']= self.by + " " +   notif_verb + " " + post.wall + "'s Wall"
+        send_push(notif_list, message)
+
         for recipient in notif_list:
             # Check if receipient already has notif on this post
             curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=post.id)

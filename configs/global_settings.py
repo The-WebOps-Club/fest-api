@@ -71,6 +71,7 @@ THIRD_PARTY_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
+    'push_notifications'
 )
 API_APPS = (
     'misc',
@@ -571,4 +572,9 @@ SWAGGER_SETTINGS = {
     "api_key": '', # An API key
     "is_authenticated": False,  # Set to True to enforce user authentication,
     "is_superuser": False,  # Set to True to enforce admin only access
+}
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "GCM_API_KEY": "AIzaSyBTomGBXOfCPDylTCYGU6YDZrzoZqTqG9Q",
+        "APNS_CERTIFICATE": "",
 }
