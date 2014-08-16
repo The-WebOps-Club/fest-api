@@ -16,6 +16,9 @@ from apps.walls.ajax import create_post,create_comment
 from apps.api.utils import *
 from apps.users.models import UserProfile
 
+
+from django.views.decorators.csrf import csrf_exempt
+
 class NotificationViewSet(viewsets.ViewSet):
 	"""
 		Return Notifications to an authenticated User
@@ -208,8 +211,24 @@ class CommentsViewSet(viewsets.ViewSet):
 
 
 
+MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","school_student","want_accomodation"];
+
 class UserProfileViewSet(viewsets.ViewSet):
 	def list(self, request):
-		#import pdb; pdb.set_trace();		
-
 		return Response(viewset_response("done", ParticipantProfileSerializer(UserProfile.objects.get( user = self.request.user )).data))
+	
+	def create(self, request):
+		profile = UserProfile.objects.get( user = self.request.user )
+		
+		try:
+			for i in request.POST:
+				if i in MUTABLE_FIELDS:
+					setattr( profile, i, request.POST[i] )
+		except:
+			return Response("Invalid input data.",[]);
+
+		profile.save()
+
+	        return Response( viewset_response( "done", ParticipantProfileSerializer(profile).data ) )
+
+
