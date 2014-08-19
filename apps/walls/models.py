@@ -166,6 +166,8 @@ class PostInfo(models.Model):
             # Get my wall and posts which I am to get notifs for
             notif_list  = User.objects.filter(post.notify_users_query() | wall.notify_users_query()).distinct()
         mail_list = []
+        self.description = keeptags(self.description,'a p') # strips all tags except a and p
+
         for recipient in notif_list:
             # Check if receipient already has notif on this post
             curr_notif = get_object_or_None(recipient.notifications.unread(), target_object_id=post.id)
@@ -183,6 +185,7 @@ class PostInfo(models.Model):
                     # In case you wish to get the wall on which it hapened, use target.wall (this is to ensure uniformity in all notifications)
                     description = 'wall:' + str(wall.pk),
                 )
+
                 notification = Bunch(
                     actor = by,
                     verb = notif_verb,
