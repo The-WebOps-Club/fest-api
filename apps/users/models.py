@@ -53,6 +53,9 @@ class Dept(models.Model):
     # Storage
     directory_id    = models.CharField( max_length = 100, null=True, blank=True )
     
+    # Calendar
+    calendar_id     = models.CharField( max_length = 100, null=True, blank=True )
+    
 
     objects = CheckActiveManager()
     
@@ -149,6 +152,9 @@ class Page(models.Model):
     # Storage
     directory_id    = models.CharField( max_length = 100, null=True, blank=True )
 
+    # Calendar
+    calendar_id     = models.CharField( max_length = 100, null=True, blank=True )
+    
     objects = CheckActiveManager()
 
     def __unicode__(self):

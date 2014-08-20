@@ -403,7 +403,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET         = 'N2LxEfSraUVwC79sn4aqtqFE'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email'
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/calendar',
     # 'https://www.googleapis.com/auth/plus.login',    
 ]
 
@@ -521,7 +522,7 @@ KEEP_COMMENTS_ON_MINIFYING = False
 # GOOGLE DRIVE DOCS
 USE_EXTERNAL_SITES = True
 GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
-GOOGLE_API_PUBLIC_KEY = ''
+GOOGLE_API_PUBLIC_KEY = 'AIzaSyBTomGBXOfCPDylTCYGU6YDZrzoZqTqG9Q'
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'google/oauth2callback'
 GOOGLE_API_CREDENTIALS_FILE_PATH = os.path.abspath(os.path.join(PROJECT_PATH, "configs", "google_api_credentials.json" ) )
 GOOGLE_API_CREDENTIALS = ''

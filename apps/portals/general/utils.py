@@ -22,7 +22,6 @@ def attach_drive_to_entity( drive, entity ):
 	entity.save()
 
 def share_drive( drive, entity, directory_id = None ):
-
 	if( isinstance(entity, User) ):
 		if directory_id is None :
 			raise ValueError('Directory ID missing.')
@@ -44,3 +43,53 @@ def share_drive( drive, entity, directory_id = None ):
 	for profile in profile_set :
 		user = profile.user
 		share_drive( drive, user, directory_id )
+		
+def attach_calendar_to_entity( calendar, entity ):
+	title = entity.name
+	description = title +'\'s Calendar'
+	
+	calendar_details = {
+	    'summary': description,
+	    'timeZone': 'Asia/Kolkata'
+	}
+
+	created_calendar = calendar.service.calendars().insert(body=calendar_details).execute()
+
+	print created_calendar['id']
+	
+	entity.calendar_id = created_calendar['id']
+	entity.save()
+
+def share_calendar( calendar, entity, calendar_id = None ):
+	if( isinstance(entity, User) ):
+		if calendar_id is None :
+			raise ValueError('Calendar ID missing.')
+		
+		rule = {
+		    'scope': {
+			'type': 'user',
+			'value': entity.email,
+		    },
+		    'role': 'writer'
+		}
+
+		created_rule = calendar.service.acl().insert(calendarId=calendar_id.split('@')[0], body=rule).execute()
+		print entity.email
+		print calendar_id
+		print created_rule['id']
+		print "================================"
+		return
+
+	calendar_id = entity.calendar_id
+	if calendar_id is None :
+		raise ValueError('Entity does not have a calendar reference. Attach calendar to entity first.')
+
+	profile_set = [];
+	if( isinstance(entity, Dept) ):
+		profile_set += list(entity.related_users())
+	elif( isinstance(entity, Page) ):
+		profile_set += list(entity.user_set.all())
+
+	for profile in profile_set :
+		user = profile
+		share_calendar( calendar, user, calendar_id )
