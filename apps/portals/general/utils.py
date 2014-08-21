@@ -72,8 +72,8 @@ def share_calendar( calendar, entity, calendar_id = None ):
 		    },
 		    'role': 'writer'
 		}
-
-		created_rule = calendar.service.acl().insert(calendarId=calendar_id.split('@')[0], body=rule).execute()
+		print calendar_id.split('@')[0]
+		created_rule = calendar.service.acl().insert(calendarId=calendar_id, body=rule).execute()
 		print entity.email
 		print calendar_id
 		print created_rule['id']
@@ -86,10 +86,9 @@ def share_calendar( calendar, entity, calendar_id = None ):
 
 	profile_set = [];
 	if( isinstance(entity, Dept) ):
-		profile_set += list(entity.related_users())
+		profile_set += list(entity.related_users())#User
 	elif( isinstance(entity, Page) ):
-		profile_set += list(entity.user_set.all())
-
-	for profile in profile_set :
-		user = profile
+		profile_set += [x.user for x in list(entity.user_set.all())]#ERPProfile
+	print list(set(profile_set))
+	for user in list(set(profile_set)) :
 		share_calendar( calendar, user, calendar_id )

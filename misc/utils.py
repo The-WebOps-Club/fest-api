@@ -56,7 +56,6 @@ def global_context(request, token_info=True, user_info=True):
 		    calendars.append((entity.name, entity.calendar_id))
 		except Exception,e:
 		    pass
-		print calendars
         if hasattr(request.user, "profile"):
         	profile = request.user.profile
     	else:
