@@ -20,15 +20,23 @@ admin.autodiscover()
 # Dajax
 from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 dajaxice_autodiscover()
-    
+
+#django push notifications
+from push_notifications.models import GCMDevice
+from rest_framework.generics import ListCreateAPIView
+
 # REST API
 from rest_framework.routers import DefaultRouter
-from apps.api import mobile
+from apps.api import mobile, gcm
+
+
 router = DefaultRouter()
 router.register(r'notifications', mobile.NotificationViewSet, base_name="notifications")
-router.register(r'walls',mobile.WallsViewSet,base_name="walls")
-router.register(r'posts',mobile.PostsViewSet,base_name="posts")
-router.register(r'comments',mobile.CommentsViewSet,base_name="comments")
+router.register(r'walls',mobile.WallsViewSet, base_name="walls")
+router.register(r'posts',mobile.PostsViewSet, base_name="posts")
+router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
+router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
+
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
@@ -125,6 +133,7 @@ urlpatterns = patterns('',
     url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
     url(r'^api/mobile/', include(router.urls)),
     url(r'^api-docs/', include('rest_framework_swagger.urls')),
+
 )
 
 # 400 & 500
