@@ -18,7 +18,7 @@ def send_push(object, message):
         users= object.related_users()
         devices = GCMDevice.objects.filter(user__in=users)
     
-    if isinstance(object, QuerySet):
+    if isinstance(object, list):
         object=list(object)
         if isinstance(object[0],User):
             devices=GCMDevice.objects.filter(user__in=object)
