@@ -180,7 +180,7 @@ class Calendar:
         #     return redirect('get_refresh_token')
         http = httplib2.Http()
         http = credential.authorize(http)
-        self.service = build('calendar', 'v3', http=http, developerKey=settings.GOOGLE_API_PUBLIC_KEY)
+        self.service = build('calendar', 'v3', http=http, developerKey=settings.GOOGLE_API_SERVER_PUBLIC_KEY)
 
     def set_permission(self, file_id, value=None, perm_type='anyone', role='writer'):
         """Insert a new permission.
