@@ -125,6 +125,9 @@ urlpatterns = patterns('',
     
     #For Testing out email templates
     url(r'^email/$', 'apps.walls.views.email_test', name='email'),
+    #For Testing out api
+    url(r'^apitest/$', 'apps.walls.views.api_test', name='apitest'),
+
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.STATIC_ROOT}),
 

@@ -1,5 +1,5 @@
 # Django
-from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.conf import settings
@@ -158,3 +158,12 @@ def email_test(request):
         'user_email': 'muhammedshahid.k@gmail.com',
     }
     return render_to_response('notification.html', local_context, context_instance= global_context(request))
+# For testing API
+def api_test(request):
+    print "==========================================="
+    print "====      POST:"
+    print request.POST
+    print "====      GET :"
+    print request.GET
+    print "==========================================="
+    return HttpResponse("Success")
