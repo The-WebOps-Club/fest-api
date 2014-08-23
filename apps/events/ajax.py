@@ -26,7 +26,7 @@ from dajaxice.decorators import dajaxice_register
 #models
 from django.contrib.auth.models import User
 from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
-from apps.events.models import EventTab, Event
+from apps.portals.events.models import EventTab, Event
 
 
 
@@ -40,7 +40,7 @@ def show_tabs(request,event_name,username):
 #tabs_names_list is a string with a set of event-tab-names -separated by commas
     tabs_names_list=''
     for i in tabs_object_list:
-    tabs_names_list=tabs_names_list+i.name+','
+        tabs_names_list=tabs_names_list+i.name+','
     return simplejson.dumps({'tabs_names_list':'%s' % tabs_names_list,'event_name':event_name,'has_perm':has_perm})
 
 

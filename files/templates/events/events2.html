@@ -7,10 +7,10 @@
 
 
 {{message}} <br>
-<p id="message"> </p> </br>
+<p id="message"> </p>
 {% if event_list %}
     {% for event in event_list %}
-        <button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event}}'})">{{event}}</button> 
+        <button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event}}','username':'{{user.username}}'})">{{event}}</button> 
         {% endfor %}
 {% else %}
             <strong>There are no categories present.</strong>
@@ -18,11 +18,11 @@
             
 
 
-<br /> <br />
-<div id="event_name"></div><br /><br />
-<div id="event_tabs"></div><br /><br />
-<h3 id="selected_event_tab"></h3><br />
-<div id="event_tabs_description"> </div><br />
+<br> <br>
+<div id="event_name"></div><br><br>
+<div id="event_tabs"></div><br><br>
+<h3 id="selected_event_tab"></h3><br>
+<div id="event_tabs_description"> </div><br>
 
 <!--DELETE TAB BUTTON-->
 <div id="delete_tab_button" style="visibility:hidden;">
@@ -35,7 +35,7 @@
 </div> 
 
 <!--EDIT TAB BUTTON-->
-<div id="edit_tab_div"></div><br />
+<div id="edit_tab_div"></div><br>
 
 <!--ADD NEW TAB FORM -->
 <div id="add_new_tab_form" style="visibility:hidden;">
