@@ -13,7 +13,7 @@ from django.utils import timezone
 # Decorators
 # Models
 from apps.walls.models import Wall, Post
-from apps.users.models import User
+from apps.users.models import User,UserProfile
 # Forms
 # View functions
 # Misc
@@ -67,7 +67,9 @@ class Event(models.Model):
     # Email ids specific to the Event : google_group and the corresponding shaatsra_email_id
     google_group        = models.EmailField(max_length=100, blank=True, null=True)
     email               = models.EmailField(max_length=100, blank=True, null=True)
-    
+
+    # List of registered participants
+    participants_registered = models.ManyToManyField(UserProfile, blank=True, null=True,related_name='events_registered')
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
     

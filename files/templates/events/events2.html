@@ -6,11 +6,11 @@
 {%  csrf_token %}
 
 
-{{message}} <br />
+{{message}} <br>
 <p id="message"> </p> </br>
 {% if event_list %}
-	{% for event in event_list %}
-		<button type="button" onclick="Dajaxice.apps.events.show_tabs(show_tabs_js, {'event_name':'{{event}}'})">{{event}}</button> 
+    {% for event in event_list %}
+        <button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event}}'})">{{event}}</button> 
         {% endfor %}
 {% else %}
             <strong>There are no categories present.</strong>
@@ -32,7 +32,7 @@
 <input id="eventTabName_hidden" type="hidden" name="event_tab_name" value="">
 <input type="submit" name="delete_tab" value="Delete Tab">
 </form>
-</div> &nbsp
+</div> 
 
 <!--EDIT TAB BUTTON-->
 <div id="edit_tab_div"></div><br />

@@ -52,9 +52,9 @@ urlpatterns = patterns('',
     url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
     
     # Notification
-	url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page
-	
-	# Walls
+    url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page
+    
+    # Walls
     url(r'^wall/(?P<wall_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall/(?P<owner_type>\w+)/(?P<owner_id>\d+)$', 'apps.walls.views.my_wall', name='my_wall'),
@@ -66,7 +66,7 @@ urlpatterns = patterns('',
     # Internal URLS - One time use
     url(r'^google/refresh_token$', 'apps.docs.views.google_refresh_token', name='google_refresh_token'),
     url(r'^google/oauth2callback/?$', 'apps.docs.views.google_auth_callback', name='google_oauth2callback'),
-	url(r'^github/refresh_token$', 'apps.docs.views.github_refresh_token', name='github_refresh_token'),
+    url(r'^github/refresh_token$', 'apps.docs.views.github_refresh_token', name='github_refresh_token'),
     url(r'^github/oauth2callback/?$', 'apps.docs.views.github_auth_callback', name='github_oauth2callback'),
 
     # Misc
@@ -77,8 +77,8 @@ urlpatterns = patterns('',
     url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
     
     # events portal
-    #url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
-    #url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
+    url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
+    url(r'^events/add_tabs/$','apps.portals.events.views.add_tabs', name='add_tabs'),
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE

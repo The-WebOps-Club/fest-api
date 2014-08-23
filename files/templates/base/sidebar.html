@@ -92,13 +92,11 @@
                             <i class='icon-crown'></i> Admin Portal
                         </a>
                     </li>
-		    {% comment %}
-                    <!--<li class="{% if current_page == 'portal_events' %}active{% endif %}">
-                        <a href='{% url "events_portal" %}'>
+                    <li class="{% if current_page == 'portal_events' %}active{% endif %}">
+                        <a href='{% url "add_tabs" %}'>
                             <i class='icon-crown'></i> Events Portal
                         </a>
-		    </li>-->
-		    {% endcomment %}
+            </li>
                 {% else %}
                     <span class="muted">You have no portals ...</span>
                 {% endif %}
