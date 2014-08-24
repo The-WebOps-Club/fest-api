@@ -11,21 +11,21 @@ from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 
-@dajaxice_register
-def hello(request):
-    """
-        Used for testing Dajaxice
-    """
-    
-    return simplejson.dumps({'message': 'aslkfhas'})
-
-
-
-#dajaxice stuff
 #models
 from django.contrib.auth.models import User
 from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
 from apps.portals.events.models import EventTab, Event
+#dajaxice stuff
+from dajaxice.utils import deserialize_form
+
+
+
+@dajaxice_register
+def hello(request):
+    return json.dumps({'message': 'aslkfhas'})
+
+
+
 
 
 
@@ -39,8 +39,8 @@ def show_tabs(request,event_name,username):
 #tabs_names_list is a string with a set of event-tab-names -separated by commas
     tabs_names_list=''
     for i in tabs_object_list:
-        tabs_names_list=tabs_names_list+i.name+','
-    return simplejson.dumps({'tabs_names_list':'%s' % tabs_names_list,'event_name':event_name,'has_perm':has_perm})
+	tabs_names_list=tabs_names_list+i.name+','
+    return json.dumps({'tabs_names_list':'%s' % tabs_names_list,'event_name':event_name,'has_perm':has_perm})
 
 
 @dajaxice_register
@@ -48,24 +48,24 @@ def show_tabs_description(request,event_name,event_tab,has_perm):
     event_object=Event.objects.get(name=event_name)
     event_tab=EventTab.objects.get(name=event_tab,event=event_object)
     description=event_tab.content
-    return simplejson.dumps({'description': description,'event_name':event_name,'event_tab_name': event_tab.name,'has_perm':has_perm})
+    return json.dumps({'description': description,'event_name':event_name,'event_tab_name': event_tab.name,'has_perm':has_perm})
 
 
 #Function for setting permissions to edit Event Tabs 
 def permission(event_object,user_object):
-    events_dept=Dept.objects.get(name='events')
-    qms_dept=Dept.objects.get(name='qms')
-    if hasattr(user_object,'erp_profile'):
-        a=5
-    else:
-        if event_object.has_tdp:
-            return "participant_event_has_tdp"
-        else:
-            return "participant"
-    if events_dept in user_object.erp_profile.core_relations.all() or qms_dept in user_object.erp_profile.core_relations.all():
-        return "yes"
-    else:
-        return "no"
+	events_dept=Dept.objects.get(name='events')
+	qms_dept=Dept.objects.get(name='qms')
+	if hasattr(user_object,'erp_profile'):
+		a=5
+	else:
+		if event_object.has_tdp:
+			return "participant_event_has_tdp"
+		else:
+			return "participant"
+	if events_dept in user_object.erp_profile.core_relations.all() or qms_dept in user_object.erp_profile.core_relations.all():
+		return "yes"
+	else:
+		return "no"
 
 
 
@@ -77,7 +77,7 @@ def register(request,event_name,username):
     event_object=Event.objects.get(name=event_name)
     event_object.participants_registered.add(userprofile_object)
     event_object.save()
-    return simplejson.dumps({'message':event_name+username})
+    return json.dumps({'message':event_name+username})
 
 
 @dajaxice_register
@@ -85,24 +85,24 @@ def delete_tab(request,event_name,event_tab_name):
     event_object=Event.objects.get(name=event_name)
     event_tab=EventTab.objects.get(name=event_tab_name,event=event_object)
     event_tab.delete()
-    return simplejson.dumps({'message':'The event-tab '+event_tab_name+' from the event '+event_name+' has been deleted'})
+    return json.dumps({'message':'The event-tab '+event_tab_name+' from the event '+event_name+' has been deleted'})
 
 
-from dajaxice.utils import deserialize_form
-from apps.portals.events.models import Event, EventTab
+
+
 
 @dajaxice_register
 def add_tab(request,add_tab_form):
     add_tab_form=deserialize_form(add_tab_form)
     message=""
     if add_tab_form['tab_name']!='' and  add_tab_form['tab_name'][0]!=' ':
-        event_tab=EventTab()
-        event_tab.name=add_tab_form['tab_name']
-        event_tab.content=add_tab_form['tab_description']
-        event_tab.event=Event.objects.get(name=add_tab_form['event_name'])
-        event_tab.save()
-        message="The " + add_tab_form['tab_name'] + " tab has been successfully added to the " + add_tab_form['event_name'] + " event"
-    return simplejson.dumps({'message': message})
+		event_tab=EventTab()
+		event_tab.name=add_tab_form['tab_name']
+		event_tab.content=add_tab_form['tab_description']
+		event_tab.event=Event.objects.get(name=add_tab_form['event_name'])
+		event_tab.save()
+		message="The " + add_tab_form['tab_name'] + " tab has been successfully added to the " + add_tab_form['event_name'] + " event"
+    return json.dumps({'message': message})
 
 
 
@@ -111,20 +111,17 @@ def edit_tab(request,edit_tab_form):
     edit_tab_form=deserialize_form(edit_tab_form)
     message=""
     if edit_tab_form['tab_Name']!='' and  edit_tab_form['tab_Name'][0]!=' ':
-            event_object=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
-            event_Tab=EventTab.objects.get(name=edit_tab_form['event_tab_Name_edit_form'],event=event_object)
-            event_Tab.delete()
+			event_object=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
+			event_Tab=EventTab.objects.get(name=edit_tab_form['event_tab_Name_edit_form'],event=event_object)
+			event_Tab.delete()
 
-            event_tab=EventTab()
-            event_tab.name=edit_tab_form['tab_Name']
-            event_tab.content=edit_tab_form['tab_Description']
-            event_tab.event=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
-            event_tab.save()
+			event_tab=EventTab()
+			event_tab.name=edit_tab_form['tab_Name']
+			event_tab.content=edit_tab_form['tab_Description']
+			event_tab.event=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
+			event_tab.save()
 
-            message="The " + edit_tab_form['tab_Name'] + " tab from the event " + edit_tab_form['event_Name_edit_form'] + "  has been successfully Edited."
+			message="The " + edit_tab_form['tab_Name'] + " tab from the event " + edit_tab_form['event_Name_edit_form'] + "  has been successfully Edited."
 
-    return simplejson.dumps({'message': message})
+    return json.dumps({'message': message})
 
-@dajaxice_register
-def create_event(request,arg):
-    return simplejson.dumps()

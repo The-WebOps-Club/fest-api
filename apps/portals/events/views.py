@@ -26,15 +26,15 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def add_tabs( request ):
-    message=""
-    events=Event.objects.all()
-    event_list=[]
-    for i in events:
-        event_list=event_list+[i.name]
-    
+	message=""
+	events=Event.objects.all()
+	event_list=[]
+	for i in events:
+		event_list=event_list+[i.name]
+	
 
-    context_dict = {'event_list':event_list,'message':message}
-    return render_to_response('events/events2.html', context_dict, context_instance = global_context(request))
+	context_dict = {'event_list':event_list,'message':message}
+	return render_to_response('events/events2.html', context_dict, context_instance = global_context(request))
 
 @login_required
 def portal_main( request ):
