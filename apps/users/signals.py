@@ -13,7 +13,6 @@ from django.db.models import Q
 # Decorators
 # Models
 from apps.walls.models import Wall
-from apps.events.models import Event
 from apps.users.models import ERPProfile, Dept, Subdept, Page
 # Forms
 # View functions

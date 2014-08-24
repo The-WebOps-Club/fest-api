@@ -21,7 +21,7 @@ from django.shortcuts import render_to_response
 from misc.utils import global_context
 
 
-from apps.events.models import Event, EventTab
+from apps.portals.events.models import Event, EventTab
 from django.contrib.auth.decorators import login_required
 
 @login_required

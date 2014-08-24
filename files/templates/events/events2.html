@@ -77,7 +77,7 @@ function show_tabs_js(data){
     var text = "",i;
 
     for (i=0; i < len; i++) {
-    text += '<button type="button" onclick="Dajaxice.apps.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\'})">'+arr[i]+'</button>' + " ";
+    text += '<button type="button" onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\'})">'+arr[i]+'</button>' + " ";
     }
     text += '<button type="button" onclick="add_new_tab_js(\''+data.event_name+'\')"> +Add New Tab </button>' + " ";
     document.getElementById("event_tabs").innerHTML = text;
@@ -130,6 +130,9 @@ function validateEditTabForm() {
         alert("Event Tab Name must be filled. 1st letter cannot be a space");
         return false;
     }
+}
+function hello_js(data) {
+    alert(data.message);
 }
 
 </script>

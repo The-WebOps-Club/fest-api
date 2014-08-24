@@ -1,5 +1,6 @@
 # For simple dajax(ice) functionalities
 from django.utils import simplejson
+import json
 from dajaxice.decorators import dajaxice_register
 
 # For rendering templates
@@ -15,18 +16,16 @@ def hello(request):
     """
         Used for testing Dajaxice
     """
-    #html_content = render_to_string("dash/task_tables/coord_you.html", query_dictionary, RequestContext(request))
-    return simplejson.dumps({'message': 'hello'})
+    
+    return simplejson.dumps({'message': 'aslkfhas'})
 
 
 
 #dajaxice stuff
-from django.utils import simplejson
-from dajaxice.decorators import dajaxice_register
 #models
 from django.contrib.auth.models import User
 from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
-from apps.events.models import EventTab, Event
+from apps.portals.events.models import EventTab, Event
 
 
 
@@ -90,7 +89,7 @@ def delete_tab(request,event_name,event_tab_name):
 
 
 from dajaxice.utils import deserialize_form
-from apps.events.models import Event, EventTab
+from apps.portals.events.models import Event, EventTab
 
 @dajaxice_register
 def add_tab(request,add_tab_form):
@@ -125,3 +124,7 @@ def edit_tab(request,edit_tab_form):
             message="The " + edit_tab_form['tab_Name'] + " tab from the event " + edit_tab_form['event_Name_edit_form'] + "  has been successfully Edited."
 
     return simplejson.dumps({'message': message})
+
+@dajaxice_register
+def create_event(request,arg):
+    return simplejson.dumps()
