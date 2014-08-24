@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.templatetags.static import static
+from django.http import HttpResponse
 # Apps
 from misc.utils import *  #Import miscellaneous functions
 from misc import strings
@@ -314,3 +315,19 @@ def unsubscribe(request, username, token):
     # Otherwise redirect to login page
     next_url = reverse('apps.users.views.unsubscribe', kwargs={'username': username, 'token': token,})
     return HttpResponseRedirect('%s?next=%s' % (reverse('login'), next_url))
+
+# Barcode manual link
+def link_barcode(request):
+
+    if (request.method == 'GET'):
+        return render(request, "pages/barcode.html")
+    elif (request.method == 'POST'):
+            user = authenticate(username=str(request.POST['username']), password=str(request.POST['password']))
+            if user is not None:
+                u = UserProfile.objects.get(user__username=str(request.POST['username']))
+                u.barcode = str(request.POST['barcode'])
+                u.save()
+                return HttpResponse("Successfully linked Barcode to your profile")
+            else:
+                return HttpResponse("Invalid Username or Password. Please try again")
+

@@ -36,6 +36,7 @@ urlpatterns = patterns('',
     url(r'^profile$', 'apps.users.views.profile', name='profile'),
     url(r'^identity/(?P<role_type>\w+)/(?P<role_id>\d+)$', 'apps.users.views.identity', name='identity'), # Changes identity of the user
     url(r'^identity$', 'apps.users.views.identity', name='identity'),
+    url(r'^barcode/$', 'apps.users.views.link_barcode', name='link_barcode'), #linking barcode to user
     # Email unsubscribe
     url(r'^unsubscribe/(?P<username>[\w.@+-]+)/(?P<token>[\w.:\-_=]+)/$', 'apps.users.views.unsubscribe'),
     # Home

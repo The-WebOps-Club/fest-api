@@ -192,6 +192,9 @@ class UserProfile(models.Model): # The corresponding auth user
     # Internal flags and keys
     activation_key     = models.CharField(max_length=40, null=True)
     key_expires        = models.DateTimeField(default=timezone.now() + datetime.timedelta(2))
+
+    # Barcodes
+    barcode            = models.CharField(max_length=100, null=True)
     
     # Fest organizational info
     # is_core            = models.BooleanField(default=False)
