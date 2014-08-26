@@ -124,4 +124,10 @@ def edit_tab(request,edit_tab_form):
 			message="The " + edit_tab_form['tab_Name'] + " tab from the event " + edit_tab_form['event_Name_edit_form'] + "  has been successfully Edited."
 
     return json.dumps({'message': message})
+    
+    
+    
+@dajaxice_register
+def event_details(request):
+    return json.dumps({'message': 'message'})
 

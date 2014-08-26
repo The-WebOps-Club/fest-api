@@ -4,8 +4,12 @@
 {% load dajaxice_templatetags %}
 {% dajaxice_js_import %}
 {%  csrf_token %}
+{% load staticfiles %}
 
-
+<!-- Static files for the datatables
+<link href="{% static 'css/datatable.css' %}" rel="stylesheet" media="screen">
+<link href="{% static 'js/datatable.js' %}" rel="stylesheet" media="screen">
+-->
 
 
 
@@ -13,21 +17,18 @@
 {{message}} <br />
 <p id="message"> </p> </br>
 
-
+<button type="button" onclick="add_new_event()">Add New Event</button> 
+<button type="button" onclick="view_edit_event_js()">View/Edit Event</button> 
+<button type="button" onclick="event_registration_list()">View Event Registration List</button> 
 
 
 <br />
 <br />
+<div id="option_selected">
+</div>   
 
-
-{% if event_list %}
-	{% for event in event_list %}
-				<button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event}}','username':'{{user.username}}'})">{{event}}</button> 
-        {% endfor %}
-{% else %}
-            <strong>There are no categories present.</strong>
-{% endif %}
-            
+<div id="event_list">
+</div>     
 
 
 <br /> <br />
@@ -49,7 +50,8 @@
 
 
 <!--ADD NEW TAB FORM -->
-<div id="add_new_tab_form" style="visibility:hidden;">
+<div id="add_new_tab_form" style="display:none;">
+<h3> ADD TAB FORM </h3>
 <form id="add_tab_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_name"><br>
@@ -61,8 +63,8 @@ Description: <textarea name="tab_description" rows="20" cols="40" wrap="hard"></
 
 <!--EDIT TAB FORM -->
 
-<div id="edit_tab_form" style="visibility:hidden;">
-EDIT TAB FORM
+<div id="edit_tab_form" style="display:none;">
+<h3><EDIT TAB FORM</h3>
 <form id="edit_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_Name" id="tab_Name_input" value=""><br>
@@ -80,29 +82,40 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <!--JS FUNCTIONS -->
 <script>
 
+//For the datatable of events list
+$(document).ready(function() {
+    $('#datatable').dataTable();
+} );
+
+
+
 function show_tabs_js(data){
     document.getElementById("event_name").innerHTML = "<h2>"+data.event_name+"</h2>";
 
-    document.getElementById("edit_tab_form").style.visibility="hidden";
-    document.getElementById("add_new_tab_form").style.visibility="hidden";
-    document.getElementById("registration_tab").innerHTML = ' ' 
-    document.getElementById("edit_tab_div").innerHTML = ' '
-    document.getElementById("delete_tab_button").innerHTML = ' '
-    document.getElementById("selected_event_tab").innerHTML = ' '
-    document.getElementById("event_tabs_description").innerHTML = ' '
+    document.getElementById("edit_tab_form").style.display='none';
+    document.getElementById("add_new_tab_form").style.display = 'none';
+    document.getElementById("registration_tab").innerHTML = ' '; 
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_list").innerHTML = ' ';
+    document.getElementById("option_selected").innerHTML = ' ';
 
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
-    
+    //all static event tabs - i.e they are there for every event tab
+    text += '<button type="button" onclick="Dajaxice.apps.portals.events.event_details(event_details_js)" >  Details &nbsp &nbsp   </button>';
     for (i=0; i < len; i++) {
+    //all dynamic event tabs - i.e they are loaded from the database
     text += '<button type="button" onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'})">'+arr[i]+'</button>' + " ";
     }
 
     //The add_new_tab button is shown only if user has permission
     if (data.has_perm=="yes"){
-    text += '<button type="button" onclick="add_new_tab_js(\''+data.event_name+'\')"> +Add New Tab </button>' + " ";}
-    document.getElementById("event_tabs").innerHTML = text;
+    text += '<button type="button" onclick="add_new_tab_js(\''+data.event_name+'\')"> +Add New Tab </button>' + " ";
+    document.getElementById("event_tabs").innerHTML = text;}
     }
     
 
@@ -132,21 +145,22 @@ function show_tabs_description_js(data){
 
 function add_new_tab_js(event_name){
     document.getElementById("event_name_hidden").value = event_name;
-    document.getElementById("add_new_tab_form").style.visibility="visible";
+    document.getElementById("add_new_tab_form").style.display="inline";
     return;
 }
 
 function delete_tab_js(data){
     alert(data.message);
-    document.getElementById("edit_tab_form").style.visibility="hidden";
-    document.getElementById("add_new_tab_form").style.visibility="hidden";
+    document.getElementById("edit_tab_form").style.display='none';
+    document.getElementById("add_new_tab_form").style.display="none";
     document.getElementById("edit_tab_div").innerHTML = ' ';
     document.getElementById("delete_tab_button").innerHTML = ' ';
     document.getElementById("selected_event_tab").innerHTML = ' ';
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_tabs").innerHTML = ' ';
     document.getElementById("event_name").innerHTML = ' ';
-
+    document.getElementById("event_list").innerHTML = ' ';
+	document.getElementById("option_selected").innerHTML = ' ';
 }
 
 function edit_some_tab_js(event_name,event_tab_name,description){
@@ -156,13 +170,13 @@ function edit_some_tab_js(event_name,event_tab_name,description){
     document.getElementById("tab_Name_input").value = event_tab_name;
     document.getElementById("tab_Description_input").value = description;
 
-    document.getElementById("edit_tab_form").style.visibility="visible";
+    document.getElementById("edit_tab_form").style.display='inline';
     document.getElementById("message").innerHTML="Edit Tab form at the bottom of the page";
     return;
 }
 
 
-function register_js(data){
+function event_details_js(data){
     alert(data.message);
 }
 
@@ -174,8 +188,8 @@ function edit_tab_js(data){
     }
     else{
     alert(data.message);
-    document.getElementById("edit_tab_form").style.visibility="hidden";
-    document.getElementById("add_new_tab_form").style.visibility="hidden";
+    document.getElementById("edit_tab_form").style.display='none';
+    document.getElementById("add_new_tab_form").style.display="none";
     document.getElementById("edit_tab_div").innerHTML = ' ';
     document.getElementById("delete_tab_button").innerHTML = ' ';
     document.getElementById("selected_event_tab").innerHTML = ' ';
@@ -183,6 +197,8 @@ function edit_tab_js(data){
     document.getElementById("event_tabs").innerHTML = ' ';
     document.getElementById("event_name").innerHTML = ' ';
     document.getElementById("message").innerHTML=" ";
+    document.getElementById("event_list").innerHTML = ' ';
+    document.getElementById("option_selected").innerHTML = ' ';
     }
 }    
 
@@ -194,32 +210,93 @@ function add_tab_js(data){
     }
     else{
     alert(data.message);
-    document.getElementById("edit_tab_form").style.visibility="hidden";
-    document.getElementById("add_new_tab_form").style.visibility="hidden";
+    document.getElementById("edit_tab_form").style.display='none';
+    document.getElementById("add_new_tab_form").style.display="none";
     document.getElementById("edit_tab_div").innerHTML = ' ';
     document.getElementById("delete_tab_button").innerHTML = ' ';
     document.getElementById("selected_event_tab").innerHTML = ' ';
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_tabs").innerHTML = ' ';
     document.getElementById("event_name").innerHTML = ' ';
+    document.getElementById("event_list").innerHTML = ' ';
+    document.getElementById("option_selected").innerHTML = ' ';
     }
 }
 
-
-function hello_js(data){
-    alert(data.message);
+//these functions are for the dajaxice at the top of the page.
+function view_edit_event_js(){
+    document.getElementById("event_list").innerHTML = '\
+    {% if event_list %}\
+		<table>\
+    		<tr><th>Event </th> <th> Event Email Id </th></tr>\
+    {% for event in event_list %}\
+    	<tr><td><button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\'{{event.name}}\',\'username\':\'{{user.username}}\'})">{{event.name}}</button></td><td> {{event.email}}</td></tr>  \
+    {% endfor %}\
+    	</table>\
+    {% else %}\
+        <strong>There are no categories present.</strong>{% endif %}';
+    
+    document.getElementById("option_selected").innerHTML = '<h2>View/Edit Events</h3> - clicking on an event opens the editing options at the bottom of the list';
+    
+    //making data from the other tabs disappear
+    document.getElementById("edit_tab_form").style.display='none';
+    document.getElementById("add_new_tab_form").style.display="none";
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_tabs").innerHTML = ' ';
+    document.getElementById("event_name").innerHTML = ' ';
+    document.getElementById("event_list").innerHTML = ' ';
+    document.getElementById("option_selected").innerHTML = ' ';
 }
 
 
+function add_new_event(){
+    document.getElementById("option_selected").innerHTML = '<h2>Add New Event</h3>';
+    //making data from the other tabs disappear
+    document.getElementById("edit_tab_form").style.display='none';
+    document.getElementById("add_new_tab_form").style.display="none";
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_tabs").innerHTML = ' ';
+    document.getElementById("event_name").innerHTML = ' ';
+    document.getElementById("event_list").innerHTML = ' ';
+    document.getElementById("option_selected").innerHTML = ' ';
+}
+
+
+function event_registration_list(){
+    
+    document.getElementById("option_selected").innerHTML = '<h2>View Event Registration List</h3>';
+}
 
 
 </script>
 
 
+<!-- THE HTML IN THE VIEW_EDIT_EVENTS_JS FUNCTION IS
+{% if event_list %}
 
+<table>
+<tr><th>Event </th> <th> Event Email Id </th></tr>
+	{% for event in event_list %}
+	<tr> <td>
+				<button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'})">{{event.name}}</button> </td><td> {{event.email}}</td>
+				
+        {% endfor %}
+</table>
+{% else %}
+            <strong>There are no categories present.</strong>
+{% endif %}
+
+-->
 
 
 
 
 {% endblock %}
+
 
