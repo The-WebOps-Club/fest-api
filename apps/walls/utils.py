@@ -270,7 +270,9 @@ def get_my_posts(access_obj, wall=None,offset=0,limit=None, id=None):
 	    if id:
                 my_query = my_query & Q(pk=int(id))
             if access_obj.is_superuser:
-                my_query = Q(wall=wall) & Q(pk=int(id))
+                my_query = Q(wall=wall) 
+		if id:
+                    my_query = Q(wall=wall) & Q(pk=int(id))
 
 
         return Post.objects.filter(my_query).distinct().order_by('-time_created')[offset:limit]
