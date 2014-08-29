@@ -6,7 +6,7 @@ import json
 
 class PostIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    subject = indexes.CharField(model_attr='subject')
+    subject = indexes.CharField(model_attr='subject', null=True)
     description = indexes.CharField(model_attr='description')
     created = indexes.CharField(model_attr='time_created')
     author = indexes.CharField(model_attr='by')
@@ -29,6 +29,12 @@ class PostIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare_created(self, obj):
     	return naturaltime(obj.time_created)
+
+    def prepare_subject(self, obj):
+        if obj.subject:
+            return obj.subject
+        else:
+            return " "
 
     def prepare_url(self, obj):
     	return obj.get_absolute_url()

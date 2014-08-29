@@ -210,7 +210,7 @@ class PostInfo(models.Model):
             mail.send_many(mail_list)
 
     def get_absolute_url(self):
-        post_str = '#post_' + str(self.parent_post.all()[0].pk)
+        post_str = '/' + str(self.parent_post.all()[0].pk)
         return reverse('apps.walls.views.wall', args=(self.parent_post.all()[0].wall.pk,)) + post_str
     
     class Meta:
@@ -311,7 +311,7 @@ class Post(PostInfo):
         return User.objects.filter( self.notiy_users_query() ).distinct()
         
     def get_absolute_url(self):
-        post_str = '#post_' + str(self.pk)
+        post_str = '/' + str(self.pk)
         return reverse('apps.walls.views.wall', args=(self.wall.pk,)) + post_str
         
     class Meta:
