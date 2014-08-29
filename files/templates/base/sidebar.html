@@ -30,11 +30,6 @@
                         {% endif %}
                     </a>
                 </li>
-                <li class="{% if current_page == 'docs' %}active{% endif %}">
-                    <a href="{% url 'docs' %}">
-                        <i class='icon-folder'></i> <span>Docs</span>
-                    </a>
-                </li>
                 <li class="{% if current_page == 'contacts' %}active{% endif %}">
                     <a href="{% url 'contacts' %}">
                         <i class='icon-contact-email'></i> <span>User Contacts</span>
@@ -58,6 +53,8 @@
                                     icon-dept 
                                 {% elif w.subdept %} 
                                     icon-subdept 
+                                {% elif w.page %} 
+                                    icon-page
                                 {% else %} 
                                     icon-wall 
                                 {% endif %}'>
@@ -95,7 +92,13 @@
                             <i class='icon-crown'></i> Admin Portal
                         </a>
                     </li>
-
+		    {% comment %}
+                    <!--<li class="{% if current_page == 'portal_events' %}active{% endif %}">
+                        <a href='{% url "events_portal" %}'>
+                            <i class='icon-crown'></i> Events Portal
+                        </a>
+		    </li>-->
+		    {% endcomment %}
                 {% else %}
                     <span class="muted">You have no portals ...</span>
                 {% endif %}

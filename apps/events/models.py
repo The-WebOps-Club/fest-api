@@ -103,3 +103,23 @@ class Tab(models.Model):
 
     class Meta:
         ordering = ['order']
+
+
+
+#New
+
+
+class EventTab(models.Model):
+    """
+       Each event will have several tabs. This is one of them
+    """
+    # Relation to various other models
+    event           = models.ForeignKey(Event)
+    
+    # Baisc information
+    name            = models.CharField(max_length=100)
+    content         = models.TextField(blank = True)
+    
+
+    def __unicode__(self):
+        return self.name

@@ -32,7 +32,11 @@
 		</div>
 		<div class="news_main">
 			<div class="news_head">
-				<i class="icon-chevron-down pull-right news_post_settings post-settings-btn" style="display : none;"></i>
+				{%if user|check_access:post %}
+					<a href='javascript:void(0)' >
+						<i class="icon-settings pull-right news_post_settings post-settings-btn" style="display : none;"></i>
+					</a>
+				{%endif%}
 				<a class="news_profile_name" href="{% url 'profile' post.by.id %}">
 					{{ post.by.get_full_name|default:"" }}
 				</a> 
@@ -46,28 +50,15 @@
 			</div>
 			<div class="news_body markdown">
 				{% autoescape off %}
-				{% if post.subject %}
-				<p class='subject_head'><span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} 
-
-					<!--{% with user|check_access:post as admin %}
-					{% if admin %}
-					<a class='post-access-change-btn pull-right link_no_style' href='javascript:void(0)'>
-						{% endif %}
-						<span class="pull-right label notice label-head access-indicator">
-							{% if post.is_public %}
-							PUBLIC
-							{% else %}
-							PRIVATE
-							{% endif %}
-						</span>
-						{% if admin %}
-					</a>
+				<p class='subject_head'>
+					{% if post.subject %}
+						<span class="label notice label-head">Subject</span> {{ post.subject|default:"" }} 
 					{% endif %}
-					{% endwith %}
-					-->
-
+					<a class='post-access-change-btn pull-right link_no_style' href='javascript:void(0)'>
+						<span class="pull-right label notice label-head access-indicator" data-access='{{ post.access_specifier }}'>
+						</span>
+					</a>
 				</p>
-				{% endif %}
 				{{ post.description }}
 				{% endautoescape %}
 			</div>
@@ -139,9 +130,9 @@
                 Visibility:
             </div>
             
-            <div class='setting access-specifier' data-access='1' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)'>Public</a></div>
-            <div class='setting access-specifier' data-access='2' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)'>Only Wall and Tagged</a></div>
-			<div class='setting access-specifier' data-access='3' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)'>Only Wall(Private)</a></div>
+            <div class='setting access-specifier' data-access='1' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)'  title='Everyone can see this.' rel='twipsy'>Everyone</a></div>
+            <div class='setting access-specifier' data-access='2' onclick = 'do_change_access.call(this)'><a rel='twipsy' href='javascript:void(0)' title='Everyone belonging to this wall and people who are tagged in this post can see this post.'>Only Wall and Tagged</a></div>
+			<div class='setting access-specifier' data-access='3' onclick = 'do_change_access.call(this)'><a href='javascript:void(0)' title='Only people belonging to this wall can see this.' rel= 'twipsy'>Only Wall(Private)</a></div>
         </div>
         <div class='frame_wait invisible'>
         	<div class="breaktitle">
@@ -207,6 +198,11 @@
 	.access-indicator{
 
 	}
+	/* necessary for showing twipsy */
+	.popover{
+		z-index:999;
+	}
+
 	.invisible{
 		display: none;
 	}
@@ -228,6 +224,16 @@
 		color : #333;
 		text-decoration : underline;
 	}
+
+	.post-settings-btn{
+		border-radius: 25%;
+		padding-bottom: 2px;
+		padding-right: 2px;
+	}
+	.post-settings-btn:hover{
+		background-color:#DDD;
+	}
+
 </style>
 
 <script type="text/javascript">
@@ -279,17 +285,18 @@
 		console.log($el)
 		Dajaxice.apps.walls.change_post_access(function( response ){
 			if(!response.msg.localeCompare('done')){
-				callback( el, access_specifier )
+				callback( el, access_specifier, post_id );
 			}
 		},{post_id:post_id,access_specifier:access_specifier});
 	}
 	// reset UI on finish.
-	function post_change_access( el, access_specifier ){
+	function post_change_access( el, access_specifier, post_id ){
 		var $el = $(el)
 		$el.closest('.settings_contents_inner').find('.access-specifier').children().removeClass('selected')
 		$el.closest('.settings_contents_inner').find('.frame_wait').addClass('invisible')
 		$el.closest('.settings_contents_inner').find('.frame_main').removeClass('invisible')
 		$el.closest('.settings_contents_inner').find('.access-specifier[data-access='+access_specifier+']').children().addClass('selected')
+		$('#post_'+post_id).trigger('access_changed',[{access:access_specifier}]);
 	}
 	// function to be called when a DOM element is clicked.
 	function do_change_access(){
@@ -301,6 +308,31 @@
 		$('.access-specifier').click( do_change_access );
 	}
 
+	function bind_access_indicator( el ){
+		var $el = $(el)
+		// handler to listen for access_changed event
+		// attached to post object
+		var handler = function( e, data ){
+			console.log('handling access change');
+			console.log(data);
+			console.log($el);
+			var access_specifier;
+			if(data){
+				access_specifier = data.access;
+				$el.attr('data-access',access_specifier);
+			}else{
+				access_specifier = $el.data('access');
+			}
+			var access_levels = new Object();
+			access_levels[1] = 'PUBLIC';
+			access_levels[2] = 'PRIVATE+TAGGED';
+			access_levels[3] = 'PRIVATE';
+			$el.find('.access-indicator').html(access_levels[access_specifier]);
+		}
+		console.log('bound handler to ');
+		console.log( el );
+		$el.on('access_changed', handler);
+	}
 
 	$( document ).ready(function() {
 
@@ -366,6 +398,7 @@
 			e.stopPropagation();
 			hide_popups()
 			$(this).popover("show")
+			$('[rel=twipsy]').twipsy();
     	})
     	$(".post-settings-btn").popover({
         	"animate": true,
@@ -380,7 +413,6 @@
     	})
     	function settings_title() {
     		return $(".post_settings_title").html()
-
     	}
 
     	function settings_content() {

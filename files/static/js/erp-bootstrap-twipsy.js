@@ -85,6 +85,8 @@
           .css({ top: 0, left: 0, display: 'block' })
           .prependTo(document.body)
 
+        
+
         pos = $.extend({}, this.$element.offset(), {
           width: this.$element[0].offsetWidth
         , height: this.$element[0].offsetHeight
@@ -114,6 +116,15 @@
           .css(tp)
           .addClass(placement)
           .addClass('in')
+
+        // ERP Modification.
+        // Make it cleaner asap.
+        //
+        // $tip.find('a[rel]').twipsy();
+        //
+        // ----------------
+
+
       }
     }
 

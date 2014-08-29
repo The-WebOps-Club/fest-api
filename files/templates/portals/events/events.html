@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+{% load check_access %}
+
+{% block content %}
+    <div class='span12' style='text-align:center'>
+
+        Time to do away with the boring old Text editor based events portal. Now edit on the main events site itself.
+        The button below takes you to an editable version of the events site.
+    </div>
+    <div class='span12' style='text-align:center'>
+        <a class='btn btn-primary' href='{{SETTINGS.FEST_EVENTS_SITE}}?token={{token}}'>Edit on-site</a>
+    </div>
+{% endblock %}

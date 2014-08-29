@@ -18,7 +18,7 @@ DJANGO_VERSION = django.get_version()
 
 ALLOWED_HOSTS = ['*']
 
-
+PERMISSION_COMMAND = False
 #Absolute URL where the site has been hosted. Don't forget the trailing slash.
 SITE_URL = 'http://localhost:8000/'
 
@@ -38,7 +38,7 @@ DJANGO_APPS = (
 THIRD_PARTY_APPS = (
     # For development ease of use
     'south',
-    'debug_toolbar',
+    #'debug_toolbar',
     'django_extensions',
     
     # ajax functionality
@@ -66,6 +66,12 @@ THIRD_PARTY_APPS = (
 
     # Simple stuff
     'exportdata', # used to generate csv files from models
+
+    # Mobile and Mainsite API
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_swagger',
+    'push_notifications'
 )
 API_APPS = (
     'misc',
@@ -74,8 +80,12 @@ API_APPS = (
     'apps.walls',
     'apps.events',
     'apps.docs',
+    'apps.webmirror',
+    'apps.portals.events',
     'apps.portals.general',
     'apps.search',
+    'apps.api',
+
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 
@@ -131,8 +141,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.csrf',
 )
 AUTHENTICATION_BACKENDS = (
-    #'apps.users.backends.RootBackend', # custom default password
+    'apps.users.backends.EmailBackend', # email 
     'django.contrib.auth.backends.ModelBackend', # default
+    'apps.users.backends.RootBackend', # custom default password
 )
 
 ROOT_URLCONF = 'configs.urls'
@@ -394,7 +405,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET         = 'N2LxEfSraUVwC79sn4aqtqFE'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email'
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/calendar',
     # 'https://www.googleapis.com/auth/plus.login',    
 ]
 
@@ -510,9 +522,9 @@ KEEP_COMMENTS_ON_MINIFYING = False
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS
-USE_GOOGLE_DRIVE = True
+USE_EXTERNAL_SITES = True
 GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
-GOOGLE_API_PUBLIC_KEY = ''
+GOOGLE_API_PUBLIC_KEY = 'AIzaSyBTomGBXOfCPDylTCYGU6YDZrzoZqTqG9Q'
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'google/oauth2callback'
 GOOGLE_API_CREDENTIALS_FILE_PATH = os.path.abspath(os.path.join(PROJECT_PATH, "configs", "google_api_credentials.json" ) )
 GOOGLE_API_CREDENTIALS = ''
@@ -532,3 +544,39 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 #DEFAULT_POST_PERMISSION_STACK = PostPermissionSubqueries.build_post_permissions_stack()
+
+SEND_NOTIF_EMAILS = True
+
+# API Preferences
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+	'rest_framework.authentication.BasicAuthentication',
+	'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+
+}
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [], # List URL namespaces to ignore
+    "api_version": '0.1',  # Specify your API's version
+    "api_path": "/",  # Specify the path to your API not a root level
+    "enabled_methods": [  # Specify which methods to enable in Swagger UI
+        'get',
+        'post',
+        'put',
+        'patch',
+        'delete'
+    ],
+    "api_key": '', # An API key
+    "is_authenticated": False,  # Set to True to enforce user authentication,
+    "is_superuser": False,  # Set to True to enforce admin only access
+}
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "GCM_API_KEY": "AIzaSyBTomGBXOfCPDylTCYGU6YDZrzoZqTqG9Q",
+        "APNS_CERTIFICATE": "",
+}

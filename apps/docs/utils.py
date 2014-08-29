@@ -162,6 +162,76 @@ class Drive:
             credential._refresh(http.request)
             return credential.access_token
 
+class Calendar:
+    service = None
+
+    def __init__(self):
+        """
+            Initializer for Calendar class
+            Args: None
+            Returns: Authenticated calendar service object
+        """
+        # try:
+        if not settings.GOOGLE_API_CREDENTIALS or settings.GOOGLE_API_CREDENTIALS == "":
+            print ">>> ERR >>> GOOGLE_API_CREDENTIALS not defined"
+        credential = Credentials.new_from_json(settings.GOOGLE_API_CREDENTIALS)
+        
+        # except Exception, e:
+        #     return redirect('get_refresh_token')
+        http = httplib2.Http()
+        http = credential.authorize(http)
+        self.service = build('calendar', 'v3', http=http, developerKey=settings.GOOGLE_API_PUBLIC_KEY)
+
+    def set_permission(self, file_id, value=None, perm_type='anyone', role='writer'):
+        """Insert a new permission.
+
+        Args:
+            service: Drive API service instance.
+            file_id: ID of the file to insert permission for.
+            value: User or group e-mail address, domain name or None for 'default'
+                         type.
+            perm_type: The value 'user', 'group', 'domain' or 'default'.
+            role: The value 'owner', 'writer' or 'reader'.
+        Returns:
+            The inserted permission if successful, None otherwise.
+        """
+        if perm_type not in ["user", "group", "domain", "anyone"]:
+            raise InvalidArgumentValueException("Permission TYpe was found to be : " + str(perm_type))
+
+        new_permission = {
+                'value': value,
+                'type': perm_type,
+                'role': role
+        }
+        try:
+            return self.service.permissions().insert(
+                fileId = file_id, 
+                body = new_permission
+            ).execute()
+        except errors.HttpError, error:
+            print 'An error occurred: %s' % error
+        return None
+
+    @staticmethod
+    def create_flow():
+        FLOW = flow_from_clientsecrets(
+            settings.GOOGLE_API_CLIENT_SECRETS, 
+            ' '.join(settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE), 
+            redirect_uri=settings.GOOGLE_API_REDIRECT_URI
+        )
+        FLOW.params['access_type'] = 'offline'
+        FLOW.params['approval_prompt'] = 'force'
+        return FLOW
+
+    @staticmethod
+    def get_access_token():
+            if not settings.GOOGLE_API_CREDENTIALS or settings.GOOGLE_API_CREDENTIALS == "":
+                print ">>> ERR >>> GOOGLE_API_CREDENTIALS not defined"
+            credential = Credentials.new_from_json(settings.GOOGLE_API_CREDENTIALS)
+            http = httplib2.Http()
+            credential._refresh(http.request)
+            return credential.access_token
+
 class Github:
     service = None
 
@@ -307,4 +377,3 @@ class Github:
             http = httplib2.Http()
             credential._refresh(http.request)
             return credential.access_token
-

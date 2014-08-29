@@ -16,6 +16,8 @@ import json
 from notifications.models import Notification
 from misc.utils import *  #Import miscellaneous functions
 
+from misc.constants import POST_TYPE
+
 # From Apps
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept
 from apps.walls.utils import paginate_items, parse_atwho, get_tag_object, query_newsfeed, query_notifs, get_my_posts, check_access_rights, check_admin_access_rights
@@ -264,7 +266,6 @@ def create_post(request, wall_id, post_form):
     # create a new post
     append_string = ""
     data = deserialize_form(post_form)
-   
     post_text = data["new_post"]
     
     post_subject = data.get("new_post_subject", "")
@@ -280,7 +281,12 @@ def create_post(request, wall_id, post_form):
         'post_text' : post_text
     }))
     new_post = Post.objects.create(subject=post_subject, description=rendered_post_text, wall=wall, by=request.user)
-    
+
+    if( hasattr( wall, 'person' ) ):
+        new_post.access_specifier = POST_TYPE['PUBLIC']
+    else:
+        new_post.access_specifier = POST_TYPE['PRIVATE_AND_TAGGED']
+
     new_post.add_notifications(notification_list)
     if wall.parent:
         new_post.add_notifications([wall.parent, request.user]) # add to and from

@@ -23,6 +23,7 @@ from annoying.functions import get_object_or_None
 import os
 import notifications
 
+@login_required
 def wall (request, wall_id=None):
     """
         Renders a Wall. It can be of User, Department, subdepartment etc.
@@ -95,6 +96,7 @@ def wall (request, wall_id=None):
     }
     return render_to_response('pages/wall.html', local_context, context_instance= global_context(request))
 
+@login_required
 def my_wall(request, owner_type, owner_id):
     # Initial validations
     try:
@@ -147,3 +149,12 @@ def my_wall(request, owner_type, owner_id):
     if wall_id == None:
         raise InvalidArgumentValueException("Got no wall for `owner_id` = " + owner_id + " and `owner_type` = " + owner_type)
     return redirect(reverse("wall", kwargs={"wall_id" : wall_id}))
+
+# For testing HTML Emails
+def email_test(request):
+    local_context = {
+        'name': request.user.get_full_name(),
+        'notification': request.user.notifications.all()[25],
+        'user_email': 'muhammedshahid.k@gmail.com',
+    }
+    return render_to_response('notification.html', local_context, context_instance= global_context(request))

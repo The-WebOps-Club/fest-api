@@ -471,6 +471,10 @@ var Drive = function( options ) {
     /* Execution */
     self.init()
 
+    self.share_file = function( fid, gmail_addr ){
+        
+        gapi.client.drive.permissions.insert({}).execute()
+    }
     return this
 }
 

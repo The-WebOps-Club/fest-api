@@ -15,6 +15,7 @@ from django.db.models.signals import post_save
 from django.db.models import Q
 from django.utils import timezone
 from django.core.urlresolvers import reverse
+from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 # Apps
 # Decorators
 # Models
@@ -49,6 +50,13 @@ class Dept(models.Model):
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     
+    # Storage
+    directory_id    = models.CharField( max_length = 100, null=True, blank=True )
+    
+    # Calendar
+    calendar_id     = models.CharField( max_length = 100, null=True, blank=True )
+    
+
     objects = CheckActiveManager()
     
     def __unicode__(self):
@@ -97,6 +105,10 @@ class Subdept(models.Model):
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
 
+    # Storage
+    directory_id    = models.CharField( max_length = 100, null=True, blank=True )
+    
+
     objects = CheckActiveManager()
 
     def __unicode__(self):
@@ -137,6 +149,12 @@ class Page(models.Model):
     time_updated    = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
     cache_updated   = models.DateTimeField(auto_now=True, default = datetime.datetime(1950, 1, 1))
 
+    # Storage
+    directory_id    = models.CharField( max_length = 100, null=True, blank=True )
+
+    # Calendar
+    calendar_id     = models.CharField( max_length = 100, null=True, blank=True )
+    
     objects = CheckActiveManager()
 
     def __unicode__(self):
@@ -190,6 +208,8 @@ class UserProfile(models.Model): # The corresponding auth user
     last_activity_ip   = models.IPAddressField(default="0.0.0.0")
     last_activity_date = models.DateTimeField(default = datetime.datetime(1950, 1, 1))
 
+    send_mails         = models.BooleanField(default=True)
+    
     objects = CheckActiveManager()
 
     @property
@@ -243,6 +263,21 @@ class UserProfile(models.Model): # The corresponding auth user
         self_user = self.user
         return self_user.get_full_name() and self.mobile_number and \
             self_user.email
+
+    def create_unsubscribe_link(self):
+        username, token = self.make_token().split(":", 1)
+        return reverse('apps.users.views.unsubscribe', kwargs={'username': username, 'token': token,})
+ 
+    def make_token(self):
+        return TimestampSigner().sign(self.user.username)
+ 
+    def check_token(self, token):
+        try:
+            key = '%s:%s' % (self.user.username, token)
+            TimestampSigner().unsign(key, max_age=60 * 60 * 48) # Valid for 2 days
+        except BadSignature, SignatureExpired:
+            return False
+        return True
 
     def __unicode__(self):
         return self.user.first_name

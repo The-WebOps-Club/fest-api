@@ -38,7 +38,11 @@ class Command(NoArgsCommand):
             template.html_content = this_email_template
             soup = BeautifulSoup.BeautifulSoup(this_email_template)
             for l in soup.findAll('a'):
-                l.setString(l.getString() + u'( ' + l['href'] + ' )')
+                if l.getString():
+                    string = l.getString()
+                else:
+                    string = ""
+                l.setString(string + u'( ' + l['href'] + ' )')
             template.content = strip_tags(str(soup)) #<---- Note: We can do soup.prettify() here instead of str(soup)
             #Update subject
             template.subject = open(os.path.join(email_root_path, this_email_template_name).replace('.html','.subject'), 'r').read()
@@ -59,7 +63,10 @@ class Command(NoArgsCommand):
             new_template.html_content = content
             soup = BeautifulSoup.BeautifulSoup(content)
             for l in soup.findAll('a'):
-                l.setString(l.getString() + u'( ' + l['href'] + ' )')
+                if l.getString():
+                    l.setString(l.getString() + u'( ' + l['href'] + ' )')
+                else:
+                    l.setString(u'( ' + l['href'] + ' )')
             for l in soup.findAll('li'):
                 l.setString(u'- ' + l.getString())
             new_template.content = strip_tags(str(soup)) #<---- Note: We can do soup.prettify() here instead of str(soup)

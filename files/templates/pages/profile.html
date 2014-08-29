@@ -97,7 +97,17 @@
 								</div>
 								<div class="row-fluid">
 									<label class="span4 form_label" for="id_branch">Branch:</label> 
-									<input id="id_branch" name="branch" type="text" class="form_input form_visible" value="{{ user_profile_form.branch.value|default_if_none:'' }}" autocomplete="off">
+									<select id="id_branch" name="branch" class="select form_input form_visible" >
+									{% for b in BRANCH_CHOICES %}
+	       								<option value='{{ b.0 }}' 
+	       								{% if user_profile_form.branch.value == b.0 %}
+	       								selected="selected"
+	       								{% endif %}
+	       								>
+	       									{{ b.1 }}
+	       								</option>
+	       							{% endfor %}
+	       							</select>
 								</div>
 								<div class="row-fluid">
 									<label class="span4 form_label" for="id_room_no">Room no:</label> 
@@ -105,7 +115,18 @@
 								</div>
 								<div class="row-fluid">
 									<label class="span4 form_label" for="id_hostel">Hostel:</label> 
-									<input id="id_hostel" name="hostel" class="form_input form_visible" value="{{ erp_profile_form.hostel.value|default_if_none:'' }}" autocomplete="off">
+									<select id="id_hostel" name="hostel" class="select form_input form_visible">
+									{% for h in HOSTEL_CHOICES %}
+	       								<option value='{{ h.0 }}' 
+	       								{% if erp_profile_form.hostel.value == h.0 %}
+	       								selected="selected"
+	       								{% endif %}
+	       								>
+	       									{{ h.1 }}
+	       								</option>
+	       							{% endfor %}
+	       							</select>
+								
 								</div>
 							</div>
 							
@@ -220,6 +241,10 @@
 	.label_input.active {
 		background-color: #DD3C10;
 		border : 2px solid black;
+	}
+
+	#id_branch {
+		width : 100%;
 	}
 
 	/* Button structure */
@@ -442,17 +467,7 @@
 			}
 		})
 
-		$("#id_hostel").atwho({
-	        at: "",
-	       	data: {% autoescape off %}{{ HOSTEL_CHOICES }}{% endautoescape %},
-	      	tpl: "<li data-value='${name}'> ${name} </li>",
-		})
-		$("#id_branch").atwho({
-	        at: "",
-	       	data: {% autoescape off %}{{ BRANCH_CHOICES }}{% endautoescape %},
-	      	tpl: "<li data-value='${name}'> ${name} </li>",
-		})
-
+		$(".select").select2({ width:'200px'})
 		
 		var form_errors_exist = false
 		{% for k, v in user_form.errors.items %}

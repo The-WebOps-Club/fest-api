@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from configs import settings
 from apps.users.models import Dept, Subdept, ERPProfile
 from apps.walls.models import Wall, Post, Comment
+from apps.docs.utils import Drive, Github
 
 from apps.walls.utils import get_tag_object
 from annoying.functions import get_object_or_None
@@ -23,6 +24,8 @@ from post_office import mail
 
 import os
 from django.core.management import call_command
+
+from apps.portals.general.utils import share_drive, attach_drive_to_entity
 
 def admins_only(in_func):
     def out_func(request, *args, **kwargs):
@@ -72,15 +75,18 @@ def add_users_to_page(request,page_id,user_ids):
     page = Page.objects.get(id = page_id)
     append_string = ''
     for user_id in user_ids:
-        e = User.objects.get(id = user_id.split('_')[1]).erp_profile
+        user = User.objects.get(id = user_id.split('_')[1])
+        e = user.erp_profile
         if not (page in e.page_relations.all()):
             append_string += render_to_string('portals/general/user.html', {'user':e.user,'link_type':'page','link_id':page_id}, context_instance=global_context(request, token_info=False))
         e.page_relations.add(page)
+        share_drive( drive, user, page.directory_id )
 
     return json.dumps({'message':'done','append_string':append_string})
 
 @dajaxice_register
 def add_users_to_subdept(request,subdept_id,user_ids):
+    drive = Drive()
     user = request.user
     erp_profile = user.erp_profile
     if not user.is_staff:
@@ -95,10 +101,12 @@ def add_users_to_subdept(request,subdept_id,user_ids):
         return json.dumps({'message': 'This subdept is not under your department !'})
 
     for user_id in user_ids:
-        e = User.objects.get(id = user_id.split('_')[1]).erp_profile
+        user = User.objects.get(id = user_id.split('_')[1])
+        e = user.erp_profile
         if not (subdept in e.coord_relations.all()):
             append_string += render_to_string('portals/general/user.html', {'user':e.user,'link_type':'subdept','link_id':subdept_id}, context_instance=global_context(request, token_info=False))
         e.coord_relations.add(subdept)
+        share_drive( drive, user, subdept.directory_id )
 
     return json.dumps({'message':'done','append_string':append_string})
 
@@ -137,6 +145,10 @@ def create_subdept(request, dept_id, name):
         return json.dumps({'message': 'This subdept is not under your department !'})
      
     s = Subdept.objects.create(dept=Dept.objects.get(id=dept_id), name=name)
+
+    drive = Drive()
+    attach_drive_to_entity( drive, s )
+
     return json.dumps({'message' : 'done', 'id' : s.id, 'name' : name})
 
 @dajaxice_register
@@ -147,6 +159,10 @@ def create_page(request, name):
         return json.dumps({'message':'Not Authorized'})
 
     p = Page.objects.create(name=name);
+
+    drive = Drive()
+    attach_drive_to_entity( drive, p )
+
     return json.dumps({'message': 'done', 'id' : p.id, 'name' : name})
 
 @dajaxice_register
@@ -225,7 +241,8 @@ def create_user(request, email, first_name, last_name, supercoord):
 
     call_command('jsonify_data')
     call_command('collectstatic', interactive=False)
-    
+    if settings.PERMISSION_COMMAND:
+        os.system('/home/saarango/git/fest-api/runscript')
     return json.dumps( { 
         'message' : 'Successfully created <b>' + email + '</b>. <br />An email will be sent with the password to the given email address in 15mins.<br/>Please ask them to check spam !<br /> IF they do not get an email, ask them to use the forgot password to create a password',
         'success' : 'yes',

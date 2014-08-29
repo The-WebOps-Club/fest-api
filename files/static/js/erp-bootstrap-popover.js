@@ -40,6 +40,7 @@
       $tip.find('.content > *')[this.options.html ? 'html' : 'text'](this.getContent())
       $tip[0].className = 'popover'
       $tip.addClass(this.options.myClass)
+      
     }
 
   , hasContent: function () {

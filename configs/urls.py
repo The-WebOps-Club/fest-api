@@ -21,6 +21,23 @@ admin.autodiscover()
 from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 dajaxice_autodiscover()
 
+#django push notifications
+from push_notifications.models import GCMDevice
+from rest_framework.generics import ListCreateAPIView
+
+# REST API
+from rest_framework.routers import DefaultRouter
+from apps.api import mobile, gcm
+
+
+router = DefaultRouter()
+router.register(r'notifications', mobile.NotificationViewSet, base_name="notifications")
+router.register(r'walls',mobile.WallsViewSet, base_name="walls")
+router.register(r'posts',mobile.PostsViewSet, base_name="posts")
+router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
+router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
+
+
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # FEST-API APPS
@@ -36,7 +53,8 @@ urlpatterns = patterns('',
     url(r'^profile$', 'apps.users.views.profile', name='profile'),
     url(r'^identity/(?P<role_type>\w+)/(?P<role_id>\d+)$', 'apps.users.views.identity', name='identity'), # Changes identity of the user
     url(r'^identity$', 'apps.users.views.identity', name='identity'),
-    
+    # Email unsubscribe
+    url(r'^unsubscribe/(?P<username>[\w.@+-]+)/(?P<token>[\w.:\-_=]+)/$', 'apps.users.views.unsubscribe'),
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'), # Shows newsfeed for a user
     url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
@@ -51,9 +69,9 @@ urlpatterns = patterns('',
     
     # Docs
     url(r'^docs/$', 'apps.docs.views.docs', name='docs'),
-	url(r'^docs/picker/?$', 'apps.docs.views.picker', name='picker'),
+    url(r'^docs/picker/?$', 'apps.docs.views.picker', name='picker'),
     url(r'^docs/view/$', 'apps.docs.views.edit_file', name='view'),
-    	# Internal URLS - One time use
+    # Internal URLS - One time use
     url(r'^google/refresh_token$', 'apps.docs.views.google_refresh_token', name='google_refresh_token'),
     url(r'^google/oauth2callback/?$', 'apps.docs.views.google_auth_callback', name='google_oauth2callback'),
 	url(r'^github/refresh_token$', 'apps.docs.views.github_refresh_token', name='github_refresh_token'),
@@ -65,6 +83,10 @@ urlpatterns = patterns('',
     #url(r'^setup/$', 'misc.views.setup', name='setup'),
 
     url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
+    
+    # events portal
+    #url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
+    #url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
@@ -96,6 +118,22 @@ urlpatterns = patterns('',
     # Haystack
     url(r'^search/', include('haystack.urls')),
 
+    #WebMirror
+    url(r'^webmirror/get/(?P<pk>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.get_data'),
+    url(r'^webmirror/set/(?P<pk>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.set_data'),
+    url(r'^webmirror/cluster/get/(?P<cluster>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.get_cluster'),
+    
+    #For Testing out email templates
+    url(r'^email/$', 'apps.walls.views.email_test', name='email'),
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': settings.STATIC_ROOT}),
+
+    # API
+    url(r'^api-web-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
+    url(r'^api/mobile/', include(router.urls)),
+    url(r'^api-docs/', include('rest_framework_swagger.urls')),
+
 )
 
 # 400 & 500
@@ -105,7 +143,7 @@ handler500 = 'misc.views.err500'
 # This is to test out DEBUG = False in localhost
 # REMEMBER : Should be commented out on server !
 # if settings.DEBUG or ( ( settings.SITE_URL.find("localhost") != -1 or settings.SITE_URL.find("127.0.") != -1 ) and not settings.DEBUG ):
-#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 #     # Explicit settings patch for debug_toolbar for Django 1.6
 #     # http://django-debug-toolbar.readthedocs.org/en/1.0/installation.html#explicit-setup
 #     import debug_toolbar
@@ -116,3 +154,4 @@ handler500 = 'misc.views.err500'
 skip_last_activity_date = [
     # Your expressions go here ... for LastActivityDatabaseMiddleware
 ]
+
