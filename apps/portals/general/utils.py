@@ -2,7 +2,7 @@
 from django.conf import settings
 from apps.users.models import Subdept, Dept, Page
 from django.contrib.auth.models import User
-
+import time
 def attach_drive_to_entity( drive, entity ):
 	title = entity.name
 	description = title +'\'s Drive Folder'
@@ -78,6 +78,7 @@ def share_calendar( calendar, entity, calendar_id = None ):
 		print calendar_id
 		print created_rule['id']
 		print "================================"
+		time.sleep(5)
 		return
 
 	calendar_id = entity.calendar_id
