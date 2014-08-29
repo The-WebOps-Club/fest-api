@@ -64,6 +64,7 @@ urlpatterns = patterns('',
 	
 	# Walls
     url(r'^wall/(?P<wall_id>\d+)$', 'apps.walls.views.wall', name='wall'),
+    url(r'^wall/(?P<wall_id>\d+)/(?P<post_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall/(?P<owner_type>\w+)/(?P<owner_id>\d+)$', 'apps.walls.views.my_wall', name='my_wall'),
     
@@ -116,7 +117,7 @@ urlpatterns = patterns('',
     url(r'', include('social.apps.django_app.urls', namespace='social')),
     
     # Haystack
-    # url(r'^search/', include('haystack.urls')),
+    url(r'^search/', include('haystack.urls')),
 
     #WebMirror
     url(r'^webmirror/get/(?P<pk>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.get_data'),

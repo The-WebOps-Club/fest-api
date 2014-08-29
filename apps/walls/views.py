@@ -24,7 +24,7 @@ import os
 import notifications
 
 @login_required
-def wall (request, wall_id=None):
+def wall (request, wall_id=None, post_id=None):
     """
         Renders a Wall. It can be of User, Department, subdepartment etc.
 
@@ -82,7 +82,8 @@ def wall (request, wall_id=None):
     #if wall_accessible:
     #    wall_posts = Post.objects.filter(wall=wall).order_by('-time_created')[:5]
     # single function to get all relevant posts.
-    wall_posts = get_my_posts(user, wall)[:5]
+
+    wall_posts = get_my_posts(user, wall, id=post_id)[:5]
     
     wall_parent = wall.parent
     #import pdb;pdb.set_trace();
