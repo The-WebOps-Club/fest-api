@@ -580,3 +580,9 @@ PUSH_NOTIFICATIONS_SETTINGS = {
         "GCM_API_KEY": "AIzaSyDQnArdEMidsDaa3aWJgffTkQC5_I-miXY",
         "APNS_CERTIFICATE": "",
 }
+
+
+GOOGLE_FORMS = {
+    "finance_saarang": "https://docs.google.com/forms/d/1qZlVzXWxudsUV0Qyk5MsYWTDpCS9LlrYnRN1PlVOehA/viewform?entry.340008319=%s&entry.1390850919=%s&entry.718947500=%s&entry.55047017=%s&entry.1753032658=%s&entry.369458299=%s",
+    "finance_clubs": "https://docs.google.com/forms/d/1v1HiuokMl2W0yfEAqZFfJjkDwszqir4hyscwv-wQ9Bk/viewform?entry.340008319=%s&entry.1390850919=%s&entry.718947500=%s&entry.55047017=%s&entry.1753032658=%s&entry.369458299=%s"
+}
