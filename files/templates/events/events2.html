@@ -4,8 +4,9 @@
 {% load dajaxice_templatetags %}
 {% dajaxice_js_import %}
 {%  csrf_token %}
-
 {% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
+<script type="text/javascript" charset="utf8" src="{% static 'js/jquery-datatables.js' %}"></script>
 <!-- Static files for the datatables
 <link href="{% static 'css/datatable.css' %}" rel="stylesheet" media="screen">
 <link href="{% static 'js/datatable.js' %}" rel="stylesheet" media="screen">
@@ -18,7 +19,7 @@
 <p id="message"> </p> </br>
 
 <button type="button" onclick="add_new_event()">Add New Event</button> 
-<button type="button" onclick="view_edit_event_js()">View/Edit Event</button> 
+<button type="button" id='view_id' onclick="view_edit_event_js()">View/Edit Event</button> 
 <button type="button" onclick="event_registration_list()">View Event Registration List</button> 
 
 
@@ -273,8 +274,8 @@ function add_tab_js(data){
 function view_edit_event_js(){
     document.getElementById("event_list").innerHTML = '\
     {% if event_list %}\
-		<table>\
-    		<tr><th>Event </th> <th> Event Email Id </th></tr>\
+		<table id="someid">\
+    		<thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>\
     {% for event in event_list %}\
     	<tr><td><button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\'{{event.name}}\',\'username\':\'{{user.username}}\'})">{{event.name}}</button></td><td> {{event.email}}</td></tr>  \
     {% endfor %}\
@@ -357,6 +358,9 @@ function edit_event_details_js(data){
     document.getElementById("edit_event_form_email").innerHTML = 'Previous value was: '+ data.email;
     document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" type="button" onclick="Dajaxice.apps.portals.events.edit_event(edit_event_js, {\'event_name\':\''+data.event_name+'\',\'edit_event_form\':$(\'#edit_event_form\').serialize(true)})" value="Edit Event"/>';
     }
+    $(document).ready(function(){
+    $("button").click(function(){$('#someid').dataTable();});
+});
 </script>
 
 
