@@ -23,17 +23,19 @@ from misc.utils import global_context
 
 from apps.portals.events.models import Event, EventTab
 from django.contrib.auth.decorators import login_required
+from apps.portals.events.forms import AddEventForm
 
 @login_required
 def add_tabs( request ):
 	message=""
+	event_form=AddEventForm()
 	events=Event.objects.all()
 	event_list=[]
 	for i in events:
 		event_list=event_list+[i.name]
 	
 
-	context_dict = {'event_list':events,'message':message}
+	context_dict = {'event_list':events,'message':message,'event_form':event_form}
 	return render_to_response('events/events2.html', context_dict, context_instance = global_context(request))
 
 @login_required

@@ -64,7 +64,7 @@ Description: <textarea name="tab_description" rows="20" cols="40" wrap="hard"></
 <!--EDIT TAB FORM -->
 
 <div id="edit_tab_form" style="display:none;">
-EDIT TAB FORM
+<h3>EDIT TAB FORM</h3>
 <form id="edit_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_Name" id="tab_Name_input" value=""><br>
@@ -78,6 +78,45 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 
 
 
+
+
+<!--ADD EVENT FORM -->
+
+<div id="event_form_div" style="display:none;">
+<h3> ADD EVENT FORM </h3>
+<form action="" method="post" id="event_form" accept-charset="utf-8">
+{%  csrf_token %}
+{{ event_form.as_p }}
+<p><input type="button" onclick="Dajaxice.apps.portals.events.add_event(add_event_js, {'event_form':$('#event_form').serialize(true)})" value="Add Event"/></p>
+</form>
+<br /> <br />
+</div>
+
+
+
+
+
+<!--EDIT EVENT FORM -->
+<div id="edit_event_form_div" style="display:none;">
+<h3> EDIT EVENT FORM </h3> All fields left blank will keep the previous values
+<form action="" method="post" id="edit_event_form" accept-charset="utf-8">
+{%  csrf_token %}
+Event Name: {{ event_form.name }} <span id="edit_event_form_name"></span> <br>
+short_description: {{ event_form.short_description }} <span id="edit_event_form_short_description"></span> <br>
+event_type: {{ event_form.event_type }} <span id="edit_event_form_event_type"></span> <br>
+category: {{ event_form.category }} <span id="edit_event_form_category"></span> <br>
+has_tdp: {{ event_form.has_tdp }} <span id="edit_event_form_has_tdp"></span> <br>
+team_size_min: {{ event_form.team_size_min }} <span id="edit_event_form_team_size_min"></span> <br>
+team_size_max: {{ event_form.team_size_max }} <span id="edit_event_form_team_size_max"></span> <br>
+registration_starts: <!--{{ event_form.registration_starts }}--> <span id="edit_event_form_registration_starts"></span> <br>
+registration_ends: <!--{{ event_form.registration_ends }}--> <span id="edit_event_form_registration_ends"></span> <br>
+google_group: {{ event_form.google_group }} <span id="edit_event_form_google_group"></span> <br>
+email: {{ event_form.email }} <span id="edit_event_form_email"></span> <br>
+{{ event_form.is_visible }} <span id="edit_event_form_is_visible"></span> <br>
+<p id="edit_event_form_button"></p>
+</form>
+<br /> <br />
+</div>
 
 <!--JS FUNCTIONS -->
 <script>
@@ -105,7 +144,7 @@ function show_tabs_js(data){
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
-    text += '<button type="button" onclick="Dajaxice.apps.portals.events.event_details(event_details_js)" >  Details &nbsp &nbsp   </button>';
+    text += '<button type="button" onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'})" >  Details &nbsp &nbsp   </button>';
     for (i=0; i < len; i++) {
     text += '<button type="button" onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'})">'+arr[i]+'</button>' + " ";
     }
@@ -245,6 +284,9 @@ function view_edit_event_js(){
     
     document.getElementById("option_selected").innerHTML = '<h2>View/Edit Events</h3> - clicking on an event opens the editing options at the bottom of the list';
     
+    //make the add_event_form disappear
+    document.getElementById("event_form_div").style.display = 'none';
+    
 }
 
 
@@ -263,6 +305,9 @@ function add_new_event(){
         // this set has the additional 2 statements that is not there in most of the other set of commands of this type
     document.getElementById("event_name").innerHTML = ' ';
     document.getElementById("event_tabs").innerHTML = ' ';
+    
+    //making the add event form visible
+    document.getElementById("event_form_div").style.display = 'inline';
 }
 
 
@@ -281,9 +326,37 @@ function event_registration_list(){
     // this set has the additional 2 statements that is not there in most of the other set of commands of this type
     document.getElementById("event_name").innerHTML = ' ';
     document.getElementById("event_tabs").innerHTML = ' ';
+    
+    //make the add_event_form disappear
+    document.getElementById("event_form_div").style.display = 'none';
 }
 
 
+
+function add_event_js(data){
+    alert(data.message);
+}
+function edit_event_js(data){
+    alert(data.message);
+}
+
+
+function edit_event_details_js(data){
+    document.getElementById("edit_event_form_div").style.display = 'inline';
+    //Printing the previous values
+    document.getElementById("edit_event_form_name").innerHTML = 'Previous value was: '+ data.event_name;
+    document.getElementById("edit_event_form_short_description").innerHTML = 'Previous value was: '+ data.short_description;
+    document.getElementById("edit_event_form_event_type").innerHTML = 'Previous value was: '+ data.event_type;
+    document.getElementById("edit_event_form_category").innerHTML = 'Previous value was: '+ data.category;
+    document.getElementById("edit_event_form_has_tdp").innerHTML = 'Previous value was: '+ data.has_tdp;
+    document.getElementById("edit_event_form_team_size_min").innerHTML = 'Previous value was: '+ data.team_size_min;
+    document.getElementById("edit_event_form_team_size_max").innerHTML = 'Previous value was: '+ data.team_size_max;
+    document.getElementById("edit_event_form_registration_starts").innerHTML = 'Previous value was: '+ data.registration_starts;
+    document.getElementById("edit_event_form_registration_ends").innerHTML = 'Previous value was: '+ data.registration_ends;
+    document.getElementById("edit_event_form_google_group").innerHTML = 'Previous value was: '+ data.google_group;
+    document.getElementById("edit_event_form_email").innerHTML = 'Previous value was: '+ data.email;
+    document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" type="button" onclick="Dajaxice.apps.portals.events.edit_event(edit_event_js, {\'event_name\':\''+data.event_name+'\',\'edit_event_form\':$(\'#edit_event_form\').serialize(true)})" value="Edit Event"/>';
+    }
 </script>
 
 
