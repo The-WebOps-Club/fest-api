@@ -6,7 +6,6 @@
 {%  csrf_token %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
-<script type="text/javascript" charset="utf8" src="{% static 'js/jquery-datatables.js' %}"></script>
 <!-- Static files for the datatables
 <link href="{% static 'css/datatable.css' %}" rel="stylesheet" media="screen">
 <link href="{% static 'js/datatable.js' %}" rel="stylesheet" media="screen">
@@ -22,7 +21,6 @@
 <button type="button" id='view_id' onclick="view_edit_event_js()">View/Edit Event</button> 
 <button type="button" onclick="event_registration_list()">View Event Registration List</button> 
 
-
 <br />
 <br />
 <div id="option_selected">
@@ -31,18 +29,16 @@
 <div id="event_list">
 </div>     
 
-
-<br /> <br />
-<div id="event_name"></div><br /><br />
-<div id="event_tabs"></div><br /><br />
-<h3 id="selected_event_tab"></h3><br />
-<div id="event_tabs_description"> </div><br />
+<div id="event_name"></div>
+<div id="event_tabs"></div>
+<h3 id="selected_event_tab"></h3>
+<div id="event_tabs_description"> </div>
 
 <!--DELETE TAB BUTTON-->
 <div id="delete_tab_button"></div> &nbsp
 
 <!--EDIT TAB BUTTON-->
-<div id="edit_tab_div"></div><br />
+<div id="edit_tab_div"></div>
 
 
 <!--registration_tab -->
@@ -84,13 +80,11 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <!--ADD EVENT FORM -->
 
 <div id="event_form_div" style="display:none;">
-<h3> ADD EVENT FORM </h3>
 <form action="" method="post" id="event_form" accept-charset="utf-8">
 {%  csrf_token %}
 {{ event_form.as_p }}
 <p><input type="button" onclick="Dajaxice.apps.portals.events.add_event(add_event_js, {'event_form':$('#event_form').serialize(true)})" value="Add Event"/></p>
 </form>
-<br /> <br />
 </div>
 
 
@@ -293,7 +287,7 @@ function view_edit_event_js(){
 
 function add_new_event(){
    
-    document.getElementById("option_selected").innerHTML = '<h2>Add New Event</h3>';
+    document.getElementById("option_selected").innerHTML = '<h2>Add New Event</h2>';
     //making data from the other tabs disappear
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
@@ -363,7 +357,7 @@ function edit_event_details_js(data){
 });
 </script>
 
-
+<script type="text/javascript" charset="utf8" src="{% static 'js/jquery-datatables.js' %}"></script>
 <!-- THE HTML IN THE VIEW_EDIT_EVENTS_JS FUNCTION IS
 {% if event_list %}
 

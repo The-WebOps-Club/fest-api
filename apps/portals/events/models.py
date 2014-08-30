@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
 # Apps
+from apps.users.models import ERPProfile
 # Decorators
 # Models
 from apps.walls.models import Wall, Post
@@ -70,7 +71,7 @@ class Event(models.Model):
     
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
-    
+    coords = models.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
     # Some properties to make some conditions easier
     @property
     def is_team_event(self):        
