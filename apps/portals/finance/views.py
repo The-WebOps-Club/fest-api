@@ -29,7 +29,7 @@ def finance_portal(request):
         link_list.append((position, link))
 
     for coord in erp_profile.coord_relations.all():
-        position = coord.dept.name +'('+ coord + ')' + " Coord"
+        position = coord.dept.name +'('+ coord.name + ')' + " Coord"
         dept = coord.dept.name
         link = settings.GOOGLE_FORMS['finance_saarang'] %(dept, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
         link_list.append((position, link))
