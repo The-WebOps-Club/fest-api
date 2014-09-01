@@ -92,7 +92,14 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	. Next, generate schema from ```python manage.py build_solr_schema```. Take the output from that command and place it in ```apache-solr-3.5.0/example/solr/conf/schema.xml```. Then restart Solr
 	. Solr needs to be run continuously on server
 	. Ref: http://django-haystack.readthedocs.org/en/latest/installing_search_engines.html
-
+	
+	More clear steps.
+	1. After extracting the archive (lets sat at `~/apps`):
+	2. `python manage.py build_solr_schema > ~/apps/apache-solr-3.5.0/example/solr/conf/schema.xml`
+	3. Now, need to run the program as a daemon. For that, add the following line to cron jobs: `/location/fest-api/venv/bin/python /location/fest-api/misc/daemonizer/mystart solr`
+	4. For this step, inside `misc/daemonizer`, copy `tmpl.active_ids` to `solr.active_ids` and `tmpl.config.json` to `solr.config.json` and make following edits to `config`: `user` to current username, `workingDirectory` to `~/apps/apache-solr-3.5.0/example/`, `runCommand` to `java -jar start.jar`.
+	5. For updating the index, another cron: `/location/fest-api/venv/bin/python /location/fest-api/manage.py update_index`
+	
 
 7. (specific to ERP)(Create a blank document called meta.html in files/templates/base/
 
@@ -184,6 +191,7 @@ http://pip.readthedocs.org/en/latest/installing.html
 8.h. Some Module like apiclient, south or any app mentioned in the Third-Party-Apps in globalsetings.py is not installed. 
 
 	- Google 'install apiclient library' or whatever the module name is and type the command that you find in any of the results in terminal
+
 
 
 ------------------------------------------------------------------------------------------------------
