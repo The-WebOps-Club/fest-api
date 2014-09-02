@@ -92,11 +92,6 @@
                             <i class='icon-crown'></i> Admin Portal
                         </a>
                     </li>
-                    <li class="{% if current_page == 'portal_finance' %}active{% endif %}">
-                        <a href='{% url "finance_portal" %}'>
-                            <i class='icon-crown'></i> Finance Portal
-                        </a>
-                    </li>
 		    {% comment %}
                     <!--<li class="{% if current_page == 'portal_events' %}active{% endif %}">
                         <a href='{% url "events_portal" %}'>
@@ -104,9 +99,12 @@
                         </a>
 		    </li>-->
 		    {% endcomment %}
-                {% else %}
-                    <span class="muted">You have no portals ...</span>
                 {% endif %}
+                    <li class="{% if current_page == 'portal_finance' %}active{% endif %}">
+                        <a href='{% url "finance_portal" %}'>
+                            <i class='icon-crown'></i> Finance Portal
+                        </a>
+                    </li>
             </ul>
             <!-- <ul class='group_link vertical'>
                 <li><a href='#'>
