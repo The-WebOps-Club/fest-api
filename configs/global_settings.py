@@ -80,7 +80,6 @@ API_APPS = (
     'apps.walls',
     'apps.events',
     'apps.docs',
-    'apps.webmirror',
     'apps.portals.events',
     'apps.portals.general',
     'apps.search',

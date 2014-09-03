@@ -16,7 +16,6 @@ from django.templatetags.static import static
 import os
 
 from django.shortcuts import render
-from apps.webmirror.utils import make_global_token
 from django.shortcuts import render_to_response
 from misc.utils import global_context
 
