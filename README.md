@@ -3,7 +3,7 @@ Fest-API
 
 An API implementation for Saarang Shaastra like fests, including ERP and Mainsite and Mobile interface
 
-1. Setup :
+## Setup :
 	- Check your dependencies
 		- You need python 2.7.x+ and django 1.6.5 to use this. You can check it with :
 		```
@@ -29,7 +29,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 			```
 			pip install -r configs/requirements.txt --upgrade
 			```
-2. Changes required - which are in gitignore
+## Changes required (which are in gitignore)
 	- Create a file named conigs/settings.py anf copy everything from config/settings.sample.py. Change the following in the fest-api/configs/settings.py
 		- Set the database settings. Use the following to create a database :
 		```
@@ -50,7 +50,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	- Create a blank document called meta.html in files/templates/base/
 
 
-3. Setup Database :
+## Setup Database :
  
 	- Management command `populate_db` can be used to get dummy data (IMPORTANT)
 	
@@ -62,7 +62,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	
 	- Management command `fix_permissions` is used to fix all permissions for the users in the beginning
 
-4. Setup Social Accounts : (NOT REQUIRED)
+## Setup Social Accounts : (NOT REQUIRED)
 
 	- FACEBOOK
 		- Add your facebook credentials (token, key) into settings
@@ -78,7 +78,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 			- Google Public Key
 			- Google oauth configs into configs/docs_oauth2_credentials.json
 	
-5. Search using Solr (NOT REQUIRED)
+## Search using Solr (NOT REQUIRED)
 
 	- Commands  to install Solr:
 		```
@@ -99,7 +99,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	- Then restart Solr : Solr will be continuously running on server, like Apache
 	- [Reference](http://django-haystack.readthedocs.org/en/latest/installing_search_engines.html)
 
-8. Common Installation Problems
+## Common Installation Problems
 	- At any point if you get permission denied type 'sudo' followed by the required command
 
 	a. Static files are not loading Or the css files are not showing - set STATIC_URL to '/static/' in settings.py
@@ -112,4 +112,3 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	d. Some Module like apiclient, south or any app mentioned in the Third-Party-Apps in globalsetings.py is not installed. 
 
 		- Google 'install apiclient library' or whatever the module name is and type the command that you find in any of the results in terminal
-

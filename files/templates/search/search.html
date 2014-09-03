@@ -19,7 +19,9 @@
             <ul>
             {% for result in page.object_list %}
                     <li>
-                        <a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a>
+                        <a href="{{ result.object.get_absolute_url }}">
+                            {{ result.object.description|striptags }}
+                        </a>
                     </li>
                 {% empty %}
                     <p>No results found.</p>

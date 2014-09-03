@@ -1,5 +1,5 @@
 # Django
-from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.conf import settings
@@ -24,7 +24,7 @@ import os
 import notifications
 
 @login_required
-def wall (request, wall_id=None):
+def wall (request, wall_id=None, post_id=None):
     """
         Renders a Wall. It can be of User, Department, subdepartment etc.
 
@@ -82,7 +82,8 @@ def wall (request, wall_id=None):
     #if wall_accessible:
     #    wall_posts = Post.objects.filter(wall=wall).order_by('-time_created')[:5]
     # single function to get all relevant posts.
-    wall_posts = get_my_posts(user, wall)[:5]
+
+    wall_posts = get_my_posts(user, wall, id=post_id)[:5]
     
     wall_parent = wall.parent
     #import pdb;pdb.set_trace();
@@ -158,3 +159,12 @@ def email_test(request):
         'user_email': 'muhammedshahid.k@gmail.com',
     }
     return render_to_response('notification.html', local_context, context_instance= global_context(request))
+# For testing API
+def api_test(request):
+    print "==========================================="
+    print "====      POST:"
+    print request.POST
+    print "====      GET :"
+    print request.GET
+    print "==========================================="
+    return HttpResponse("Success")

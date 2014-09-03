@@ -56,7 +56,7 @@ THIRD_PARTY_APPS = (
     'social.apps.django_app.default',
 
     # Search Indexer
-    #'haystack',
+    'haystack',
 
     # compressor - Easy to use minifier and cache system
     'compressor',
@@ -71,6 +71,7 @@ THIRD_PARTY_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
+    'push_notifications'
 )
 API_APPS = (
     'misc',
@@ -81,6 +82,7 @@ API_APPS = (
     'apps.docs',
     'apps.portals.events',
     'apps.portals.general',
+    'apps.search',
     'apps.api',
 
 )
@@ -404,7 +406,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/calendar',
-    # 'https://www.googleapis.com/auth/plus.login',    
+   # 'https://www.googleapis.com/auth/plus.login',    
 ]
 
     # Facebook
@@ -534,12 +536,12 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
 
 # ----------------------------------------------------
 # Solr-Haystach search settings
-# HAYSTACK_CONNECTIONS = {
-#     'default': {
-#         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-#         'URL': 'http://127.0.0.1:8983/solr'
-#     },
-# }
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr'
+    },
+}
 #DEFAULT_POST_PERMISSION_STACK = PostPermissionSubqueries.build_post_permissions_stack()
 
 SEND_NOTIF_EMAILS = True
@@ -571,4 +573,15 @@ SWAGGER_SETTINGS = {
     "api_key": '', # An API key
     "is_authenticated": False,  # Set to True to enforce user authentication,
     "is_superuser": False,  # Set to True to enforce admin only access
+}
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "GCM_API_KEY": "AIzaSyDQnArdEMidsDaa3aWJgffTkQC5_I-miXY",
+        "APNS_CERTIFICATE": "",
+}
+
+
+GOOGLE_FORMS = {
+    "finance_saarang": "https://docs.google.com/forms/d/1qZlVzXWxudsUV0Qyk5MsYWTDpCS9LlrYnRN1PlVOehA/viewform?entry.340008319=%s&entry.1390850919=%s&entry.718947500=%s&entry.55047017=%s&entry.1753032658=%s&entry.369458299=%s",
+    "finance_clubs": "https://docs.google.com/forms/d/1v1HiuokMl2W0yfEAqZFfJjkDwszqir4hyscwv-wQ9Bk/viewform?entry.340008319=%s&entry.1390850919=%s&entry.718947500=%s&entry.55047017=%s&entry.1753032658=%s&entry.369458299=%s"
 }

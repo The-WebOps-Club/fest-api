@@ -20,15 +20,23 @@ admin.autodiscover()
 # Dajax
 from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 dajaxice_autodiscover()
-    
+
+#django push notifications
+from push_notifications.models import GCMDevice
+from rest_framework.generics import ListCreateAPIView
+
 # REST API
 from rest_framework.routers import DefaultRouter
-from apps.api import mobile
+from apps.api import mobile, gcm
+
+
 router = DefaultRouter()
 router.register(r'notifications', mobile.NotificationViewSet, base_name="notifications")
-router.register(r'walls',mobile.WallsViewSet,base_name="walls")
-router.register(r'posts',mobile.PostsViewSet,base_name="posts")
-router.register(r'comments',mobile.CommentsViewSet,base_name="comments")
+router.register(r'walls',mobile.WallsViewSet, base_name="walls")
+router.register(r'posts',mobile.PostsViewSet, base_name="posts")
+router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
+router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
+
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
@@ -56,6 +64,7 @@ urlpatterns = patterns('',
 	
 	# Walls
     url(r'^wall/(?P<wall_id>\d+)$', 'apps.walls.views.wall', name='wall'),
+    url(r'^wall/(?P<wall_id>\d+)/(?P<post_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall/(?P<owner_type>\w+)/(?P<owner_id>\d+)$', 'apps.walls.views.my_wall', name='my_wall'),
     
@@ -75,6 +84,7 @@ urlpatterns = patterns('',
     #url(r'^setup/$', 'misc.views.setup', name='setup'),
 
     url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
+    url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
     
     # events portal
     #url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
@@ -108,10 +118,13 @@ urlpatterns = patterns('',
     url(r'', include('social.apps.django_app.urls', namespace='social')),
     
     # Haystack
-    # url(r'^search/', include('haystack.urls')),
+    url(r'^search/', include('haystack.urls')),
 
     #For Testing out email templates
     url(r'^email/$', 'apps.walls.views.email_test', name='email'),
+    #For Testing out api
+    url(r'^apitest/$', 'apps.walls.views.api_test', name='apitest'),
+
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.STATIC_ROOT}),
 
@@ -120,6 +133,7 @@ urlpatterns = patterns('',
     url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
     url(r'^api/mobile/', include(router.urls)),
     url(r'^api-docs/', include('rest_framework_swagger.urls')),
+
 )
 
 # 400 & 500
