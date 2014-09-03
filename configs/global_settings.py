@@ -23,7 +23,7 @@ PERMISSION_COMMAND = False
 SITE_URL = 'http://localhost:8000/'
 
 LOGIN_URL = 'login'
-
+FIELDS_STORED_IN_SESSION = ['type']
 # -------------------------------------------------------------------
 # Apps
 DJANGO_APPS = (
@@ -80,15 +80,10 @@ API_APPS = (
     'apps.walls',
     'apps.events',
     'apps.docs',
-<<<<<<< HEAD
     'apps.portals.events',
     'apps.portals.general',
     'apps.search',
     'apps.api',
-
-=======
-    'apps.portals.general',
->>>>>>> Not functional. Driver error showing. commited to change branch
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 
@@ -357,7 +352,7 @@ SOCIAL_AUTH_STRATEGY            = 'social.strategies.django_strategy.DjangoStrat
 SOCIAL_AUTH_STORAGE             = 'social.apps.django_app.default.models.DjangoStorage'
 
 # SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/login/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = SITE_URL + 'participant_registration_or_login/'
 # SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/profile/new'
 # SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/new-assoc/'
 # SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/account-disconnected/'
