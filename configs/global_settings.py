@@ -23,7 +23,7 @@ PERMISSION_COMMAND = False
 SITE_URL = 'http://localhost:8000/'
 
 LOGIN_URL = 'login'
-
+FIELDS_STORED_IN_SESSION = ['type']
 # -------------------------------------------------------------------
 # Apps
 DJANGO_APPS = (
@@ -43,7 +43,7 @@ THIRD_PARTY_APPS = (
     
     # ajax functionality
     'dajaxice',
-    # 'dajax',
+    #'dajax',
     
     # For programming ease
     'post_office',
@@ -79,8 +79,6 @@ API_APPS = (
     'apps.walls',
     'apps.events',
     'apps.docs',
-    'apps.webmirror',
-    'apps.portals.events',
     'apps.portals.general',
     'apps.api',
 
@@ -92,7 +90,7 @@ INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #'django.contrib.staticfiles.finders.DefaultStorageFinder',
     'dajaxice.finders.DajaxiceFinder',
     'compressor.finders.CompressorFinder',
 )
@@ -188,7 +186,7 @@ DATE_INPUT_FORMATS = (
 # -------------------------------------------------------------------
 # Paths for static, media and templates
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(PROJECT_PATH, "files", "static-collected")
+STATIC_ROOT = os.path.join(PROJECT_PATH, "files", "static")
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_PATH, "files", "media")
 EMAIL_ROOT = os.path.join(PROJECT_PATH, "files", "emails") # Contains email files for Post Office
@@ -352,7 +350,7 @@ SOCIAL_AUTH_STRATEGY            = 'social.strategies.django_strategy.DjangoStrat
 SOCIAL_AUTH_STORAGE             = 'social.apps.django_app.default.models.DjangoStorage'
 
 # SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/login/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = SITE_URL + 'participant_registration_or_login/'
 # SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/profile/new'
 # SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/new-assoc/'
 # SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/account-disconnected/'
@@ -520,7 +518,7 @@ KEEP_COMMENTS_ON_MINIFYING = False
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS
-USE_EXTERNAL_SITES = True
+USE_EXTERNAL_SITES = False
 GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
 GOOGLE_API_PUBLIC_KEY = 'AIzaSyBTomGBXOfCPDylTCYGU6YDZrzoZqTqG9Q'
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'google/oauth2callback'
