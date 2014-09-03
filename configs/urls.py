@@ -32,25 +32,17 @@ from apps.api import mobile, gcm
 
 router = DefaultRouter()
 router.register(r'notifications', mobile.NotificationViewSet, base_name="notifications")
-<<<<<<< HEAD
 router.register(r'walls',mobile.WallsViewSet, base_name="walls")
 router.register(r'posts',mobile.PostsViewSet, base_name="posts")
 router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
 router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
-
-=======
-router.register(r'walls',mobile.WallsViewSet,base_name="walls")
-router.register(r'posts',mobile.PostsViewSet,base_name="posts")
-router.register(r'comments',mobile.CommentsViewSet,base_name="comments")
-router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
->>>>>>> 93e5f846f1f11cd59bc76218ecf5a42a45edb7b2
+#router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # FEST-API APPS
     url(r'^$', 'apps.home.views.home', name='home'),
-    url(r'^markdown$', 'apps.home.views.markdown', name='markdown'),
-    
+    url(r'^markdown$', 'apps.home.views.markdown', name='markdown'),    
 
     # Users
     url(r'^login/$', 'apps.users.views.login_user', name='login'), # Logs user in
