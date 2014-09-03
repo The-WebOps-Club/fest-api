@@ -3,12 +3,11 @@ Fest-API
 
 An API implementation for Saarang Shaastra like fests, including ERP and Mainsite and Mobile interface
 
-## Setup :
+1. Setup :
 	- Check your dependencies
 		- You need python 2.7.x+ and django 1.6.5 to use this. You can check it with :
 		```
 			# python -c "import django; print(django.get_version())"
-
 		```
 			If it gives `1.6.5` Then continue. Else, uninstall and reinstall django
 		- Install pip using [this](http://pip.readthedocs.org/en/latest/installing.html)
@@ -29,7 +28,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 			```
 			pip install -r configs/requirements.txt --upgrade
 			```
-## Changes required (which are in gitignore)
+2. Changes required - which are in gitignore
 	- Create a file named conigs/settings.py anf copy everything from config/settings.sample.py. Change the following in the fest-api/configs/settings.py
 		- Set the database settings. Use the following to create a database :
 		```
@@ -50,7 +49,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	- Create a blank document called meta.html in files/templates/base/
 
 
-## Setup Database :
+3. Setup Database :
  
 	- Management command `populate_db` can be used to get dummy data (IMPORTANT)
 	
@@ -62,7 +61,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	
 	- Management command `fix_permissions` is used to fix all permissions for the users in the beginning
 
-## Setup Social Accounts : (NOT REQUIRED)
+4. Setup Social Accounts : (NOT REQUIRED)
 
 	- FACEBOOK
 		- Add your facebook credentials (token, key) into settings
@@ -78,7 +77,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 			- Google Public Key
 			- Google oauth configs into configs/docs_oauth2_credentials.json
 	
-## Search using Solr (NOT REQUIRED)
+5. Search using Solr (NOT REQUIRED)
 
 	- Commands  to install Solr:
 		```
@@ -99,7 +98,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 	- Then restart Solr : Solr will be continuously running on server, like Apache
 	- [Reference](http://django-haystack.readthedocs.org/en/latest/installing_search_engines.html)
 
-## Common Installation Problems
+6. Common Installation Problems
 	- At any point if you get permission denied type 'sudo' followed by the required command
 
 	a. Static files are not loading Or the css files are not showing - set STATIC_URL to '/static/' in settings.py
