@@ -21,9 +21,10 @@ ALLOWED_HOSTS = ['*']
 PERMISSION_COMMAND = False
 #Absolute URL where the site has been hosted. Don't forget the trailing slash.
 SITE_URL = 'http://localhost:8000/'
+MAIN_SITE_URL = SITE_URL
 
 LOGIN_URL = 'login'
-
+FIELDS_STORED_IN_SESSION = ['type']
 # -------------------------------------------------------------------
 # Apps
 DJANGO_APPS = (
@@ -43,7 +44,7 @@ THIRD_PARTY_APPS = (
     
     # ajax functionality
     'dajaxice',
-    # 'dajax',
+    #'dajax',
     
     # For programming ease
     'post_office',
@@ -64,8 +65,13 @@ THIRD_PARTY_APPS = (
     # Celery - task scheduling
     # 'djcelery',
 
+    # CORS Headers
+    'corsheaders',
+    
     # Simple stuff
     'exportdata', # used to generate csv files from models
+
+
 
     # Mobile and Mainsite API
     'rest_framework',
@@ -84,7 +90,6 @@ API_APPS = (
     'apps.portals.general',
     'apps.search',
     'apps.api',
-
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 
@@ -93,7 +98,7 @@ INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #'django.contrib.staticfiles.finders.DefaultStorageFinder',
     'dajaxice.finders.DajaxiceFinder',
     'compressor.finders.CompressorFinder',
 )
@@ -106,6 +111,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
     #'htmlmin.middleware.HtmlMinifyMiddleware',
     
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -189,7 +195,7 @@ DATE_INPUT_FORMATS = (
 # -------------------------------------------------------------------
 # Paths for static, media and templates
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(PROJECT_PATH, "files", "static-collected")
+STATIC_ROOT = os.path.join(PROJECT_PATH, "files", "static")
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_PATH, "files", "media")
 EMAIL_ROOT = os.path.join(PROJECT_PATH, "files", "emails") # Contains email files for Post Office
@@ -269,6 +275,7 @@ EMAIL_BACKEND = 'post_office.EmailBackend'
 POST_OFFICE = {
     'BATCH_SIZE': 100
 }
+SEND_NOTIF_EMAILS = True
 # Required cron job: * * * * * (/usr/bin/python manage.py send_queued_mail >> send_mail.log 2>&1)
 
 # ---------------------------------------------------
@@ -353,7 +360,7 @@ SOCIAL_AUTH_STRATEGY            = 'social.strategies.django_strategy.DjangoStrat
 SOCIAL_AUTH_STORAGE             = 'social.apps.django_app.default.models.DjangoStorage'
 
 # SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/login/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = SITE_URL + 'participant_registration_or_login/'
 # SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/profile/new'
 # SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/new-assoc/'
 # SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/account-disconnected/'
@@ -521,7 +528,7 @@ KEEP_COMMENTS_ON_MINIFYING = False
 
 # --------------------------------------------------
 # GOOGLE DRIVE DOCS
-USE_EXTERNAL_SITES = True
+USE_EXTERNAL_SITES = False
 GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
 GOOGLE_API_PUBLIC_KEY = 'AIzaSyBTomGBXOfCPDylTCYGU6YDZrzoZqTqG9Q'
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'google/oauth2callback'
@@ -544,14 +551,12 @@ HAYSTACK_CONNECTIONS = {
 }
 #DEFAULT_POST_PERMISSION_STACK = PostPermissionSubqueries.build_post_permissions_stack()
 
-SEND_NOTIF_EMAILS = True
-
 # API Preferences
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-	'rest_framework.authentication.BasicAuthentication',
-	'rest_framework.authentication.SessionAuthentication',
+    	'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -559,6 +564,7 @@ REST_FRAMEWORK = {
 
 }
 
+# Api documentation - Swagger
 SWAGGER_SETTINGS = {
     "exclude_namespaces": [], # List URL namespaces to ignore
     "api_version": '0.1',  # Specify your API's version
@@ -576,15 +582,25 @@ SWAGGER_SETTINGS = {
 }
 
 
+# Django CORS
+CORS_ORIGIN_WHITELIST = (
+    MAIN_SITE_URL,
+)
+
+# Push notifications
 PUSH_NOTIFICATIONS_SETTINGS = {
         "GCM_API_KEY": "",
         "APNS_CERTIFICATE": "",
 }
 
+# CUSTOM SETTINGS VARIABLES
 
 GOOGLE_FORMS = {
     "finance_fest": "",
     "finance_clubs": ""
 }
-
+OPEN_PORTALS = {
+    'finance': {},
+    'admin': {}
+}
 

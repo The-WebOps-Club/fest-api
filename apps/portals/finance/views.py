@@ -3,13 +3,17 @@ from apps.walls.models import Wall
 from apps.users.models import ERPProfile, Dept, Subdept, Page
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from misc.utils import *
 #from itertools import chain
 from django.conf import settings
 import time, datetime
-
+from .__init__ import PORTAL_NAME
+    
 # Create your views here.
 def finance_portal(request):
+    if PORTAL_NAME not in settings.OPEN_PORTALS:
+        raise Http404
     user = request.user
     link_list = []
     erp_profile = user.erp_profile
@@ -44,3 +48,4 @@ def finance_portal(request):
             "current_page":"portal_finance"
     }
     return render_to_response('portals/finance/finance_portal.html', local_context, context_instance= global_context(request))
+

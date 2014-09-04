@@ -10,7 +10,7 @@
 <p id="message"> </p> </br>
 {% if event_list %}
 	{% for event in event_list %}
-		<button type="button" onclick="Dajaxice.apps.events.show_tabs(show_tabs_js, {'event_name':'{{event}}'})">{{event}}</button> 
+		<button type="button" onclick="Dajaxice.apps.events.show_tabs(show_tabs_js, {'event_name':'{{event}}','username':'{{user.username}}'})">{{event}}</button> 
         {% endfor %}
 {% else %}
             <strong>There are no categories present.</strong>
@@ -25,26 +25,25 @@
 <div id="event_tabs_description"> </div><br />
 
 <!--DELETE TAB BUTTON-->
-<div id="delete_tab_button" style="visibility:hidden;">
-<form action = "" method = "post">
- {%  csrf_token %} 
-<input id="eventName_hidden" type="hidden" name="eventName" value="">
-<input id="eventTabName_hidden" type="hidden" name="event_tab_name" value="">
-<input type="submit" name="delete_tab" value="Delete Tab">
-</form>
-</div> &nbsp
+<div id="delete_tab_button"></div> &nbsp
 
 <!--EDIT TAB BUTTON-->
 <div id="edit_tab_div"></div><br />
 
+
+<!--registration_tab -->
+<div id="registration_tab"> </div><br />
+
+
+
 <!--ADD NEW TAB FORM -->
 <div id="add_new_tab_form" style="visibility:hidden;">
-<form name="add_tab_form" method="post" action="" onsubmit="validateAddNewTabForm()">
+<form id="add_tab_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_name"><br>
 Description: <textarea name="tab_description" rows="20" cols="40" wrap="hard"></textarea>
 <input id="event_name_hidden" type="hidden" name="event_name" value="">
-<input type="submit" value="Create Tab" name="addNewTab">
+<input type="button" onclick="Dajaxice.apps.events.add_tab(add_tab_js, {'add_tab_form':$('#add_tab_form').serialize(true)})" value="Create Tab"/>
 </form>
 </div>
 
@@ -52,16 +51,15 @@ Description: <textarea name="tab_description" rows="20" cols="40" wrap="hard"></
 
 <div id="edit_tab_form" style="visibility:hidden;">
 EDIT TAB FORM
-<form name="edit_form" method="post" action="" onsubmit="validateEditTabForm()">
+<form id="edit_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_Name" id="tab_Name_input" value=""><br>
 Description: <textarea name="tab_Description" id="tab_Description_input" value="" rows="20" cols="40"></textarea>
 <input id="event_Name_edit_form_hidden" type="hidden" name="event_Name_edit_form" value="">
 <input id="event_tab_Name_edit_form_hidden" type="hidden" name="event_tab_Name_edit_form" value="">
-<input type="submit" value="Edit Tab" name="EditTab">
+<input type="button" onclick="Dajaxice.apps.events.edit_tab(edit_tab_js, {'edit_tab_form':$('#edit_form').serialize(true)})" value="Edit Tab" >
 </form>
 </div>
-
 
 
 
@@ -72,29 +70,51 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 
 function show_tabs_js(data){
     document.getElementById("event_name").innerHTML = "<h2>"+data.event_name+"</h2>";
+
+    document.getElementById("edit_tab_form").style.visibility="hidden";
+    document.getElementById("add_new_tab_form").style.visibility="hidden";
+    document.getElementById("registration_tab").innerHTML = ' ' 
+    document.getElementById("edit_tab_div").innerHTML = ' '
+    document.getElementById("delete_tab_button").innerHTML = ' '
+    document.getElementById("selected_event_tab").innerHTML = ' '
+    document.getElementById("event_tabs_description").innerHTML = ' '
+
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
-
+    
     for (i=0; i < len; i++) {
-    text += '<button type="button" onclick="Dajaxice.apps.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\'})">'+arr[i]+'</button>' + " ";
+    text += '<button type="button" onclick="Dajaxice.apps.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'})">'+arr[i]+'</button>' + " ";
     }
-    text += '<button type="button" onclick="add_new_tab_js(\''+data.event_name+'\')"> +Add New Tab </button>' + " ";
+
+    //The add_new_tab button is shown only if user has permission
+    if (data.has_perm=="yes"){
+    text += '<button type="button" onclick="add_new_tab_js(\''+data.event_name+'\')"> +Add New Tab </button>' + " ";}
     document.getElementById("event_tabs").innerHTML = text;
     }
-
+    
 
 function show_tabs_description_js(data){
     document.getElementById("selected_event_tab").innerHTML = data.event_tab_name;
 
 //delete tab button
-    document.getElementById("eventName_hidden").value = data.event_name;
-    document.getElementById("eventTabName_hidden").value = data.event_tab_name;
-    document.getElementById("delete_tab_button").style.visibility="visible";
-
+    
+	//DELETE and EDIT button displayed only  if user has permission
+    if (data.has_perm=="yes"){
+    document.getElementById("delete_tab_button").innerHTML = '<button type="button" onclick="Dajaxice.apps.events.delete_tab(delete_tab_js,{\'event_name\':\''+data.event_name+'\',\'event_tab_name\':\''+data.event_tab_name+'\'})"> Delete Tab </button> ';
+    
 //edit tab button    
-    document.getElementById("edit_tab_div").innerHTML = '<button type="button" onclick="edit_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Name or Description</button> On clicking this button Form appears at bottom of the page';
+    document.getElementById("edit_tab_div").innerHTML = '<button type="button" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Name or Description</button> On clicking this button Form appears at bottom of the page';
+    }
+//shows the register button if user is a participant
+    if (data.has_perm=="participant"){
+    document.getElementById("registration_tab").innerHTML = '<button type="button" onclick="Dajaxice.apps.events.register(register_js, {\'event_name\':\''+data.event_name+'\',\'username\':\'{{user.username}}\'})">Register</button>' 
 
+}
+
+    if (data.has_perm=="participant_event_has_tdp"){
+    document.getElementById("registration_tab").innerHTML = "www.example.com"
+}
     document.getElementById("event_tabs_description").innerHTML = data.description;
 }
 
@@ -104,7 +124,20 @@ function add_new_tab_js(event_name){
     return;
 }
 
-function edit_tab_js(event_name,event_tab_name,description){
+function delete_tab_js(data){
+    alert(data.message);
+    document.getElementById("edit_tab_form").style.visibility="hidden";
+    document.getElementById("add_new_tab_form").style.visibility="hidden";
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_tabs").innerHTML = ' ';
+    document.getElementById("event_name").innerHTML = ' ';
+
+}
+
+function edit_some_tab_js(event_name,event_tab_name,description){
     document.getElementById("event_Name_edit_form_hidden").value = event_name;
     document.getElementById("event_tab_Name_edit_form_hidden").value = event_tab_name;
 
@@ -116,21 +149,54 @@ function edit_tab_js(event_name,event_tab_name,description){
     return;
 }
 
-function validateAddNewTabForm() {
-    var x = document.forms["add_tab_form"]["tab_name"].value;
-    if (x==null || x=="" || x[0]==" ") {
-        alert("New Event Tab Name must be filled. 1st letter cannot be a space");
-        return false;
-    }
+
+function register_js(data){
+    alert(data.message);
 }
 
-function validateEditTabForm() {
+function edit_tab_js(data){
     var x = document.forms["edit_form"]["tab_Name"].value;
     if (x==null || x=="" || x[0]==" ") {
         alert("Event Tab Name must be filled. 1st letter cannot be a space");
         return false;
     }
+    else{
+    alert(data.message);
+    document.getElementById("edit_tab_form").style.visibility="hidden";
+    document.getElementById("add_new_tab_form").style.visibility="hidden";
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_tabs").innerHTML = ' ';
+    document.getElementById("event_name").innerHTML = ' ';
+    document.getElementById("message").innerHTML=" ";
+    }
+}    
+
+
+function add_tab_js(data){
+    var x = document.forms["add_tab_form"]["tab_name"].value;
+    if (x==null || x=="" || x[0]==" ") {
+        alert("New Event Tab Name must be filled. 1st letter cannot be a space");
+    }
+    else{
+    alert(data.message);
+    document.getElementById("edit_tab_form").style.visibility="hidden";
+    document.getElementById("add_new_tab_form").style.visibility="hidden";
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_tabs").innerHTML = ' ';
+    document.getElementById("event_name").innerHTML = ' ';
+    }
 }
+
+
+
+
+
 
 </script>
 

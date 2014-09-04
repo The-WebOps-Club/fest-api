@@ -36,14 +36,13 @@ router.register(r'walls',mobile.WallsViewSet, base_name="walls")
 router.register(r'posts',mobile.PostsViewSet, base_name="posts")
 router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
 router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
-
+#router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # FEST-API APPS
     url(r'^$', 'apps.home.views.home', name='home'),
-    url(r'^markdown$', 'apps.home.views.markdown', name='markdown'),
-    
+    url(r'^markdown$', 'apps.home.views.markdown', name='markdown'),    
 
     # Users
     url(r'^login/$', 'apps.users.views.login_user', name='login'), # Logs user in
@@ -85,11 +84,18 @@ urlpatterns = patterns('',
 
     url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
     url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
-    
-    # events portal
-    #url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
-    #url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
+    url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
 
+    #Event Tabs (backend only)
+    url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
+
+    #Participant - Login/registration
+    url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
+    # - testing (Akshay Utture)
+    url(r'^participant_registration_or_login/$','apps.users.views.participant_registration_or_login', name='participant_registration_or_login'),
+    url(r'^participant_registration_or_login2/$','apps.users.views.participant_registration_or_login2', name='participant_registration_or_login2'),
+    url(r'^participant_registration_or_login3/$','apps.users.views.participant_registration_or_login3', name='participant_registration_or_login3'),
+    url(r'^participant_registration_or_login4/$','apps.users.views.participant_registration_or_login4', name='participant_registration_or_login4'),
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
     

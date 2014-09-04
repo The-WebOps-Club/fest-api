@@ -1,0 +1,64 @@
+
+{% extends 'base/base.html' %}
+{% load static %}
+{% load check_access %}
+{% block content %}
+{% load dajaxice_templatetags %}
+{% dajaxice_js_import %}
+{%  csrf_token %}
+
+<!--LOGIN FORM-->
+<h2> LOGIN FORM </h2>
+<form action="" method="post" id="login_form" accept-charset="utf-8">
+    {{ loginform.as_p }}
+    <p><input type="button" onclick="Dajaxice.apps.users.participant_login(participant_login_js, {'loginform':$('#login_form').serialize(true)})" value="Login"/></p>
+</form>
+<br /> <br />
+
+
+<!--REGISTRATION FORM-->
+<h2>REGISTRATION FORM</h2>
+<div id="form_errors" style="color:red"> </div>
+<form action="" method="post" id="user_form" accept-charset="utf-8">
+    {{ userform.as_p }}
+ </form>
+<form action="" method="post" id="user_profile_form" accept-charset="utf-8">
+    {{ userprofileform.as_p }}
+</form>
+<form action="" method="post" id="login_details_form" accept-charset="utf-8">
+    <p>Enter your desired username and password below</p>
+    {{ loginform.as_p }}
+</form>
+<form action="" method="post" id="password_recheck_form" accept-charset="utf-8">
+    Re-enter passowrd: <input type="password" name="password_recheck"/>
+
+    <p><input type="button" onclick="Dajaxice.apps.users.participant_registration(participant_registration_js, {'password_recheck_form':$('#password_recheck_form').serialize(true),'user_form':$('#user_form').serialize(true),'user_profile_form':$('#user_profile_form').serialize(true),'login_details_form':$('#login_details_form').serialize(true)})" value="Register"/></p>
+</form>
+
+
+<script>
+function participant_login_js(data){
+    if (data.message=="authenticated") { 
+// SORRY I HAD TO HARDCODE THE URL. I COULDN'T REDIRECT FROM AJAX.PY
+    window.location.assign("http://localhost:8000/events/add_tabs/");
+    }   
+    else {
+    alert(data.message);
+    }   
+}
+
+
+function participant_registration_js(data){
+    alert(data.alert_message);
+    document.getElementById("form_errors").innerHTML = data.message;  
+}
+</script>
+
+
+
+
+
+
+
+
+{% endblock %}
