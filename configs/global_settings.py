@@ -21,6 +21,7 @@ ALLOWED_HOSTS = ['*']
 PERMISSION_COMMAND = False
 #Absolute URL where the site has been hosted. Don't forget the trailing slash.
 SITE_URL = 'http://localhost:8000/'
+MAIN_SITE_URL = SITE_URL
 
 LOGIN_URL = 'login'
 FIELDS_STORED_IN_SESSION = ['type']
@@ -64,8 +65,13 @@ THIRD_PARTY_APPS = (
     # Celery - task scheduling
     # 'djcelery',
 
+    # CORS Headers
+    'corsheaders',
+    
     # Simple stuff
     'exportdata', # used to generate csv files from models
+
+
 
     # Mobile and Mainsite API
     'rest_framework',
@@ -105,6 +111,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
     #'htmlmin.middleware.HtmlMinifyMiddleware',
     
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -268,6 +275,7 @@ EMAIL_BACKEND = 'post_office.EmailBackend'
 POST_OFFICE = {
     'BATCH_SIZE': 100
 }
+SEND_NOTIF_EMAILS = True
 # Required cron job: * * * * * (/usr/bin/python manage.py send_queued_mail >> send_mail.log 2>&1)
 
 # ---------------------------------------------------
@@ -543,14 +551,12 @@ HAYSTACK_CONNECTIONS = {
 }
 #DEFAULT_POST_PERMISSION_STACK = PostPermissionSubqueries.build_post_permissions_stack()
 
-SEND_NOTIF_EMAILS = True
-
 # API Preferences
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-	'rest_framework.authentication.BasicAuthentication',
-	'rest_framework.authentication.SessionAuthentication',
+    	'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -558,6 +564,7 @@ REST_FRAMEWORK = {
 
 }
 
+# Api documentation - Swagger
 SWAGGER_SETTINGS = {
     "exclude_namespaces": [], # List URL namespaces to ignore
     "api_version": '0.1',  # Specify your API's version
@@ -574,13 +581,26 @@ SWAGGER_SETTINGS = {
     "is_superuser": False,  # Set to True to enforce admin only access
 }
 
+# Django CORS
+CORS_ORIGIN_WHITELIST = (
+    MAIN_SITE_URL,
+)
+
+# Push notifications
 PUSH_NOTIFICATIONS_SETTINGS = {
         "GCM_API_KEY": "AIzaSyDQnArdEMidsDaa3aWJgffTkQC5_I-miXY",
         "APNS_CERTIFICATE": "",
 }
 
+# CUSTOM SETTINGS VARIABLES
 
 GOOGLE_FORMS = {
     "finance_saarang": "https://docs.google.com/forms/d/1qZlVzXWxudsUV0Qyk5MsYWTDpCS9LlrYnRN1PlVOehA/viewform?entry.340008319=%s&entry.1390850919=%s&entry.718947500=%s&entry.55047017=%s&entry.1753032658=%s&entry.369458299=%s",
     "finance_clubs": "https://docs.google.com/forms/d/1v1HiuokMl2W0yfEAqZFfJjkDwszqir4hyscwv-wQ9Bk/viewform?entry.340008319=%s&entry.1390850919=%s&entry.718947500=%s&entry.55047017=%s&entry.1753032658=%s&entry.369458299=%s"
 }
+
+OPEN_PORTALS = {
+    'finance': {},
+    'admin': {}
+}
+

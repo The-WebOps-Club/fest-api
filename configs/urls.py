@@ -89,7 +89,9 @@ urlpatterns = patterns('',
     #Event Tabs (backend only)
     url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
 
-    #Participant - Login/registration - testing (Akshay Utture)
+    #Participant - Login/registration
+    url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
+    # - testing (Akshay Utture)
     url(r'^participant_registration_or_login/$','apps.users.views.participant_registration_or_login', name='participant_registration_or_login'),
     url(r'^participant_registration_or_login2/$','apps.users.views.participant_registration_or_login2', name='participant_registration_or_login2'),
     url(r'^participant_registration_or_login3/$','apps.users.views.participant_registration_or_login3', name='participant_registration_or_login3'),

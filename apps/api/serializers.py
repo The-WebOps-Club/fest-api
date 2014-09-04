@@ -6,35 +6,35 @@ from django.contrib.auth.models import User
 from apps.walls.models import Wall, Post, Comment
 
 
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ('first_name', 'last_name', 'email')
+class UserSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = User
+		fields = ('first_name', 'last_name', 'email', 'password')
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ERPProfile
+	class Meta:
+		model = ERPProfile
 
 class ParticipantProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
+	class Meta:
+		model = UserProfile
 
 class WallSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Wall
-        fields=('id','name','is_public','time_updated','cache_updated','person')
-        depth=2
+	class Meta:
+		model = Wall
+		fields=('id','name','is_public','time_updated','cache_updated','person')
+		depth=2
 class PostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = ('id','is_active','subject','by','description','time_created','time_updated','comments')
-        depth = 2
+	class Meta:
+		model = Post
+		fields = ('id','is_active','subject','by','description','time_created','time_updated','comments')
+		depth = 2
 
 class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Comment
-        fields=('id','is_active','access_specifier','description','by','time_created','time_updated','liked_users')
-        depth = 1
+	class Meta:
+		model = Comment
+		fields=('id','is_active','access_specifier','description','by','time_created','time_updated','liked_users')
+		depth = 1
 
 
 

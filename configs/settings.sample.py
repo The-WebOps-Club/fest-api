@@ -44,6 +44,7 @@ ALLOWED_HOSTS = [ # Allowed domain and subdomains
 
 #Absolute URL where the site has been hosted. Don't forget the trailing slash.
 SITE_URL = 'http://localhost:8000/'
+MAIN_SITE_URL = SITE_URL
 STATIC_URL = SITE_URL + 'static/'
 MEDIA_URL = SITE_URL + 'media/'
 STATIC_ROOT = "files/static-root/"
