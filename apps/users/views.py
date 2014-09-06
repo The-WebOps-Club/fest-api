@@ -22,6 +22,7 @@ from apps.users.forms import LoginForm,UserProfileForm,UserForm
 # View functions
 # REST API
 from apps.api.serializers import UserSerializer
+from rest_framework import serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -306,7 +307,9 @@ def participant_registration(request):
 	if serialized.is_valid():
 		user = get_object_or_None(User, username=serialized.init_data['email'])
 		if user:
-			raise serializers.ValidationError("User Already exists. If you have logged in with Facebook or Google please do so again")
+			return Response({
+				"email": ["This email address already exists. If you have logged in with Facebook or Google please do so again"]
+			}, status=status.HTTP_400_BAD_REQUEST)
 		else:
 			user = User.objects.create_user(
 				serialized.init_data['email'],
@@ -315,51 +318,61 @@ def participant_registration(request):
 			)
 			user.first_name = serialized.init_data['first_name']
 			user.last_name = serialized.init_data['last_name']
+			user.is_active = True
 			user.save()
-			token = Token.objects.get_or_create(user=user)
-			#response = Response(serialized.data, status=status.HTTP_201_CREATED)
-			response = Response(serialized.data, status=status.HTTP_201_CREATED)
-			response['Cache-Control'] = 'no-cache'
-
-			return Response(serialized.data, status=status.HTTP_201_CREATED)
+			token = Token.objects.get_or_create(user=user)[0]
+			user = authenticate(username=serialized.init_data['email'], password=serialized.init_data['password'])
+			login(request, user)
+			data = serialized.data
+			data['token'] = token.key
+			data['user_id'] = user.id
+			return Response(data, status=status.HTTP_201_CREATED)
 	else:
 		return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
 
+@csrf_exempt
+@api_view(['POST'])
+@permission_classes((AllowAny, ))
+def participant_login(request):
+	data = request.DATA
+	email = data.get('email', None)
+	password = data.get('password', None)
+	if email == None:
+		return Response({
+			"email": ["Email is required"]
+		}, status=status.HTTP_400_BAD_REQUEST)
+	if password == None:
+		return Response({
+			"password": ["Password is required"]
+		}, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-def participant_registration_or_login(request):    
-	loginform = LoginForm()
-	userform = UserForm()
-	userprofileform = UserProfileForm()
-	context_dict = {'loginform':loginform,'userform':userform,'userprofileform':userprofileform}
-	return render_to_response('pages/participant_registration_or_login.html', context_dict, context_instance = global_context(request))
-
-def participant_registration_or_login2(request):
-	context_dict = {}
-	return render_to_response('pages/participant_registration_or_login2.html', context_dict, context_instance = global_context(request))
+	user = get_object_or_None(User, username=email)
+	if user == None:
+		return Response({
+			"email": ["This email address doesn't have an account."]
+		}, status=status.HTTP_400_BAD_REQUEST)
+	
+	# Authenticates user against database
+	user = authenticate(username=email, password=password)
+	if user is not None:
+		if user.is_active:
+			login(request, user) # Logs in the User
+			return Response({
+				'first_name': user.first_name,
+				'last_name': user.last_name,
+				'email': user.email,
+				'token': Token.objects.get_or_create(user=user)[0].key,
+				'user_id': user.id
+			}, status=status.HTTP_202_ACCEPTED)
+		else:
+			return Response({
+				"email": ["This email is not activated."]
+			}, status=status.HTTP_400_BAD_REQUEST)
+	return Response({
+		"email": ["The password provided does not match the email."]
+	}, status=status.HTTP_400_BAD_REQUEST)
 	
 	
-def participant_registration_or_login3(request):
-	request.user.is_active=False
-	loginform = LoginForm()
-	userform = UserForm()
-	userprofileform = UserProfileForm()
-	context_dict = {'loginform':loginform,'userform':userform,'userprofileform':userprofileform}
-	return render_to_response('pages/participant_registration_or_login3.html', context_dict, context_instance = global_context(request))
-	
-	
-@login_required
-def participant_registration_or_login4(request):
-	context_dict = {}
-		
-	if hasattr(request.user,"profile"):
-		a=5
-	else:
-		return redirect("participant_registration_or_login3")
-			
-	return render_to_response('pages/participant_registration_or_login4.html', context_dict, context_instance = global_context(request))
-
 # --------------------------------------------------------------
 # Views for Python Social auth
 # Unsubscibe email

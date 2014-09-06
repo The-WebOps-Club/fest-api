@@ -36,7 +36,7 @@ router.register(r'walls',mobile.WallsViewSet, base_name="walls")
 router.register(r'posts',mobile.PostsViewSet, base_name="posts")
 router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
 router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
-#router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
+router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
@@ -89,13 +89,10 @@ urlpatterns = patterns('',
     #Event Tabs (backend only)
     url(r'^events/add_tabs/$','apps.events.views.add_tabs', name='add_tabs'),
 
-    #Participant - Login/registration
+    # Participant - Login/registration
     url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
-    # - testing (Akshay Utture)
-    url(r'^participant_registration_or_login/$','apps.users.views.participant_registration_or_login', name='participant_registration_or_login'),
-    url(r'^participant_registration_or_login2/$','apps.users.views.participant_registration_or_login2', name='participant_registration_or_login2'),
-    url(r'^participant_registration_or_login3/$','apps.users.views.participant_registration_or_login3', name='participant_registration_or_login3'),
-    url(r'^participant_registration_or_login4/$','apps.users.views.participant_registration_or_login4', name='participant_registration_or_login4'),
+    url(r'^participant_login/$','apps.users.views.participant_login', name='participant_login'),
+    
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
     

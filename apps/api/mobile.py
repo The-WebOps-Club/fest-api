@@ -16,10 +16,6 @@ from apps.walls.ajax import create_post,create_comment
 from apps.api.utils import *
 from apps.users.models import UserProfile
 
-
-from django.views.decorators.csrf import csrf_exempt
-
-
 from django.views.decorators.csrf import csrf_exempt
 
 class NotificationViewSet(viewsets.ViewSet):
@@ -33,9 +29,9 @@ class NotificationViewSet(viewsets.ViewSet):
 		page = int(request.QUERY_PARAMS.get('page', 0))
 		limit = int(request.QUERY_PARAMS.get('limit', 10))
 		notif_type = request.QUERY_PARAMS.get('type', 'all')
-		message=''
-		data=[]
-		json=[]
+		message = ''
+		data = []
+		json = []
 		if notif_type == 'all':
 			notifs = query_newsfeed(request.user, page=page, max_items=limit)
 		else:

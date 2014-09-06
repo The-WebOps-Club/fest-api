@@ -178,7 +178,7 @@ class UserProfile(models.Model): # The corresponding auth user
         It handles the basic 
     
     """
-    is_active       = models.BooleanField(default=True)
+    is_active          = models.BooleanField(default=True)
 
     user               = models.OneToOneField(User, related_name='profile') # uses name and email from here. username = email
     
