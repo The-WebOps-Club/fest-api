@@ -209,20 +209,26 @@ class CommentsViewSet(viewsets.ViewSet):
 
 MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","school_student","want_accomodation"];
 
-class UserProfileViewSet(viewsets.ViewSet):
-	def list(self, request):
-		return Response(viewset_response("done", ParticipantProfileSerializer(UserProfile.objects.get( user = self.request.user )).data))
+# class UserProfileViewSet(viewsets.ViewSet):
+# 	def list(self, request):
+# 		return Response(viewset_response("done", ParticipantProfileSerializer(UserProfile.objects.get( user = self.request.user )).data))
 	
-	def create(self, request):
-		profile = UserProfile.objects.get( user = self.request.user )
-		try:
-			for i in request.POST:
-				if i in MUTABLE_FIELDS:
-					setattr( profile, i, request.POST[i] )
-		except:
-			return Response("Invalid input data.",[]);
-		profile.save()
-		return Response( viewset_response( "done", ParticipantProfileSerializer(profile).data ) )
+# 	def create(self, request):
+# 		profile = UserProfile.objects.get( user = self.request.user )
+# 		try:
+# 			for i in request.POST:
+# 				if i in MUTABLE_FIELDS:
+# 					setattr( profile, i, request.POST[i] )
+# 		except:
+# 			return Response("Invalid input data.",[]);
+# 		profile.save()
+# 		return Response( viewset_response( "done", ParticipantProfileSerializer(profile).data ) )
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+	queryset = UserProfile.objects.all()
+	serializer_class = ParticipantProfileSerializer
+
+
 
 class UserViewSet(viewsets.ViewSet):
 	def list(self, request):

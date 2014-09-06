@@ -357,6 +357,7 @@ def participant_login(request):
 	if user is not None:
 		if user.is_active:
 			login(request, user) # Logs in the User
+			profile = UserProfile.objects.get_or_create(user=user)
 			return Response({
 				'first_name': user.first_name,
 				'last_name': user.last_name,
