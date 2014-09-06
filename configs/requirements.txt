@@ -8,6 +8,7 @@ argparse==1.2.1
 django-annoying==0.8.0
 django-appconf==0.6
 django-compressor==1.4
+django-cors-headers==0.13
 django-dajaxice==0.6
 django-debug-toolbar==1.2.1
 django-exportdata==0.2
