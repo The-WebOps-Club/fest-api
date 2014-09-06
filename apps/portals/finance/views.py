@@ -23,24 +23,26 @@ def finance_portal(request):
     for core in erp_profile.core_relations.all():
         position = core.name + " Core"
         dept = core.name
-        link = settings.GOOGLE_FORMS['finance_saarang'] %(dept, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
+        link = settings.GOOGLE_FORMS['finance_fest'] %(dept, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
         link_list.append((position,link))
         
     for supercoord in erp_profile.supercoord_relations.all():
         position = supercoord.name + " SuperCoord"
         dept = supercoord.name
-        link = settings.GOOGLE_FORMS['finance_saarang'] %(dept, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
+        link = settings.GOOGLE_FORMS['finance_fest'] %(dept, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
         link_list.append((position, link))
 
     for coord in erp_profile.coord_relations.all():
-        position = coord.dept.name +'('+ coord + ')' + " Coord"
+        position = coord.dept.name +'('+ coord.name + ')' + " Coord"
         dept = coord.dept.name
-        link = settings.GOOGLE_FORMS['finance_saarang'] %(dept, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
+        link = settings.GOOGLE_FORMS['finance_fest'] %(dept, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
         link_list.append((position, link))
 
-    club = " "
-    link = settings.GOOGLE_FORMS['finance_clubs'] %(club, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
-    link_list.append(("Cultural Club", link))
+    for page in erp_profile.page_relations.all():
+        position = page.name
+        club = " "	
+        link = settings.GOOGLE_FORMS['finance_clubs'] %(club, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
+        link_list.append((position, link))
     local_context = {
             "list":link_list,
             "current_page":"portal_finance"
