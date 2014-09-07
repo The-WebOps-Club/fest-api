@@ -382,3 +382,12 @@ class ERPProfile(models.Model):
 
     def get_absolute_url(self):
         return reverse('apps.users.views.profile', args=(self.user.pk,))
+
+
+class Team(models.Model):
+    # Relations to other models
+    is_active       = models.BooleanField(default=True)
+    name            = models.CharField(max_length=100, unique=True)
+    members         = models.ManyToManyField(User, null=True, blank=True, related_name='teams')
+
+    

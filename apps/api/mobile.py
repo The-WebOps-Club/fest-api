@@ -14,7 +14,7 @@ from apps.walls.models import Wall,Post
 from apps.api.serializers import *
 from apps.walls.ajax import create_post,create_comment
 from apps.api.utils import *
-from apps.users.models import UserProfile
+from apps.users.models import UserProfile, Team
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -207,28 +207,41 @@ class CommentsViewSet(viewsets.ViewSet):
 			message='an error has occured while trying to comment'
 			return Response(message,data)
 
-MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","school_student","want_accomodation"];
+USER_MUTABLE_FIELDS = ["password", "first_name", "last_name"];
+PROFILE_MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","school_student","want_accomodation"];
 
-# class UserProfileViewSet(viewsets.ViewSet):
-# 	def list(self, request):
-# 		return Response(viewset_response("done", ParticipantProfileSerializer(UserProfile.objects.get( user = self.request.user )).data))
+class UserProfileViewSet(viewsets.ViewSet):
+	def list(self, request):
+		user = self.request.user
+		data = ParticipantProfileSerializer(UserProfile.objects.get( user = self.request.user )).data
+		data['first_name'] = user.first_name
+		data['last_name'] = user.last_name
+		data['user_id'] = user.id
+		return Response(viewset_response("done", data))
 	
-# 	def create(self, request):
-# 		profile = UserProfile.objects.get( user = self.request.user )
-# 		try:
-# 			for i in request.POST:
-# 				if i in MUTABLE_FIELDS:
-# 					setattr( profile, i, request.POST[i] )
-# 		except:
-# 			return Response("Invalid input data.",[]);
-# 		profile.save()
-# 		return Response( viewset_response( "done", ParticipantProfileSerializer(profile).data ) )
-
-class UserProfileViewSet(viewsets.ModelViewSet):
-	queryset = UserProfile.objects.all()
-	serializer_class = ParticipantProfileSerializer
-
-
+	def create(self, request):
+		user = self.request.user
+		profile = UserProfile.objects.get( user=user )
+		try:
+			for i in request.DATA:
+				print i
+				if i == "college": # foreign key
+					pass
+				elif i in PROFILE_MUTABLE_FIELDS and i != '':
+					setattr( profile, i, request.POST[i] )
+				elif i in USER_MUTABLE_FIELDS and i != '':
+					setattr( user, i, request.POST[i] )
+					# print i
+		except:
+			return Response({
+				"message": "Invalid input data."
+			}, status=status.HTTP_400_BAD_REQUEST);
+		profile.save()
+		user.save()
+		data = ParticipantProfileSerializer(profile).data
+		data['first_name'] = user.first_name
+		data['last_name'] = user.last_name
+		return Response( viewset_response( "done", data ) )
 
 class UserViewSet(viewsets.ViewSet):
 	def list(self, request):
@@ -244,4 +257,55 @@ class UserViewSet(viewsets.ViewSet):
 			return Response("Invalid input data.",[]);
 		profile.save()
 		return Response( viewset_response( "done", ParticipantProfileSerializer(profile).data ) )
+
+class TeamViewSet(viewsets.ViewSet):
+	def list(self, request):
+		user = self.request.user
+		teams = TeamSerializer(user.teams.all())
+		teams_data = teams.data
+		return Response(viewset_response("done", teams_data))
+	
+	def create(self, request):
+		user = self.request.user
+		member_list = set()
+		member_list.add(user)
+		if 'id' in request.DATA:
+			team = Team.objects.get(id=request.DATA['id'])
+		else: # Create a new Team
+			team = Team()
+			if Team.objects.filter(name=request.DATA['name']):
+				return Response({
+					"name": ["This team name is already used"]
+				}, status=status.HTTP_400_BAD_REQUEST)
+			if request.DATA['name'] == "":
+				return Response({
+					"name": ["The team name is required"]
+				}, status=status.HTTP_400_BAD_REQUEST)
+		
+		team.name = request.DATA['name']
+		member_list_data = request.DATA.getlist('member[]', [])
+		
+		if len(member_list_data) == 0 :
+			return Response({
+				"member": ["You need atleast 1 member in a team !"]
+			}, status=status.HTTP_400_BAD_REQUEST)
+		for i in member_list_data:
+			try: 
+				i = int(i)
+			except ValueError:
+				i = -1 # Didnt wanna type the error message again -_-
+			try:
+				member_list.add(User.objects.get(id=i))
+			except User.DoesNotExist:
+				return Response({
+					"member": ["The members you have given seem to be invalid. Check the Shaastra IDs again"]
+				}, status=status.HTTP_400_BAD_REQUEST)
+		member_list = list(member_list)
+
+		team.save()
+		team.members.clear() # Clear and add all members again
+		team.members.add(*member_list)
+		
+		data = TeamSerializer(team).data
+		return Response( viewset_response( "done", data ) )
 

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.users.models import ERPProfile, UserProfile
+from apps.users.models import ERPProfile, UserProfile, Team
 from django.contrib.auth.models import User
 
 from apps.walls.models import Wall, Post, Comment
@@ -9,7 +9,7 @@ from apps.walls.models import Wall, Post, Comment
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ('first_name', 'last_name', 'email', 'password')
+		fields = ('id', 'first_name', 'last_name', 'email', 'password')
 
 class UserProfileSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -18,6 +18,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class ParticipantProfileSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = UserProfile
+
+class TeamSerializer(serializers.ModelSerializer):
+	members = UserSerializer(source='members', many=True)
+	class Meta:
+		model = Team
 
 class WallSerializer(serializers.ModelSerializer):
 	class Meta:
