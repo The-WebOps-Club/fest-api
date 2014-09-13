@@ -36,7 +36,7 @@ router.register(r'walls',mobile.WallsViewSet, base_name="walls")
 router.register(r'posts',mobile.PostsViewSet, base_name="posts")
 router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
 router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
-
+router.register(r'contacts',mobile.ContactsViewSet, base_name="contacts")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
@@ -60,9 +60,9 @@ urlpatterns = patterns('',
     url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
     
     # Notification
-	url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page
-	
-	# Walls
+    url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page
+    
+    # Walls
     url(r'^wall/(?P<wall_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall/(?P<wall_id>\d+)/(?P<post_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall$', 'apps.walls.views.wall', name='wall'),
@@ -75,7 +75,7 @@ urlpatterns = patterns('',
     # Internal URLS - One time use
     url(r'^google/refresh_token$', 'apps.docs.views.google_refresh_token', name='google_refresh_token'),
     url(r'^google/oauth2callback/?$', 'apps.docs.views.google_auth_callback', name='google_oauth2callback'),
-	url(r'^github/refresh_token$', 'apps.docs.views.github_refresh_token', name='github_refresh_token'),
+    url(r'^github/refresh_token$', 'apps.docs.views.github_refresh_token', name='github_refresh_token'),
     url(r'^github/oauth2callback/?$', 'apps.docs.views.github_auth_callback', name='github_oauth2callback'),
 
     # Misc

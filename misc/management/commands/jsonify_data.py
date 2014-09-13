@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError, NoArgsCommand
 from django.contrib.auth.models import User
 from configs import settings
-from apps.users.models import Dept, Subdept, Page, ERPProfile
+from apps.users.models import Dept, Subdept, Page, ERPProfile, UserProfile
 from apps.walls.models import Wall, Post, Comment
 import json
 import os
@@ -54,7 +54,7 @@ class Command(BaseCommand):
         self.stdout.write("Page ... done.")
 
         #- Dept > Subdept > User dict : for contacts - file="user_structure.json"
-        all_user_list = list(User.objects.values("id", "first_name", "last_name", "erp_profile"))
+        all_user_list = list(User.objects.values("id", "first_name", "last_name", "erp_profile","profile","email"))
         for i in all_user_list:
             if "erp_profile" in i.keys() and i["erp_profile"]:
                 erp_prof = ERPProfile.objects.get(id=i["erp_profile"])
@@ -62,7 +62,19 @@ class Command(BaseCommand):
                 i["supercoord_relations"] = erp_prof.supercoord_relations.values_list("id", flat="true")
                 i["core_relations"] = erp_prof.core_relations.values_list("id", flat="true")
                 i["wall"] = erp_prof.wall.id
+
                 del(i["erp_profile"])
+            
+            if "profile" in i.keys():
+                if i["profile"]:
+                    usr_prof = UserProfile.objects.get(id=i["profile"])
+                    if (usr_prof.mobile_number):
+                        i["mobile_number"]=usr_prof.mobile_number
+                    else:
+                        i["mobile_number"]="" 
+                else:
+                    i["mobile_number"]=""
+                del(i["profile"])
         all_subdept_list = list(Subdept.objects.values("id", "name", "dept", "wall"))
         all_dept_list = list(Dept.objects.values("id", "name", "wall"))
         id_dept_structure = {}
@@ -83,6 +95,8 @@ class Command(BaseCommand):
             temp_user = {
                 "first_name" : i["first_name"],
                 "last_name" : i["last_name"],
+                "email": i["email"],
+                "mobile_number": i["mobile_number"],
             }
             if "coord_relations" in i.keys():
                 for j in i["coord_relations"]:
