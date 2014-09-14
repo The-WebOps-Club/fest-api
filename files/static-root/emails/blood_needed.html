@@ -1,0 +1,44 @@
+{% load staticfiles %}
+{% load humanize %}
+
+Hey {{ user.first_name }},<br><br>
+
+<strong>We need your help immediately!</strong> Can you spare a few minutes today to save someone?<br><br>
+
+{% if requestuser %} {{ requestuser.first_name }} {{ requestuser.last_name }} {% else %} {{ requestor_email }} {% endif %} has requested for {{ bloodrequest.number_of_units }} units of {{ bloodrequest.blood_type }} blood group and <em>they still need {{ bloodrequest.current_requirement }} units.</em> <br><br>
+
+<a style='background-image: -moz-linear-gradient(top, #62c462, #51a351);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
+  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
+  background-image: -o-linear-gradient(top, #62c462, #51a351);
+  background-image: linear-gradient(to bottom, #62c462, #51a351);
+  background-repeat: repeat-x;
+  border-color: #51a351 #51a351 #387038;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  border: 1px solid #51a351;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  line-height: 20px;
+  color : #ffffff;
+  padding: 4px 12px;
+  border-radius : 4px;
+  text-decoration: none;'
+    href="{{ SITE_URL }}{% url 'accounts.views.donate' bloodrequest.id %}">Click here if you can help out</a> or go here: {{ SITE_URL }}{% url 'accounts.views.donate' bloodrequest.id %}<br><br>
+
+This will inform {{ requestor_name }} that you are willing to help them and will share your contact details. They should get in touch with you soon. The request has been placed at <a  style='color:#3a87ad; font-weight : bold;' href='http://maps.google.com/?q={{bloodrequest.location_lat_long}}'>{{ bloodrequest.location }}</a>. <br><br>
+
+We have sent this mail because Bloodline's algorithms have identified that you are one of the few people who can possibly donate today. If you cannot make it today, we request you to share the link on your social networks (Facebook, Twitter, Google+, etc.). It really does help to spread the word.<br><br>
+
+If you think this is irrelevant to you because you're too far away, update your current location on your <strong><a style='color : #468847;' href="{{SITE_URL}}{% url 'accounts.views.profile' %}">profile</a></strong>, and our algorithms will make sure you aren't disturbed the next time.<br><br>
+
+We hope you make a difference today! If you cannot donate, you can safely ignore this mail.<br><br>
+
+Warm regards,<br>
+--<br>
+The Bloodline Team<br>
+<br>
+<br>
+{% if unsubscribe %}
+    <small><a href="{{ SITE_URL }}{% url 'accounts.views.unsubscribe' user_email=unsubscribe %}">Unsubscribe</a> from Bloodline | <a href="{{ SITE_URL }}{% url 'accounts.views.email_preferences' %}">Update your notification settings.</a></small>
+{% endif %}
+<br />
+<small style='color: #999999;'>This mail box is not monitored. Please don't reply. If you want to donate, click on the green button above. If you want to contact the Bloodline Team, drop us a mail at <a href='mailto:contact@bloodlinelabs.com'>contact@bloodlinelabs.com</a></small>

@@ -14,6 +14,7 @@ from apps.walls.utils import get_tag_object
 from annoying.functions import get_object_or_None
 # Decorators
 from django.contrib.auth.decorators import login_required, user_passes_test
+#from apps.users.models.ERPProfile import populate
 import json
     
 @dajaxice_register
@@ -33,6 +34,7 @@ def get_contact(request, id):
     if isinstance(obj, User):
         obj_profile = obj.profile
         obj_erp_profile = obj.erp_profile
+	populate_func1=populate(obj_erp_profile)
         local_context = {
             "id" : obj.id,
             "email" : obj.email,
@@ -57,6 +59,7 @@ def get_info(request, id):
     if isinstance(obj, User):
         obj_profile = obj.profile
         obj_erp_profile = obj.erp_profile
+	populate_func2=populate(obj_erp_profile)
         local_context = {
             "id" : obj.id,
             "email" : obj.email,
