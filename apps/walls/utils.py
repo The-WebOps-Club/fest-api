@@ -130,16 +130,12 @@ def query_newsfeed(user, **kwargs):
             ) ) AND a.recipient_id=%(user_id)d )
             GROUP BY a.target_object_id
             ORDER BY a.timestamp DESC
-<<<<<<< HEAD
      """
 #DT
     if start_item and end_item :
-=======
-        """
-    if start_item >= 0 and end_item :
->>>>>>> 8e76c1b5561c4a8ed5e94342f6a32f52870b1f31
-        notification_query += "LIMIT %(start_item)d,%(end_item)s"
-#DT   
+        
+ 
+        notification_query += "LIMIT %(start_item)d,%(end_item)s" 
     notification_query = notification_query % {"user_id" : user.id, 
         "start_item" : start_item, 
         "end_item" :  end_item,
@@ -186,16 +182,14 @@ def query_notifs(user, **kwargs):
         notif_query += """AND b.unread = %(notif_unread)s """
     notif_query += """
             ) ) )
-<<<<<<< HEAD
                   """
 #dt
     if start_item and end_item :
-=======
+        """
             GROUP BY a.target_object_id 
             ORDER BY a.unread DESC, a.timestamp DESC
         """
     if start_item >= 0 and end_item :
->>>>>>> 8e76c1b5561c4a8ed5e94342f6a32f52870b1f31
         notif_query += "LIMIT %(start_item)d,%(end_item)s"
 
     notif_query = notif_query.replace("\n", "") % { "user_id" : user.id, 
