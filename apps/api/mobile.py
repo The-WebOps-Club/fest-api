@@ -330,6 +330,6 @@ class UserProfileViewSet(viewsets.ViewSet):
 
 		profile.save()
 
-	        return Response( viewset_response( "done", ParticipantProfileSerializer(profile).data ) )
+		return Response( viewset_response( "done", ParticipantProfileSerializer(profile).data ) )
 
 
