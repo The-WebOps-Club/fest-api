@@ -132,7 +132,7 @@ def participant_profile(request,username,user_profile_form):
 	new_user_profile.want_accomodation= user_profile_form.cleaned_data['want_accomodation']
 	new_user_profile.user=new_user
 	new_user_profile.save()
-	#the next 3 lines creates a blank erp_profile for this user since other pages and features cannot be accessed without an erp_profile. but not needed actually
+		#the next 3 lines creates a blank erp_profile for this user since other pages and features cannot be accessed without an erp_profile. but not needed actually
 	#	erp_prof=ERPProfile()
 	#	erp_prof.user=new_user
 	#	erp_prof.save()
