@@ -383,7 +383,6 @@ def unsubscribe(request, username, token):
 	if they came from an unexpired unsubscribe link. Otherwise, they are
 	redirected to the login page and unsubscribed as soon as they log in.
 	"""
- 
 	user = get_object_or_404(User, username=username, is_active=True)
  
 	if ( (request.user.is_authenticated() and request.user == user) or user.profile.check_token(token)):
@@ -392,8 +391,8 @@ def unsubscribe(request, username, token):
 		profile.send_mails = False
 		profile.save()
  
-		local_context = {}
-		return render_to_response("pages/unsubscribe.html", local_context, context_instance= global_context(request))
-	# Otherwise redirect to login page
-	next_url = reverse('apps.users.views.unsubscribe', kwargs={'username': username, 'token': token,})
-	return HttpResponseRedirect('%s?next=%s' % (reverse('login'), next_url))
+        local_context = {}
+        return render_to_response("pages/unsubscribe.html", local_context, context_instance= global_context(request))
+    # Otherwise redirect to login page
+    next_url = reverse('apps.users.views.unsubscribe', kwargs={'username': username, 'token': token,})
+    return HttpResponseRedirect('%s?next=%s' % (reverse('login'), next_url))

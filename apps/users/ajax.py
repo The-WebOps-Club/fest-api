@@ -142,4 +142,3 @@ def participant_profile(request,username,user_profile_form):
 		alert_message="The form has errors. Error details are at the top of the registration form"
 
 	return simplejson.dumps({'message': message,'alert_message':alert_message})
-
