@@ -161,3 +161,17 @@ def edit_event(request,event_name,edit_event_form):
 
 	return json.dumps({'message': message})
 	
+	
+	
+	
+	
+@dajaxice_register    
+def view_edit_event(request):
+	event_names=""
+	event_emails=""
+	event_array=Event.objects.all()
+	for event in event_array:
+		event_names=event_names+event.name+" "
+		event_emails=event_emails+event.email+" "
+	return json.dumps({'event_names': event_names,'event_emails':event_emails})
+	

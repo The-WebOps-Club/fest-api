@@ -18,7 +18,7 @@
 <p id="message"> </p> </br>
 
 <button type="button" onclick="add_new_event()">Add New Event</button> 
-<button type="button" id='view_id' onclick="view_edit_event_js()">View/Edit Event</button> 
+<button type="button" onclick="Dajaxice.apps.portals.events.view_edit_event(view_edit_event_js)">View/Edit Event</button> 
 <button type="button" onclick="event_registration_list()">View Event Registration List</button> 
 
 <br />
@@ -91,7 +91,7 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 
 
 
-<!--EDIT EVENT FORM -->
+<!--EDIT EVENT FORM use some inintialize in ajax.py to add initial values and then serialize the form before sending it-->
 <div id="edit_event_form_div" style="display:none;">
 <h3> EDIT EVENT FORM </h3> All fields left blank will keep the previous values
 <form action="" method="post" id="edit_event_form" accept-charset="utf-8">
@@ -135,11 +135,12 @@ function show_tabs_js(data){
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_list").innerHTML = ' ';
     document.getElementById("option_selected").innerHTML = ' ';
+    document.getElementById("edit_event_form_div").style.display = 'none';
 
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
-    text += '<button type="button" onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'})" >  Details &nbsp &nbsp   </button>';
+    text += '<button type="button" onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'})" >  Edit Event Details &nbsp &nbsp   </button>';
     for (i=0; i < len; i++) {
     text += '<button type="button" onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'})">'+arr[i]+'</button>' + " ";
     }
@@ -177,6 +178,7 @@ function show_tabs_description_js(data){
     //clears add edit tab forms
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
+    document.getElementById("edit_event_form_div").style.display = 'none';
 }
 
 function add_new_tab_js(event_name){
@@ -187,6 +189,7 @@ function add_new_tab_js(event_name){
     document.getElementById("delete_tab_button").innerHTML = ' ';
     document.getElementById("selected_event_tab").innerHTML = ' ';
     document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("edit_event_form_div").style.display = 'none';
     return;
 }
 
@@ -213,7 +216,7 @@ function edit_some_tab_js(event_name,event_tab_name,description){
 
     document.getElementById("edit_tab_form").style.display="inline";
     document.getElementById("message").innerHTML="Edit Tab form at the bottom of the page";
-    
+    document.getElementById("edit_event_form_div").style.display = 'none';
     
     document.getElementById("add_new_tab_form").style.display = 'none';
     return;
@@ -261,26 +264,31 @@ function add_tab_js(data){
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_list").innerHTML = ' ';
     document.getElementById("option_selected").innerHTML = ' ';
+    document.getElementById("edit_event_form_div").style.display = 'none';
     }
 }
 
 //these functions are for the dajaxice at the top of the page.
-function view_edit_event_js(){
-    document.getElementById("event_list").innerHTML = '\
-    {% if event_list %}\
-		<table id="someid">\
-    		<thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>\
-    {% for event in event_list %}\
-    	<tr><td><button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\'{{event.name}}\',\'username\':\'{{user.username}}\'})">{{event.name}}</button></td><td> {{event.email}}</td></tr>  \
-    {% endfor %}\
-    	</table>\
-    {% else %}\
-        <strong>There are no categories present.</strong>{% endif %}';
+function view_edit_event_js(data){
+	var name,email,i,length,text;
+	event_names_array=data.event_names.split(" ");
+    event_emails_array=data.event_emails.split(" ");
+    len=event_names_array.length
+    text='<table><tr><th>Event </th> <th> Event Email Id </th></tr>';
+    for (i=0;i<len;i++)
+    	{
+    	text=text+'<tr><td><button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'})">'+event_names_array[i]+'</button></td><td> '+event_emails_array[i]+'</td></tr>'
+    	}
+    text=text+'</table>';
+    
+    document.getElementById("event_list").innerHTML = text
+	
     
     document.getElementById("option_selected").innerHTML = '<h2>View/Edit Events</h3> - clicking on an event opens the editing options at the bottom of the list';
     
     //make the add_event_form disappear
     document.getElementById("event_form_div").style.display = 'none';
+    document.getElementById("edit_event_form_div").style.display = 'none';
     
 }
 
@@ -297,6 +305,7 @@ function add_new_event(){
     document.getElementById("selected_event_tab").innerHTML = ' ';
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_list").innerHTML = ' ';
+    document.getElementById("edit_event_form_div").style.display = 'none';
         // this set has the additional 2 statements that is not there in most of the other set of commands of this type
     document.getElementById("event_name").innerHTML = ' ';
     document.getElementById("event_tabs").innerHTML = ' ';
@@ -318,6 +327,7 @@ function event_registration_list(){
     document.getElementById("selected_event_tab").innerHTML = ' ';
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_list").innerHTML = '';
+    document.getElementById("edit_event_form_div").style.display = 'none';
     // this set has the additional 2 statements that is not there in most of the other set of commands of this type
     document.getElementById("event_name").innerHTML = ' ';
     document.getElementById("event_tabs").innerHTML = ' ';
@@ -330,6 +340,9 @@ function event_registration_list(){
 
 function add_event_js(data){
     alert(data.message);
+    document.getElementById("option_selected").innerHTML = '';
+    //make the add_event_form disappear
+    document.getElementById("event_form_div").style.display = 'none';
 }
 function edit_event_js(data){
     alert(data.message);
@@ -338,6 +351,14 @@ function edit_event_js(data){
 
 function edit_event_details_js(data){
     document.getElementById("edit_event_form_div").style.display = 'inline';
+    document.getElementById("edit_tab_form").style.display='none';
+    document.getElementById("add_new_tab_form").style.display = 'none';
+    document.getElementById("registration_tab").innerHTML = ' '; 
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_list").innerHTML = '';
     //Printing the previous values
     document.getElementById("edit_event_form_name").innerHTML = 'Previous value was: '+ data.event_name;
     document.getElementById("edit_event_form_short_description").innerHTML = 'Previous value was: '+ data.short_description;
