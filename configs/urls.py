@@ -93,6 +93,7 @@ urlpatterns = patterns('',
     # Participant - Login/registration
     url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
     url(r'^participant_login/$','apps.users.views.participant_login', name='participant_login'),
+    url(r'^social_login/$','apps.users.views.social_login', name='social_login'),
     
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE

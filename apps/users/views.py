@@ -372,7 +372,19 @@ def participant_login(request):
 	return Response({
 		"email": ["The password provided does not match the email."]
 	}, status=status.HTTP_400_BAD_REQUEST)
-	
+
+@login_required
+def social_login( request ):
+    
+	user = request.user;
+	return redirect( settings.SOCIAL_AUTH_CREDENTIALS_REDIRECT +\
+		'?first_name=' + user.first_name +\
+		'&last_name=' + user.last_name +\
+		'&email=' + user.email +\
+		'&token=' + Token.objects.get_or_create(user=user)[0].key +\
+		'&user_id=' + format(user.id) +\
+		'&redirect=true'\
+	)
 	
 # --------------------------------------------------------------
 # Views for Python Social auth
@@ -391,8 +403,9 @@ def unsubscribe(request, username, token):
 		profile.send_mails = False
 		profile.save()
  
-        local_context = {}
-        return render_to_response("pages/unsubscribe.html", local_context, context_instance= global_context(request))
-    # Otherwise redirect to login page
-    next_url = reverse('apps.users.views.unsubscribe', kwargs={'username': username, 'token': token,})
-    return HttpResponseRedirect('%s?next=%s' % (reverse('login'), next_url))
+		local_context = {}
+		return render_to_response("pages/unsubscribe.html", local_context, context_instance= global_context(request))
+
+	# Otherwise redirect to login page
+	next_url = reverse('apps.users.views.unsubscribe', kwargs={'username': username, 'token': token,})
+	return HttpResponseRedirect('%s?next=%s' % (reverse('login'), next_url))
