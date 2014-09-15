@@ -40,11 +40,10 @@ def check_existing_user(strategy, details, response, uid, user=None, *args, **kw
         return {'is_new': False}
 
     try:
-	if(strategy.session_get('type') == 'participant'):
-	    return;
-	
+        if(strategy.session_get('type') == 'participant'):
+            return;
     except:
-	pass;
+        pass;
 
     return redirect('apps.users.views.first_login_required')
 

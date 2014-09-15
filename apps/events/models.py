@@ -12,6 +12,7 @@ from django.utils import timezone
 # Apps
 # Decorators
 # Models
+from apps.walls.models import Wall, Post
 from apps.users.models import User,UserProfile
 # Forms
 # View functions

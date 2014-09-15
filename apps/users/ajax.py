@@ -117,22 +117,3 @@ def participant_profile(request,username,user_profile_form):
 				message=message+field.html_name+" : "+error+"<br />\n"
 	
 	if forms_successfully_validated==1:
-		message=''
-		new_user=User.objects.get(username=username)  
-		new_user_profile=UserProfile()
-		new_user_profile.gender= user_profile_form.cleaned_data['gender']
-		new_user_profile.dob= user_profile_form.cleaned_data['dob']
-		new_user_profile.mobile_number= user_profile_form.cleaned_data['mobile_number']
-		new_user_profile.branch= user_profile_form.cleaned_data['branch']
-		new_user_profile.college= user_profile_form.cleaned_data['college']
-		new_user_profile.college_roll= user_profile_form.cleaned_data['college_roll']
-		new_user_profile.school_student= user_profile_form.cleaned_data['school_student']
-		new_user_profile.want_accomodation= user_profile_form.cleaned_data['want_accomodation']
-		new_user_profile.user=new_user
-		new_user_profile.save()
-		login_success="yes"
-		new_user.is_active=True
-		alert_message="Registered successfully"
-	
-	return json.dumps({'message': message,'alert_message':alert_message,'login_success':login_success})
-
