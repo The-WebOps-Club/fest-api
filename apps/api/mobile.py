@@ -312,7 +312,7 @@ class TeamViewSet(viewsets.ViewSet):
 		data = TeamSerializer(team).data
 		return Response( viewset_response( "done", data ) )
 
-MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","school_student","want_accomodation"];
+MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","college_text","school_student","want_accomodation","city"];
 
 class UserProfileViewSet(viewsets.ViewSet):
 	def list(self, request):
@@ -320,13 +320,16 @@ class UserProfileViewSet(viewsets.ViewSet):
 	
 	def create(self, request):
 		profile = UserProfile.objects.get( user = self.request.user )
-		
+		error_field = ""
 		try:
 			for i in request.POST:
 				if i in MUTABLE_FIELDS:
+					error_field = i
 					setattr( profile, i, request.POST[i] )
 		except:
-			return Response("Invalid input data.",[]);
+			return Response({
+				error_field : "Invalid data.",
+				}, status=status.HTTP_400_BAD_REQUEST);
 
 		profile.save()
 

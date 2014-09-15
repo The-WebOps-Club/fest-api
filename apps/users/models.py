@@ -190,8 +190,10 @@ class UserProfile(models.Model): # The corresponding auth user
     # College info
     branch             = models.CharField(max_length=50, choices=BRANCH_CHOICES, help_text='Your branch of study')
     college            = models.ForeignKey(College, null=True, blank=True)
+    college_text       = models.CharField(max_length=50, null=True, blank=True)
     college_roll       = models.CharField(max_length=40, null=True)
     school_student     = models.BooleanField(default=False)
+    city               = models.CharField(max_length=50, null=True, blank=True)
     
     # Fest related info
     want_accomodation  = models.BooleanField(default=False, help_text = "Doesn't assure accommodation.")
