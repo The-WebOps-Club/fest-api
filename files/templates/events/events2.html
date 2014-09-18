@@ -173,15 +173,7 @@ function show_tabs_description_js(data){
 //edit tab button    
     document.getElementById("edit_tab_div").innerHTML = '<button type="button" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Name or Description</button> On clicking this button Form appears at bottom of the page';
     }
-//shows the register button if user is a participant
-    if (data.has_perm=="participant"){
-    document.getElementById("registration_tab").innerHTML = '<button type="button" onclick="Dajaxice.apps.portals.events.register(register_js, {\'event_name\':\''+data.event_name+'\',\'username\':\'{{user.username}}\'})">Register</button>' 
 
-}
-
-    if (data.has_perm=="participant_event_has_tdp"){
-    document.getElementById("registration_tab").innerHTML = "www.example.com"
-}
     document.getElementById("event_tabs_description").innerHTML = data.description;
     
     //clears add edit tab forms
@@ -272,6 +264,8 @@ function add_tab_js(data){
     document.getElementById("selected_event_tab").innerHTML = ' ';
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_list").innerHTML = ' ';
+    document.getElementById("event_name").innerHTML = ' ';
+    document.getElementById("event_tabs").innerHTML = ' ';
     document.getElementById("option_selected").innerHTML = ' ';
     document.getElementById("edit_event_form_div").style.display = 'none';
     }
