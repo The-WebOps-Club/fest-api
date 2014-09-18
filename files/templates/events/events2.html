@@ -24,9 +24,18 @@
 <br />
 <br />
 <div id="option_selected">
+<h2>View/Edit Events</h2> - clicking on an event opens the editing options at the bottom of the list
 </div>   
 
 <div id="event_list">
+<table>
+<tr><th>Event </th> <th> Event Email Id </th></tr>
+	{% for event in event_list %}
+	<tr> <td>
+				<button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'})">{{event.name}}</button> </td><td> {{event.email}}</td>
+				
+        {% endfor %}
+</table>
 </div>     
 
 <div id="event_name"></div>
@@ -284,7 +293,7 @@ function view_edit_event_js(data){
     document.getElementById("event_list").innerHTML = text
 	
     
-    document.getElementById("option_selected").innerHTML = '<h2>View/Edit Events</h3> - clicking on an event opens the editing options at the bottom of the list';
+    document.getElementById("option_selected").innerHTML = '<h2>View/Edit Events</h2> - clicking on an event opens the editing options at the bottom of the list';
     
     //make the add_event_form disappear
     document.getElementById("event_form_div").style.display = 'none';
