@@ -372,7 +372,19 @@ def participant_login(request):
 	return Response({
 		"email": ["The password provided does not match the email."]
 	}, status=status.HTTP_400_BAD_REQUEST)
-	
+
+@login_required
+def social_login( request ):
+    
+	user = request.user;
+	return redirect( settings.SOCIAL_AUTH_CREDENTIALS_REDIRECT +\
+		'?first_name=' + user.first_name +\
+		'&last_name=' + user.last_name +\
+		'&email=' + user.email +\
+		'&token=' + Token.objects.get_or_create(user=user)[0].key +\
+		'&user_id=' + format(user.id) +\
+		'&redirect=true'\
+	)
 	
 # --------------------------------------------------------------
 # Views for Python Social auth
