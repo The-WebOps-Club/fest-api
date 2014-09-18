@@ -8,19 +8,31 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Removing M2M table for field participants_registered on 'Event'
+        db.delete_table(db.shorten_name(u'events_event_participants_registered'))
+
+        # Adding M2M table for field users_registered on 'Event'
+        m2m_table_name = db.shorten_name(u'events_event_users_registered')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('event', models.ForeignKey(orm[u'events.event'], null=False)),
+            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['event_id', 'user_id'])
+
+
+    def backwards(self, orm):
         # Adding M2M table for field participants_registered on 'Event'
         m2m_table_name = db.shorten_name(u'events_event_participants_registered')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('event', models.ForeignKey(orm[u'events.event'], null=False)),
-            ('user', models.ForeignKey(orm[u'users.user'], null=False))
+            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
         ))
-        db.create_unique(m2m_table_name, ['event_id', 'userprofile_id'])
+        db.create_unique(m2m_table_name, ['event_id', 'user_id'])
 
-
-    def backwards(self, orm):
-        # Removing M2M table for field participants_registered on 'Event'
-        db.delete_table(db.shorten_name(u'events_event_participants_registered'))
+        # Removing M2M table for field users_registered on 'Event'
+        db.delete_table(db.shorten_name(u'events_event_users_registered'))
 
 
     models = {
@@ -70,12 +82,13 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'participants_registered': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'events_registered'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['users.UserProfile']"}),
             'registration_ends': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'registration_starts': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'short_description': ('django.db.models.fields.CharField', [], {'max_length': '250', 'blank': 'True'}),
             'team_size_max': ('django.db.models.fields.IntegerField', [], {'default': '1', 'null': 'True', 'blank': 'True'}),
-            'team_size_min': ('django.db.models.fields.IntegerField', [], {'default': '1', 'null': 'True', 'blank': 'True'})
+            'team_size_min': ('django.db.models.fields.IntegerField', [], {'default': '1', 'null': 'True', 'blank': 'True'}),
+            'teams_registered': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'events_registered'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['users.Team']"}),
+            'users_registered': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'events_registered'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['auth.User']"})
         },
         u'events.eventtab': {
             'Meta': {'object_name': 'EventTab'},
@@ -93,32 +106,12 @@ class Migration(SchemaMigration):
             'is_visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'order': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
-        u'misc.college': {
-            'Meta': {'object_name': 'College'},
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'state': ('django.db.models.fields.CharField', [], {'max_length': '40'})
-        },
-        u'users.userprofile': {
-            'Meta': {'object_name': 'UserProfile'},
-            'activation_key': ('django.db.models.fields.CharField', [], {'max_length': '40', 'null': 'True'}),
-            'branch': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'college': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['misc.College']", 'null': 'True', 'blank': 'True'}),
-            'college_roll': ('django.db.models.fields.CharField', [], {'max_length': '40', 'null': 'True'}),
-            'date_created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'dob': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'gender': ('django.db.models.fields.CharField', [], {'default': "'F'", 'max_length': '1'}),
+        u'users.team': {
+            'Meta': {'object_name': 'Team'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'key_expires': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 7, 20, 0, 0)'}),
-            'last_activity_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(1950, 1, 1, 0, 0)'}),
-            'last_activity_ip': ('django.db.models.fields.IPAddressField', [], {'default': "'0.0.0.0'", 'max_length': '15'}),
-            'mobile_number': ('django.db.models.fields.CharField', [], {'max_length': '15', 'null': 'True', 'blank': 'True'}),
-            'school_student': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'send_mails': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': u"orm['auth.User']"}),
-            'want_accomodation': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
+            'members': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'teams'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
         }
     }
 
