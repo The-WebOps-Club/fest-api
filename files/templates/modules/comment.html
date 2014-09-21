@@ -27,7 +27,7 @@
 					    	placeholder="Post your comment here. @ to tag people, # to tag a file" style='display:none'></textarea>
 
 						<div class="span12 comment_links" style="display : none">
-							<a href="javascript:void(0)" class="btn small attach_doc_btn invisible" data-placement="below" rel="twipsy" title="Insert a file from google drive">
+							<a href="javascript:void(0)" class="btn small attach_doc_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
 								<i class="icon-attach"></i>
 							</a>
 							
@@ -200,11 +200,12 @@
     function attach_doc_comment_callback(el, data) {
         
 
+        var $el = $(el).find(".comment_textarea")
+        $el.closest('.news_comment_body').find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
+
         if ( data.action != google.picker.Action.PICKED )
             return
 
-        var $el = $(el).find(".comment_textarea")
-        $el.find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
         var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
         for ( var i = 0, d; d = data.docs[i]; i++ ) {
             var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
