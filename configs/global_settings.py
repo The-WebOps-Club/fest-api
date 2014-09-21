@@ -195,7 +195,7 @@ DATE_INPUT_FORMATS = (
 # -------------------------------------------------------------------
 # Paths for static, media and templates
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(PROJECT_PATH, "files", "static")
+STATIC_ROOT = os.path.join(PROJECT_PATH, "files", "static-collected")
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(PROJECT_PATH, "files", "media")
 EMAIL_ROOT = os.path.join(PROJECT_PATH, "files", "emails") # Contains email files for Post Office
