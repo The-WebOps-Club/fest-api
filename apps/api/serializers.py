@@ -4,7 +4,7 @@ from apps.users.models import ERPProfile, UserProfile, Team
 from django.contrib.auth.models import User
 
 from apps.walls.models import Wall, Post, Comment
-
+from apps.blog.models import Category
 
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -41,7 +41,10 @@ class CommentSerializer(serializers.ModelSerializer):
 		fields=('id','is_active','access_specifier','description','by','time_created','time_updated','liked_users')
 		depth = 1
 
-
+class BlogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        depth = 2
 
 #class NotificatioSerializer(serializers.Serializer):
 #    id = serializers.IntegerField()

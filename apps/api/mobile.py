@@ -15,6 +15,7 @@ from apps.api.serializers import *
 from apps.walls.ajax import create_post,create_comment
 from apps.api.utils import *
 from apps.users.models import UserProfile, Team
+from apps.blog.models import Category, Feed
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -22,14 +23,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_exempt
 
 class NotificationViewSet(viewsets.ViewSet):
-	"""
+ 	"""
 		Return Notifications to an authenticated User
 		page -- Start page number
 		limit -- number of items in each page
 		type --  type of notification to get
 	"""
 	def list(self, request):
-		page = int(request.QUERY_PARAMS.get('page', 0))
+ 		page = int(request.QUERY_PARAMS.get('page', 0))
 		limit = int(request.QUERY_PARAMS.get('limit', 10))
 		notif_type = request.QUERY_PARAMS.get('type', 'all')
 		message = ''
@@ -90,7 +91,7 @@ class WallsViewSet(viewsets.ViewSet):
 	def list(self,request):
 		message=''
 		data=[]
-		walls = get_my_walls(request.user)
+	        walls = get_my_walls(request.user)
 		if not walls :
 			message='no walls to be displayed'
 			return Response(viewset_response(message,data))
@@ -262,11 +263,11 @@ class UserViewSet(viewsets.ViewSet):
 		return Response( viewset_response( "done", ParticipantProfileSerializer(profile).data ) )
 
 class TeamViewSet(viewsets.ViewSet):
-	def list(self, request):
+	def  list(self, request):
 		user = self.request.user
 		teams = TeamSerializer(user.teams.all())
 		teams_data = teams.data
-		return Response(viewset_response("done", teams_data))
+	 	return Response(viewset_response("done", teams_data))
 	
 	def create(self, request):
 		user = self.request.user
@@ -333,3 +334,10 @@ class UserProfileViewSet(viewsets.ViewSet):
 	        return Response( viewset_response( "done", ParticipantProfileSerializer(profile).data ) )
 
 
+# API methods for Blog App
+class BlogFeedViewSet(viewsets.ModelViewSet):
+    """
+        API for acessing blog feeds
+    """
+    queryset = Category.objects.all()
+    serializer_class = BlogSerializer

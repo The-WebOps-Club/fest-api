@@ -38,6 +38,7 @@ router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
 router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
 router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
 router.register(r'teams',mobile.TeamViewSet,base_name="teams")
+router.register(r'blogs',mobile.BlogFeedViewSet,base_name="blogs")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------

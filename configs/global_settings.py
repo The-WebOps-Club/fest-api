@@ -89,6 +89,7 @@ API_APPS = (
     'apps.portals.events',
     'apps.portals.general',
     'apps.search',
+    'apps.blog',
     'apps.api',
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
