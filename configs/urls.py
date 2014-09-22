@@ -140,6 +140,9 @@ urlpatterns = patterns('',
     url(r'^api/mobile/', include(router.urls)),
     url(r'^api-docs/', include('rest_framework_swagger.urls')),
 
+    # Mobile SDK Auth
+    url(r'^api-mobile-auth/(?P<backend>[^/]+)/?$','apps.api.utils.mobile_auth'),
+
 )
 
 # 400 & 500
