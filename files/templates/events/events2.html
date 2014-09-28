@@ -6,13 +6,10 @@
 {%  csrf_token %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 
 <!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
 <!-- Static files for the datatables
 <link href="{% static 'css/datatable.css' %}" rel="stylesheet" media="screen">
 <link href="{% static 'js/datatable.js' %}" rel="stylesheet" media="screen">
@@ -24,9 +21,9 @@
 {{message}} <br />
 <p id="message"> </p> </br>
 
-<button type="button" onclick="add_new_event()" class="btn btn-primary">Add New Event</button> 
-<button type="button" id="viewid" onclick="Dajaxice.apps.portals.events.view_edit_event(view_edit_event_js)" class="btn btn-primary">View/Edit Event</button> 
-<button type="button" onclick="event_registration_list()" class="btn btn-primary">View Event Registration List</button> 
+<button type="button" onclick="add_new_event()" class="btn primary">Add New Event</button> 
+<button type="button" id="viewid" onclick="Dajaxice.apps.portals.events.view_edit_event(view_edit_event_js)" class="btn  primary">View/Edit Event</button> 
+<button type="button" onclick="event_registration_list()" class="btn primary">View Event Registration List</button> 
 
 <br />
 <br />
@@ -42,7 +39,7 @@
 <thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>
     {% for event in event_list %}
     <tr> <td>
-                <b>{{event.name}}</b><button type="button" class="btn btn-xs btn-success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'})"><i class="icon-pencil"></i></button></td><td> {{event.email}}</td>
+                <b>{{event.name}}</b><button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'})"><i class="icon-pencil"></i></button></td><td> {{event.email}}</td>
                 
         {% endfor %}
 </table>
@@ -102,7 +99,7 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <form action="" method="post" id="event_form" accept-charset="utf-8">
 {%  csrf_token %}
 {{ event_form.as_p }}
-<p><input type="button" class="btn btn-success" onclick="Dajaxice.apps.portals.events.add_event(add_event_js, {'event_form':$('#event_form').serialize(true)})" value="Add Event"/></p>
+<p><input type="button" class="btn success" onclick="Dajaxice.apps.portals.events.add_event(add_event_js, {'event_form':$('#event_form').serialize(true)})" value="Add Event"/></p>
 </form>
 </div>
 
@@ -115,18 +112,7 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <h3> EDIT EVENT FORM </h3> All fields left blank will keep the previous values
 <form action="" method="post" id="edit_event_form" accept-charset="utf-8">
 {%  csrf_token %}
-Event Name: {{ event_form.name }} <span id="edit_event_form_name"></span> <br>
-short_description: {{ event_form.short_description }} <span id="edit_event_form_short_description"></span> <br>
-event_type: {{ event_form.event_type }} <span id="edit_event_form_event_type"></span> <br>
-category: {{ event_form.category }} <span id="edit_event_form_category"></span> <br>
-has_tdp: {{ event_form.has_tdp }} <span id="edit_event_form_has_tdp"></span> <br>
-team_size_min: {{ event_form.team_size_min }} <span id="edit_event_form_team_size_min"></span> <br>
-team_size_max: {{ event_form.team_size_max }} <span id="edit_event_form_team_size_max"></span> <br>
-registration_starts: <!--{{ event_form.registration_starts }}--> <span id="edit_event_form_registration_starts"></span> <br>
-registration_ends: <!--{{ event_form.registration_ends }}--> <span id="edit_event_form_registration_ends"></span> <br>
-google_group: {{ event_form.google_group }} <span id="edit_event_form_google_group"></span> <br>
-email: {{ event_form.email }} <span id="edit_event_form_email"></span> <br>
-{{ event_form.is_visible }} <span id="edit_event_form_is_visible"></span> <br>
+<div id="edit_event_form_dyn"></div>
 <p id="edit_event_form_button"></p>
 </form>
 <br /> <br />
@@ -159,14 +145,14 @@ function show_tabs_js(data){
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
-    text += '<button type="button" class="btn btn-sm btn-info" onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'})" >  Edit Event Details &nbsp &nbsp   </button>';
+    text += '<button type="button" class="btn small " onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'})" >  Edit Event Details &nbsp &nbsp   </button>';
     for (i=0; i < len-1; i++) {
-    text += '&nbsp &nbsp<button type="button" class="btn btn-sm btn-info" onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'})">'+arr[i]+'</button>' + " ";
+    text += '&nbsp &nbsp<button type="button" class="btn small " onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'})">'+arr[i]+'</button>' + " ";
     }
 
     //The add_new_tab button is shown only if user has permission
     if (data.has_perm=="yes"){
-    text += '<button type="button" class="btn btn-sm btn-success pull-right" onclick="add_new_tab_js(\''+data.event_name+'\')"> <i class="icon-plus"></i>Add New Tab </button>' + " ";
+    text += '<button type="button" class="btn small success pull-right" onclick="add_new_tab_js(\''+data.event_name+'\')"> <i class="icon-plus"></i>Add New Tab </button>' + " ";
     document.getElementById("event_tabs").innerHTML = text;}
     else 
     {
@@ -183,7 +169,7 @@ function show_tabs_description_js(data){
     
 	//DELETE and EDIT button displayed only  if user has permission
     if (data.has_perm=="yes"){
-    document.getElementById("delete_tab_button").innerHTML = '<button type="button" onclick="Dajaxice.apps.portals.events.delete_tab(delete_tab_js,{\'event_name\':\''+data.event_name+'\',\'event_tab_name\':\''+data.event_tab_name+'\'})"> Delete Tab </button> ';
+    document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="Dajaxice.apps.portals.events.delete_tab(delete_tab_js,{\'event_name\':\''+data.event_name+'\',\'event_tab_name\':\''+data.event_tab_name+'\'})"> <i class="icon-remove"></i></button>  ';
     
 //edit tab button    
     document.getElementById("edit_tab_div").innerHTML = '<button type="button" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Name or Description</button> On clicking this button Form appears at bottom of the page';
@@ -295,7 +281,7 @@ function view_edit_event_js(data){
     text='<table id="tableid"><thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>';
     for (i=0;i<len-1;i++)
     	{
-    	text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b><button type="button" class="btn btn-xs btn-success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'})"><i class="icon-pencil"></i></button></td><td> '+event_emails_array[i]+'</td></tr>'
+    	text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b><button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'})"><i class="icon-pencil"></i></button></td><td> '+event_emails_array[i]+'</td></tr>'
     	}
     text=text+'</table>';
     
@@ -386,6 +372,8 @@ function edit_event_js(data){
 
 
 function edit_event_details_js(data){
+    $('#edit_event_form_dyn').html(data.form);
+
     document.getElementById("edit_event_form_div").style.display = 'inline';
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
@@ -395,18 +383,10 @@ function edit_event_details_js(data){
     document.getElementById("selected_event_tab").innerHTML = ' ';
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_list").innerHTML = '';
+    
+
     //Printing the previous values
-    document.getElementById("edit_event_form_name").innerHTML = 'Previous value was: '+ data.event_name;
-    document.getElementById("edit_event_form_short_description").innerHTML = 'Previous value was: '+ data.short_description;
-    document.getElementById("edit_event_form_event_type").innerHTML = 'Previous value was: '+ data.event_type;
-    document.getElementById("edit_event_form_category").innerHTML = 'Previous value was: '+ data.category;
-    document.getElementById("edit_event_form_has_tdp").innerHTML = 'Previous value was: '+ data.has_tdp;
-    document.getElementById("edit_event_form_team_size_min").innerHTML = 'Previous value was: '+ data.team_size_min;
-    document.getElementById("edit_event_form_team_size_max").innerHTML = 'Previous value was: '+ data.team_size_max;
-    document.getElementById("edit_event_form_registration_starts").innerHTML = 'Previous value was: '+ data.registration_starts;
-    document.getElementById("edit_event_form_registration_ends").innerHTML = 'Previous value was: '+ data.registration_ends;
-    document.getElementById("edit_event_form_google_group").innerHTML = 'Previous value was: '+ data.google_group;
-    document.getElementById("edit_event_form_email").innerHTML = 'Previous value was: '+ data.email;
+
     document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" type="button" onclick="Dajaxice.apps.portals.events.edit_event(edit_event_js, {\'event_name\':\''+data.event_name+'\',\'edit_event_form\':$(\'#edit_event_form\').serialize(true)})" value="Edit Event"/>';
     }
 $(document).ready(function(){

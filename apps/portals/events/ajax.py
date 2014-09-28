@@ -126,17 +126,17 @@ def edit_tab(request,edit_tab_form):
     return json.dumps({'message': message})
     
     
-    
+from apps.portals.events.forms import AddEventForm    
+
 @dajaxice_register
 def edit_event_details(request,event_name):
 	event_object=Event.objects.get(name=event_name)
-	print event_name
-	return json.dumps({'message': 'message','event_name':event_name,'short_description':event_object.short_description,'event_type':event_object.event_type,'category':event_object.category,'has_tdp':event_object.has_tdp,'team_size_min':event_object.team_size_min,'team_size_max':event_object.team_size_max,'registration_starts':event_object.registration_starts,'registration_ends':event_object.registration_ends,'google_group':event_object.google_group,'email':event_object.email})
+	form = AddEventForm(instance=event_object).as_table()
+	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'short_description':event_object.short_description,'event_type':event_object.event_type,'category':event_object.category,'has_tdp':event_object.has_tdp,'team_size_min':event_object.team_size_min,'team_size_max':event_object.team_size_max,'registration_starts':event_object.registration_starts,'registration_ends':event_object.registration_ends,'google_group':event_object.google_group,'email':event_object.email})
     
     
 #try to make the deserialized form of the type addeventform then validate it
 
-from apps.portals.events.forms import AddEventForm    
 @dajaxice_register    
 def add_event(request,event_form):
 	message="Your form has the following errors\n"
@@ -156,9 +156,28 @@ from django.core.exceptions import ValidationError
 @dajaxice_register    
 def edit_event(request,event_name,edit_event_form):
 	message="Your form has the following errors\n"
-	edit_event_form = deserialize_form(edit_event_form)
-	message= "p"+str(edit_event_form['registration_starts'])+"p"
+	edit_event_form = AddEventForm(deserialize_form(edit_event_form))
 	event_object=Event.objects.get(name=event_name)
+	if edit_event_form.is_valid():
+		event_object.name=edit_event_form.cleaned_data['name']
+		event_object.short_description=edit_event_form.cleaned_data['short_description']
+		event_object.event_type=edit_event_form.cleaned_data['event_type']
+		event_object.category =edit_event_form.cleaned_data['category']
+		event_object.has_tdp=edit_event_form.cleaned_data['has_tdp']
+		event_object.team_size_min=edit_event_form.cleaned_data['team_size_min']
+		event_object.team_size_max=edit_event_form.cleaned_data['team_size_max']
+		event_object.registration_starts=edit_event_form.cleaned_data['registration_starts']
+		event_object.google_group=edit_event_form.cleaned_data['google_group']
+		event_object.email=edit_event_form.cleaned_data['email']
+		event_object.coords=edit_event_form.cleaned_data['coords']
+		event_object.save()	
+
+		message="successfully added event"
+	else:
+		for field in event_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"\n"
+
 
 	return json.dumps({'message': message})
 	
