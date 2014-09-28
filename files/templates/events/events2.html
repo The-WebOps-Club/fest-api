@@ -7,7 +7,6 @@
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
 
-
 <!-- Latest compiled and minified JavaScript -->
 
 <!-- Static files for the datatables
@@ -145,7 +144,7 @@ function show_tabs_js(data){
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
-    text += '<button type="button" class="btn small " onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'})" >  Edit Event Details &nbsp &nbsp   </button>';
+    text += '<button type="button" class="btn small" onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'})" >  Edit Event Details &nbsp &nbsp   </button>';
     for (i=0; i < len-1; i++) {
     text += '&nbsp &nbsp<button type="button" class="btn small " onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'})">'+arr[i]+'</button>' + " ";
     }
@@ -169,7 +168,7 @@ function show_tabs_description_js(data){
     
 	//DELETE and EDIT button displayed only  if user has permission
     if (data.has_perm=="yes"){
-    document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="Dajaxice.apps.portals.events.delete_tab(delete_tab_js,{\'event_name\':\''+data.event_name+'\',\'event_tab_name\':\''+data.event_tab_name+'\'})"> <i class="icon-remove"></i></button>  ';
+    document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="confirm_delete_tab(\''+data.event_name+'\',\''+data.event_tab_name+'\')"> <font size="3">x Delete</font></button>  ';
     
 //edit tab button    
     document.getElementById("edit_tab_div").innerHTML = '<button type="button" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Name or Description</button> On clicking this button Form appears at bottom of the page';
@@ -183,6 +182,11 @@ function show_tabs_description_js(data){
     document.getElementById("edit_event_form_div").style.display = 'none';
 }
 
+function confirm_delete_tab(event_name,event_tab_name){
+    if (confirm("Are you sure you want to delete this tab?") == true) {
+        Dajaxice.apps.portals.events.delete_tab(delete_tab_js,{'event_name':event_name,'event_tab_name':event_tab_name});
+    }
+}
 function add_new_tab_js(event_name){
     document.getElementById("event_name_hidden").value = event_name;
     document.getElementById("add_new_tab_form").style.display="inline";
@@ -196,7 +200,7 @@ function add_new_tab_js(event_name){
 }
 
 function delete_tab_js(data){
-    alert(data.message);
+    toastr.success(data.message);
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
     document.getElementById("registration_tab").innerHTML = ' '; 
@@ -232,11 +236,11 @@ function register_js(data){
 function edit_tab_js(data){
     var x = document.forms["edit_form"]["tab_Name"].value;
     if (x==null || x=="" || x[0]==" ") {
-        alert("Event Tab Name must be filled. 1st letter cannot be a space");
+        toastr.warning("Event Tab Name must be filled. 1st letter cannot be a space");
         return false;
     }
     else{
-    alert(data.message);
+    toastr.success(data.message);
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
     document.getElementById("registration_tab").innerHTML = ' '; 
@@ -253,10 +257,10 @@ function edit_tab_js(data){
 function add_tab_js(data){
     var x = document.forms["add_tab_form"]["tab_name"].value;
     if (x==null || x=="" || x[0]==" ") {
-        alert("New Event Tab Name must be filled. 1st letter cannot be a space");
+        toastr.error("New Event Tab Name must be filled. 1st letter cannot be a space");
     }
     else{
-    alert(data.message);
+    toastr.success(data.message);
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
     document.getElementById("registration_tab").innerHTML = ' '; 
@@ -355,19 +359,27 @@ function event_registration_list(){
 
 
 function add_event_js(data){
-    alert(data.message);
+    
     if (data.message[0]=='s')
     {
+    toastr.success(data.message);
     document.getElementById("option_selected").innerHTML = '';
     //make the add_event_form disappear
     document.getElementById("event_form_div").style.display = 'none';
-    document.getElementById("message").innerHTML = 'Event Successfully Added. Please click on the Add New Event Tab to add another event.';
+    }
+    else {
+        toastr.warning(data.message);
     }
     
 }
 
 function edit_event_js(data){
-    alert(data.message);
+    if (data.temp){
+    toastr.success(data.message);
+    }
+    else {
+        toastr.error(data.message);
+    }
 }
 
 

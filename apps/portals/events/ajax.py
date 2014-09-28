@@ -171,15 +171,16 @@ def edit_event(request,event_name,edit_event_form):
 		event_object.email=edit_event_form.cleaned_data['email']
 		event_object.coords=edit_event_form.cleaned_data['coords']
 		event_object.save()	
-
+		temp=1
 		message="successfully added event"
 	else:
+		temp=0
 		for field in event_form:
 			for error in field.errors:
 				message=message+field.html_name+" : "+error+"\n"
 
 
-	return json.dumps({'message': message})
+	return json.dumps({'message': message,'temp':temp})
 	
 	
 	
