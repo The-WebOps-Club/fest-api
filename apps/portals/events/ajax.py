@@ -50,7 +50,7 @@ def show_tabs_description(request,event_name,event_tab,has_perm):
     description=event_tab.content
     return json.dumps({'description': description,'event_name':event_name,'event_tab_name': event_tab.name,'has_perm':has_perm})
 
-
+#ARUN - CHANGES MADE HERE
 #Function for setting permissions to edit Event Tabs 
 def permission(event_object,user_object):
 	events_dept=Dept.objects.get(name='events')
@@ -62,7 +62,7 @@ def permission(event_object,user_object):
 			return "participant_event_has_tdp"
 		else:
 			return "participant"
-	if events_dept in user_object.erp_profile.core_relations.all() or qms_dept in user_object.erp_profile.core_relations.all():
+	if events_dept in user_object.erp_profile.core_relations.all() or qms_dept in user_object.erp_profile.core_relations.all() or user_object.erp_profile in event_object.coords.all():
 		return "yes"
 	else:
 		return "no"
@@ -171,7 +171,8 @@ def view_edit_event(request):
 	event_emails=""
 	event_array=Event.objects.all()
 	for event in event_array:
-		event_names=event_names+event.name+" "
-		event_emails=event_emails+event.email+" "
+		event_names=event_names+event.name+"|"
+		event_emails=event_emails+event.email+"|"
+		print 
 	return json.dumps({'event_names': event_names,'event_emails':event_emails})
 	
