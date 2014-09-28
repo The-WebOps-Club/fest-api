@@ -414,8 +414,9 @@ class EventViewSet(viewsets.ViewSet):
 				event.teams_registered.add(team)
 				# ALSO TAKE FILE
 				if len(request.FILES) > 0:
-					f = request.FILES[0]
-					print f
+					f = request.FILES.get('tdp')
+					fname = os.path.join(settings.MEDIA_ROOT, "tdp", event.name, str(user.id) + "_" + user.first_name + "_" + user.last_name, f.name)
+					handle_uploaded_file(f, fname)
 				data = EventSerializer(event).data
 				return Response( viewset_response( "done", data ) )
 			else:
