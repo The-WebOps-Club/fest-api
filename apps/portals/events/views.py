@@ -20,7 +20,9 @@ from apps.webmirror.utils import make_global_token
 from django.shortcuts import render_to_response
 from misc.utils import global_context
 
-
+#models
+from django.contrib.auth.models import User
+from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
 from apps.portals.events.models import Event, EventTab
 from django.contrib.auth.decorators import login_required
 from apps.portals.events.forms import AddEventForm
@@ -35,7 +37,8 @@ def add_tabs( request ):
 	for i in events:
 		event_list=event_list+[i.name]
 	'''
-	
+	#if events_dept in user.erp_profile.core_relations.all() or qms_dept in user.erp_profile.core_relations.all():
+		#print yooooooooooopppppp
 
 	context_dict = {'event_list':events,'message':message,'event_form':event_form}
 	return render_to_response('events/events2.html', context_dict, context_instance = global_context(request))

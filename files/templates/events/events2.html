@@ -1,4 +1,3 @@
-
 {% extends 'base/base.html' %}
 {% load check_access %}
 {% block content %}
@@ -43,7 +42,7 @@
 <thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>
     {% for event in event_list %}
     <tr> <td>
-                {{event.name}}<button type="button" class="btn btn-xs btn-success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'})"><i class="icon-pencil"></i></button></td><td> {{event.email}}</td>
+                <b>{{event.name}}</b><button type="button" class="btn btn-xs btn-success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'})"><i class="icon-pencil"></i></button></td><td> {{event.email}}</td>
                 
         {% endfor %}
 </table>
@@ -303,9 +302,12 @@ function view_edit_event_js(data){
     document.getElementById("event_list").innerHTML = text
 	
     
-    document.getElementById("option_selected").innerHTML = '<h2>VIEW / EDIT EVENTS</h2>';
+    document.getElementById("option_selected").innerHTML = '<h2>VIEW/EDIT EVENTS</h2><br><br>';
     
-    //make the other stuff
+    //make the other stuff disappear
+    document.getElementById("event_form_div").style.display = 'none';
+    document.getElementById("edit_event_form_div").style.display = 'none';
+    $('#tableid').dataTable();
     document.getElementById("event_form_div").style.display = 'none';
     document.getElementById("edit_event_form_div").style.display = 'none';
     document.getElementById("event_name").innerHTML = ' ';
