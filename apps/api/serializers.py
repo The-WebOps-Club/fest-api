@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.users.models import ERPProfile, UserProfile, Team
+from apps.events.models import Event
 from django.contrib.auth.models import User
 
 from apps.walls.models import Wall, Post, Comment
@@ -14,6 +15,10 @@ class UserSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ERPProfile
+
+class EventSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Event
 
 class ParticipantProfileSerializer(serializers.ModelSerializer):
 	class Meta:

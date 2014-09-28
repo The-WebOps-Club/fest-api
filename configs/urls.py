@@ -39,12 +39,13 @@ router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
 router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
 router.register(r'teams',mobile.TeamViewSet,base_name="teams")
 router.register(r'blogs',mobile.BlogFeedViewSet,base_name="blogs")
+router.register(r'events',mobile.EventViewSet,base_name="events")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # FEST-API APPS
     url(r'^$', 'apps.home.views.home', name='home'),
-    url(r'^markdown$', 'apps.home.views.markdown', name='markdown'),    
+    url(r'^markdown$', 'apps.home.views.markdown', name='markdown'),
 
     # Users
     url(r'^login/$', 'apps.users.views.login_user', name='login'), # Logs user in
@@ -59,16 +60,16 @@ urlpatterns = patterns('',
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'), # Shows newsfeed for a user
     url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
-    
+
     # Notification
 	url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page
-	
+
 	# Walls
     url(r'^wall/(?P<wall_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall/(?P<wall_id>\d+)/(?P<post_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall/(?P<owner_type>\w+)/(?P<owner_id>\d+)$', 'apps.walls.views.my_wall', name='my_wall'),
-    
+
     # Docs
     url(r'^docs/$', 'apps.docs.views.docs', name='docs'),
     url(r'^docs/picker/?$', 'apps.docs.views.picker', name='picker'),
@@ -95,16 +96,16 @@ urlpatterns = patterns('',
     url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
     url(r'^participant_login/$','apps.users.views.participant_login', name='participant_login'),
     url(r'^social_login/$','apps.users.views.social_login', name='social_login'),
-    
+
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
-    
+
     # ------------------------------------------------------------------
     # DJANGO APPS
     # Admin
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    
+
     #Auth
     url(r'^logout/?$', 'django.contrib.auth.views.logout', {'next_page':settings.SITE_URL}, name='logout'),
     url(r'^password_reset/$', 'django.contrib.auth.views.password_reset', {'template_name':'password/reset.html', 'extra_context':{'FEST_NAME':settings.FEST_NAME,}}, name='password_reset'),
@@ -116,13 +117,13 @@ urlpatterns = patterns('',
     # THIRD PARTY APPS
     # Dajaxice
     url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
-    
+
     # Notifications
     url(r'^inbox/notifications/', include(notifications.urls)),
-    
+
     # Python social auth
     url(r'', include('social.apps.django_app.urls', namespace='social')),
-    
+
     # Haystack
     url(r'^search/', include('haystack.urls')),
 

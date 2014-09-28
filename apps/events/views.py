@@ -35,6 +35,3 @@ def add_tabs( request ):
 	context_dict = {'event_list':event_list,'message':message}
 	return render_to_response('events/events2.html', context_dict, context_instance = global_context(request))
 
-
-
-

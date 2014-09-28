@@ -304,10 +304,10 @@ AUTHENTICATION_BACKENDS = (
     # 'social.backends.flickr.FlickrOAuth',
     # 'social.backends.foursquare.FoursquareOAuth2',
     'social.backends.github.GithubOAuth2',
-    'social.backends.google.GoogleOAuth',
+    #'social.backends.google.GoogleOAuth',
     'social.backends.google.GoogleOAuth2',
-    'social.backends.google.GoogleOpenId',
-    # 'social.backends.google.GooglePlusAuth',
+    #'social.backends.google.GoogleOpenId',
+    'social.backends.google.GooglePlusAuth',
     # 'social.backends.instagram.InstagramOAuth2',
     # 'social.backends.jawbone.JawboneOAuth2',
     'social.backends.linkedin.LinkedinOAuth',
@@ -405,6 +405,8 @@ SOCIAL_AUTH_PIPELINE = (
 )
 # Social auth - backend specific
     # Google
+SOCIAL_AUTH_GOOGLE_OAUTH2_USE_DEPRECATED_API = True
+SOCIAL_AUTH_GOOGLE_PLUS_USE_DEPRECATED_API = True
 SOCIAL_AUTH_GOOGLE_CONSUMER_KEY          = ''
 SOCIAL_AUTH_GOOGLE_CONSUMER_SECRET       = ''
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY            = '186928535147.apps.googleusercontent.com'
@@ -426,25 +428,26 @@ SOCIAL_AUTH_FACEBOOK_SCOPE              = [
     
     'user_friends',
     
-    'user_about_me', 'user_activities', 'user_birthday', 
-    'user_checkins', 'user_education_history', 'user_events', 
-    'user_groups', 'user_hometown', 'user_interests', 
-    'user_likes', 'user_location', 'user_notes', 'user_photos', 
-    'user_status', 'user_subscriptions', 'user_videos', 
-    'user_work_history', # User extended profile scope
+    #'user_about_me', 'user_activities', 'user_birthday', 
+    #'user_checkins', 'user_education_history', 'user_events', 
+    #'user_groups', 'user_hometown', 'user_interests', 
+    #'user_likes', 'user_location', 'user_notes', 'user_photos', 
+    #'user_status', 'user_subscriptions', 'user_videos', 
+    #'user_work_history', # User extended profile scope
     
-    'friends_about_me', 'friends_activities', 'friends_birthday', 
-    'friends_checkins', 'friends_education_history', 'friends_events', 
-    'friends_groups', 'friends_hometown', 'friends_interests', 
-    'friends_likes', 'friends_location', 'friends_notes', 'friends_photos', 
-    'friends_status', 'friends_subscriptions', 'friends_videos', 
-    'friends_work_history', # friends extended profile scope
+    #'friends_about_me', 'friends_activities', 'friends_birthday', 
+    #'friends_checkins', 'friends_education_history', 'friends_events', 
+    #'friends_groups', 'friends_hometown', 'friends_interests', 
+    #'friends_likes', 'friends_location', 'friends_notes', 'friends_photos', 
+    #'friends_status', 'friends_subscriptions', 'friends_videos', 
+    #'friends_work_history', # friends extended profile scope
     
-    'read_friendlists', 'read_insights', 'read_requests',
-    'user_online_presence', 'friends_online_presence', 
+    #'read_friendlists', 'read_insights', 'read_requests',
+    'user_online_presence', #'friends_online_presence', 
+
     # Extended Permissions scope
     
-    'create_event', 'manage_friendlists', 'manage_notifications', 
+    #'create_event', 'manage_friendlists', 'manage_notifications', 
     'publish_actions', 'publish_stream', # Extended permissions publish
 ]
 SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = SOCIAL_AUTH_FACEBOOK_SCOPE

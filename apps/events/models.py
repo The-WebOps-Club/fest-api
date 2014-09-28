@@ -13,7 +13,7 @@ from django.utils import timezone
 # Decorators
 # Models
 from apps.walls.models import Wall, Post
-from apps.users.models import User,UserProfile
+from apps.users.models import User,UserProfile,Team
 # Forms
 # View functions
 # Misc
@@ -69,14 +69,15 @@ class Event(models.Model):
     email               = models.EmailField(max_length=100, blank=True, null=True)
 
 	# List of registered participants
-    participants_registered = models.ManyToManyField(UserProfile, blank=True, null=True,related_name='events_registered')
+    users_registered = models.ManyToManyField(User, blank=True, null=True,related_name='events_registered')
+    teams_registered = models.ManyToManyField(Team, blank=True, null=True,related_name='events_registered')
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
     
     # Some properties to make some conditions easier
     @property
     def is_team_event(self):        
-        return team_size_max == 1
+        return self.team_size_max > 1
     @property
     def is_registration_on(self):   
         return timezone.now() > self.registrarion_starts and timezone.now() < self.registrarion_ends
@@ -125,3 +126,6 @@ class EventTab(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    
+

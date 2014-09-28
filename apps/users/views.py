@@ -405,7 +405,6 @@ def unsubscribe(request, username, token):
  
 		local_context = {}
 		return render_to_response("pages/unsubscribe.html", local_context, context_instance= global_context(request))
-
 	# Otherwise redirect to login page
 	next_url = reverse('apps.users.views.unsubscribe', kwargs={'username': username, 'token': token,})
 	return HttpResponseRedirect('%s?next=%s' % (reverse('login'), next_url))

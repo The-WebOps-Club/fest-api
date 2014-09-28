@@ -3,17 +3,18 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from social.apps.django_app.utils import strategy, load_strategy
 from apps.users.models import UserProfile
 from rest_framework.authtoken.models import Token
+import os
 
 def viewset_response(message,data):
-	temp={}	
+	temp={}
 	temp['status']=0
 	temp['message']=message
-	temp['data']=data	
+	temp['data']=data
 	if not message:
 		temp['status']=1
 		temp['message']='success'
 	return temp
-	
+
 
 def mobile_auth(request, backend, *args, **kwargs):
     try:
@@ -49,3 +50,9 @@ def mobile_auth(request, backend, *args, **kwargs):
     }
     data = json.dumps(data)
     return HttpResponse(data, mimetype="application/json")
+
+def handle_uploaded_file(f, fname):
+	os.makedirs(os.path.dirname(fname)) # Create directories in path
+	with open(fname, 'wb+') as destination: # save it
+		for chunk in f.chunks():
+			destination.write(chunk)
