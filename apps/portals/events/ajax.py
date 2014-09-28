@@ -130,6 +130,7 @@ def edit_tab(request,edit_tab_form):
 @dajaxice_register
 def edit_event_details(request,event_name):
 	event_object=Event.objects.get(name=event_name)
+	print event_name
 	return json.dumps({'message': 'message','event_name':event_name,'short_description':event_object.short_description,'event_type':event_object.event_type,'category':event_object.category,'has_tdp':event_object.has_tdp,'team_size_min':event_object.team_size_min,'team_size_max':event_object.team_size_max,'registration_starts':event_object.registration_starts,'registration_ends':event_object.registration_ends,'google_group':event_object.google_group,'email':event_object.email})
     
     
