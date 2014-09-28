@@ -32,15 +32,15 @@ def add_tabs( request ):
 	message=""
 	event_form=AddEventForm()
 	events=Event.objects.all()
-	'''
-	event_list=[]
-	for i in events:
-		event_list=event_list+[i.name]
-	'''
-	#if events_dept in user.erp_profile.core_relations.all() or qms_dept in user.erp_profile.core_relations.all():
-		#print yooooooooooopppppp
 
-	context_dict = {'event_list':events,'message':message,'event_form':event_form}
+	core_perm=None
+	
+	for dept in request.user.erp_profile.core_relations.all():
+		if dept.name=='events' or dept.name=='qms':
+			core_perm=1
+	
+
+	context_dict = {'event_list':events,'message':message,'event_form':event_form,'core_perm':core_perm}
 	return render_to_response('events/events2.html', context_dict, context_instance = global_context(request))
 
 @login_required

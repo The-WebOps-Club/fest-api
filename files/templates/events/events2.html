@@ -19,8 +19,9 @@
 
 {{message}} <br />
 <p id="message"> </p> </br>
-
+{% if core_perm %}
 <button type="button" onclick="add_new_event()" class="btn primary">Add New Event</button> 
+{% endif %}
 <button type="button" id="viewid" onclick="Dajaxice.apps.portals.events.view_edit_event(view_edit_event_js)" class="btn  primary">View/Edit Event</button> 
 <button type="button" onclick="event_registration_list()" class="btn primary">View Event Registration List</button> 
 
@@ -108,6 +109,7 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 
 <!--EDIT EVENT FORM use some inintialize in ajax.py to add initial values and then serialize the form before sending it-->
 <div id="edit_event_form_div" style="display:none;">
+{% if core_perm %}
 <h3> EDIT EVENT FORM </h3> All fields left blank will keep the previous values
 <form action="" method="post" id="edit_event_form" accept-charset="utf-8">
 {%  csrf_token %}
@@ -115,6 +117,7 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <p id="edit_event_form_button"></p>
 </form>
 <br /> <br />
+{% endif %}
 </div>
 
 <!--JS FUNCTIONS -->
@@ -155,7 +158,7 @@ function show_tabs_js(data){
     document.getElementById("event_tabs").innerHTML = text;}
     else 
     {
-    text+='<br><br> You do not have permission to edit this event. Please contact your core if you want to.'
+    text+='<br><br><b style="color:red"> You do not have permission to edit this event. Please contact your core if you want to.</b>'
     }
     document.getElementById("event_tabs").innerHTML = text;
     }
@@ -171,7 +174,7 @@ function show_tabs_description_js(data){
     document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="confirm_delete_tab(\''+data.event_name+'\',\''+data.event_tab_name+'\')"> <font size="3">x Delete</font></button>  ';
     
 //edit tab button    
-    document.getElementById("edit_tab_div").innerHTML = '<button type="button" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Name or Description</button> On clicking this button Form appears at bottom of the page';
+    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
     }
 
     document.getElementById("event_tabs_description").innerHTML = data.description;
@@ -375,6 +378,7 @@ function add_event_js(data){
 
 function edit_event_js(data){
     if (data.temp){
+    document.getElementById("edit_event_form_div").style.display = 'none';
     toastr.success(data.message);
     }
     else {
