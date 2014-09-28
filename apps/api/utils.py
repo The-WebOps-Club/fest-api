@@ -8,4 +8,3 @@ def viewset_response(message,data):
 		temp['status']=1
 		temp['message']='success'
 	return temp
-	
