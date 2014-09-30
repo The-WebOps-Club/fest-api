@@ -51,7 +51,7 @@ class Event(models.Model):
     """
     
     # Basic information
-    name                = models.CharField(max_length=50)
+    name                = models.CharField(max_length=50, unique=True)
     short_description   = models.CharField(max_length=250, blank=True)
     event_type          = models.CharField(max_length=100, choices=EVENT_TYPE, blank=True, null=True)
     category            = models.CharField(max_length=100, choices=EVENT_CATEGORIES)
