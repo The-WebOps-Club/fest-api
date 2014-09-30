@@ -47,8 +47,11 @@
 
 <div id="event_name"></div>
 <div id="event_tabs"></div>
+<br>
 <h3 id="selected_event_tab"></h3>
-<div id="event_tabs_description"> </div>
+<p><div id="event_tabs_description"> </div></p>
+<br>
+<br>
 
 <!--DELETE TAB BUTTON-->
 <div id="delete_tab_button"></div> &nbsp
@@ -70,7 +73,7 @@
 Tab Name: <input type="text" name="tab_name"><br>
 Description: <textarea name="tab_description" rows="20" cols="40" wrap="hard"></textarea>
 <input id="event_name_hidden" type="hidden" name="event_name" value="">
-<input type="button" onclick="Dajaxice.apps.portals.events.add_tab(add_tab_js, {'add_tab_form':$('#add_tab_form').serialize(true)})" value="Create Tab"/>
+<input type="button" onclick="Dajaxice.apps.portals.events.add_tab(add_tab_js, {'username':'{{user.username}}','add_tab_form':$('#add_tab_form').serialize(true)})" value="Create Tab"/>
 </form>
 </div>
 
@@ -84,7 +87,7 @@ Tab Name: <input type="text" name="tab_Name" id="tab_Name_input" value=""><br>
 Description: <textarea name="tab_Description" id="tab_Description_input" value="" rows="20" cols="40"></textarea>
 <input id="event_Name_edit_form_hidden" type="hidden" name="event_Name_edit_form" value="">
 <input id="event_tab_Name_edit_form_hidden" type="hidden" name="event_tab_Name_edit_form" value="">
-<input type="button" onclick="Dajaxice.apps.portals.events.edit_tab(edit_tab_js, {'edit_tab_form':$('#edit_form').serialize(true)})" value="Edit Tab" >
+<input type="button" onclick="Dajaxice.apps.portals.events.edit_tab(edit_tab_js, {'username':'{{user.username}}','edit_tab_form':$('#edit_form').serialize(true)})" value="Edit Tab" >
 </form>
 </div>
 
@@ -117,6 +120,8 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <p id="edit_event_form_button"></p>
 </form>
 <br /> <br />
+{% else %}
+<br><b style="color:red"> You do not have permission to edit this event. You can only edit its tabs. Please contact your core if you want to edit event details.</b>
 {% endif %}
 </div>
 
@@ -171,7 +176,7 @@ function show_tabs_description_js(data){
     
 	//DELETE and EDIT button displayed only  if user has permission
     if (data.has_perm=="yes"){
-    document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="confirm_delete_tab(\''+data.event_name+'\',\''+data.event_tab_name+'\')"> <font size="3">x Delete</font></button>  ';
+    document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="confirm_delete_tab(\''+data.event_name+'\',\''+data.event_tab_name+'\',\'{{user.username}}\')"> <font size="1">X Delete Tab</font></button>  ';
     
 //edit tab button    
     document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
@@ -185,9 +190,9 @@ function show_tabs_description_js(data){
     document.getElementById("edit_event_form_div").style.display = 'none';
 }
 
-function confirm_delete_tab(event_name,event_tab_name){
+function confirm_delete_tab(event_name,event_tab_name,username){
     if (confirm("Are you sure you want to delete this tab?") == true) {
-        Dajaxice.apps.portals.events.delete_tab(delete_tab_js,{'event_name':event_name,'event_tab_name':event_tab_name});
+        Dajaxice.apps.portals.events.delete_tab(delete_tab_js,{'event_name':event_name,'event_tab_name':event_tab_name,'username':username});
     }
 }
 function add_new_tab_js(event_name){
@@ -213,7 +218,7 @@ function delete_tab_js(data){
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_list").innerHTML = ' ';
     document.getElementById("option_selected").innerHTML = ' ';
-
+    Dajaxice.apps.portals.events.show_tabs(show_tabs_js,{'event_name':data.event_name,'username':data.username});
 }
 
 function edit_some_tab_js(event_name,event_tab_name,description){
@@ -253,6 +258,7 @@ function edit_tab_js(data){
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_list").innerHTML = ' ';
     document.getElementById("option_selected").innerHTML = ' ';
+    Dajaxice.apps.portals.events.show_tabs(show_tabs_js,{'event_name':data.event_name,'username':data.username});
     }
 }    
 
@@ -272,10 +278,9 @@ function add_tab_js(data){
     document.getElementById("selected_event_tab").innerHTML = ' ';
     document.getElementById("event_tabs_description").innerHTML = ' ';
     document.getElementById("event_list").innerHTML = ' ';
-    document.getElementById("event_name").innerHTML = ' ';
-    document.getElementById("event_tabs").innerHTML = ' ';
     document.getElementById("option_selected").innerHTML = ' ';
     document.getElementById("edit_event_form_div").style.display = 'none';
+    Dajaxice.apps.portals.events.show_tabs(show_tabs_js,{'event_name':data.event_name,'username':data.username});
     }
 }
 

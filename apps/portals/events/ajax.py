@@ -34,7 +34,6 @@ def show_tabs(request,event_name,username):
     event_object=Event.objects.get(name=event_name)
     user_object=User.objects.get(username=username)
     has_perm = permission(event_object,user_object)
-    print has_perm
     tabs_object_list=event_object.eventtab_set.all()
 #tabs_names_list is a string with a set of event-tab-names -separated by commas
     tabs_names_list=''
@@ -81,18 +80,18 @@ def register(request,event_name,username):
 
 
 @dajaxice_register
-def delete_tab(request,event_name,event_tab_name):
+def delete_tab(request,event_name,event_tab_name,username):
     event_object=Event.objects.get(name=event_name)
     event_tab=EventTab.objects.get(name=event_tab_name,event=event_object)
     event_tab.delete()
-    return json.dumps({'message':'The event-tab '+event_tab_name+' from the event '+event_name+' has been deleted'})
+    return json.dumps({'message':'The event-tab '+event_tab_name+' from the event '+event_name+' has been deleted','username':username,'event_name':event_object.name})
 
 
 
 
 
 @dajaxice_register
-def add_tab(request,add_tab_form):
+def add_tab(request,username,add_tab_form):
     add_tab_form=deserialize_form(add_tab_form)
     message=""
     if add_tab_form['tab_name']!='' and  add_tab_form['tab_name'][0]!=' ':
@@ -102,12 +101,12 @@ def add_tab(request,add_tab_form):
 		event_tab.event=Event.objects.get(name=add_tab_form['event_name'])
 		event_tab.save()
 		message="The " + add_tab_form['tab_name'] + " tab has been successfully added to the " + add_tab_form['event_name'] + " event"
-    return json.dumps({'message': message})
+    return json.dumps({'message': message,'username':username,'event_name':event_tab.event.name})
 
 
 
 @dajaxice_register
-def edit_tab(request,edit_tab_form):
+def edit_tab(request,username,edit_tab_form):
     edit_tab_form=deserialize_form(edit_tab_form)
     message=""
     if edit_tab_form['tab_Name']!='' and  edit_tab_form['tab_Name'][0]!=' ':
@@ -123,7 +122,7 @@ def edit_tab(request,edit_tab_form):
 
 			message="The " + edit_tab_form['tab_Name'] + " tab from the event " + edit_tab_form['event_Name_edit_form'] + "  has been successfully Edited."
 
-    return json.dumps({'message': message})
+    return json.dumps({'message': message,'username':username,'event_name':event_object.name})
     
     
 from apps.portals.events.forms import AddEventForm    
@@ -139,7 +138,7 @@ def edit_event_details(request,event_name):
 
 @dajaxice_register    
 def add_event(request,event_form):
-	message="Your form has the following errors\n"
+	message="Your form has the following errors <br>"
 	event_form = AddEventForm(deserialize_form(event_form))
 	if event_form.is_valid():
 		event_form.save()
@@ -147,7 +146,7 @@ def add_event(request,event_form):
 	else:
 		for field in event_form:
 			for error in field.errors:
-				message=message+field.html_name+" : "+error+"\n"
+				message=message+field.html_name+" : "+error+"<br>"
 				
 	return json.dumps({'message': message})
 	
@@ -155,7 +154,7 @@ def add_event(request,event_form):
 from django.core.exceptions import ValidationError
 @dajaxice_register    
 def edit_event(request,event_name,edit_event_form):
-	message="Your form has the following errors\n"
+	message="Your form has the following errors <br>"
 	edit_event_form = AddEventForm(deserialize_form(edit_event_form))
 	event_object=Event.objects.get(name=event_name)
 	if edit_event_form.is_valid():
@@ -177,7 +176,7 @@ def edit_event(request,event_name,edit_event_form):
 		temp=0
 		for field in event_form:
 			for error in field.errors:
-				message=message+field.html_name+" : "+error+"\n"
+				message=message+field.html_name+" : "+error+"<br>"
 
 
 	return json.dumps({'message': message,'temp':temp})
@@ -194,6 +193,5 @@ def view_edit_event(request):
 	for event in event_array:
 		event_names=event_names+event.name+"|"
 		event_emails=event_emails+event.email+"|"
-		print 
 	return json.dumps({'event_names': event_names,'event_emails':event_emails})
 	
