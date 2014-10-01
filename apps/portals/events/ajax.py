@@ -93,7 +93,7 @@ def delete_tab(request,event_name,event_tab_name,username):
 @dajaxice_register
 def add_tab(request,username,add_tab_form):
     add_tab_form=deserialize_form(add_tab_form)
-    message=""
+    message=""    
     if add_tab_form['tab_name']!='' and  add_tab_form['tab_name'][0]!=' ':
 		event_tab=EventTab()
 		event_tab.name=add_tab_form['tab_name']
@@ -101,7 +101,7 @@ def add_tab(request,username,add_tab_form):
 		event_tab.event=Event.objects.get(name=add_tab_form['event_name'])
 		event_tab.save()
 		message="The " + add_tab_form['tab_name'] + " tab has been successfully added to the " + add_tab_form['event_name'] + " event"
-    return json.dumps({'message': message,'username':username,'event_name':event_tab.event.name})
+    return json.dumps({'message': message,'username':username,'event_name':add_tab_form['event_name']})
 
 
 
@@ -195,3 +195,4 @@ def view_edit_event(request):
 		event_emails=event_emails+event.email+"|"
 	return json.dumps({'event_names': event_names,'event_emails':event_emails})
 	
+
