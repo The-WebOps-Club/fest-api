@@ -23,6 +23,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 from django.views.decorators.csrf import csrf_exempt
 
+USER_MUTABLE_FIELDS = ["password", "first_name", "last_name"];
+PROFILE_MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","college_text","school_student","want_accomodation","age","city"];
+EVENT_MUTABLE_FIELDS = ["has_tdp","team_size_min","team_size_max","registration_starts","registration_ends"];
+
 class NotificationViewSet(viewsets.ViewSet):
     """
         Return Notifications to an authenticated User
@@ -212,9 +216,6 @@ class CommentsViewSet(viewsets.ViewSet):
             message='an error has occured while trying to comment'
             return Response(message,data)
 
-USER_MUTABLE_FIELDS = ["password", "first_name", "last_name"];
-PROFILE_MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","college_text","school_student","want_accomodation","age","city"];
-
 class UserProfileViewSet(viewsets.ViewSet):
     def list(self, request):
         user = self.request.user
@@ -256,12 +257,12 @@ class UserViewSet(viewsets.ViewSet):
         user = self.request.user
         try:
             for i in request.POST:
-                if i in MUTABLE_FIELDS:
-                    setattr( profile, i, request.POST[i] )
+                if i in USER_MUTABLE_FIELDS:
+                    setattr( user, i, request.POST[i] )
         except:
             return Response("Invalid input data.",[]);
-        profile.save()
-        return Response( viewset_response( "done", ParticipantProfileSerializer(profile).data ) )
+        user.save()
+        return Response( viewset_response( "done", UserSerializer(user).data ) )
 
 class TeamViewSet(viewsets.ViewSet):
     def  list(self, request):
@@ -344,18 +345,19 @@ class BlogFeedViewSet(viewsets.ModelViewSet):
 class EventViewSet(viewsets.ViewSet):
     def list(self, request):
         user = self.request.user
-        action_for = request.DATA.get('action_for', 'all')
-        action_for_id = request.DATA.get('action_for_id', '')
-        if action_for == "all":
+        action_for = request.GET.get('action_for', 'all')
+        action_for_id = request.GET.get('action_for_id', '')
+
+        if action_for == "all": # Find all events.
             events_list = Event.objects.all()
             events_list = EventSerializer(events_list)
             events_data = events_list.data
             return Response(viewset_response("done", events_data))
-        elif action_for == "user":
+        elif action_for == "user": # Find all events of mine
             events_list = EventSerializer(user.events_registered.all())
             events_data = events_list.data
             return Response(viewset_response("done", events_data))
-        else:
+        elif action_for == "team": # Find all events in my team
             team = get_object_or_None(Team, id=action_for_id)
             if team and team in user.teams.all():
                 events_list = EventSerializer(team.events_registered.all())
@@ -365,13 +367,35 @@ class EventViewSet(viewsets.ViewSet):
                 return Response({
                     "error": "Cannot find this team in your list of teams !"
                 }, status=status.HTTP_400_BAD_REQUEST)
+        elif action_for == "id": # Find all events with id
+            event = Event.objects.filter(id=action_for_id)
+            if event:
+                events_list = EventSerializer(event)
+                events_data = events_list.data
+                return Response(viewset_response("done", events_data))
+            else :
+                return Response({
+                    "error": "Cannot find this event !"
+                }, status=status.HTTP_400_BAD_REQUEST)
+        elif action_for == "name": # Find all events with name
+            event = Event.objects.filter(name=action_for_id)
+            if event:
+                events_list = EventSerializer(event)
+                events_data = events_list.data
+                print events_data
+                return Response(viewset_response("done", events_data))
+            else :
+                return Response({
+                    "error": "Cannot find this event !"
+                }, status=status.HTTP_400_BAD_REQUEST)
 
     def create(self, request):
         user = self.request.user
-        event_id = request.DATA.get('event_id', None)
-        name = request.DATA.get('name', None)
-        action = request.DATA.get('action', 'edit')
+        event_id = request.POST.get('event_id', None)
+        name = request.POST.get('name', None)
+        action = request.POST.get('action', 'register')
         event = None
+        print event_id, name, action
         if event_id:
             event = get_object_or_None(Event, id=event_id)
         elif name:
@@ -382,7 +406,7 @@ class EventViewSet(viewsets.ViewSet):
                 "error": "Cannot find this event ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        if action == "edit":
+        if action == "register":
             if event.is_team_event:
                 # Take team info
                 team_name = request.DATA.get('team', None)
@@ -391,7 +415,7 @@ class EventViewSet(viewsets.ViewSet):
                         "error": "You need to enter a team name."
                     }, status=status.HTTP_400_BAD_REQUEST)
                 team = get_object_or_None(Team, name=team_name)
-                if not team :
+                if not team:
                     return Response({
                         "error": "There exists no such team. You need to create the team first !"
                     }, status=status.HTTP_400_BAD_REQUEST)
@@ -399,6 +423,7 @@ class EventViewSet(viewsets.ViewSet):
                     return Response({
                         "error": "You are not a member of this team ! Ask the members to add you first."
                     }, status=status.HTTP_400_BAD_REQUEST)
+
                 event.teams_registered.add(team)
                 # ALSO TAKE FILE
                 if request.FILES.get('tdp', None) and event.has_tdp:
@@ -417,7 +442,17 @@ class EventViewSet(viewsets.ViewSet):
                     handle_uploaded_file(f, fname)
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
-        if action == "unregister":
+        elif action == "edit":
+            print request.POST
+            try:
+                for i in request.POST:
+                    if i in EVENT_MUTABLE_FIELDS:
+                        setattr( event, i, request.POST[i] )
+            except:
+                return Response("Invalid input data.",[]);
+            event.save()
+            return Response( viewset_response( "done", EventSerializer(event).data ) )
+        elif action == "unregister":
             if event.is_team_event:
                 team_name = request.DATA.get('team', None)
                 if not team_name :
