@@ -17,7 +17,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 		model = ERPProfile
 
 class EventSerializer(serializers.ModelSerializer):
-	class Meta:
+    class Meta:
 		model = Event
 
 class ParticipantProfileSerializer(serializers.ModelSerializer):
@@ -58,8 +58,8 @@ class BlogSerializer(serializers.ModelSerializer):
 #    verb = serializers.CharField()
 #    wall = serializers.CharField()
 #    wall_id = serializers.IntegerField()
-#    detail = 
-#    
+#    detail =
+#
 #
 #    #json = []
 #
@@ -74,4 +74,4 @@ class BlogSerializer(serializers.ModelSerializer):
 #        #    item['description'] = notif.action_object.description
 #        #    item['timestamp'] = notif.timestamp
 #        #    json.append(item)
-# 
+#
