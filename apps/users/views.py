@@ -383,7 +383,7 @@ def participant_login(request):
 def social_login( request ):
 
     user = request.user
-    profile = Userprofile.objects.get_or_create(user=user)[0]
+    profile = UserProfile.objects.get_or_create(user=user)[0]
     if profile.city and profile.mobile_number:
         valid_profile = "1"
     else:
