@@ -128,6 +128,8 @@ urlpatterns = patterns('',
     # Haystack
     url(r'^search/', include('haystack.urls')),
 
+    url(r'^select2/', include('select2.urls')),
+
     #For Testing out email templates
     url(r'^email/$', 'apps.walls.views.email_test', name='email'),
     #For Testing out api

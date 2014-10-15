@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
 # Apps
+import select2.fields
 # Decorators
 # Models
 from apps.walls.models import Wall, Post
@@ -92,7 +93,7 @@ class Event(models.Model):
     users_registered = models.ManyToManyField(User, blank=True, null=True,related_name='events_registered')
     teams_registered = models.ManyToManyField(Team, blank=True, null=True,related_name='events_registered')
     
-    coords = models.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
+    coords = select2.fields.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
     
