@@ -1,8 +1,10 @@
 from django.http import HttpResponse, HttpResponseBadRequest
 
 from social.apps.django_app.utils import strategy, load_strategy
+from django.contrib.auth import login
 from apps.users.models import UserProfile
 from rest_framework.authtoken.models import Token
+import json
 import os
 
 def viewset_response(message,data):
@@ -16,6 +18,7 @@ def viewset_response(message,data):
 	return temp
 
 def mobile_auth(request, backend, *args, **kwargs):
+    print request
     try:
         access_token = request.GET.get('access_token')
     except Exception, e:
@@ -24,11 +27,12 @@ def mobile_auth(request, backend, *args, **kwargs):
     strat = load_strategy(backend=backend)
     backend = strat.backend
 
-    try:
-        user = backend.do_auth(access_token=access_token)
-    except:
-        return HttpResponse('Unauthorized', status=401)
-
+    #try:
+    #    user = backend.do_auth(access_token=access_token)
+    #except:
+    #    return HttpResponse('Unauthorized', status=401)
+    user = backend.do_auth(access_token=access_token)
+    print user
     try:
         userprofile = user.profile
         upid=userprofile.id
@@ -36,15 +40,16 @@ def mobile_auth(request, backend, *args, **kwargs):
         # Create and save a userprofile
         userprofile = UserProfile(user=user)
         userprofile.save()
-        try:
-            token=Token.objects.create(user=user)
-        except Exception, e:
-            pass
+    try:
+        token=Token.objects.create(user=user)
+    except Exception, e:
+        pass
+    token=Token.objects.get(user=user).key
     data = {
         'username' : user.username,
         'userid' : user.id,
         'token' : token,
-        'userprofileid' : upid,
+        'userprofileid' : userprofile.id,
         'email' : user.email,
     }
     data = json.dumps(data)

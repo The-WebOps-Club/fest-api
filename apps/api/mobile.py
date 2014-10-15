@@ -335,12 +335,14 @@ class TeamViewSet(viewsets.ViewSet):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 # API methods for Blog App
-class BlogFeedViewSet(viewsets.ModelViewSet):
+class BlogFeedViewSet(viewsets.ViewSet):
     """
         API for acessing blog feeds
     """
-    queryset = Category.objects.all()
-    serializer_class = BlogSerializer
+    def list(self, request):
+        queryset = Category.objects.all()
+        serializer_class = BlogSerializer
+        return Response(viewset_response('done',BlogSerializer(queryset).data))
 
 class EventViewSet(viewsets.ViewSet):
     def list(self, request):

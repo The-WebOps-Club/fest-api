@@ -416,7 +416,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/calendar',
-   # 'https://www.googleapis.com/auth/plus.login',    
+    'https://www.googleapis.com/auth/plus.login',    
 ]
 
     # Facebook
