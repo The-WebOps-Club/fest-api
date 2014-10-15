@@ -85,6 +85,7 @@ urlpatterns = patterns('',
 
     url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
     url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
+    url(r'^portals/hospi/$','apps.portals.hospi.views.hospi_portal', name='hospi_portal' ),
     
     # events portal
     #url(r'^portals/events/$','apps.portals.events.views.portal_main', name='events_portal'),
@@ -109,7 +110,7 @@ urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # THIRD PARTY APPS
     # Dajaxice
-    url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
+   	 url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
     
     # Notifications
     url(r'^inbox/notifications/', include(notifications.urls)),

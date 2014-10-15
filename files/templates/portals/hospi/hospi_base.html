@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load url from future %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Saarang ERP{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+<!-- Styles begin -->
+    <link href="{% static 'css/smoothness/jquery-ui-1.10.3.custom.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
+    <link href="{% static 'css/docs.css' %}" rel="stylesheet">
+    <link href="{% static 'css/prettify.css' %}" rel="stylesheet">
+    
+    <link href="{% static 'css/bootstrap-rowlink.css' %}" rel="stylesheet">
+    <link href="{% static 'css/datatable/jquery.dataTables.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/datatable/jquery.dataTables_themeroller.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/tabletools/TableTools.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/tabletools/TableTools_JUI.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/select2.css' %}" rel="stylesheet">
+
+<!-- Styles end -->
+
+<!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+
+</head>
+
+<body class='container'>
+ 
+
+
+<!-- Content begin -->
+        <div class="container" id="content">
+            {% block content %}{% endblock %}
+        </div>
+<!-- Content ends -->
+
+<!-- Copyright bar begin 
+    <div class = "navbar navbar-fixed-bottom ">
+      <div class="navbar-inner">
+        <div class="container">
+        <p class="text-center muted" style="padding-top:10px;">&copy; Copyright 2014 - Saarang WebOps Team</p></div>
+      </div>
+    </div>
+ Copyright bar ends -->
+
+<!-- JavaScripts begin -->
+    <script src="{% static 'js/jquery-1.9.1.js' %}"></script>
+    <script src="{% static 'js/smoothness/jquery-ui-1.10.3.custom.js' %}"></script>
+
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/bootstrap-rowlink.js' %}"></script>
+    
+    <script src="{% static 'js/datatable/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'js/tabletools/TableTools.js' %}"></script>
+    <script src="{% static 'js/tabletools/ZeroClipboard.js' %}"></script>
+    <script src="{% static 'js/prettify.js' %}"></script>
+    <script src="{% static 'js/holder.js' %}"></script>
+    <script src="{% static 'js/select2.js' %}"></script>
+    
+    
+    <script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce.min.js"></script>
+
+    <script>
+        tinymce.init({
+            selector: "textarea",
+            theme: "modern",
+            width: 750,
+            height: 300,
+            plugins: [
+                 "advlist autolink link lists charmap print preview hr anchor pagebreak spellchecker",
+                 "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime nonbreaking",
+                 "save table contextmenu directionality emoticons template paste textcolor "
+           ],
+           content_css: "css/content.css",
+           toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | print preview media fullpage | forecolor backcolor emoticons",
+           style_formats: [
+                {title: 'Bold text', inline: 'b'},
+                {title: 'Red text', inline: 'span', styles: {color: '#ff000'}},
+                {title: 'Red header', block: 'h1', styles: {color: '#ff0000'}},
+                {title: 'Example 1', inline: 'span', classes: 'example1'},
+                {title: 'Example 2', inline: 'span', classes: 'example2'},
+                {title: 'Table styles'},
+                {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
+            ]
+         });
+    </script>
+    <script>
+      $(document).ready( function () {
+          $('#datatable').dataTable( {
+              "bJQueryUI": true,
+              "sPaginationType": "full_numbers",
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } );
+      } );
+    </script>
+
+
+    <script>
+        $(document).ready(function() { $("#multiselect").select2(); });
+    </script>
+<!-- JavaScripts end -->
+{% include 'analytics.html' %}
+
+</body>
+</html>

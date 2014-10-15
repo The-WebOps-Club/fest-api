@@ -209,8 +209,47 @@ class UserProfile(models.Model): # The corresponding auth user
     last_activity_date = models.DateTimeField(default = datetime.datetime(1950, 1, 1))
 
     send_mails         = models.BooleanField(default=True)
-    
+
     objects = CheckActiveManager()
+
+    '''
+    Added from SaarangUser to incorporate hospi
+    '''
+    timestamp = models.DateTimeField(auto_now_add=True, blank = True, null=True)
+    last_login = models.DateTimeField(blank=True, null=True)
+    saarang_id = models.CharField(max_length=20, blank = True, null=True)
+    desk_id = models.CharField(max_length=20, default='SA14D0000')
+    name = models.CharField(max_length=60, blank = True, null=True)
+    email = models.EmailField(max_length=100, blank = True, null=True)
+    mobile = models.BigIntegerField(max_length=10, blank = True, null=True)
+    city = models.CharField(max_length=100, blank = True, null=True)
+    fb_id = models.CharField(max_length=50, blank = True, null=True)
+    friend_list = models.TextField(max_length=1000, blank = True, null=True)
+    college_id = models.CharField(max_length=50, blank = True, null=True)
+    fb_token = models.TextField(max_length=1000, blank = True, null=True)
+    password = models.CharField(max_length=128, blank = True, null=True)
+    GENDER_CHOICES_2 = (
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+    )
+    ACTIVATION_CHOICES = (
+        ('0','Activation email sent'),
+        ('1','Activated'),
+        ('2','Profile completed'),
+    )
+    gender_hospi = models.CharField(max_length=10, choices=GENDER_CHOICES_2,default='Male', blank = True, null=True) #Used for Hospi Portal
+    activate_status = models.IntegerField(choices = ACTIVATION_CHOICES, default=0, blank=True, null=True)
+    accomod_is_confirmed = models.BooleanField(default=False)
+    def profile_is_complete(self):
+        if (self.name and len(str((self.mobile)))==10 and self.gender and self.college):
+            return True
+        else:
+            return False
+
+    '''
+    Addition to hospi ends here
+    '''
+    
 
     @property
     def fest_id(self):

@@ -1,0 +1,166 @@
+{% extends "hospi/hospi_base.html" %}
+{% load url from future %}
+{% load staticfiles %}
+{% block title %}Welcome | Hospitality | Saarang 2014{% endblock %}
+
+{% block content %}
+{% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message|safe }}<a class="close" data-dismiss="alert" href="#">&times;</a></div>
+{% endfor %}
+<div class="row well well-large">
+    <center>
+        <div class="row">
+            <div class="span3">
+                <img src="{% static 'img/rhs.png' %}"/>
+            </div>
+            <div class="span6"><center>{{ user.name }}
+                <h3>Welcome to accommodation portal</h3><hr/></center>
+            </div>
+            <div class="pull-right"><a class="btn btn-danger" href="{% url 'hospi.views.logout' %}" ><i class="icon-off icon-white"></i> Logout</a></div>
+        </div>
+
+        <div class="alert alert-warning">
+            <h5>General instructions</h5><hr/>
+        <li><strong style="color: red;">The profile of every individual registering for accommodation should be complete in all manner. No field should be left blank in the profile. It is very important to update these, to help us serve you better.</strong></li>    
+	<li>You can request for accommodation inside IIT Madras Campus through this portal</li>
+            <li>One individual can avail accommodation in <strong>only one</strong> team</li>
+            <li>Accommodation will be provided only from 10 AM on 8th January to 9AM on 13th January.</li>
+            <li>All requests have to get confirmed by Saarang</li>
+            <li>Upon confirmation you will receive SAAR (Saarang Advance Accommodation Registration)<br/> document which can also be downloaded from here</li>
+            <li>For more information and pricing system, refer <a href="{% static 'docs/PricingSystem_v2_final.pdf' %}" target="_blank" >this document</a></li>
+        </div>
+
+        <div class="alert alert-success">
+            <h5>You currently lead these teams:</h5><hr/>
+            {% if teams_leading %}
+            <strong>created while you registered for events:</strong>
+            <table class="table table-bordered">
+            {% for team in teams_leading %}
+                <tr>
+                    <td>{{ team.team_sid }}</td>
+                    <td>{{ team.name }}</td>
+                    <td>{{ team.get_total_count }} members</td>
+                    <td>Accommodation status:
+                        {% if team.accomodation_status == 'not_req' %}
+                        {% if team.leader.profile_is_complete %}
+                        <a href="{% url 'hospi.views.set_event_team' team.pk %}" role="button" class="btn btn-success btn-small pull-right" data-toggle="modal">Request for accomodation</a>
+                        {% else %}Please update your profile to place request{% endif %}
+                        {% elif team.accomodation_status == 'requested' %}
+                        <span class="label label-info">Requested</span>
+                        {% elif team.accomodation_status == 'confirmed' %}
+                        <span class="label label-success">Confirmed</span>
+                        <a href="{% url 'hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
+                        {% elif team.accomodation_status == 'waitlisted' %}
+                        <span class="label label-warning">Waitlisted</span>
+                        {% elif team.accomodation_status == 'rejected' %}
+                        <span class="label label-important">Rejected</span>   
+                        {% endif %}</td>
+                </tr>
+            {% endfor %}
+            </table>
+            {% endif %}
+            {% if hospi_teams_leading %}
+            <strong>created for accommodation :</strong>
+            <table class="table table-bordered">
+            {% for team in hospi_teams_leading %}
+                <tr class="rowlink" onclick="document.location = '{% url 'hospi.views.details' team.pk %}';" >
+                    <td>{% if team.accomodation_status == 'not_req' %}<a class="" href="{% url 'hospi.views.delete_team' team.pk %}" onclick="return confirm('Do you want to Delete this team?');"><span class="badge badge-important">&times; Del</span></a>{% endif %}  {{ team.team_sid }}</td>
+                    <td>{{ team.name }}</td>
+                    <td>{{ team.get_total_count }} members</td>
+                    <td>Accommodation status:
+                        {% if team.accomodation_status == 'not_req' %}
+                        {% if team.leader.profile_is_complete %}
+                        <a href="{% url 'hospi.views.set_hospi_team' team.pk %}" role="button" class="btn btn-success btn-small pull-right" data-toggle="modal">Request for accomodation</a>
+                        {% else %}Please update your profile to place request{% endif %}
+                        {% elif team.accomodation_status == 'requested' %}
+                        <span class="label label-info">Requested</span>
+                        {% elif team.accomodation_status == 'confirmed' %}
+                        <span class="label label-success">Confirmed</span>
+                        <a href="{% url 'hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
+                        {% elif team.accomodation_status == 'waitlisted' %}
+                        <span class="label label-warning">Waitlisted</span>
+                        {% elif team.accomodation_status == 'rejected' %}
+                        <span class="label label-important">Rejected</span>   
+                        {% endif %}</td>
+                </tr>
+            {% endfor %}
+            </table>
+            {% endif %}
+            You can request accomodation for any of these teams or you can create a new team.
+        </div>
+        <div class="alert alert-error" >
+            <h5>You are currently a member of these teams:</h5><hr/>
+            {% if teams_member %}
+            <strong> registered for events:</strong>
+            <table class="table table-bordered">
+            {% for team in teams_member %}
+                <tr>
+                    <td>{{ team.team_sid }}</td>
+                    <td>{{ team.name }}</td>
+                    <td>{{ team.get_total_count }} members</td>
+                    <td>Leader: {{ team.leader.name }} (mobile: {{ team.leader.mobile }})</td>
+                    <td>Accommodation status:
+                        {% if team.accomodation_status == 'not_req' %}
+                        <span class="label">Not required</span>
+                        {% elif team.accomodation_status == 'requested' %}
+                        <span class="label label-info">Requested</span>
+                        {% elif team.accomodation_status == 'confirmed' %}
+                        <span class="label label-success">Confirmed</span>
+                        <a href="{% url 'hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
+                        {% elif team.accomodation_status == 'waitlisted' %}
+                        <span class="label label-warning">Waitlisted</span>
+                        {% elif team.accomodation_status == 'rejected' %}
+                        <span class="label label-important">Rejected</span>   
+                        {% endif %}</td>
+                </tr>
+            {% endfor %}
+            </table>
+            {% endif %}
+            {% if hospi_teams_member %}
+            <strong>registered for accommodation:</strong>
+            <table class="table table-bordered">
+            {% for team in hospi_teams_member %}
+                <tr>
+                    <td>{{ team.team_sid }}</td>
+                    <td>{{ team.name }}</td>
+                    <td>{{ team.get_total_count }} members</td>
+                    <td>Leader: {{ team.leader.name }} (mobile: {{ team.leader.mobile }})</td>
+                    <td>Accommodation status:
+                        {% if team.accomodation_status == 'not_req' %}
+                        <span class="label">Not required</span>
+                        {% elif team.accomodation_status == 'requested' %}
+                        <span class="label label-info">Requested</span>
+                        {% elif team.accomodation_status == 'confirmed' %}
+                        <span class="label label-success">Confirmed</span>
+                        <a href="{% url 'hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
+                        {% elif team.accomodation_status == 'waitlisted' %}
+                        <span class="label label-warning">Waitlisted</span>
+                        {% elif team.accomodation_status == 'rejected' %}
+                        <span class="label label-important">Rejected</span>   
+                        {% endif %}</td>
+                </tr>
+            {% endfor %}
+            </table>
+            {% endif %}
+            Please ask you team leader if you want accommodation for these teams.
+        </div>
+    </center>
+        <div class="alert alert-info"><center>
+            <h5>Create a new team:</h5><hr/>    
+            <form class="form-horizontal" action="{% url 'hospi.views.user_save_team' %}" method="POST">
+                {% csrf_token %}
+                <input name="team_name" type="text" placeholder="Team name">
+                <input class="btn btn-primary" type="submit" value="Create"/>
+            </form>
+            
+            Please note that this is for accommodation only. Not for registering to an event.<br/>
+            If you want to register for accomodation for yourself, not as a team, please create a team with no members.
+        </div>
+
+<p style="text-align: center;">
+   For hospitality related queries, please contact <a href="mailto:hospitality@saarang.org" target="_blank">hospitality@saarang.org</a>. If you have difficulty using the registration portal, please send an email to <a href="mailto:webadmin@saarang.org" target="_blank">webadmin@saarang.org</a>. Please provide full details of the problem you are facing while writing to the hospitality section or webadmin.
+</p>
+
+    </center>
+</div>
+{% endblock content %}

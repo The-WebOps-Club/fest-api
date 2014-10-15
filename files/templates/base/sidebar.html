@@ -97,6 +97,11 @@
                             <i class='icon-crown'></i> Finance Portal
                         </a>
                     </li>
+                    <li class="{% if current_page == 'portal_hospi' %}active{% endif %}">
+                        <a href='{% url "hospi_portal" %}'>
+                            <i class='icon-crown'></i> Hospitality Portal
+                        </a>
+                    </li>
 		    {% comment %}
                     <!--<li class="{% if current_page == 'portal_events' %}active{% endif %}">
                         <a href='{% url "events_portal" %}'>

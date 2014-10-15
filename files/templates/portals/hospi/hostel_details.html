@@ -1,0 +1,55 @@
+    
+    <div class="row-fluid well">
+    {% for room in rooms %}
+        {% if forloop.counter0|divisibleby:4 %}
+            <div class="row-fluid">
+        {% endif %}
+            <a class="span3" data-target="#roomModal" href="#{% url 'hospi.views.room_details' room.pk %}" onclick='open_modal(this);'>
+            <div class="wrapper alert {% if room.get_occupants_count %}alert-error{% else %}alert-success{%endif%}">
+                <button onclick="document.location = '{% url 'hospi.views.delete_room' room.pk %}';" >Delete</button>
+                <div class="inner">
+                        <p>
+                            <strong>{{ room.name }}</strong>
+                        </p>
+                        <p>
+                            {{ room.capacity }} max
+                        </p>
+                        <p>
+                            now {{ room.get_occupants_count }}
+                        </p>
+                        
+                </div>
+            </div>
+            </a>
+            
+        {% if forloop.counter|divisibleby:4 %}
+            </div>
+        {% endif %}
+
+    {% endfor %}
+
+
+</div>
+
+
+<div id="roomModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="roomModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" onclick="$('#roomModal').modal('hide');" aria-hidden="true">×</button>
+    <h3 id="roomModalLabel">Room details</h3>
+  </div>
+  <div class="modal-body">
+    <p>One fine body…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" onclick="$('#roomModal').modal('hide');" aria-hidden="true">Close</button>
+  </div>
+</div>
+
+<script type="text/javascript">
+var open_modal = function(elem) {
+    var target = $(elem).attr("href").slice(1);
+    $("#roomModal .modal-body").load(target, function() {
+         $("#roomModal").modal("show");
+    });
+}
+</script>
