@@ -158,8 +158,8 @@ from django.core.exceptions import ValidationError
 @dajaxice_register    
 def edit_event(request,event_name,edit_event_form):
 	message="Your form has the following errors <br>"
-	edit_event_form = AddEventForm(deserialize_form(edit_event_form))
 	event_object=Event.objects.get(name=event_name)
+	edit_event_form = AddEventForm(deserialize_form(edit_event_form), instance=event_object)
 	if edit_event_form.is_valid():
 		event_object.name=edit_event_form.cleaned_data['name']
 		event_object.short_description=edit_event_form.cleaned_data['short_description']
@@ -177,7 +177,7 @@ def edit_event(request,event_name,edit_event_form):
 		message="successfully added event"
 	else:
 		temp=0
-		for field in event_form:
+		for field in edit_event_form:
 			for error in field.errors:
 				message=message+field.html_name+" : "+error+"<br>"
 
