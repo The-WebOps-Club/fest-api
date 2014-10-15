@@ -51,7 +51,8 @@ class CommentSerializer(serializers.ModelSerializer):
 class BlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        depth = 2
+        fields = ('id','name', 'feeds')
+        depth = 1
 
 #class NotificatioSerializer(serializers.Serializer):
 #    id = serializers.IntegerField()
