@@ -22,23 +22,40 @@ from apps.users.models import User,UserProfile,Team,ERPProfile
 # Misc
 from misc.utils import *
 # Python
+from configs.settings import FEST_NAME
 
-EVENT_CATEGORIES = (
-    ('Aerofest', 'Aerofest'),
-    ('Coding', 'Coding'),
-    ('Design and build', 'Design and build'),
-    ('Involve', 'Involve'),
-    ('Quizzes', 'Quizzes'),
-    ('Online', 'Online'),
-    ('Department Flagship Event', 'Department Flagship Event'),
-    ('Spotlight', 'Spotlight'),
-    ('Workshops', 'Workshops'),
-    ('Exhibitions', 'Exhibitions and Shows'),
-    ('Miscellaneous', 'Miscellaneous'),
-    ('Sampark', 'Sampark'),
-    ('B- Events','B- Events'),
-    ('Associated Events','Associated Events'),
-)
+if FEST_NAME=='Saarang':
+	EVENT_CATEGORIES = (
+		('Word Games', 'Word Games'),
+		('Classical Arts', 'Classical Arts'),
+		('LecDems', 'LecDems'),
+		('Music', 'Music'),
+		('Thespian', 'Thespian'),
+		('Writing', 'Writing'),
+		('Speaking', 'Speaking'),
+		('Choreo', 'Choreo'),
+		('Design & Media', 'Design & Media'),
+		('Informals', 'Informals'),
+		('Quizzing', 'Quizzing'),
+		('Fine Arts', 'Fine Arts'),
+	)
+else:
+	EVENT_CATEGORIES = (
+		('Aerofest', 'Aerofest'),
+		('Coding', 'Coding'),
+		('Design and build', 'Design and build'),
+		('Involve', 'Involve'),
+		('Quizzes', 'Quizzes'),
+		('Online', 'Online'),
+		('Department Flagship Event', 'Department Flagship Event'),
+		('Spotlight', 'Spotlight'),
+		('Workshops', 'Workshops'),
+		('Exhibitions', 'Exhibitions and Shows'),
+		('Miscellaneous', 'Miscellaneous'),
+		('Sampark', 'Sampark'),
+		('B- Events','B- Events'),
+		('Associated Events','Associated Events'),
+	)
 
 EVENT_TYPE = (
     ('Audience', 'Audience'),

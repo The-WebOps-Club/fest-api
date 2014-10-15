@@ -1,5 +1,5 @@
 from django import forms
-from apps.portals.events.models import Event
+from apps.events.models import Event
 
 
 class AddEventForm(forms.ModelForm):
