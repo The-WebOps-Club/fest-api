@@ -1,0 +1,12 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<h1>Submit Finance Requests as</h1><hr/>
+<div style="text-align:center">
+	{%for link in list%}
+	<a href="{{link.1}}" target="_blank" class="btn btn-success btn-large" style="margin-bottom:30px;;">{{link.0}}</a><br/>
+	{%endfor%}
+</div>
+{% endblock %}
+{% block extra_js %}
+{% endblock %}

@@ -21,9 +21,10 @@ ALLOWED_HOSTS = ['*']
 PERMISSION_COMMAND = False
 #Absolute URL where the site has been hosted. Don't forget the trailing slash.
 SITE_URL = 'http://localhost:8000/'
+MAIN_SITE_URL = SITE_URL
 
 LOGIN_URL = 'login'
-
+FIELDS_STORED_IN_SESSION = ['type']
 # -------------------------------------------------------------------
 # Apps
 DJANGO_APPS = (
@@ -38,12 +39,12 @@ DJANGO_APPS = (
 THIRD_PARTY_APPS = (
     # For development ease of use
     'south',
-    'debug_toolbar',
+    #'debug_toolbar',
     'django_extensions',
     
     # ajax functionality
     'dajaxice',
-    # 'dajax',
+    #'dajax',
     
     # For programming ease
     'post_office',
@@ -56,7 +57,7 @@ THIRD_PARTY_APPS = (
     'social.apps.django_app.default',
 
     # Search Indexer
-    #'haystack',
+    'haystack',
 
     # compressor - Easy to use minifier and cache system
     'compressor',
@@ -64,8 +65,19 @@ THIRD_PARTY_APPS = (
     # Celery - task scheduling
     # 'djcelery',
 
+    # CORS Headers
+    'corsheaders',
+    
     # Simple stuff
     'exportdata', # used to generate csv files from models
+
+    'select2',
+
+    # Mobile and Mainsite API
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_swagger',
+    'push_notifications'
 )
 API_APPS = (
     'misc',
@@ -74,10 +86,11 @@ API_APPS = (
     'apps.walls',
     'apps.events',
     'apps.docs',
-    'apps.webmirror',
     'apps.portals.events',
     'apps.portals.general',
-
+    'apps.search',
+    'apps.blog',
+    'apps.api',
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 
@@ -86,7 +99,7 @@ INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    #'django.contrib.staticfiles.finders.DefaultStorageFinder',
     'dajaxice.finders.DajaxiceFinder',
     'compressor.finders.CompressorFinder',
 )
@@ -99,6 +112,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
     #'htmlmin.middleware.HtmlMinifyMiddleware',
     
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -262,6 +276,7 @@ EMAIL_BACKEND = 'post_office.EmailBackend'
 POST_OFFICE = {
     'BATCH_SIZE': 100
 }
+SEND_NOTIF_EMAILS = True
 # Required cron job: * * * * * (/usr/bin/python manage.py send_queued_mail >> send_mail.log 2>&1)
 
 # ---------------------------------------------------
@@ -289,10 +304,10 @@ AUTHENTICATION_BACKENDS = (
     # 'social.backends.flickr.FlickrOAuth',
     # 'social.backends.foursquare.FoursquareOAuth2',
     'social.backends.github.GithubOAuth2',
-    'social.backends.google.GoogleOAuth',
+    #'social.backends.google.GoogleOAuth',
     'social.backends.google.GoogleOAuth2',
-    'social.backends.google.GoogleOpenId',
-    # 'social.backends.google.GooglePlusAuth',
+    #'social.backends.google.GoogleOpenId',
+    'social.backends.google.GooglePlusAuth',
     # 'social.backends.instagram.InstagramOAuth2',
     # 'social.backends.jawbone.JawboneOAuth2',
     'social.backends.linkedin.LinkedinOAuth',
@@ -346,7 +361,7 @@ SOCIAL_AUTH_STRATEGY            = 'social.strategies.django_strategy.DjangoStrat
 SOCIAL_AUTH_STORAGE             = 'social.apps.django_app.default.models.DjangoStorage'
 
 # SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/login/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = SITE_URL + 'participant_registration_or_login/'
 # SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/profile/new'
 # SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/new-assoc/'
 # SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/account-disconnected/'
@@ -390,6 +405,8 @@ SOCIAL_AUTH_PIPELINE = (
 )
 # Social auth - backend specific
     # Google
+SOCIAL_AUTH_GOOGLE_OAUTH2_USE_DEPRECATED_API = True
+SOCIAL_AUTH_GOOGLE_PLUS_USE_DEPRECATED_API = True
 SOCIAL_AUTH_GOOGLE_CONSUMER_KEY          = ''
 SOCIAL_AUTH_GOOGLE_CONSUMER_SECRET       = ''
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY            = '186928535147.apps.googleusercontent.com'
@@ -397,8 +414,9 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET         = 'N2LxEfSraUVwC79sn4aqtqFE'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email'
-    # 'https://www.googleapis.com/auth/plus.login',    
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/plus.login',    
 ]
 
     # Facebook
@@ -410,25 +428,26 @@ SOCIAL_AUTH_FACEBOOK_SCOPE              = [
     
     'user_friends',
     
-    'user_about_me', 'user_activities', 'user_birthday', 
-    'user_checkins', 'user_education_history', 'user_events', 
-    'user_groups', 'user_hometown', 'user_interests', 
-    'user_likes', 'user_location', 'user_notes', 'user_photos', 
-    'user_status', 'user_subscriptions', 'user_videos', 
-    'user_work_history', # User extended profile scope
+    #'user_about_me', 'user_activities', 'user_birthday', 
+    #'user_checkins', 'user_education_history', 'user_events', 
+    #'user_groups', 'user_hometown', 'user_interests', 
+    #'user_likes', 'user_location', 'user_notes', 'user_photos', 
+    #'user_status', 'user_subscriptions', 'user_videos', 
+    #'user_work_history', # User extended profile scope
     
-    'friends_about_me', 'friends_activities', 'friends_birthday', 
-    'friends_checkins', 'friends_education_history', 'friends_events', 
-    'friends_groups', 'friends_hometown', 'friends_interests', 
-    'friends_likes', 'friends_location', 'friends_notes', 'friends_photos', 
-    'friends_status', 'friends_subscriptions', 'friends_videos', 
-    'friends_work_history', # friends extended profile scope
+    #'friends_about_me', 'friends_activities', 'friends_birthday', 
+    #'friends_checkins', 'friends_education_history', 'friends_events', 
+    #'friends_groups', 'friends_hometown', 'friends_interests', 
+    #'friends_likes', 'friends_location', 'friends_notes', 'friends_photos', 
+    #'friends_status', 'friends_subscriptions', 'friends_videos', 
+    #'friends_work_history', # friends extended profile scope
     
-    'read_friendlists', 'read_insights', 'read_requests',
-    'user_online_presence', 'friends_online_presence', 
+    #'read_friendlists', 'read_insights', 'read_requests',
+    'user_online_presence', #'friends_online_presence', 
+
     # Extended Permissions scope
     
-    'create_event', 'manage_friendlists', 'manage_notifications', 
+    #'create_event', 'manage_friendlists', 'manage_notifications', 
     'publish_actions', 'publish_stream', # Extended permissions publish
 ]
 SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = SOCIAL_AUTH_FACEBOOK_SCOPE
@@ -515,7 +534,7 @@ KEEP_COMMENTS_ON_MINIFYING = False
 # GOOGLE DRIVE DOCS
 USE_EXTERNAL_SITES = True
 GOOGLE_API_CLIENT_SECRETS = os.path.join(PROJECT_PATH, 'configs', 'docs_oauth2_credentials.json')
-GOOGLE_API_PUBLIC_KEY = ''
+GOOGLE_API_PUBLIC_KEY = 'AIzaSyBTomGBXOfCPDylTCYGU6YDZrzoZqTqG9Q'
 GOOGLE_API_REDIRECT_URI = SITE_URL + 'google/oauth2callback'
 GOOGLE_API_CREDENTIALS_FILE_PATH = os.path.abspath(os.path.join(PROJECT_PATH, "configs", "google_api_credentials.json" ) )
 GOOGLE_API_CREDENTIALS = ''
@@ -528,12 +547,64 @@ if os.path.exists(GOOGLE_API_CREDENTIALS_FILE_PATH):
 
 # ----------------------------------------------------
 # Solr-Haystach search settings
-# HAYSTACK_CONNECTIONS = {
-#     'default': {
-#         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-#         'URL': 'http://127.0.0.1:8983/solr'
-#     },
-# }
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr'
+    },
+}
 #DEFAULT_POST_PERMISSION_STACK = PostPermissionSubqueries.build_post_permissions_stack()
 
-SEND_NOTIF_EMAILS = True
+# API Preferences
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    	'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+
+}
+
+# Api documentation - Swagger
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [], # List URL namespaces to ignore
+    "api_version": '0.1',  # Specify your API's version
+    "api_path": "/",  # Specify the path to your API not a root level
+    "enabled_methods": [  # Specify which methods to enable in Swagger UI
+        'get',
+        'post',
+        'put',
+        'patch',
+        'delete'
+    ],
+    "api_key": '', # An API key
+    "is_authenticated": False,  # Set to True to enforce user authentication,
+    "is_superuser": False,  # Set to True to enforce admin only access
+}
+
+
+# Django CORS
+CORS_ORIGIN_WHITELIST = (
+    MAIN_SITE_URL,
+)
+
+# Push notifications
+PUSH_NOTIFICATIONS_SETTINGS = {
+        "GCM_API_KEY": "",
+        "APNS_CERTIFICATE": "",
+}
+
+# CUSTOM SETTINGS VARIABLES
+
+GOOGLE_FORMS = {
+    "finance_fest": "",
+    "finance_clubs": ""
+}
+OPEN_PORTALS = {
+    'finance': {},
+    'admin': {}
+}
+

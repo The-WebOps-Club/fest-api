@@ -19,7 +19,7 @@
 .AppleDouble
 .DS_Store
 .c9revisions
-
+*.kate-swp
 # Server config files
 restart-project.sh
 
@@ -34,6 +34,7 @@ files/media/*
 files/static-collected/*
 files/static/img/fest_pics/*
 files/static/json/*
+files/static-root/*
 files/templates/base/meta.html
 static-permission.sh
 runscript.c

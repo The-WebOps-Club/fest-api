@@ -30,9 +30,9 @@ MANAGERS = (
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
-        'NAME': 'fest-api-db-name',
-        'USER': 'user',
-        'PASSWORD': 'password',
+        'NAME': 'django_db',
+        'USER': '<sql_username>',
+        'PASSWORD': '<sql_password>',
         'HOST': '',
         'PORT': '',
     }
@@ -44,10 +44,11 @@ ALLOWED_HOSTS = [ # Allowed domain and subdomains
 
 #Absolute URL where the site has been hosted. Don't forget the trailing slash.
 SITE_URL = 'http://localhost:8000/'
+MAIN_SITE_URL = SITE_URL
 STATIC_URL = SITE_URL + 'static/'
 MEDIA_URL = SITE_URL + 'media/'
-STATIC_ROOT = "path_to_static/"
-MEDIA_ROOT = "path_to_media/"
+STATIC_ROOT = "files/static-root/"
+MEDIA_ROOT = "files/media/"
 
 
 # Docs integration
@@ -82,7 +83,7 @@ CACHES = {
 DEFAULT_FROM_EMAIL = 'Fest-API <noreply@festapi.com>'
 SERVER_EMAIL = 'Fest-API Server <server@festapi.com>' #The email address that error messages come from, such as those sent to ADMINS and MANAGERS.
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = 'full_path_for_emails'
+EMAIL_FILE_PATH = 'files/emails'
     # Django compressor conditions
 COMPRESS_ENABLED = False
     # Django HTML minify

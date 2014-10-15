@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load compress %}
+<html lang="en">
+
+<head>
+    <title>Festival Login</title>
+
+
+    {% compress css %}
+
+    <!-- Include stylesheets here -->
+    <link href="{% static 'css/erp-bootstrap.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/jquery.atwho.css' %}" rel="stylesheet" media="screen">
+    
+    <link href="{% static 'css/icons-color.css'%}" rel="stylesheet" media="screen">
+    <link rel='stylesheet' href='{%static "css/select2.css"%}' media="screen"/>
+
+
+    {% block extra_css %} {% endblock %}
+    {% endcompress %}
+
+    
+    <link rel="shortcut icon" href="{% static 'img/fest_pics/favicon.ico' %}">
+    
+    
+    {% compress js %} 
+    <script type="text/javascript" src="{% static 'js/jquery-1.11.0.js' %}"></script>
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+          {% endcompress %}
+</head>         
+          
+<body>
+{% load check_access %}
+
+{% load dajaxice_templatetags %}
+{% dajaxice_js_import %}
+{%  csrf_token %}
+
+<!--LOGIN FORM-->
+<h1> LOGIN FORM </h1>
+<p><a class='zocial facebook full_width' 
+	                         {% if facebook_association == 0 %} style="border : 2px solid red" {% endif %}
+	                         href="{% url 'social:begin' 'facebook' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Facebook</a></p>
+<br />
+	                        <a class='zocial google full_width' href="{% url 'social:begin' 'google-oauth2' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Google</a>
+	                        <br />
+	                        <a class="zocial twitter full_width" href="{% url 'social:begin' 'twitter' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Sign in with Twitter</a>
+	                        <br />	                         
+
+
+<script>
+function participant_login_js(data){
+    if (data.message=="authenticated") { 
+// SORRY I HAD TO HARDCODE THE URL. I COULDN'T REDIRECT FROM AJAX.PY
+    window.location.assign("http://localhost:8000/events/add_tabs/");
+    }   
+    else {
+    alert(data.message);
+    }   
+}
+
+
+function participant_registration_js(data){
+    alert(data.alert_message);
+    document.getElementById("form_errors").innerHTML = data.message;  
+}
+</script>
+
+
+</body>
+</html>

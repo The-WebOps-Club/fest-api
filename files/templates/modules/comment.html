@@ -27,7 +27,7 @@
 					    	placeholder="Post your comment here. @ to tag people, # to tag a file" style='display:none'></textarea>
 
 						<div class="span12 comment_links" style="display : none">
-							<!--<a href="javascript:void(0)" class="btn small attach_doc_btn invisible" data-placement="below" rel="twipsy" title="Insert a file from google drive">
+							<a href="javascript:void(0)" class="btn small attach_doc_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
 								<i class="icon-attach"></i>
 							</a>
 							
@@ -42,7 +42,7 @@
 							<a href="javascript:void(0)" class="btn small attach_emoticon_btn invisible" data-placement="below" rel="twipsy" title="Insert a Smiley">
 								<i class="icon-smile"></i>
 							</a>
-							-->
+							
 							<a href="javascript:void(0)" class="btn primary post_btn">
 								&nbsp;
 									<i class="icon-textbox-circle"></i>&nbsp; Post
@@ -195,7 +195,27 @@
 		document.execCommand('insertHTML', false, text);	// WARNING: NOT SUPPORTED BY IE. TODO: need to fallback to insert_text_manual       
 		lastKnownRange = range;
 	}
+	
 
+    function attach_doc_comment_callback(el, data) {
+        
+
+        var $el = $(el).find(".comment_textarea")
+        $el.closest('.news_comment_body').find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
+
+        if ( data.action != google.picker.Action.PICKED )
+            return
+
+        var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
+        for ( var i = 0, d; d = data.docs[i]; i++ ) {
+            var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
+            if(!contentEditableActive)
+                text ='[' + clean_name + '](' + d.iconUrl + ' "doc#' + d.id + '")'
+            else
+                text ='<a href="'+d.url+'"><img src=\''+d.iconUrl+'\'>' + clean_name + '</a>'
+            insert_text($el, text)
+        }
+    }
 	$( document ).ready(function() {
 		
 		if( contentEditableActive ){
@@ -288,7 +308,58 @@
 			$el.closest(".comment_small_bar").find(".like_number").text(parseInt($el.closest(".comment_small_bar").find(".like_number").text()) + 1 + "")
 			$el.after("Acknowledged")
 			$el.remove()
+		});
+		
+    $(".attach_doc_btn").click( function () {
+            var $el = $(this)
+            if ( $el.data("clicked") == "yes" )
+                return
+            $el.data("clicked", "yes").prop("disabled", true).addClass("disabled")
+            
+            var all_docsView = new google.picker.DocsView()
+                .setIncludeFolders(true)
+            
+            var my_docsView = new google.picker.DocsView()
+                .setIncludeFolders(true)
+                .setSelectFolderEnabled(true)
+                .setOwnedByMe(true)
+
+            var shared_docsView = new google.picker.DocsView()
+                .setIncludeFolders(true)
+                .setSelectFolderEnabled(true)
+                .setOwnedByMe(false)
+
+            // var starred_docsView = new google.picker.DocsView()
+            //     .setIncludeFolders(true)
+            //     .setSelectFolderEnabled(true)
+            //     .setStarred(true)
+
+            var recent_docsView = new google.picker.DocsView(google.picker.ViewId.RECENTLY_PICKED)
+
+            var uploadView = new google.picker.DocsUploadView()
+                .setIncludeFolders(true)
+            
+            var attach_doc_picker = new google.picker.PickerBuilder()
+                .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                .setOAuthToken(authToken)
+                .addView(all_docsView) // Google Drive
+                .addView(uploadView) // Upload 
+                .addView(recent_docsView) // Prev selected
+                .addView(my_docsView) // My Drive
+                .addView(shared_docsView) // Shared with me
+                //.addView(starred_docsView) // 
+                .setCallback(function(data) { 
+                    var $v = $el.closest(".news_comment_body"); 
+                    attach_doc_comment_callback($v, data) 
 		})
+                .build()
+                .setVisible(true);
+        })
 	});
+
+function onApiLoad(){
+    
+}
 </script>
+<script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
 {% endonce %}

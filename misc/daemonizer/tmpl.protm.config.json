@@ -1,0 +1,7 @@
+{
+    "debug": true,
+    "user": "tanmaigopal",
+	"serverLimit": 1,
+	"workingDirectory": "/Users/tanmaigopal/ketbeev1/procrustes/daemons",
+    "runCommand": "./ProTM"
+}
