@@ -64,7 +64,7 @@ def permission(event_object,user_object):
 			return "participant_event_has_tdp"
 		else:
 			return "participant"
-	if events_dept in user_object.erp_profile.core_relations.all() or qms_dept in user_object.erp_profile.core_relations.all() or user_object.erp_profile in event_object.coords.all():
+	if user_object.is_superuser or user_object.erp_profile in event_object.coords.all():
 		return "yes"
 	else:
 		return "no"
