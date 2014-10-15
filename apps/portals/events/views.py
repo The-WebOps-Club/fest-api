@@ -34,9 +34,8 @@ def add_tabs( request ):
 
 	core_perm=None
 	
-	for dept in request.user.erp_profile.core_relations.all():
-		if dept.name=='events' or dept.name=='qms':
-			core_perm=1
+	if request.user.is_superuser:
+		core_perm=1
 	
 
 	context_dict = {'event_list':events,'message':message,'event_form':event_form,'core_perm':core_perm}
