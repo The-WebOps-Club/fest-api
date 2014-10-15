@@ -18,7 +18,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
-		model = Event
+        fields = ('eventtab_set','name', 'short_description', 'event_type', 'category', 'has_tdp', 'team_size_min', 'team_size_max', 'registration_starts', 'registration_ends', 'google_group', 'email', 'users_registered', 'teams_registered', 'coords', 'is_visible')
+	model = Event
+        depth = 1
 
 class ParticipantProfileSerializer(serializers.ModelSerializer):
 	class Meta:
