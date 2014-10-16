@@ -114,7 +114,6 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 
 <!--EDIT EVENT FORM use some inintialize in ajax.py to add initial values and then serialize the form before sending it-->
 <div id="edit_event_form_div" style="display:none;">
-{% if core_perm %}
 <h3> EDIT EVENT FORM </h3> All fields left blank will keep the previous values
 <form action="" method="post" id="edit_event_form" accept-charset="utf-8">
 {%  csrf_token %}
@@ -122,9 +121,6 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <p id="edit_event_form_button"></p>
 </form>
 <br /> <br />
-{% else %}
-<br><b style="color:red"> You do not have permission to edit this event. You can only edit its tabs. Please contact your core if you want to edit event details.</b>
-{% endif %}
 </div>
 
 <!--JS FUNCTIONS -->
@@ -154,7 +150,9 @@ function show_tabs_js(data){
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
+    if (data.has_perm=="yes"){
     text += '<button type="button" class="btn small" onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'});return false;" >  Edit Event Details &nbsp &nbsp   </button>';
+    }
     for (i=0; i < len-1; i++) {
     text += '&nbsp &nbsp<button type="button" class="btn small " onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'});return false;">'+arr[i]+'</button>' + " ";
     }
