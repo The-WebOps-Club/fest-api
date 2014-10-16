@@ -20,7 +20,7 @@ from apps.users.models import User
 # Misc
 from misc.utils import *
 # Python
-from settings import FEST_NAME
+from configs.settings import FEST_NAME
 
 if FEST_NAME=='Saarang':
 	EVENT_CATEGORIES = (
