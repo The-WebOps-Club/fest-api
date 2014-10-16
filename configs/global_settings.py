@@ -71,7 +71,7 @@ THIRD_PARTY_APPS = (
     # Simple stuff
     'exportdata', # used to generate csv files from models
 
-
+    'select2',
 
     # Mobile and Mainsite API
     'rest_framework',
