@@ -101,7 +101,9 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <div id="event_form_div" style="display:none;">
 <form action="" method="post" id="event_form" accept-charset="utf-8">
 {%  csrf_token %}
-{{ event_form.as_p }}
+<table>
+{{ event_form.as_table }}
+</table>
 <p><input type="button" class="btn success" onclick="Dajaxice.apps.portals.events.add_event(add_event_js, {'event_form':$('#event_form').serialize(true)});return false;" value="Add Event"/></p>
 </form>
 </div>
