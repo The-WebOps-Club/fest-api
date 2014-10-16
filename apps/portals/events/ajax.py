@@ -49,7 +49,7 @@ def show_tabs(request,event_name,username):
 def show_tabs_description(request,event_name,event_tab,has_perm):
     event_object=Event.objects.get(name=event_name)
     event_tab=EventTab.objects.get(name=event_tab,event=event_object)
-    description=event_tab.content
+    description=HTMLParser.HTMLParser().unescape(strip_tags(event_tab.content.strip()))
     return json.dumps({'description': description,'event_name':event_name,'event_tab_name': event_tab.name,'has_perm':has_perm})
 
 #ARUN - CHANGES MADE HERE
@@ -100,7 +100,7 @@ def add_tab(request,username,add_tab_form):
     if add_tab_form['tab_name']!='' and  add_tab_form['tab_name'][0]!=' ':
 		event_tab=EventTab()
 		event_tab.name=add_tab_form['tab_name']
-		event_tab.content=HTMLParser.HTMLParser().unescape(strip_tags(add_tab_form['tab_description'].strip()))
+		event_tab.content=add_tab_form['tab_description']
 		event_tab.event=Event.objects.get(name=add_tab_form['event_name'])
 		event_tab.save()
 		message="The " + add_tab_form['tab_name'] + " tab has been successfully added to the " + add_tab_form['event_name'] + " event"
@@ -119,7 +119,7 @@ def edit_tab(request,username,edit_tab_form):
 
 			event_tab=EventTab()
 			event_tab.name=edit_tab_form['tab_Name']
-			event_tab.content=HTMLParser.HTMLParser().unescape(strip_tags(edit_tab_form['tab_Description'].strip()))
+			event_tab.content=edit_tab_form['tab_Description']
 			event_tab.event=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
 			event_tab.save()
 
