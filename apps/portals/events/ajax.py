@@ -161,18 +161,19 @@ def edit_event(request,event_name,edit_event_form):
 	event_object=Event.objects.get(name=event_name)
 	edit_event_form = AddEventForm(deserialize_form(edit_event_form), instance=event_object)
 	if edit_event_form.is_valid():
-		event_object.name=edit_event_form.cleaned_data['name']
-		event_object.short_description=edit_event_form.cleaned_data['short_description']
-		event_object.event_type=edit_event_form.cleaned_data['event_type']
-		event_object.category =edit_event_form.cleaned_data['category']
-		event_object.has_tdp=edit_event_form.cleaned_data['has_tdp']
-		event_object.team_size_min=edit_event_form.cleaned_data['team_size_min']
-		event_object.team_size_max=edit_event_form.cleaned_data['team_size_max']
-		event_object.registration_starts=edit_event_form.cleaned_data['registration_starts']
-		event_object.google_group=edit_event_form.cleaned_data['google_group']
-		event_object.email=edit_event_form.cleaned_data['email']
-		event_object.coords=edit_event_form.cleaned_data['coords']
-		event_object.save()	
+		#event_object.name=edit_event_form.cleaned_data['name']
+		#event_object.short_description=edit_event_form.cleaned_data['short_description']
+		#event_object.event_type=edit_event_form.cleaned_data['event_type']
+		#event_object.category =edit_event_form.cleaned_data['category']
+		#event_object.has_tdp=edit_event_form.cleaned_data['has_tdp']
+		#event_object.team_size_min=edit_event_form.cleaned_data['team_size_min']
+		#event_object.team_size_max=edit_event_form.cleaned_data['team_size_max']
+		#event_object.registration_starts=edit_event_form.cleaned_data['registration_starts']
+		#event_object.google_group=edit_event_form.cleaned_data['google_group']
+		#event_object.email=edit_event_form.cleaned_data['email']
+		#event_object.coords=edit_event_form.cleaned_data['coords']
+		#event_object.save()	
+                edit_event_form.save()
 		temp=1
 		message="successfully added event"
 	else:
