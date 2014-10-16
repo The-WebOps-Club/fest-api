@@ -244,7 +244,7 @@ def OLD_get_my_posts(access_obj, wall=None):
     build a query that retreives the Post objects significant
     to the user.
 """
-def get_my_posts(access_obj, wall=None,offset=0,limit=None):
+def get_my_posts(access_obj, wall=None,offset=0,limit=None, id=None):
     try:
         offset=int(offset)
     except:
@@ -267,8 +267,13 @@ def get_my_posts(access_obj, wall=None,offset=0,limit=None):
 
         if wall:
             my_query = Q(wall=wall) & my_query
+	    if id:
+                my_query = my_query & Q(pk=int(id))
             if access_obj.is_superuser:
-                my_query = Q(wall=wall)
+                my_query = Q(wall=wall) 
+		if id:
+                    my_query = Q(wall=wall) & Q(pk=int(id))
+
 
         return Post.objects.filter(my_query).distinct().order_by('-time_created')[offset:limit]
          

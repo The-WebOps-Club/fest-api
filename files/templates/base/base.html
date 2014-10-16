@@ -120,11 +120,14 @@
     <script type="text/javascript" src='{% static "modules/ckeditor/ckeditor.js"%}'></script>
     <!--<script type="text/javascript" src='{% static "modules/ckeditor/adapters/jquery.js"%}'></script>-->
     {% endif %}
+
+    <script type="text/javascript" src='{% static "js/search.js" %}'></script>
     
     {% endcompress %}
 
     {% block extra_js %}{% endblock %}
     <script>
+        wall_base_url = "{% url 'apps.walls.views.wall' %}";
     	site_url = "{{ SITE_URL }}"
     	static_url = "{{ SETTINGS.STATIC_URL }}"
     	authToken = "{{ google_access_token }}"

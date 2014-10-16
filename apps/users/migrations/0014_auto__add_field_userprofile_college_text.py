@@ -8,13 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding unique constraint on 'Event', fields ['name']
-        db.create_unique(u'events_event', ['name'])
+        # Adding field 'UserProfile.college_text'
+        db.add_column(u'users_userprofile', 'college_text',
+                      self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'Event', fields ['name']
-        db.delete_unique(u'events_event', ['name'])
+        # Deleting field 'UserProfile.college_text'
+        db.delete_column(u'users_userprofile', 'college_text')
 
 
     models = {
@@ -53,40 +55,6 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'events.event': {
-            'Meta': {'object_name': 'Event'},
-            'category': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'coords': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'coord_events'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['users.ERPProfile']"}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'event_type': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'google_group': ('django.db.models.fields.EmailField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'has_tdp': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'participants': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'participant_events'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['users.UserProfile']"}),
-            'registration_ends': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'registration_starts': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'short_description': ('django.db.models.fields.CharField', [], {'max_length': '250', 'blank': 'True'}),
-            'team_size_max': ('django.db.models.fields.IntegerField', [], {'default': '1', 'null': 'True', 'blank': 'True'}),
-            'team_size_min': ('django.db.models.fields.IntegerField', [], {'default': '1', 'null': 'True', 'blank': 'True'})
-        },
-        u'events.eventtab': {
-            'Meta': {'object_name': 'EventTab'},
-            'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'event': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['events.Event']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'events.tab': {
-            'Meta': {'ordering': "['order']", 'object_name': 'Tab'},
-            'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'event': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['events.Event']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
-            'head': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'order': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         u'misc.college': {
             'Meta': {'object_name': 'College'},
@@ -150,18 +118,26 @@ class Migration(SchemaMigration):
             'time_updated': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(1950, 1, 1, 0, 0)', 'auto_now': 'True', 'blank': 'True'}),
             'wall': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'subdept'", 'unique': 'True', 'to': u"orm['walls.Wall']"})
         },
+        u'users.team': {
+            'Meta': {'object_name': 'Team'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'members': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'teams'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
+        },
         u'users.userprofile': {
             'Meta': {'object_name': 'UserProfile'},
             'activation_key': ('django.db.models.fields.CharField', [], {'max_length': '40', 'null': 'True'}),
             'branch': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'college': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['misc.College']", 'null': 'True', 'blank': 'True'}),
             'college_roll': ('django.db.models.fields.CharField', [], {'max_length': '40', 'null': 'True'}),
+            'college_text': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'date_created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'dob': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'gender': ('django.db.models.fields.CharField', [], {'default': "'F'", 'max_length': '1'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'key_expires': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 10, 2, 0, 0)'}),
+            'key_expires': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 9, 17, 0, 0)'}),
             'last_activity_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(1950, 1, 1, 0, 0)'}),
             'last_activity_ip': ('django.db.models.fields.IPAddressField', [], {'default': "'0.0.0.0'", 'max_length': '15'}),
             'mobile_number': ('django.db.models.fields.CharField', [], {'max_length': '15', 'null': 'True', 'blank': 'True'}),
@@ -190,4 +166,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['events']
+    complete_apps = ['users']

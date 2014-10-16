@@ -25,7 +25,7 @@ class Command(BaseCommand):
         entity_set = list(Dept.objects.all()) + list(Page.objects.all())
 
         for entity in entity_set:
-            time.sleep(2)
+            time.sleep(5)
             print "executing ", entity.name
             if not entity.calendar_id:
                 attach_calendar_to_entity( calendar, entity )

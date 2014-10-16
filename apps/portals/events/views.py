@@ -16,14 +16,13 @@ from django.templatetags.static import static
 import os
 
 from django.shortcuts import render
-from apps.webmirror.utils import make_global_token
 from django.shortcuts import render_to_response
 from misc.utils import global_context
 
 #models
 from django.contrib.auth.models import User
 from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
-from apps.portals.events.models import Event, EventTab
+from apps.events.models import Event, EventTab
 from django.contrib.auth.decorators import login_required
 from apps.portals.events.forms import AddEventForm
 
@@ -45,5 +44,6 @@ def add_tabs( request ):
 
 @login_required
 def portal_main( request ):
-    token = make_global_token()
-    return render_to_response('portals/events/events.html', locals(), context_instance = global_context(request))
+	print PORTAL_NAME
+	return render_to_response('portals/events/events.html', {}, context_instance = global_context(request))
+

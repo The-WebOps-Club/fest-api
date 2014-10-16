@@ -20,22 +20,33 @@ admin.autodiscover()
 # Dajax
 from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 dajaxice_autodiscover()
-    
+
+#django push notifications
+from push_notifications.models import GCMDevice
+from rest_framework.generics import ListCreateAPIView
+
 # REST API
 from rest_framework.routers import DefaultRouter
-from apps.api import mobile
+from apps.api import mobile, gcm
+
+
+
 router = DefaultRouter()
 router.register(r'notifications', mobile.NotificationViewSet, base_name="notifications")
-router.register(r'walls',mobile.WallsViewSet,base_name="walls")
-router.register(r'posts',mobile.PostsViewSet,base_name="posts")
-router.register(r'comments',mobile.CommentsViewSet,base_name="comments")
+router.register(r'walls',mobile.WallsViewSet, base_name="walls")
+router.register(r'posts',mobile.PostsViewSet, base_name="posts")
+router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
+router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
+router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
+router.register(r'teams',mobile.TeamViewSet,base_name="teams")
+router.register(r'blogs',mobile.BlogFeedViewSet,base_name="blogs")
+router.register(r'events',mobile.EventViewSet,base_name="events")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # FEST-API APPS
     url(r'^$', 'apps.home.views.home', name='home'),
     url(r'^markdown$', 'apps.home.views.markdown', name='markdown'),
-    
 
     # Users
     url(r'^login/$', 'apps.users.views.login_user', name='login'), # Logs user in
@@ -50,15 +61,16 @@ urlpatterns = patterns('',
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'), # Shows newsfeed for a user
     url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
-    
+
     # Notification
-    url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page
-    
-    # Walls
+	url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page
+
+	# Walls
     url(r'^wall/(?P<wall_id>\d+)$', 'apps.walls.views.wall', name='wall'),
+    url(r'^wall/(?P<wall_id>\d+)/(?P<post_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall/(?P<owner_type>\w+)/(?P<owner_id>\d+)$', 'apps.walls.views.my_wall', name='my_wall'),
-    
+
     # Docs
     url(r'^docs/$', 'apps.docs.views.docs', name='docs'),
     url(r'^docs/picker/?$', 'apps.docs.views.picker', name='picker'),
@@ -79,15 +91,22 @@ urlpatterns = patterns('',
     # events portal
     url(r'^portals/events/$','apps.portals.events.views.add_tabs', name='events_portal'),
 
+    url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
+
+    # Participant - Login/registration
+    url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
+    url(r'^participant_login/$','apps.users.views.participant_login', name='participant_login'),
+    url(r'^social_login/$','apps.users.views.social_login', name='social_login'),
+
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
-    
+
     # ------------------------------------------------------------------
     # DJANGO APPS
     # Admin
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    
+
     #Auth
     url(r'^logout/?$', 'django.contrib.auth.views.logout', {'next_page':settings.SITE_URL}, name='logout'),
     url(r'^password_reset/$', 'django.contrib.auth.views.password_reset', {'template_name':'password/reset.html', 'extra_context':{'FEST_NAME':settings.FEST_NAME,}}, name='password_reset'),
@@ -99,23 +118,21 @@ urlpatterns = patterns('',
     # THIRD PARTY APPS
     # Dajaxice
     url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
-    
+
     # Notifications
     url(r'^inbox/notifications/', include(notifications.urls)),
-    
+
     # Python social auth
     url(r'', include('social.apps.django_app.urls', namespace='social')),
-    
-    # Haystack
-    # url(r'^search/', include('haystack.urls')),
 
-    #WebMirror
-    url(r'^webmirror/get/(?P<pk>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.get_data'),
-    url(r'^webmirror/set/(?P<pk>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.set_data'),
-    url(r'^webmirror/cluster/get/(?P<cluster>[0-9A-Za-z_\-]+)/', 'apps.webmirror.views.get_cluster'),
-    
+    # Haystack
+    url(r'^search/', include('haystack.urls')),
+
     #For Testing out email templates
     url(r'^email/$', 'apps.walls.views.email_test', name='email'),
+    #For Testing out api
+    url(r'^apitest/$', 'apps.walls.views.api_test', name='apitest'),
+
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.STATIC_ROOT}),
 
@@ -124,6 +141,10 @@ urlpatterns = patterns('',
     url(r'^api-token-auth/', 'rest_framework.authtoken.views.obtain_auth_token'),
     url(r'^api/mobile/', include(router.urls)),
     url(r'^api-docs/', include('rest_framework_swagger.urls')),
+
+    # Mobile SDK Auth
+    url(r'^api-mobile-auth/(?P<backend>[^/]+)/?$','apps.api.utils.mobile_auth'),
+
 )
 
 # 400 & 500

@@ -60,17 +60,19 @@ def global_context(request, token_info=True, user_info=True):
         	profile = request.user.profile
     	else:
         	profile = None
-    # token = None
-    # if token_info and settings.USE_EXTERNAL_SITES:
-    # 	drive = Drive()
-    # 	token = Drive.get_access_token()
-    
+
+    token = None
+    '''
+    if token_info and settings.USE_EXTERNAL_SITES:
+        drive = Drive()
+	token = Drive.get_access_token()
+    '''
     local_context = {
         'user' : request.user,
         'erp_profile' : erp_profile,
         'user_profile' : profile,
         'session' : request.session,
-        # 'google_access_token' : token,
+        'google_access_token' : token,
         'drive_folders': drive_folders,
         'calendars' : calendars,
         'experimental' : settings.EXPERIMENTAL_MODE,
@@ -117,8 +119,3 @@ def valid_phone_number(num_string):
 
 # ------------------ SIMPLE UTILS
 #----------------------------------------------------------------------
-
-# A small helper class to create custom attributes
-class Bunch:
-    def __init__(self, **kwds):
-        self.__dict__.update(kwds)

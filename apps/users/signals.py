@@ -13,6 +13,7 @@ from django.db.models import Q
 # Decorators
 # Models
 from apps.walls.models import Wall
+from apps.events.models import Event
 from apps.users.models import ERPProfile, Dept, Subdept, Page
 # Forms
 # View functions
@@ -39,6 +40,7 @@ def create_my_wall(item):
             item.wall.name = item.name
             changed_it = True
     else: # Create a new wall
+        from apps.walls.models import Wall
         item.wall = Wall.objects.create(name=item.name)
         changed_it = True
 

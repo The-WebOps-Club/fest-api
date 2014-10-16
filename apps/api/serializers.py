@@ -1,35 +1,56 @@
 from rest_framework import serializers
 
-from apps.users.models import ERPProfile
+from apps.users.models import ERPProfile, UserProfile, Team
+from apps.events.models import Event
 from django.contrib.auth.models import User
 
 from apps.walls.models import Wall, Post, Comment
+from apps.blog.models import Category
 
 class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('first_name', 'last_name', 'email')
+	class Meta:
+		model = User
+		fields = ('id', 'first_name', 'last_name', 'email', 'password')
 
 class UserProfileSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ERPProfile
+
+class EventSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ERPProfile
+		model = Event
+
+class ParticipantProfileSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = UserProfile
+
+class TeamSerializer(serializers.ModelSerializer):
+	members = UserSerializer(source='members', many=True)
+	class Meta:
+		model = Team
 
 class WallSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Wall
-        fields=('id','name','is_public','time_updated','cache_updated')
-
+	class Meta:
+		model = Wall
+		fields=('id','name','is_public','time_updated','cache_updated','person')
+		depth=2
 class PostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = ('id','is_active', 'by', 'subject','description','time_created','time_updated','comments')
-        depth = 2
+	class Meta:
+		model = Post
+		fields = ('id','is_active','subject','by','description','time_created','time_updated','comments')
+		depth = 2
 
 class CommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Comment
+		fields=('id','is_active','access_specifier','description','by','time_created','time_updated','liked_users')
+		depth = 1
+
+class BlogSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Comment
-        fields=('id','is_active','access_specifier','description','by','time_created','time_updated','liked_users')
-        depth = 1
+        model = Category
+        depth = 2
+
 #class NotificatioSerializer(serializers.Serializer):
 #    id = serializers.IntegerField()
 #    actor = serializers.CharField()
@@ -37,8 +58,8 @@ class CommentSerializer(serializers.ModelSerializer):
 #    verb = serializers.CharField()
 #    wall = serializers.CharField()
 #    wall_id = serializers.IntegerField()
-#    detail = 
-#    
+#    detail =
+#
 #
 #    #json = []
 #
@@ -53,4 +74,4 @@ class CommentSerializer(serializers.ModelSerializer):
 #        #    item['description'] = notif.action_object.description
 #        #    item['timestamp'] = notif.timestamp
 #        #    json.append(item)
-# 
+#
