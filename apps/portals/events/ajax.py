@@ -49,7 +49,7 @@ def show_tabs(request,event_name,username):
 def show_tabs_description(request,event_name,event_tab,has_perm):
     event_object=Event.objects.get(name=event_name)
     event_tab=EventTab.objects.get(name=event_tab,event=event_object)
-    description=HTMLParser.HTMLParser().unescape(strip_tags(event_tab.content.strip()))
+    description=event_tab.content
     return json.dumps({'description': description,'event_name':event_name,'event_tab_name': event_tab.name,'has_perm':has_perm})
 
 #ARUN - CHANGES MADE HERE

@@ -24,6 +24,9 @@ from apps.users.models import User,UserProfile,Team,ERPProfile
 from misc.utils import *
 # Python
 from configs.settings import FEST_NAME
+import select2.models
+import select2.forms
+
 
 if FEST_NAME=='Saarang':
 	EVENT_CATEGORIES = (

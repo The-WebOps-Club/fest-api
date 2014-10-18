@@ -13,6 +13,29 @@
 <link href="{% static 'css/datatable.css' %}" rel="stylesheet" media="screen">
 <link href="{% static 'js/datatable.js' %}" rel="stylesheet" media="screen">
 -->
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/ui.multiselect.css' %}">
+ <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/themes/ui-lightness/jquery-ui.css">
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{% static 'js/ui.multiselect.js' %}"></script>
+
+
+
+
+<script>
+jQuery(function(){
+$( "#id_registration_starts" ).datepicker();
+$( "#id_registration_ends" ).datepicker();
+jQuery("#id_coords").multiselect();
+});
+</script>
+
+
+
+
 
 
 
@@ -184,7 +207,7 @@ function show_tabs_description_js(data){
     document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\');return false;"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
     }
 
-    document.getElementById("event_tabs_description").innerHTML = data.description;
+    document.getElementById("event_tabs_description").innerHTML = "<pre>" + data.description + "</pre>";
     
     //clears add edit tab forms
     document.getElementById("edit_tab_form").style.display='none';
