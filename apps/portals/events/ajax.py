@@ -18,10 +18,7 @@ from apps.events.models import EventTab, Event
 #dajaxice stuff
 from dajaxice.utils import deserialize_form
 
-#HTML Parser
-import HTMLParser
-from django.utils.html import strip_tags
-
+import re
 
 @dajaxice_register
 def hello(request):
@@ -50,8 +47,11 @@ def show_tabs_description(request,event_name,event_tab,has_perm):
     event_object=Event.objects.get(name=event_name)
     event_tab=EventTab.objects.get(name=event_tab,event=event_object)
     description=event_tab.content
+    description="<br>".join(re.split('\W+', description))
+    print description
     return json.dumps({'description': description,'event_name':event_name,'event_tab_name': event_tab.name,'has_perm':has_perm})
 
+#"<br/>".join(description.split("\r"))
 #ARUN - CHANGES MADE HERE
 #Function for setting permissions to edit Event Tabs 
 def permission(event_object,user_object):
@@ -114,10 +114,8 @@ def edit_tab(request,username,edit_tab_form):
     message=""
     if edit_tab_form['tab_Name']!='' and  edit_tab_form['tab_Name'][0]!=' ':
 			event_object=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
-			event_Tab=EventTab.objects.get(name=edit_tab_form['event_tab_Name_edit_form'],event=event_object)
-			event_Tab.delete()
+			event_tab=EventTab.objects.get(name=edit_tab_form['event_tab_Name_edit_form'],event=event_object)
 
-			event_tab=EventTab()
 			event_tab.name=edit_tab_form['tab_Name']
 			event_tab.content=edit_tab_form['tab_Description']
 			event_tab.event=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
@@ -134,7 +132,7 @@ from apps.portals.events.forms import AddEventForm
 def edit_event_details(request,event_name):
 	event_object=Event.objects.get(name=event_name)
 	form = AddEventForm(instance=event_object).as_table()
-	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'short_description':event_object.short_description,'event_type':event_object.event_type,'category':event_object.category,'has_tdp':event_object.has_tdp,'team_size_min':event_object.team_size_min,'team_size_max':event_object.team_size_max,'registration_starts':event_object.registration_starts,'registration_ends':event_object.registration_ends,'google_group':event_object.google_group,'email':event_object.email})
+	return json.dumps({'form':form, 'message': 'message','event_name':event_name})
     
     
 #try to make the deserialized form of the type addeventform then validate it

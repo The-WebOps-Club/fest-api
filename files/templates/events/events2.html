@@ -7,32 +7,30 @@
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
 
-<!-- Latest compiled and minified JavaScript -->
-
-<!-- Static files for the datatables
-<link href="{% static 'css/datatable.css' %}" rel="stylesheet" media="screen">
-<link href="{% static 'js/datatable.js' %}" rel="stylesheet" media="screen">
--->
- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 
 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css">
 
-<link rel="stylesheet" type="text/css" href="{% static 'css/ui.multiselect.css' %}">
- <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/themes/ui-lightness/jquery-ui.css">
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-<script type="text/javascript" src="{% static 'js/ui.multiselect.js' %}"></script>
 
 
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.datetimepicker.css' %}">
+<script type="text/javascript" src="{% static 'js/jquery.datetimepicker.js' %}"></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/select2.css' %}">
+<script type="text/javascript" src="{% static 'js/select2.js' %}"></script>
 
 
 <script>
 jQuery(function(){
-$( "#id_registration_starts" ).datepicker();
-$( "#id_registration_ends" ).datepicker();
-jQuery("#id_coords").multiselect();
+jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
+jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
+$("select[name=coords]").select2();
+
 });
 </script>
-
 
 
 
@@ -107,10 +105,12 @@ Description: <textarea name="tab_description" rows="20" cols="40" wrap="hard"></
 <form id="edit_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_Name" id="tab_Name_input" value=""><br>
-Description: <textarea name="tab_Description" id="tab_Description_input" value="" rows="20" cols="40"></textarea>
+Description: <pre><div white-space:pre-wrap id="tab_Description_input" contenteditable></div></pre>
+<input id="tab_description_hidden" type="hidden" name="tab_Description" value="">
+
 <input id="event_Name_edit_form_hidden" type="hidden" name="event_Name_edit_form" value="">
 <input id="event_tab_Name_edit_form_hidden" type="hidden" name="event_tab_Name_edit_form" value="">
-<input type="button" onclick="Dajaxice.apps.portals.events.edit_tab(edit_tab_js, {'username':'{{user.username}}','edit_tab_form':$('#edit_form').serialize(true)});return false;" value="Edit Tab" >
+<input type="button" onclick="edit_tab_intermediate_js('{{user.username}}')" value="Edit Tab" >
 </form>
 </div>
 
@@ -137,7 +137,6 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 
 <!--EDIT EVENT FORM use some inintialize in ajax.py to add initial values and then serialize the form before sending it-->
 <div id="edit_event_form_div" style="display:none;">
-{% if core_perm %}
 <h3> EDIT EVENT FORM </h3> All fields left blank will keep the previous values
 <form action="" method="post" id="edit_event_form" accept-charset="utf-8">
 {%  csrf_token %}
@@ -145,9 +144,6 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <p id="edit_event_form_button"></p>
 </form>
 <br /> <br />
-{% else %}
-<br><b style="color:red"> You do not have permission to edit this event. You can only edit its tabs. Please contact your core if you want to edit event details.</b>
-{% endif %}
 </div>
 
 <!--JS FUNCTIONS -->
@@ -177,7 +173,9 @@ function show_tabs_js(data){
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
+     if (data.has_perm=="yes"){
     text += '<button type="button" class="btn small" onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'});return false;" >  Edit Event Details &nbsp &nbsp   </button>';
+    }
     for (i=0; i < len-1; i++) {
     text += '&nbsp &nbsp<button type="button" class="btn small " onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'});return false;">'+arr[i]+'</button>' + " ";
     }
@@ -196,7 +194,7 @@ function show_tabs_js(data){
 
 function show_tabs_description_js(data){
     document.getElementById("selected_event_tab").innerHTML = data.event_tab_name;
-
+	document.getElementById("event_tabs_description").innerHTML = "<pre>" + data.description + "</pre>";
 //delete tab button
     
 	//DELETE and EDIT button displayed only  if user has permission
@@ -204,7 +202,7 @@ function show_tabs_description_js(data){
     document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="confirm_delete_tab(\''+data.event_name+'\',\''+data.event_tab_name+'\',\'{{user.username}}\');return false;"> <font size="1">X Delete Tab</font></button>  ';
     
 //edit tab button    
-    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\');return false;"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
+    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
     }
 
     document.getElementById("event_tabs_description").innerHTML = "<pre>" + data.description + "</pre>";
@@ -251,7 +249,7 @@ function edit_some_tab_js(event_name,event_tab_name,description){
     document.getElementById("event_tab_Name_edit_form_hidden").value = event_tab_name;
 
     document.getElementById("tab_Name_input").value = event_tab_name;
-    document.getElementById("tab_Description_input").value = description;
+    document.getElementById("tab_Description_input").innerHTML = description;
 
     document.getElementById("edit_tab_form").style.display="inline";
     document.getElementById("message").innerHTML="Edit Tab form at the bottom of the page";
@@ -265,6 +263,14 @@ function edit_some_tab_js(event_name,event_tab_name,description){
 function register_js(data){
     alert(data.message);
 }
+
+
+function edit_tab_intermediate_js(username){
+//chrome adds a <div> element for every time you press carriage return. So replace that with a \n. also, the next time you do it, there will be a <br> tag. replace that with \n
+	var h = $('#tab_Description_input').html().replace(/<div>/gi,'\n').replace(/<\/div>/gi,'').replace(/<br>/gi,'\n');
+	document.getElementById("tab_description_hidden").value=h;
+	Dajaxice.apps.portals.events.edit_tab(edit_tab_js, {'username':username,'edit_tab_form':$('#edit_form').serialize(true)});
+	}
 
 function edit_tab_js(data){
     var x = document.forms["edit_form"]["tab_Name"].value;
@@ -418,7 +424,7 @@ function edit_event_js(data){
 
 
 function edit_event_details_js(data){
-    $('#edit_event_form_dyn').html(data.form);
+    $('#edit_event_form_dyn').html("<table>"+data.form+"</table>");
 
     document.getElementById("edit_event_form_div").style.display = 'inline';
     document.getElementById("edit_tab_form").style.display='none';
@@ -434,10 +440,16 @@ function edit_event_details_js(data){
     //Printing the previous values
 
     document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" type="button" onclick="Dajaxice.apps.portals.events.edit_event(edit_event_js, {\'event_name\':\''+data.event_name+'\',\'edit_event_form\':$(\'#edit_event_form\').serialize(true)});return false;" value="Edit Event"/>';
+    
+	jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
+	jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
+	$("select[name=coords]").select2();
     }
 $(document).ready(function(){
 $('#tableid').dataTable();
 });
+
+
 </script>
 
 <script type="text/javascript" charset="utf8" src="{% static 'js/jquery-datatables.js' %}"></script>
@@ -465,6 +477,7 @@ $('#tableid').dataTable();
 
 
 {% endblock %}
+
 
 
 
