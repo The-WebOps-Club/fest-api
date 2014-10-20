@@ -42,7 +42,7 @@ var Drive = function( options ) {
     self.dir_contents = null
     self.finish_progress = 1
     self.current_progress = 0
-    
+
 
     self.init = function() {
         if (!self.options.authToken || !self.options.developerKey) {
@@ -94,7 +94,7 @@ var Drive = function( options ) {
             callback();
 
         });*/
-    
+
         // filesystem loads changes and merges with existing objects.
         self.filesystem.loadByFile(fid,{finish:function(response) {
             self.check_error(response)
@@ -111,7 +111,7 @@ var Drive = function( options ) {
                 callback = callback || self.show_dir_contents
                 callback();
             },
-            cached: function(response){ 
+            cached: function(response){
                 self.finish_progress = response.items.length;
                 self.current_progress = 0;
                 self.dir_contents = response.items;
@@ -121,11 +121,11 @@ var Drive = function( options ) {
 
         }, new Date() );
 
-        
+
 
     }
 
-    
+
     self.get_file_meta = function(fid, callbacks ) {
         self.filesystem.loadByFile( fid ,{finish:function(response) {
             self.check_error(response)
@@ -255,7 +255,7 @@ var Drive = function( options ) {
         self.finish_progress = Math.ceil(fileData.size / self.chunkSize) + 3
         self.current_progress = 1
         self.progress()
-        
+
         file = fileData
 
         if (!fileData.type)
@@ -472,7 +472,7 @@ var Drive = function( options ) {
     self.init()
 
     self.share_file = function( fid, gmail_addr ){
-        
+
         gapi.client.drive.permissions.insert({}).execute()
     }
     return this

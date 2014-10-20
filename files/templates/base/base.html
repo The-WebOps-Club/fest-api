@@ -17,6 +17,7 @@
     
     <link href="{% static 'css/icons-color.css'%}" rel="stylesheet" media="screen">
     <link rel='stylesheet' href='{%static "css/select2.css"%}' media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/toastr.min.css' %}">
 
 
     {% block extra_css %} {% endblock %}
@@ -110,7 +111,8 @@
 
     <script type="text/javascript" src='{% static "js/jquery.autosize.js" %}'></script>
     <script type="text/javascript" src='{% static "js/local_storage.js" %}'></script>
-
+    <script type="text/javascript" charset="utf8" src="{% static 'js/toastr.min.js' %}"></script>
+    
     {% if experimental %}
     <script>
         window.CKEDITOR_BASEPATH="{{ SETTINGS.STATIC_URL }}modules/ckeditor/";
@@ -118,11 +120,14 @@
     <script type="text/javascript" src='{% static "modules/ckeditor/ckeditor.js"%}'></script>
     <!--<script type="text/javascript" src='{% static "modules/ckeditor/adapters/jquery.js"%}'></script>-->
     {% endif %}
+
+    <script type="text/javascript" src='{% static "js/search.js" %}'></script>
     
     {% endcompress %}
 
     {% block extra_js %}{% endblock %}
     <script>
+        wall_base_url = "{% url 'apps.walls.views.wall' %}";
     	site_url = "{{ SITE_URL }}"
     	static_url = "{{ SETTINGS.STATIC_URL }}"
     	authToken = "{{ google_access_token }}"

@@ -1,0 +1,19 @@
+#!/usr/bin/env python2.7
+
+#############################
+# Check if there is a pid to be stopped
+# Call the kill on it
+#############################
+
+import os
+import sys
+
+if len(sys.argv) != 2:
+	print "Usage: ./stop <active_pids>"
+	sys.exit(0)
+
+f = open(sys.argv[1], 'r')
+for pid in f.readlines():
+	pid.strip()
+	os.system('kill ' + pid)
+	print "Stopping", pid

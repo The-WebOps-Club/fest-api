@@ -1,7 +1,10 @@
+
 """
     Handles all models related to events :
         - Event : Information about an event in Fest
         - Tab : Information about an event tab in Fest
+        
+        This models.py has been combined with apps/portals/models.py
 
 """
 # Django
@@ -10,32 +13,53 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
 # Apps
+import select2.fields
 # Decorators
 # Models
 from apps.walls.models import Wall, Post
-from apps.users.models import User
+from apps.users.models import User,UserProfile,Team,ERPProfile
 # Forms
 # View functions
 # Misc
 from misc.utils import *
 # Python
+from configs.settings import FEST_NAME
+import select2.models
+import select2.forms
 
-EVENT_CATEGORIES = (
-    ('Aerofest', 'Aerofest'),
-    ('Coding', 'Coding'),
-    ('Design and build', 'Design and build'),
-    ('Involve', 'Involve'),
-    ('Quizzes', 'Quizzes'),
-    ('Online', 'Online'),
-    ('Department Flagship Event', 'Department Flagship Event'),
-    ('Spotlight', 'Spotlight'),
-    ('Workshops', 'Workshops'),
-    ('Exhibitions', 'Exhibitions and Shows'),
-    ('Miscellaneous', 'Miscellaneous'),
-    ('Sampark', 'Sampark'),
-    ('B- Events','B- Events'),
-    ('Associated Events','Associated Events'),
-)
+
+if FEST_NAME=='Saarang':
+	EVENT_CATEGORIES = (
+		('Word Games', 'Word Games'),
+		('Classical Arts', 'Classical Arts'),
+		('LecDems', 'LecDems'),
+		('Music', 'Music'),
+		('Thespian', 'Thespian'),
+		('Writing', 'Writing'),
+		('Speaking', 'Speaking'),
+		('Choreo', 'Choreo'),
+		('Design & Media', 'Design & Media'),
+		('Informals', 'Informals'),
+		('Quizzing', 'Quizzing'),
+		('Fine Arts', 'Fine Arts'),
+	)
+else:
+	EVENT_CATEGORIES = (
+		('Aerofest', 'Aerofest'),
+		('Coding', 'Coding'),
+		('Design and build', 'Design and build'),
+		('Involve', 'Involve'),
+		('Quizzes', 'Quizzes'),
+		('Online', 'Online'),
+		('Department Flagship Event', 'Department Flagship Event'),
+		('Spotlight', 'Spotlight'),
+		('Workshops', 'Workshops'),
+		('Exhibitions', 'Exhibitions and Shows'),
+		('Miscellaneous', 'Miscellaneous'),
+		('Sampark', 'Sampark'),
+		('B- Events','B- Events'),
+		('Associated Events','Associated Events'),
+	)
 
 EVENT_TYPE = (
     ('Audience', 'Audience'),
@@ -50,7 +74,7 @@ class Event(models.Model):
     """
     
     # Basic information
-    name                = models.CharField(max_length=50)
+    name                = models.CharField(max_length=50, unique=True)
     short_description   = models.CharField(max_length=250, blank=True)
     event_type          = models.CharField(max_length=100, choices=EVENT_TYPE, blank=True, null=True)
     category            = models.CharField(max_length=100, choices=EVENT_CATEGORIES)
@@ -67,14 +91,19 @@ class Event(models.Model):
     # Email ids specific to the Event : google_group and the corresponding shaatsra_email_id
     google_group        = models.EmailField(max_length=100, blank=True, null=True)
     email               = models.EmailField(max_length=100, blank=True, null=True)
+
+	# List of registered participants
+    users_registered = models.ManyToManyField(User, blank=True, null=True,related_name='events_registered')
+    teams_registered = models.ManyToManyField(Team, blank=True, null=True,related_name='events_registered')
     
+    coords = select2.fields.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
     
     # Some properties to make some conditions easier
     @property
     def is_team_event(self):        
-        return team_size_max == 1
+        return self.team_size_max > 1
     @property
     def is_registration_on(self):   
         return timezone.now() > self.registrarion_starts and timezone.now() < self.registrarion_ends

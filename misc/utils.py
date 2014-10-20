@@ -14,7 +14,7 @@ from misc.managers import *
 from misc.strings import *  #Import miscellaneous functions
 from misc.exceptions import *  #Import miscellaneous functions
 from misc.decorators import *  #Import miscellaneous functions
-from apps.docs.utils import Drive, Github
+from apps.docs.utils import Drive, Github, Calendar
 # Models
 from django.db import models
 from django.contrib.auth.models import User, Group
@@ -37,9 +37,11 @@ def global_context(request, token_info=True, user_info=True):
     erp_profile = None
     profile = None
     drive_folders = []
+    calendars = []
     if user_info and hasattr(request.user, "erp_profile"):
     	erp_profile = request.user.erp_profile if hasattr(request.user, "erp_profile") else None
     	drive_folders = []
+    	calendars = []
         if erp_profile:
             entity_list = list(erp_profile.coord_relations.all()) + \
                     list(erp_profile.supercoord_relations.all()) + \
@@ -50,22 +52,29 @@ def global_context(request, token_info=True, user_info=True):
                 drive_folders.append(
                     (entity.name, entity.directory_id)
                 )
+		try:
+		    calendars.append((entity.name, entity.calendar_id))
+		except Exception,e:
+		    pass
         if hasattr(request.user, "profile"):
         	profile = request.user.profile
     	else:
         	profile = None
-    # token = None
-    # if token_info and settings.USE_EXTERNAL_SITES:
-    # 	drive = Drive()
-    # 	token = Drive.get_access_token()
-    
+
+    token = None
+    '''
+    if token_info and settings.USE_EXTERNAL_SITES:
+        drive = Drive()
+	token = Drive.get_access_token()
+    '''
     local_context = {
         'user' : request.user,
         'erp_profile' : erp_profile,
         'user_profile' : profile,
         'session' : request.session,
-        # 'google_access_token' : token,
+        'google_access_token' : token,
         'drive_folders': drive_folders,
+        'calendars' : calendars,
         'experimental' : settings.EXPERIMENTAL_MODE,
         'SITE_URL' : settings.SITE_URL,
         'FEST_NAME' : settings.FEST_NAME,
@@ -111,31 +120,3 @@ def valid_phone_number(num_string):
 # ------------------ SIMPLE UTILS
 #----------------------------------------------------------------------
 
-# A small helper class to create custom attributes
-class Bunch:
-    def __init__(self, **kwds):
-        self.__dict__.update(kwds)
-
-
-def keeptags(value, tags):
-    """
-    Strips all [X]HTML tags except the space seperated list of tags 
-    from the output.
-    
-    Usage: keeptags:"strong em ul li"
-    """
-    import re
-    from django.utils.html import strip_tags, escape
-    tags = [re.escape(tag) for tag in tags.split()]
-    tags_re = '(%s)' % '|'.join(tags)
-    singletag_re = re.compile(r'<(%s\s*/?)>' % tags_re)
-    starttag_re = re.compile(r'<(%s)(\s+[^>]+)>' % tags_re)
-    endtag_re = re.compile(r'<(/%s)>' % tags_re)
-    value = singletag_re.sub('##~~~\g<1>~~~##', value)
-    value = starttag_re.sub('##~~~\g<1>\g<3>~~~##', value)
-    value = endtag_re.sub('##~~~\g<1>~~~##', value)
-    value = strip_tags(value)
-    value = escape(value)
-    recreate_re = re.compile('##~~~([^~]+)~~~##')
-    value = recreate_re.sub('<\g<1>>', value)
-    return value

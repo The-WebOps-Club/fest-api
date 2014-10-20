@@ -1,0 +1,100 @@
+
+
+###################################################
+# 0) Expects command line arguments for the config and the active_pid list
+# 1) Make sure that there are less than serverLimit PIDs in the active_pids file 
+#    a) Update the pids files, by removing pids if the processes do not exist
+# 2) Daemonize and exec the program like a boss
+#
+
+import os
+import json
+import sys
+from subprocess import call
+
+if len(sys.argv) < 3:
+	print "Usage: ./start <config.json> <active_pids>"
+	sys.exit(0)
+
+#Load the configuration
+print "Reading config..."
+f = open(sys.argv[1], 'r')
+config = json.loads(f.read())
+f.close()
+try:
+	if sys.argv[3] == '--debug' or sys.argv[3] == '-d':
+		print sys.argv[3]
+		config['debug'] = 'true'
+except:
+	print 'Debug Mode Off'
+
+started=False
+
+# Get up to date about the running daemons
+print "\nChecking for existing daemons..."
+
+pids = []
+for line in os.popen('ps -u '+config['user']+' -o pid,command'):
+	pid, command = line.split(None, 1)
+	if command.strip() == config['runCommand']:
+		pids.append(pid.strip())
+		print pid, command, "\t...is already running"
+
+f2 = open(sys.argv[2], 'w')
+process_count = 0
+for pid in pids:
+		f2.write(pid+"\n")
+		process_count += 1
+f2.close()
+
+if process_count >= config['serverLimit']:
+	started = True
+
+#DAEMONIZE if all conditions are amenable:
+if not started:
+	print "\nStaring daemonizing process..."
+	pid = os.fork()
+	if pid != 0:
+		os._exit(0)
+	else:
+		os.setsid()
+		pid = os.fork()
+		if pid != 0:
+			print "Starting daemon " + str(pid)
+			f2 = open(sys.argv[2], 'a')
+			f2.write(str(pid)+"\n")
+			f2.close()
+			os._exit(0)
+		else:
+			os.umask(0)
+			#Close things and redirect things
+			if not config['debug']:
+				try:
+					maxfd = os.sysconf("SC_OPEN_MAX")
+				except (AttributeError, ValueError):
+					maxfd = 1024
+				for f in range(0, maxfd):
+					try:
+						os.close(f)
+					except OSError:
+						pass #already closed
+
+				os.open(os.devnull, os.O_RDWR)
+				os.dup2(0, 1)
+				os.dup2(0, 2)
+
+			#Switch to the working directory
+			os.chdir(config['workingDirectory'])
+			args = config['runCommand'].split()
+			
+			if config['debug']:
+				print args
+
+			#Exec the daemon 
+			#Harshit's Ugly Code
+			if args[0] == 'python2.7':
+				temp = args
+				temp.pop(0)
+				os.execv(args[0], temp)
+			else:
+				call(args)
