@@ -1,6 +1,7 @@
 import HTMLParser
 import urllib
 import os
+import glob
 from django.utils.html import strip_tags
 from django.conf import settings
 from rest_framework import viewsets
@@ -383,15 +384,30 @@ class EventViewSet(viewsets.ViewSet):
                     "error": "Cannot find this event !"
                 }, status=status.HTTP_400_BAD_REQUEST)
         print events_data
-        # for ev in events_data:
-        #     # Handle whether the user is registered for the event
-        #     if ( user.id in ev.users_registered ):
-        #         ev['is_mine'] = True
-        #     else:
-        #         user_team_ids = user.teams.list('id') # get a list of all team ids
-        #         for team in xrange(len(ev.teams_registered)):
-        #             if team in user_team_ids:
-        #                 ev['is_mine'] = True
+        for ev in events_data:
+            ev['is_mine'] = False
+            # Handle whether the user is registered for the event
+            if user.id in ev['users_registered']:
+                ev['is_mine'] = True
+                fname = settings.MEDIA_ROOT + "tdp/" + ev['name']+"/" + str(user.id) + ".*"
+                url = glob.glob(fname)
+                if len(url) >= 1:
+                    url = url[0].replace(settings.MEDIA_ROOT, settings.MEDIA_URL) # Remove patha nd add url
+                else:
+                    url = ""
+                ev['tdp_submitted'] = url
+            else:
+                user_team_ids = user.teams.values_list('id', flat=True) # get a list of all team ids
+                for team in xrange(len(ev['teams_registered'])):
+                    if team in user_team_ids:
+                        ev['is_mine'] = True
+                        fname = settings.MEDIA_URL + "tdp/" + ev['name']+"/" + str(team) + ".*"
+                        url = glob.glob(fname)
+                        if len(url) >= 1:
+                            url = url[0].replace(settings.MEDIA_ROOT, settings.MEDIA_URL) # Remove patha nd add url
+                        else:
+                            url = ""
+                        ev['tdp_submitted'] = url
         return Response(viewset_response("done", events_data))
 
     def create(self, request):
@@ -433,7 +449,8 @@ class EventViewSet(viewsets.ViewSet):
                 # ALSO TAKE FILE
                 if request.FILES.get('tdp', None) and event.has_tdp:
                     f = request.FILES.get('tdp')
-                    fname = os.path.join(settings.MEDIA_ROOT, "tdp", event.name, str(user.id) + "_" + user.first_name + "_" + user.last_name, f.name)
+                    fileName, fileExtension = os.path.splitext(f.name)
+                    fname = os.path.join(settings.MEDIA_ROOT, "tdp", event.name, str(team.id) + fileExtension)
                     handle_uploaded_file(f, fname)
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
@@ -443,7 +460,8 @@ class EventViewSet(viewsets.ViewSet):
                 # ALSO TAKE FILE
                 if request.FILES.get('tdp', None) and event.has_tdp:
                     f = request.FILES.get('tdp')
-                    fname = os.path.join(settings.MEDIA_ROOT, "tdp", event.name, str(user.id) + "_" + user.first_name + "_" + user.last_name, f.name)
+                    fileName, fileExtension = os.path.splitext(f.name)
+                    fname = os.path.join(settings.MEDIA_ROOT, "tdp", event.name, str(user.id) + fileExtension)
                     handle_uploaded_file(f, fname)
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
@@ -474,10 +492,25 @@ class EventViewSet(viewsets.ViewSet):
                         "error": "You are not a member of this team ! Ask the members to add you first."
                     }, status=status.HTTP_400_BAD_REQUEST)
                 event.teams_registered.remove(team)
+                if event.has_tdp:
+                    fname = settings.MEDIA_ROOT + "tdp/" + event.name + "/" + str(team.id) + ".*"
+                    fname = glob.glob(fname)[0]
+                    try:
+                        os.remove(fname)
+                    except OSError:
+                        pass
+
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
             else:
                 event.users_registered.remove(user)
+                if event.has_tdp:
+                    fname = settings.MEDIA_ROOT + "tdp/" + event.name + "/" + str(user.id) + ".*"
+                    fname = glob.glob(fname)[0]
+                    try:
+                        os.remove(fname)
+                    except OSError:
+                        pass
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
         else:

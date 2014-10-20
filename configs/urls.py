@@ -165,3 +165,8 @@ skip_last_activity_date = [
     # Your expressions go here ... for LastActivityDatabaseMiddleware
 ]
 
+urlpatterns += patterns('',
+        url(r'^media/(?P<path>.*)$',
+            'django.views.static.serve',
+            {'document_root': settings.MEDIA_ROOT, }),
+    )
