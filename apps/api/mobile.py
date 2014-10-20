@@ -398,7 +398,8 @@ class EventViewSet(viewsets.ViewSet):
                 ev['tdp_submitted'] = url
             else:
                 user_team_ids = user.teams.values_list('id', flat=True) # get a list of all team ids
-                for team in xrange(len(ev['teams_registered'])):
+                for team in ev['teams_registered']:
+                    print team, user_team_ids
                     if team in user_team_ids:
                         ev['is_mine'] = True
                         fname = settings.MEDIA_URL + "tdp/" + ev['name']+"/" + str(team) + ".*"
