@@ -5,14 +5,40 @@
 {% dajaxice_js_import %}
 {%  csrf_token %}
 {% load staticfiles %}
+
+
+<script src="//cdn.ckeditor.com/4.4.5/standard/ckeditor.js"></script>
+
 <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
 
-<!-- Latest compiled and minified JavaScript -->
 
-<!-- Static files for the datatables
-<link href="{% static 'css/datatable.css' %}" rel="stylesheet" media="screen">
-<link href="{% static 'js/datatable.js' %}" rel="stylesheet" media="screen">
--->
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css">
+
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.datetimepicker.css' %}">
+<script type="text/javascript" src="{% static 'js/jquery.datetimepicker.js' %}"></script>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/select2.css' %}">
+<script type="text/javascript" src="{% static 'js/select2.js' %}"></script>
+
+
+<script>
+jQuery(function(){
+jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
+jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
+$("select[name=coords]").select2();
+
+CKEDITOR.replace('tab_description_input');
+CKEDITOR.replace('edit_taB_description');
+});
+</script>
+
+
 
 
 
@@ -39,7 +65,12 @@
 <thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>
     {% for event in event_list %}
     <tr> <td>
-                <b>{{event.name}}</b><button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'});return false;"><i class="icon-pencil"></i></button></td><td> {{event.email}}</td>
+                <b>{{event.name}}</b>
+                {% if core_perm %}
+                <button class="btn small danger pull-right" onclick="confirm_delete_event('{{event.name}}')"> X Delete </button>
+                &nbsp &nbsp
+                {% endif %}
+                <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'});return false;"><i class="icon-pencil"></i></button></td><td> {{event.email}}</td>
                 
         {% endfor %}
 </table>
@@ -49,7 +80,7 @@
 <div id="event_tabs"></div>
 <br>
 <h3 id="selected_event_tab"></h3>
-<p><div id="event_tabs_description"> </div></p>
+<p><div id="event_tabs_description" class="well"> </div></p>
 <br>
 <br>
 
@@ -71,9 +102,10 @@
 <form id="add_tab_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_name"><br>
-Description: <textarea name="tab_description" rows="20" cols="40" wrap="hard"></textarea>
+Description: <textarea name="tab_description_input" id="add_tab_textarea" rows="20" cols="40" wrap="hard"></textarea>
+<input id="add_event_description_hidden" type="hidden" name="tab_description">
 <input id="event_name_hidden" type="hidden" name="event_name" value="">
-<input type="button" onclick="Dajaxice.apps.portals.events.add_tab(add_tab_js, {'username':'{{user.username}}','add_tab_form':$('#add_tab_form').serialize(true)});return false;" value="Create Tab"/>
+<input type="button" onclick="add_diff_tab_js('{{user.username}}')" value="Create Tab"/>
 </form>
 </div>
 
@@ -84,10 +116,12 @@ Description: <textarea name="tab_description" rows="20" cols="40" wrap="hard"></
 <form id="edit_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_Name" id="tab_Name_input" value=""><br>
-Description: <textarea name="tab_Description" id="tab_Description_input" value="" rows="20" cols="40"></textarea>
+Description: <textarea id="tab_Description_input" name="edit_taB_description"></textarea>
+<input id="tab_description_hidden" type="hidden" name="tab_Description" value="">
+
 <input id="event_Name_edit_form_hidden" type="hidden" name="event_Name_edit_form" value="">
 <input id="event_tab_Name_edit_form_hidden" type="hidden" name="event_tab_Name_edit_form" value="">
-<input type="button" onclick="Dajaxice.apps.portals.events.edit_tab(edit_tab_js, {'username':'{{user.username}}','edit_tab_form':$('#edit_form').serialize(true)});return false;" value="Edit Tab" >
+<input type="button" onclick="edit_tab_intermediate_js('{{user.username}}')" value="Edit Tab" >
 </form>
 </div>
 
@@ -99,7 +133,7 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 <!--ADD EVENT FORM -->
 
 <div id="event_form_div" style="display:none;">
-<form action="" method="post" id="event_form" accept-charset="utf-8">
+<form action="" method="post" id="event_form" accept-charset="utf-8" enctype="multipart/form-data">
 {%  csrf_token %}
 <table>
 {{ event_form.as_table }}
@@ -114,17 +148,13 @@ Description: <textarea name="tab_Description" id="tab_Description_input" value="
 
 <!--EDIT EVENT FORM use some inintialize in ajax.py to add initial values and then serialize the form before sending it-->
 <div id="edit_event_form_div" style="display:none;">
-{% if core_perm %}
 <h3> EDIT EVENT FORM </h3> All fields left blank will keep the previous values
-<form action="" method="post" id="edit_event_form" accept-charset="utf-8">
+<form action="" method="post" id="edit_event_form" accept-charset="utf-8" enctype="multipart/form-data">
 {%  csrf_token %}
 <div id="edit_event_form_dyn"></div>
 <p id="edit_event_form_button"></p>
 </form>
 <br /> <br />
-{% else %}
-<br><b style="color:red"> You do not have permission to edit this event. You can only edit its tabs. Please contact your core if you want to edit event details.</b>
-{% endif %}
 </div>
 
 <!--JS FUNCTIONS -->
@@ -154,7 +184,9 @@ function show_tabs_js(data){
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
+     if (data.has_perm=="yes"){
     text += '<button type="button" class="btn small" onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'});return false;" >  Edit Event Details &nbsp &nbsp   </button>';
+    }
     for (i=0; i < len-1; i++) {
     text += '&nbsp &nbsp<button type="button" class="btn small " onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'});return false;">'+arr[i]+'</button>' + " ";
     }
@@ -173,18 +205,15 @@ function show_tabs_js(data){
 
 function show_tabs_description_js(data){
     document.getElementById("selected_event_tab").innerHTML = data.event_tab_name;
-
+	document.getElementById("event_tabs_description").innerHTML =  data.description ;
 //delete tab button
-    
 	//DELETE and EDIT button displayed only  if user has permission
     if (data.has_perm=="yes"){
     document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="confirm_delete_tab(\''+data.event_name+'\',\''+data.event_tab_name+'\',\'{{user.username}}\');return false;"> <font size="1">X Delete Tab</font></button>  ';
     
 //edit tab button    
-    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\');return false;"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
+    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + '#event_tabs_description' + '\')"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
     }
-
-    document.getElementById("event_tabs_description").innerHTML = data.description;
     
     //clears add edit tab forms
     document.getElementById("edit_tab_form").style.display='none';
@@ -209,6 +238,13 @@ function add_new_tab_js(event_name){
     return;
 }
 
+function add_diff_tab_js(username){
+	var data = CKEDITOR.instances.add_tab_textarea.getData();
+	document.getElementById("add_event_description_hidden").value = data;
+	Dajaxice.apps.portals.events.add_tab(add_tab_js, {'username':username,'add_tab_form':$('#add_tab_form').serialize(true)});
+    return;
+}
+
 function delete_tab_js(data){
     toastr.success(data.message);
     document.getElementById("edit_tab_form").style.display='none';
@@ -223,12 +259,13 @@ function delete_tab_js(data){
     Dajaxice.apps.portals.events.show_tabs(show_tabs_js,{'event_name':data.event_name,'username':data.username});
 }
 
-function edit_some_tab_js(event_name,event_tab_name,description){
+function edit_some_tab_js(event_name,event_tab_name,target){
+	description = $(target).html()
     document.getElementById("event_Name_edit_form_hidden").value = event_name;
     document.getElementById("event_tab_Name_edit_form_hidden").value = event_tab_name;
 
     document.getElementById("tab_Name_input").value = event_tab_name;
-    document.getElementById("tab_Description_input").value = description;
+    CKEDITOR.instances.tab_Description_input.setData(description);
 
     document.getElementById("edit_tab_form").style.display="inline";
     document.getElementById("message").innerHTML="Edit Tab form at the bottom of the page";
@@ -242,6 +279,13 @@ function edit_some_tab_js(event_name,event_tab_name,description){
 function register_js(data){
     alert(data.message);
 }
+
+
+function edit_tab_intermediate_js(username){
+	var data = CKEDITOR.instances.tab_Description_input.getData();
+	document.getElementById("tab_description_hidden").value = data;
+	Dajaxice.apps.portals.events.edit_tab(edit_tab_js, {'username':username,'edit_tab_form':$('#edit_form').serialize(true)});
+	}
 
 function edit_tab_js(data){
     var x = document.forms["edit_form"]["tab_Name"].value;
@@ -286,6 +330,7 @@ function add_tab_js(data){
     }
 }
 
+
 //these functions are for the dajaxice at the top of the page.
 function view_edit_event_js(data){
 	var name,email,i,length,text;
@@ -295,7 +340,7 @@ function view_edit_event_js(data){
     text='<table id="tableid"><thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>';
     for (i=0;i<len-1;i++)
     	{
-    	text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b><button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'});return false;"><i class="icon-pencil"></i></button></td><td> '+event_emails_array[i]+'</td></tr>'
+    	text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b>{% if core_perm %}<button onclick="confirm_delete_event(\''+event_names_array[i]+'\')" class="btn btn-xs danger pull-right"> X Delete </button> &nbsp &nbsp {% endif %} <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'});return false;"><i class="icon-pencil"></i></button></td><td> '+event_emails_array[i]+'</td></tr>'
     	}
     text=text+'</table>';
     
@@ -394,8 +439,24 @@ function edit_event_js(data){
 }
 
 
+
+function confirm_delete_event(event_name){
+    if (confirm("Are you sure you want to delete this tab?") == true) {
+    //alert(event_name);
+       Dajaxice.apps.portals.events.delete_event(delete_event_js,{'event_name':event_name});
+ 
+    }
+}
+
+function delete_event_js(data){
+    alert(data.message);
+    Dajaxice.apps.portals.events.view_edit_event(view_edit_event_js);
+    }
+
+
+
 function edit_event_details_js(data){
-    $('#edit_event_form_dyn').html(data.form);
+    $('#edit_event_form_dyn').html("<table>"+data.form+"</table>");
 
     document.getElementById("edit_event_form_div").style.display = 'inline';
     document.getElementById("edit_tab_form").style.display='none';
@@ -411,37 +472,30 @@ function edit_event_details_js(data){
     //Printing the previous values
 
     document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" type="button" onclick="Dajaxice.apps.portals.events.edit_event(edit_event_js, {\'event_name\':\''+data.event_name+'\',\'edit_event_form\':$(\'#edit_event_form\').serialize(true)});return false;" value="Edit Event"/>';
+    
+	jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
+	jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
+	$("select[name=coords]").select2();
     }
+    
 $(document).ready(function(){
 $('#tableid').dataTable();
 });
+
+
 </script>
 
 <script type="text/javascript" charset="utf8" src="{% static 'js/jquery-datatables.js' %}"></script>
 
-{% comment %}
-<!-- THE HTML IN THE VIEW_EDIT_EVENTS_JS FUNCTION IS
-{% if event_list %}
 
-<table id="tableid">
-<thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>
-	{% for event in event_list %}
-	<tr> <td>
-				<button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'})">{{event.name}}</button> </td><td> {{event.email}}</td>
-				
-        {% endfor %}
-</table>
-{% else %}
-            <strong>There are no categories present.</strong>
-{% endif %}
 
--->
-{% endcomment %}
+
 
 
 
 
 {% endblock %}
+
 
 
 
