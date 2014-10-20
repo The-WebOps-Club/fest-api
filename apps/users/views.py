@@ -346,14 +346,14 @@ def participant_login(request):
             "password": ["Password is required"]
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    user = get_object_or_None(User, username=email)
+    user = get_object_or_None(User, email=email)
     if user == None:
         return Response({
             "email": ["This email address doesn't have an account."]
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # Authenticates user against database
-    user = authenticate(username=email, password=password)
+    user = authenticate(username=email[:30], password=password)
     if user is not None:
         if user.is_active:
             login(request, user) # Logs in the User

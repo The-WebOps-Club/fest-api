@@ -352,17 +352,14 @@ class EventViewSet(viewsets.ViewSet):
             events_list = Event.objects.all()
             events_list = EventSerializer(events_list)
             events_data = events_list.data
-            return Response(viewset_response("done", events_data))
         elif action_for == "user": # Find all events of mine
             events_list = EventSerializer(user.events_registered.all())
             events_data = events_list.data
-            return Response(viewset_response("done", events_data))
         elif action_for == "team": # Find all events in my team
             team = get_object_or_None(Team, id=action_for_id)
             if team and team in user.teams.all():
                 events_list = EventSerializer(team.events_registered.all())
                 events_data = events_list.data
-                return Response(viewset_response("done", events_data))
             else :
                 return Response({
                     "error": "Cannot find this team in your list of teams !"
@@ -372,7 +369,6 @@ class EventViewSet(viewsets.ViewSet):
             if event:
                 events_list = EventSerializer(event)
                 events_data = events_list.data
-                return Response(viewset_response("done", events_data))
             else :
                 return Response({
                     "error": "Cannot find this event !"
@@ -382,12 +378,21 @@ class EventViewSet(viewsets.ViewSet):
             if event:
                 events_list = EventSerializer(event)
                 events_data = events_list.data
-                print events_data
-                return Response(viewset_response("done", events_data))
             else :
                 return Response({
                     "error": "Cannot find this event !"
                 }, status=status.HTTP_400_BAD_REQUEST)
+        print events_data
+        # for ev in events_data:
+        #     # Handle whether the user is registered for the event
+        #     if ( user.id in ev.users_registered ):
+        #         ev['is_mine'] = True
+        #     else:
+        #         user_team_ids = user.teams.list('id') # get a list of all team ids
+        #         for team in xrange(len(ev.teams_registered)):
+        #             if team in user_team_ids:
+        #                 ev['is_mine'] = True
+        return Response(viewset_response("done", events_data))
 
     def create(self, request):
         user = self.request.user
