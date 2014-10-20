@@ -5,6 +5,10 @@
 {% dajaxice_js_import %}
 {%  csrf_token %}
 {% load staticfiles %}
+
+
+<script src="//cdn.ckeditor.com/4.4.5/standard/ckeditor.js"></script>
+
 <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
 
 
@@ -29,9 +33,9 @@ jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
 jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
 $("select[name=coords]").select2();
 
+//CKEDITOR.replace('tab_description');
 });
 </script>
-
 
 
 
@@ -60,7 +64,12 @@ $("select[name=coords]").select2();
 <thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>
     {% for event in event_list %}
     <tr> <td>
-                <b>{{event.name}}</b><button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'});return false;"><i class="icon-pencil"></i></button></td><td> {{event.email}}</td>
+                <b>{{event.name}}</b>
+                {% if core_perm %}
+                <button class="btn small danger pull-right" onclick="confirm_delete_event('{{event.name}}')"> X Delete </button>
+                &nbsp &nbsp
+                {% endif %}
+                <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'});return false;"><i class="icon-pencil"></i></button></td><td> {{event.email}}</td>
                 
         {% endfor %}
 </table>
@@ -92,7 +101,7 @@ $("select[name=coords]").select2();
 <form id="add_tab_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_name"><br>
-Description: <textarea name="tab_description" rows="20" cols="40" wrap="hard"></textarea>
+Description: <textarea name="tab_description" id="add_tab_textarea" rows="20" cols="40" wrap="hard"></textarea>
 <input id="event_name_hidden" type="hidden" name="event_name" value="">
 <input type="button" onclick="Dajaxice.apps.portals.events.add_tab(add_tab_js, {'username':'{{user.username}}','add_tab_form':$('#add_tab_form').serialize(true)});return false;" value="Create Tab"/>
 </form>
@@ -324,7 +333,7 @@ function view_edit_event_js(data){
     text='<table id="tableid"><thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>';
     for (i=0;i<len-1;i++)
     	{
-    	text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b><button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'});return false;"><i class="icon-pencil"></i></button></td><td> '+event_emails_array[i]+'</td></tr>'
+    	text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b>{% if core_perm %}<button onclick="confirm_delete_event(\''+event_names_array[i]+'\')" class="btn btn-xs danger pull-right"> X Delete </button> &nbsp &nbsp {% endif %} <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'});return false;"><i class="icon-pencil"></i></button></td><td> '+event_emails_array[i]+'</td></tr>'
     	}
     text=text+'</table>';
     
@@ -423,6 +432,22 @@ function edit_event_js(data){
 }
 
 
+
+function confirm_delete_event(event_name){
+    if (confirm("Are you sure you want to delete this tab?") == true) {
+    //alert(event_name);
+       Dajaxice.apps.portals.events.delete_event(delete_event_js,{'event_name':event_name});
+ 
+    }
+}
+
+function delete_event_js(data){
+    alert(data.message);
+    Dajaxice.apps.portals.events.view_edit_event(view_edit_event_js);
+    }
+
+
+
 function edit_event_details_js(data){
     $('#edit_event_form_dyn').html("<table>"+data.form+"</table>");
 
@@ -445,6 +470,7 @@ function edit_event_details_js(data){
 	jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
 	$("select[name=coords]").select2();
     }
+    
 $(document).ready(function(){
 $('#tableid').dataTable();
 });
@@ -454,24 +480,9 @@ $('#tableid').dataTable();
 
 <script type="text/javascript" charset="utf8" src="{% static 'js/jquery-datatables.js' %}"></script>
 
-{% comment %}
-<!-- THE HTML IN THE VIEW_EDIT_EVENTS_JS FUNCTION IS
-{% if event_list %}
 
-<table id="tableid">
-<thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>
-	{% for event in event_list %}
-	<tr> <td>
-				<button type="button" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'})">{{event.name}}</button> </td><td> {{event.email}}</td>
-				
-        {% endfor %}
-</table>
-{% else %}
-            <strong>There are no categories present.</strong>
-{% endif %}
 
--->
-{% endcomment %}
+
 
 
 

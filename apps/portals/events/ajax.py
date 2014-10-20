@@ -47,7 +47,7 @@ def show_tabs_description(request,event_name,event_tab,has_perm):
     event_object=Event.objects.get(name=event_name)
     event_tab=EventTab.objects.get(name=event_tab,event=event_object)
     description=event_tab.content
-    description="<br>".join(description.split('\r'))
+    description="<br>".join(re.split('\W+', description))
     print description
     return json.dumps({'description': description,'event_name':event_name,'event_tab_name': event_tab.name,'has_perm':has_perm})
 
@@ -198,3 +198,9 @@ def view_edit_event(request):
 	return json.dumps({'event_names': event_names,'event_emails':event_emails})
 	
 
+@dajaxice_register    
+def delete_event(request,event_name):
+	event_object=Event.objects.get(name=event_name)
+	event_object.delete()
+	message="The event " + event_name + " has been successfully deleted."
+	return json.dumps({'message':message})

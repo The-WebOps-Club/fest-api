@@ -10,4 +10,4 @@ class AddEventForm(forms.ModelForm):
     coords.widget.attrs.update({'placeholder': 'Select coordinators', 'style':'width:300px'})
     class Meta:
         model = Event
-        fields=('name','is_visible','short_description','event_type','category','has_tdp','team_size_min','team_size_max','registration_starts','registration_ends','coords','google_group','email',)
+        fields=('name','is_visible','short_description','event_type','category','has_tdp','team_size_min','team_size_max','registration_starts','registration_ends','coords','google_group','email','event_image','google_form','long_description')
