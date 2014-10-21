@@ -33,7 +33,8 @@ jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
 jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
 $("select[name=coords]").select2();
 
-//CKEDITOR.replace('tab_description');
+CKEDITOR.replace('tab_description_input');
+CKEDITOR.replace('edit_taB_description');
 });
 </script>
 
@@ -101,9 +102,10 @@ $("select[name=coords]").select2();
 <form id="add_tab_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_name"><br>
-Description: <textarea name="tab_description" id="add_tab_textarea" rows="20" cols="40" wrap="hard"></textarea>
+Description: <textarea name="tab_description_input" id="add_tab_textarea" rows="20" cols="40" wrap="hard"></textarea>
+<input id="add_event_description_hidden" type="hidden" name="tab_description">
 <input id="event_name_hidden" type="hidden" name="event_name" value="">
-<input type="button" onclick="Dajaxice.apps.portals.events.add_tab(add_tab_js, {'username':'{{user.username}}','add_tab_form':$('#add_tab_form').serialize(true)});return false;" value="Create Tab"/>
+<input type="button" onclick="add_diff_tab_js('{{user.username}}')" value="Create Tab"/>
 </form>
 </div>
 
@@ -114,7 +116,7 @@ Description: <textarea name="tab_description" id="add_tab_textarea" rows="20" co
 <form id="edit_form" method="post" action="" >
 {%  csrf_token %}
 Tab Name: <input type="text" name="tab_Name" id="tab_Name_input" value=""><br>
-Description: <pre><div white-space:pre-wrap id="tab_Description_input" contenteditable></div></pre>
+Description: <textarea id="tab_Description_input" name="edit_taB_description"></textarea>
 <input id="tab_description_hidden" type="hidden" name="tab_Description" value="">
 
 <input id="event_Name_edit_form_hidden" type="hidden" name="event_Name_edit_form" value="">
@@ -131,7 +133,7 @@ Description: <pre><div white-space:pre-wrap id="tab_Description_input" contented
 <!--ADD EVENT FORM -->
 
 <div id="event_form_div" style="display:none;">
-<form action="" method="post" id="event_form" accept-charset="utf-8">
+<form action="" method="post" id="event_form" accept-charset="utf-8" enctype="multipart/form-data">
 {%  csrf_token %}
 <table>
 {{ event_form.as_table }}
@@ -147,7 +149,7 @@ Description: <pre><div white-space:pre-wrap id="tab_Description_input" contented
 <!--EDIT EVENT FORM use some inintialize in ajax.py to add initial values and then serialize the form before sending it-->
 <div id="edit_event_form_div" style="display:none;">
 <h3> EDIT EVENT FORM </h3> All fields left blank will keep the previous values
-<form action="" method="post" id="edit_event_form" accept-charset="utf-8">
+<form action="" method="post" id="edit_event_form" accept-charset="utf-8" enctype="multipart/form-data">
 {%  csrf_token %}
 <div id="edit_event_form_dyn"></div>
 <p id="edit_event_form_button"></p>
@@ -203,18 +205,15 @@ function show_tabs_js(data){
 
 function show_tabs_description_js(data){
     document.getElementById("selected_event_tab").innerHTML = data.event_tab_name;
-	document.getElementById("event_tabs_description").innerHTML = "<pre>" + data.description + "</pre>";
+	document.getElementById("event_tabs_description").innerHTML =  data.description ;
 //delete tab button
-    
 	//DELETE and EDIT button displayed only  if user has permission
     if (data.has_perm=="yes"){
     document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="confirm_delete_tab(\''+data.event_name+'\',\''+data.event_tab_name+'\',\'{{user.username}}\');return false;"> <font size="1">X Delete Tab</font></button>  ';
     
 //edit tab button    
-    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + data.description +'\')"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
+    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + $("#event_tabs_description").html() + '\')"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
     }
-
-    document.getElementById("event_tabs_description").innerHTML = "<pre>" + data.description + "</pre>";
     
     //clears add edit tab forms
     document.getElementById("edit_tab_form").style.display='none';
@@ -239,6 +238,13 @@ function add_new_tab_js(event_name){
     return;
 }
 
+function add_diff_tab_js(username){
+	var data = CKEDITOR.instances.add_tab_textarea.getData();
+	document.getElementById("add_event_description_hidden").value = data;
+	Dajaxice.apps.portals.events.add_tab(add_tab_js, {'username':username,'add_tab_form':$('#add_tab_form').serialize(true)});
+    return;
+}
+
 function delete_tab_js(data){
     toastr.success(data.message);
     document.getElementById("edit_tab_form").style.display='none';
@@ -258,7 +264,7 @@ function edit_some_tab_js(event_name,event_tab_name,description){
     document.getElementById("event_tab_Name_edit_form_hidden").value = event_tab_name;
 
     document.getElementById("tab_Name_input").value = event_tab_name;
-    document.getElementById("tab_Description_input").innerHTML = description;
+    CKEDITOR.instances.tab_Description_input.setData(description);
 
     document.getElementById("edit_tab_form").style.display="inline";
     document.getElementById("message").innerHTML="Edit Tab form at the bottom of the page";
@@ -275,9 +281,8 @@ function register_js(data){
 
 
 function edit_tab_intermediate_js(username){
-//chrome adds a <div> element for every time you press carriage return. So replace that with a \n. also, the next time you do it, there will be a <br> tag. replace that with \n
-	var h = $('#tab_Description_input').html().replace(/<div>/gi,'\n').replace(/<\/div>/gi,'').replace(/<br>/gi,'\n');
-	document.getElementById("tab_description_hidden").value=h;
+	var data = CKEDITOR.instances.tab_Description_input.getData();
+	document.getElementById("tab_description_hidden").value = data;
 	Dajaxice.apps.portals.events.edit_tab(edit_tab_js, {'username':username,'edit_tab_form':$('#edit_form').serialize(true)});
 	}
 
@@ -323,6 +328,7 @@ function add_tab_js(data){
     Dajaxice.apps.portals.events.show_tabs(show_tabs_js,{'event_name':data.event_name,'username':data.username});
     }
 }
+
 
 //these functions are for the dajaxice at the top of the page.
 function view_edit_event_js(data){
