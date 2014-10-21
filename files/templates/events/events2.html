@@ -80,7 +80,7 @@ CKEDITOR.replace('edit_taB_description');
 <div id="event_tabs"></div>
 <br>
 <h3 id="selected_event_tab"></h3>
-<p><div id="event_tabs_description"> </div></p>
+<p><div id="event_tabs_description" class="well"> </div></p>
 <br>
 <br>
 
@@ -212,7 +212,7 @@ function show_tabs_description_js(data){
     document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="confirm_delete_tab(\''+data.event_name+'\',\''+data.event_tab_name+'\',\'{{user.username}}\');return false;"> <font size="1">X Delete Tab</font></button>  ';
     
 //edit tab button    
-    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + $("#event_tabs_description").html() + '\')"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
+    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + '#event_tabs_description' + '\')"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
     }
     
     //clears add edit tab forms
@@ -259,7 +259,8 @@ function delete_tab_js(data){
     Dajaxice.apps.portals.events.show_tabs(show_tabs_js,{'event_name':data.event_name,'username':data.username});
 }
 
-function edit_some_tab_js(event_name,event_tab_name,description){
+function edit_some_tab_js(event_name,event_tab_name,target){
+	description = $(target).html()
     document.getElementById("event_Name_edit_form_hidden").value = event_name;
     document.getElementById("event_tab_Name_edit_form_hidden").value = event_tab_name;
 
