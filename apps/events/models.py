@@ -95,8 +95,11 @@ class Event(models.Model):
 	# List of registered participants
     users_registered = models.ManyToManyField(User, blank=True, null=True,related_name='events_registered')
     teams_registered = models.ManyToManyField(Team, blank=True, null=True,related_name='events_registered')
-    
+    #added by Akshay/Arun
     coords = select2.fields.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
+    long_description=models.TextField(blank = True, null=True)
+    google_form=models.URLField(blank=True, null=True)
+    event_image=models.ImageField(upload_to="events",blank=True, null=True)
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
     

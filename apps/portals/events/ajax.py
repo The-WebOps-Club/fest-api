@@ -198,3 +198,9 @@ def view_edit_event(request):
 	return json.dumps({'event_names': event_names,'event_emails':event_emails})
 	
 
+@dajaxice_register    
+def delete_event(request,event_name):
+	event_object=Event.objects.get(name=event_name)
+	event_object.delete()
+	message="The event " + event_name + " has been successfully deleted."
+	return json.dumps({'message':message})
