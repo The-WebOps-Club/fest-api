@@ -305,7 +305,7 @@ def identity(request, role_type=None, role_id=None):
 def participant_registration(request):
     serialized = UserSerializer(data = request.DATA)
     if serialized.is_valid():
-        user = get_object_or_None(User, username=serialized.init_data['email'])
+        user = get_object_or_None(User, email=serialized.init_data['email'])
         if user:
             return Response({
                 "email": ["This email address already exists. If you have logged in with Facebook or Google please do so again"]
@@ -321,7 +321,7 @@ def participant_registration(request):
             user.is_active = True
             user.save()
             token = Token.objects.get_or_create(user=user)[0]
-            user = authenticate(username=serialized.init_data['email'], password=serialized.init_data['password'])
+            user = authenticate(username=serialized.init_data['email'][:30], password=serialized.init_data['password'])
             login(request, user)
             data = serialized.data
             data['token'] = token.key
