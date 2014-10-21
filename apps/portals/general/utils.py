@@ -2,7 +2,7 @@
 from django.conf import settings
 from apps.users.models import Subdept, Dept, Page
 from django.contrib.auth.models import User
-
+import time
 def attach_drive_to_entity( drive, entity ):
 	title = entity.name
 	description = title +'\'s Drive Folder'
@@ -22,7 +22,6 @@ def attach_drive_to_entity( drive, entity ):
 	entity.save()
 
 def share_drive( drive, entity, directory_id = None ):
-
 	if( isinstance(entity, User) ):
 		if directory_id is None :
 			raise ValueError('Directory ID missing.')
@@ -44,3 +43,53 @@ def share_drive( drive, entity, directory_id = None ):
 	for profile in profile_set :
 		user = profile.user
 		share_drive( drive, user, directory_id )
+		
+def attach_calendar_to_entity( calendar, entity ):
+	title = entity.name
+	description = title +'\'s Calendar'
+	
+	calendar_details = {
+	    'summary': description,
+	    'timeZone': 'Asia/Kolkata'
+	}
+
+	created_calendar = calendar.service.calendars().insert(body=calendar_details).execute()
+
+	print created_calendar['id']
+	
+	entity.calendar_id = created_calendar['id']
+	entity.save()
+
+def share_calendar( calendar, entity, calendar_id = None ):
+	if( isinstance(entity, User) ):
+		if calendar_id is None :
+			raise ValueError('Calendar ID missing.')
+		
+		rule = {
+		    'scope': {
+			'type': 'user',
+			'value': entity.email,
+		    },
+		    'role': 'writer'
+		}
+		print calendar_id.split('@')[0]
+		created_rule = calendar.service.acl().insert(calendarId=calendar_id, body=rule).execute()
+		print entity.email
+		print calendar_id
+		print created_rule['id']
+		print "================================"
+		time.sleep(5)
+		return
+
+	calendar_id = entity.calendar_id
+	if calendar_id is None :
+		raise ValueError('Entity does not have a calendar reference. Attach calendar to entity first.')
+
+	profile_set = [];
+	if( isinstance(entity, Dept) ):
+		profile_set += list(entity.related_users())#User
+	elif( isinstance(entity, Page) ):
+		profile_set += [x.user for x in list(entity.user_set.all())]#ERPProfile
+	print list(set(profile_set))
+	for user in list(set(profile_set)) :
+		share_calendar( calendar, user, calendar_id )

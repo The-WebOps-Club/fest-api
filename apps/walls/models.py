@@ -24,6 +24,7 @@ from post_office import mail
 from misc.utils import *
 from annoying.functions import get_object_or_None
 import notifications
+from apps.api.gcm import send_push
 # Python
 import random
 import datetime
@@ -166,7 +167,12 @@ class PostInfo(models.Model):
             # Get my wall and posts which I am to get notifs for
             notif_list  = User.objects.filter(post.notify_users_query() | wall.notify_users_query()).distinct()
         mail_list = []
-        self.description = keeptags(self.description,'a p') # strips all tags except a and p
+	notif_list=list(notif_list)
+	notif_list.remove(self.by)
+        message={} # to send push notifications
+        message['title']= self.by.first_name + " " +   notif_verb + " " + post.wall.name + "'s Wall"
+	message['message']=self.description.strip()[:50]
+        send_push(notif_list, message)
 
         for recipient in notif_list:
             # Check if receipient already has notif on this post
@@ -208,7 +214,7 @@ class PostInfo(models.Model):
             mail.send_many(mail_list)
 
     def get_absolute_url(self):
-        post_str = '#post_' + str(self.parent_post.all()[0].pk)
+        post_str = '/' + str(self.parent_post.all()[0].pk)
         return reverse('apps.walls.views.wall', args=(self.parent_post.all()[0].wall.pk,)) + post_str
     
     class Meta:
@@ -309,7 +315,7 @@ class Post(PostInfo):
         return User.objects.filter( self.notiy_users_query() ).distinct()
         
     def get_absolute_url(self):
-        post_str = '#post_' + str(self.pk)
+        post_str = '/' + str(self.pk)
         return reverse('apps.walls.views.wall', args=(self.wall.pk,)) + post_str
         
     class Meta:
