@@ -1,0 +1,1508 @@
+/* coloricon 4-icon sample ... add other icons to the erp as and when required. icons from img/color-icons.png */
+
+/* or write sass code for simplicity... */
+.coloricon {
+    width : 18px;
+    height : 18px;
+    margin-top:1px;
+    *margin-right: .3em;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-repeat: no-repeat;
+    background-image: url('/static/img/icons-color.png');
+    display:inline-block;
+    /*background-size:700px 175px;*/
+ }
+.coloricon-tick {
+    background-position: 0px 0px;
+}
+.coloricon-plus {
+    background-position: -20px 0px;
+}
+.coloricon-alarm {
+    background-position: -40px 0px;
+}
+.coloricon-anchor {
+    background-position: -60px 0px;
+}
+.coloricon-blank-window {
+    background-position: -80px 0px;
+}
+.coloricon-add-window {
+    background-position: -100px 0px;
+}
+.coloricon-switch-window {
+    background-position: -120px 0px;
+}
+.coloricon-close-window {
+    background-position: -140px 0px;
+}
+.coloricon- {
+    background-position: -160px 0px;
+}
+.coloricon-edit-window {
+    background-position: -180px 0px;
+}
+.coloricon-alert-window {
+    background-position: -200px 0px;
+}
+.coloricon-dialog-box {
+    background-position: -220px 0px;
+}
+.coloricon-upload-window {
+    background-position: -240px 0px;
+}
+.coloricon- {
+    background-position: -260px 0px;
+}
+.coloricon-home-window {
+    background-position: -280px 0px;
+}
+.coloricon-private-window {
+    background-position: -300px 0px;
+}
+.coloricon-lightning-window {
+    background-position: -320px 0px;
+}
+.coloricon-share-window {
+    background-position: -340px 0px;
+}
+.coloricon-blank-window-2 {
+    background-position: -360px 0px;
+}
+.coloricon-terminal {
+    background-position: -380px 0px;
+}
+.coloricon-download-window {
+    background-position: -400px 0px;
+}
+.coloricon-leftbar-window {
+    background-position: -420px 0px;
+}
+.coloricon-hideleftbar-window {
+    background-position: -440px 0px;
+}
+.coloricon-showleftbar-window {
+    background-position: -460px 0px;
+}
+.coloricon-leftlist-window {
+    background-position: -480px 0px;
+}
+.coloricon-lefttree-window {
+    background-position: -500px 0px;
+}
+.coloricon-split-window {
+    background-position: -520px 0px;
+}
+.coloricon-vertsplit-window {
+    background-position: -540px 0px;
+}
+.coloricon-two-window {
+    background-position: -560px 0px;
+}
+.coloricon-excel {
+    background-position: -580px 0px;
+}
+.coloricon-excel-2 {
+    background-position: -600px 0px;
+}
+.coloricon-image {
+    background-position: -620px 0px;
+}
+.coloricon-calendar {
+    background-position: -640px 0px;
+}
+.coloricon-todo {
+    background-position: -660px 0px;
+}
+.coloricon-icons-window {
+    background-position: -680px 0px;
+}
+.coloricon-blank-window-3 {
+    background-position: -700px 0px;
+}
+.coloricon-terminal-2 {
+    background-position: -720px 0px;
+}
+.coloricon-blank-window-4 {
+    background-position: -740px 0px;
+}
+.coloricon-split-up-right {
+    background-position: -760px 0px;
+}
+.coloricon-split-up-up {
+    background-position: -780px 0px;
+}
+.coloricon-zoom-in {
+    background-position: -800px 0px;
+}
+.coloricon-zoom-out {
+    background-position: -820px 0px;
+}
+.coloricon-merge {
+    background-position: -840px 0px;
+}
+.coloricon-left-arrow {
+    background-position: -860px 0px;
+}
+.coloricon-right-arrow {
+    background-position: -880px 0px;
+}
+.coloricon-zoom-out-2 {
+    background-position: -900px 0px;
+}
+.coloricon-recycle {
+    background-position: -920px 0px;
+}
+.coloricon-redo {
+    background-position: -940px 0px;
+}
+.coloricon-undo {
+    background-position: -960px 0px;
+}
+.coloricon-attach {
+    background-position: -980px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------ ROW 2 ----------------- */
+.coloricon-calculator {
+    background-position: 0px 0px;
+}
+.coloricon-portrait {
+    background-position: -20px 0px;
+}
+.coloricon-landscape {
+    background-position: -40px 0px;
+}
+.coloricon-bluetooth {
+    background-position: -60px 0px;
+}
+.coloricon-bomb {
+    background-position: -80px 0px;
+}
+.coloricon-copy {
+    background-position: -100px 0px;
+}
+.coloricon-contact {
+    background-position: -120px 0px;
+}
+.coloricon-left-turn {
+    background-position: -140px 0px;
+}
+.coloricon-read-book {
+    background-position: -160px 0px;
+}
+.coloricon-right-turn {
+    background-position: -180px 0px;
+}
+.coloricon-bookmark {
+    background-position: -200px 0px;
+}
+.coloricon-bookmark-page {
+    background-position: -220px 0px;
+}
+.coloricon-bookmark-book {
+    background-position: -240px 0px;
+}
+.coloricon-bookmark-letter {
+    background-position: -260px 0px;
+}
+.coloricon-bookmark-folder {
+    background-position: -280px 0px;
+}
+.coloricon-copy-2 {
+    background-position: -300px 0px;
+}
+.coloricon-box {
+    background-position: -320px 0px;
+}
+.coloricon- {
+    background-position: -340px 0px;
+}
+.coloricon-blank-window-2 {
+    background-position: -360px 0px;
+}
+.coloricon-terminal {
+    background-position: -380px 0px;
+}
+.coloricon-download-window {
+    background-position: -400px 0px;
+}
+.coloricon-leftbar-window {
+    background-position: -420px 0px;
+}
+.coloricon-hideleftbar-window {
+    background-position: -440px 0px;
+}
+.coloricon-showleftbar-window {
+    background-position: -460px 0px;
+}
+.coloricon-leftlist-window {
+    background-position: -480px 0px;
+}
+.coloricon-lefttree-window {
+    background-position: -500px 0px;
+}
+.coloricon-split-window {
+    background-position: -520px 0px;
+}
+.coloricon-vertsplit-window {
+    background-position: -540px 0px;
+}
+.coloricon-two-window {
+    background-position: -560px 0px;
+}
+.coloricon-excel {
+    background-position: -580px 0px;
+}
+.coloricon-excel-2 {
+    background-position: -600px 0px;
+}
+.coloricon-image {
+    background-position: -620px 0px;
+}
+.coloricon-calendar {
+    background-position: -640px 0px;
+}
+.coloricon-todo {
+    background-position: -660px 0px;
+}
+.coloricon-icons-window {
+    background-position: -680px 0px;
+}
+.coloricon-blank-window-3 {
+    background-position: -700px 0px;
+}
+.coloricon-terminal-2 {
+    background-position: -720px 0px;
+}
+.coloricon-blank-window-4 {
+    background-position: -740px 0px;
+}
+.coloricon-split-up-right {
+    background-position: -760px 0px;
+}
+.coloricon-split-up-up {
+    background-position: -780px 0px;
+}
+.coloricon-zoom-in {
+    background-position: -800px 0px;
+}
+.coloricon-zoom-out {
+    background-position: -820px 0px;
+}
+.coloricon-merge {
+    background-position: -840px 0px;
+}
+.coloricon-left-arrow {
+    background-position: -860px 0px;
+}
+.coloricon-right-arrow {
+    background-position: -880px 0px;
+}
+.coloricon-zoom-out-2 {
+    background-position: -900px 0px;
+}
+.coloricon-recycle {
+    background-position: -920px 0px;
+}
+.coloricon-redo {
+    background-position: -940px 0px;
+}
+.coloricon-undo {
+    background-position: -960px 0px;
+}
+.coloricon-attach {
+    background-position: -980px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------ ROW 3 ----------------- */
+.coloricon-tick {
+    background-position: 0px 0px;
+}
+.coloricon-plus {
+    background-position: -20px 0px;
+}
+.coloricon-alarn {
+    background-position: -40px 0px;
+}
+.coloricon-anchor {
+    background-position: -60px 0px;
+}
+.coloricon-blank-window {
+    background-position: -80px 0px;
+}
+.coloricon-add-window {
+    background-position: -100px 0px;
+}
+.coloricon-switch-window {
+    background-position: -120px 0px;
+}
+.coloricon-close-window {
+    background-position: -140px 0px;
+}
+.coloricon- {
+    background-position: -160px 0px;
+}
+.coloricon-edit-window {
+    background-position: -180px 0px;
+}
+.coloricon-alert-window {
+    background-position: -200px 0px;
+}
+.coloricon-dialog-box {
+    background-position: -220px 0px;
+}
+.coloricon-upload-window {
+    background-position: -240px 0px;
+}
+.coloricon- {
+    background-position: -260px 0px;
+}
+.coloricon-home-window {
+    background-position: -280px 0px;
+}
+.coloricon-private-window {
+    background-position: -300px 0px;
+}
+.coloricon-lightning-window {
+    background-position: -320px 0px;
+}
+.coloricon-share-window {
+    background-position: -340px 0px;
+}
+.coloricon-blank-window-2 {
+    background-position: -360px 0px;
+}
+.coloricon-terminal {
+    background-position: -380px 0px;
+}
+.coloricon-download-window {
+    background-position: -400px 0px;
+}
+.coloricon-leftbar-window {
+    background-position: -420px 0px;
+}
+.coloricon-hideleftbar-window {
+    background-position: -440px 0px;
+}
+.coloricon-showleftbar-window {
+    background-position: -460px 0px;
+}
+.coloricon-leftlist-window {
+    background-position: -480px 0px;
+}
+.coloricon-lefttree-window {
+    background-position: -500px 0px;
+}
+.coloricon-split-window {
+    background-position: -520px 0px;
+}
+.coloricon-vertsplit-window {
+    background-position: -540px 0px;
+}
+.coloricon-two-window {
+    background-position: -560px 0px;
+}
+.coloricon-excel {
+    background-position: -580px 0px;
+}
+.coloricon-excel-2 {
+    background-position: -600px 0px;
+}
+.coloricon-image {
+    background-position: -620px 0px;
+}
+.coloricon-calendar {
+    background-position: -640px 0px;
+}
+.coloricon-todo {
+    background-position: -660px 0px;
+}
+.coloricon-icons-window {
+    background-position: -680px 0px;
+}
+.coloricon-blank-window-3 {
+    background-position: -700px 0px;
+}
+.coloricon-terminal-2 {
+    background-position: -720px 0px;
+}
+.coloricon-blank-window-4 {
+    background-position: -740px 0px;
+}
+.coloricon-split-up-right {
+    background-position: -760px 0px;
+}
+.coloricon-split-up-up {
+    background-position: -780px 0px;
+}
+.coloricon-zoom-in {
+    background-position: -800px 0px;
+}
+.coloricon-zoom-out {
+    background-position: -820px 0px;
+}
+.coloricon-merge {
+    background-position: -840px 0px;
+}
+.coloricon-left-arrow {
+    background-position: -860px 0px;
+}
+.coloricon-right-arrow {
+    background-position: -880px 0px;
+}
+.coloricon-zoom-out-2 {
+    background-position: -900px 0px;
+}
+.coloricon-recycle {
+    background-position: -920px 0px;
+}
+.coloricon-redo {
+    background-position: -940px 0px;
+}
+.coloricon-undo {
+    background-position: -960px 0px;
+}
+.coloricon-attach {
+    background-position: -980px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------ ROW 4 ----------------- */
+.coloricon-tick {
+    background-position: 0px 0px;
+}
+.coloricon-plus {
+    background-position: -20px 0px;
+}
+.coloricon-alarn {
+    background-position: -40px 0px;
+}
+.coloricon-anchor {
+    background-position: -60px 0px;
+}
+.coloricon-blank-window {
+    background-position: -80px 0px;
+}
+.coloricon-add-window {
+    background-position: -100px 0px;
+}
+.coloricon-switch-window {
+    background-position: -120px 0px;
+}
+.coloricon-close-window {
+    background-position: -140px 0px;
+}
+.coloricon- {
+    background-position: -160px 0px;
+}
+.coloricon-edit-window {
+    background-position: -180px 0px;
+}
+.coloricon-alert-window {
+    background-position: -200px 0px;
+}
+.coloricon-dialog-box {
+    background-position: -220px 0px;
+}
+.coloricon-upload-window {
+    background-position: -240px 0px;
+}
+.coloricon- {
+    background-position: -260px 0px;
+}
+.coloricon-home-window {
+    background-position: -280px 0px;
+}
+.coloricon-private-window {
+    background-position: -300px 0px;
+}
+.coloricon-lightning-window {
+    background-position: -320px 0px;
+}
+.coloricon-share-window {
+    background-position: -340px 0px;
+}
+.coloricon-blank-window-2 {
+    background-position: -360px 0px;
+}
+.coloricon-terminal {
+    background-position: -380px 0px;
+}
+.coloricon-download-window {
+    background-position: -400px 0px;
+}
+.coloricon-leftbar-window {
+    background-position: -420px 0px;
+}
+.coloricon-hideleftbar-window {
+    background-position: -440px 0px;
+}
+.coloricon-showleftbar-window {
+    background-position: -460px 0px;
+}
+.coloricon-leftlist-window {
+    background-position: -480px 0px;
+}
+.coloricon-lefttree-window {
+    background-position: -500px 0px;
+}
+.coloricon-split-window {
+    background-position: -520px 0px;
+}
+.coloricon-vertsplit-window {
+    background-position: -540px 0px;
+}
+.coloricon-two-window {
+    background-position: -560px 0px;
+}
+.coloricon-excel {
+    background-position: -580px 0px;
+}
+.coloricon-excel-2 {
+    background-position: -600px 0px;
+}
+.coloricon-image {
+    background-position: -620px 0px;
+}
+.coloricon-calendar {
+    background-position: -640px 0px;
+}
+.coloricon-todo {
+    background-position: -660px 0px;
+}
+.coloricon-icons-window {
+    background-position: -680px 0px;
+}
+.coloricon-blank-window-3 {
+    background-position: -700px 0px;
+}
+.coloricon-terminal-2 {
+    background-position: -720px 0px;
+}
+.coloricon-blank-window-4 {
+    background-position: -740px 0px;
+}
+.coloricon-split-up-right {
+    background-position: -760px 0px;
+}
+.coloricon-split-up-up {
+    background-position: -780px 0px;
+}
+.coloricon-zoom-in {
+    background-position: -800px 0px;
+}
+.coloricon-zoom-out {
+    background-position: -820px 0px;
+}
+.coloricon-merge {
+    background-position: -840px 0px;
+}
+.coloricon-left-arrow {
+    background-position: -860px 0px;
+}
+.coloricon-right-arrow {
+    background-position: -880px 0px;
+}
+.coloricon-zoom-out-2 {
+    background-position: -900px 0px;
+}
+.coloricon-recycle {
+    background-position: -920px 0px;
+}
+.coloricon-redo {
+    background-position: -940px 0px;
+}
+.coloricon-undo {
+    background-position: -960px 0px;
+}
+.coloricon-attach {
+    background-position: -980px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------ ROW 5 ----------------- */
+.coloricon-tick {
+    background-position: 0px 0px;
+}
+.coloricon-plus {
+    background-position: -20px 0px;
+}
+.coloricon-alarn {
+    background-position: -40px 0px;
+}
+.coloricon-anchor {
+    background-position: -60px 0px;
+}
+.coloricon-blank-window {
+    background-position: -80px 0px;
+}
+.coloricon-add-window {
+    background-position: -100px 0px;
+}
+.coloricon-switch-window {
+    background-position: -120px 0px;
+}
+.coloricon-close-window {
+    background-position: -140px 0px;
+}
+.coloricon- {
+    background-position: -160px 0px;
+}
+.coloricon-edit-window {
+    background-position: -180px 0px;
+}
+.coloricon-alert-window {
+    background-position: -200px 0px;
+}
+.coloricon-dialog-box {
+    background-position: -220px 0px;
+}
+.coloricon-upload-window {
+    background-position: -240px 0px;
+}
+.coloricon- {
+    background-position: -260px 0px;
+}
+.coloricon-home-window {
+    background-position: -280px 0px;
+}
+.coloricon-private-window {
+    background-position: -300px 0px;
+}
+.coloricon-lightning-window {
+    background-position: -320px 0px;
+}
+.coloricon-share-window {
+    background-position: -340px 0px;
+}
+.coloricon-blank-window-2 {
+    background-position: -360px 0px;
+}
+.coloricon-terminal {
+    background-position: -380px 0px;
+}
+.coloricon-download-window {
+    background-position: -400px 0px;
+}
+.coloricon-leftbar-window {
+    background-position: -420px 0px;
+}
+.coloricon-hideleftbar-window {
+    background-position: -440px 0px;
+}
+.coloricon-showleftbar-window {
+    background-position: -460px 0px;
+}
+.coloricon-leftlist-window {
+    background-position: -480px 0px;
+}
+.coloricon-lefttree-window {
+    background-position: -500px 0px;
+}
+.coloricon-split-window {
+    background-position: -520px 0px;
+}
+.coloricon-vertsplit-window {
+    background-position: -540px 0px;
+}
+.coloricon-two-window {
+    background-position: -560px 0px;
+}
+.coloricon-excel {
+    background-position: -580px 0px;
+}
+.coloricon-excel-2 {
+    background-position: -600px 0px;
+}
+.coloricon-image {
+    background-position: -620px 0px;
+}
+.coloricon-calendar {
+    background-position: -640px 0px;
+}
+.coloricon-todo {
+    background-position: -660px 0px;
+}
+.coloricon-icons-window {
+    background-position: -680px 0px;
+}
+.coloricon-blank-window-3 {
+    background-position: -700px 0px;
+}
+.coloricon-terminal-2 {
+    background-position: -720px 0px;
+}
+.coloricon-blank-window-4 {
+    background-position: -740px 0px;
+}
+.coloricon-split-up-right {
+    background-position: -760px 0px;
+}
+.coloricon-split-up-up {
+    background-position: -780px 0px;
+}
+.coloricon-zoom-in {
+    background-position: -800px 0px;
+}
+.coloricon-zoom-out {
+    background-position: -820px 0px;
+}
+.coloricon-merge {
+    background-position: -840px 0px;
+}
+.coloricon-left-arrow {
+    background-position: -860px 0px;
+}
+.coloricon-right-arrow {
+    background-position: -880px 0px;
+}
+.coloricon-zoom-out-2 {
+    background-position: -900px 0px;
+}
+.coloricon-recycle {
+    background-position: -920px 0px;
+}
+.coloricon-redo {
+    background-position: -940px 0px;
+}
+.coloricon-undo {
+    background-position: -960px 0px;
+}
+.coloricon-attach {
+    background-position: -980px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------ ROW 6 ----------------- */
+.coloricon-tick {
+    background-position: 0px 0px;
+}
+.coloricon-plus {
+    background-position: -20px 0px;
+}
+.coloricon-alarn {
+    background-position: -40px 0px;
+}
+.coloricon-anchor {
+    background-position: -60px 0px;
+}
+.coloricon-blank-window {
+    background-position: -80px 0px;
+}
+.coloricon-add-window {
+    background-position: -100px 0px;
+}
+.coloricon-switch-window {
+    background-position: -120px 0px;
+}
+.coloricon-close-window {
+    background-position: -140px 0px;
+}
+.coloricon- {
+    background-position: -160px 0px;
+}
+.coloricon-edit-window {
+    background-position: -180px 0px;
+}
+.coloricon-alert-window {
+    background-position: -200px 0px;
+}
+.coloricon-dialog-box {
+    background-position: -220px 0px;
+}
+.coloricon-upload-window {
+    background-position: -240px 0px;
+}
+.coloricon- {
+    background-position: -260px 0px;
+}
+.coloricon-home-window {
+    background-position: -280px 0px;
+}
+.coloricon-private-window {
+    background-position: -300px 0px;
+}
+.coloricon-lightning-window {
+    background-position: -320px 0px;
+}
+.coloricon-share-window {
+    background-position: -340px 0px;
+}
+.coloricon-blank-window-2 {
+    background-position: -360px 0px;
+}
+.coloricon-terminal {
+    background-position: -380px 0px;
+}
+.coloricon-download-window {
+    background-position: -400px 0px;
+}
+.coloricon-leftbar-window {
+    background-position: -420px 0px;
+}
+.coloricon-hideleftbar-window {
+    background-position: -440px 0px;
+}
+.coloricon-showleftbar-window {
+    background-position: -460px 0px;
+}
+.coloricon-leftlist-window {
+    background-position: -480px 0px;
+}
+.coloricon-lefttree-window {
+    background-position: -500px 0px;
+}
+.coloricon-split-window {
+    background-position: -520px 0px;
+}
+.coloricon-vertsplit-window {
+    background-position: -540px 0px;
+}
+.coloricon-two-window {
+    background-position: -560px 0px;
+}
+.coloricon-excel {
+    background-position: -580px 0px;
+}
+.coloricon-excel-2 {
+    background-position: -600px 0px;
+}
+.coloricon-image {
+    background-position: -620px 0px;
+}
+.coloricon-calendar {
+    background-position: -640px 0px;
+}
+.coloricon-todo {
+    background-position: -660px 0px;
+}
+.coloricon-icons-window {
+    background-position: -680px 0px;
+}
+.coloricon-blank-window-3 {
+    background-position: -700px 0px;
+}
+.coloricon-terminal-2 {
+    background-position: -720px 0px;
+}
+.coloricon-blank-window-4 {
+    background-position: -740px 0px;
+}
+.coloricon-split-up-right {
+    background-position: -760px 0px;
+}
+.coloricon-split-up-up {
+    background-position: -780px 0px;
+}
+.coloricon-zoom-in {
+    background-position: -800px 0px;
+}
+.coloricon-zoom-out {
+    background-position: -820px 0px;
+}
+.coloricon-merge {
+    background-position: -840px 0px;
+}
+.coloricon-left-arrow {
+    background-position: -860px 0px;
+}
+.coloricon-right-arrow {
+    background-position: -880px 0px;
+}
+.coloricon-zoom-out-2 {
+    background-position: -900px 0px;
+}
+.coloricon-recycle {
+    background-position: -920px 0px;
+}
+.coloricon-redo {
+    background-position: -940px 0px;
+}
+.coloricon-undo {
+    background-position: -960px 0px;
+}
+.coloricon-attach {
+    background-position: -980px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------ ROW 6 ----------------- */
+.coloricon-tick {
+    background-position: 0px 0px;
+}
+.coloricon-plus {
+    background-position: -20px 0px;
+}
+.coloricon-alarn {
+    background-position: -40px 0px;
+}
+.coloricon-anchor {
+    background-position: -60px 0px;
+}
+.coloricon-blank-window {
+    background-position: -80px 0px;
+}
+.coloricon-add-window {
+    background-position: -100px 0px;
+}
+.coloricon-switch-window {
+    background-position: -120px 0px;
+}
+.coloricon-close-window {
+    background-position: -140px 0px;
+}
+.coloricon- {
+    background-position: -160px 0px;
+}
+.coloricon-edit-window {
+    background-position: -180px 0px;
+}
+.coloricon-alert-window {
+    background-position: -200px 0px;
+}
+.coloricon-dialog-box {
+    background-position: -220px 0px;
+}
+.coloricon-upload-window {
+    background-position: -240px 0px;
+}
+.coloricon- {
+    background-position: -260px 0px;
+}
+.coloricon-home-window {
+    background-position: -280px 0px;
+}
+.coloricon-private-window {
+    background-position: -300px 0px;
+}
+.coloricon-lightning-window {
+    background-position: -320px 0px;
+}
+.coloricon-share-window {
+    background-position: -340px 0px;
+}
+.coloricon-blank-window-2 {
+    background-position: -360px 0px;
+}
+.coloricon-terminal {
+    background-position: -380px 0px;
+}
+.coloricon-download-window {
+    background-position: -400px 0px;
+}
+.coloricon-leftbar-window {
+    background-position: -420px 0px;
+}
+.coloricon-hideleftbar-window {
+    background-position: -440px 0px;
+}
+.coloricon-showleftbar-window {
+    background-position: -460px 0px;
+}
+.coloricon-leftlist-window {
+    background-position: -480px 0px;
+}
+.coloricon-lefttree-window {
+    background-position: -500px 0px;
+}
+.coloricon-split-window {
+    background-position: -520px 0px;
+}
+.coloricon-vertsplit-window {
+    background-position: -540px 0px;
+}
+.coloricon-two-window {
+    background-position: -560px 0px;
+}
+.coloricon-excel {
+    background-position: -580px 0px;
+}
+.coloricon-excel-2 {
+    background-position: -600px 0px;
+}
+.coloricon-image {
+    background-position: -620px 0px;
+}
+.coloricon-calendar {
+    background-position: -640px 0px;
+}
+.coloricon-todo {
+    background-position: -660px 0px;
+}
+.coloricon-icons-window {
+    background-position: -680px 0px;
+}
+.coloricon-blank-window-3 {
+    background-position: -700px 0px;
+}
+.coloricon-terminal-2 {
+    background-position: -720px 0px;
+}
+.coloricon-blank-window-4 {
+    background-position: -740px 0px;
+}
+.coloricon-split-up-right {
+    background-position: -760px 0px;
+}
+.coloricon-split-up-up {
+    background-position: -780px 0px;
+}
+.coloricon-zoom-in {
+    background-position: -800px 0px;
+}
+.coloricon-zoom-out {
+    background-position: -820px 0px;
+}
+.coloricon-merge {
+    background-position: -840px 0px;
+}
+.coloricon-left-arrow {
+    background-position: -860px 0px;
+}
+.coloricon-right-arrow {
+    background-position: -880px 0px;
+}
+.coloricon-zoom-out-2 {
+    background-position: -900px 0px;
+}
+.coloricon-recycle {
+    background-position: -920px 0px;
+}
+.coloricon-redo {
+    background-position: -940px 0px;
+}
+.coloricon-undo {
+    background-position: -960px 0px;
+}
+.coloricon-attach {
+    background-position: -980px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------ ROW 6 ----------------- */
+.coloricon-tick {
+    background-position: 0px 0px;
+}
+.coloricon-plus {
+    background-position: -20px 0px;
+}
+.coloricon-alarn {
+    background-position: -40px 0px;
+}
+.coloricon-anchor {
+    background-position: -60px 0px;
+}
+.coloricon-blank-window {
+    background-position: -80px 0px;
+}
+.coloricon-add-window {
+    background-position: -100px 0px;
+}
+.coloricon-switch-window {
+    background-position: -120px 0px;
+}
+.coloricon-close-window {
+    background-position: -140px 0px;
+}
+.coloricon- {
+    background-position: -160px 0px;
+}
+.coloricon-edit-window {
+    background-position: -180px 0px;
+}
+.coloricon-alert-window {
+    background-position: -200px 0px;
+}
+.coloricon-dialog-box {
+    background-position: -220px 0px;
+}
+.coloricon-upload-window {
+    background-position: -240px 0px;
+}
+.coloricon- {
+    background-position: -260px 0px;
+}
+.coloricon-home-window {
+    background-position: -280px 0px;
+}
+.coloricon-private-window {
+    background-position: -300px 0px;
+}
+.coloricon-lightning-window {
+    background-position: -320px 0px;
+}
+.coloricon-share-window {
+    background-position: -340px 0px;
+}
+.coloricon-blank-window-2 {
+    background-position: -360px 0px;
+}
+.coloricon-terminal {
+    background-position: -380px 0px;
+}
+.coloricon-download-window {
+    background-position: -400px 0px;
+}
+.coloricon-leftbar-window {
+    background-position: -420px 0px;
+}
+.coloricon-hideleftbar-window {
+    background-position: -440px 0px;
+}
+.coloricon-showleftbar-window {
+    background-position: -460px 0px;
+}
+.coloricon-leftlist-window {
+    background-position: -480px 0px;
+}
+.coloricon-lefttree-window {
+    background-position: -500px 0px;
+}
+.coloricon-split-window {
+    background-position: -520px 0px;
+}
+.coloricon-vertsplit-window {
+    background-position: -540px 0px;
+}
+.coloricon-two-window {
+    background-position: -560px 0px;
+}
+.coloricon-excel {
+    background-position: -580px 0px;
+}
+.coloricon-excel-2 {
+    background-position: -600px 0px;
+}
+.coloricon-image {
+    background-position: -620px 0px;
+}
+.coloricon-calendar {
+    background-position: -640px 0px;
+}
+.coloricon-todo {
+    background-position: -660px 0px;
+}
+.coloricon-icons-window {
+    background-position: -680px 0px;
+}
+.coloricon-blank-window-3 {
+    background-position: -700px 0px;
+}
+.coloricon-terminal-2 {
+    background-position: -720px 0px;
+}
+.coloricon-blank-window-4 {
+    background-position: -740px 0px;
+}
+.coloricon-split-up-right {
+    background-position: -760px 0px;
+}
+.coloricon-split-up-up {
+    background-position: -780px 0px;
+}
+.coloricon-zoom-in {
+    background-position: -800px 0px;
+}
+.coloricon-zoom-out {
+    background-position: -820px 0px;
+}
+.coloricon-merge {
+    background-position: -840px 0px;
+}
+.coloricon-left-arrow {
+    background-position: -860px 0px;
+}
+.coloricon-right-arrow {
+    background-position: -880px 0px;
+}
+.coloricon-zoom-out-2 {
+    background-position: -900px 0px;
+}
+.coloricon-recycle {
+    background-position: -920px 0px;
+}
+.coloricon-redo {
+    background-position: -940px 0px;
+}
+.coloricon-undo {
+    background-position: -960px 0px;
+}
+.coloricon-attach {
+    background-position: -980px 0px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ------------------ ROW 6 ----------------- */
+.coloricon-tick {
+    background-position: 0px 0px;
+}
+.coloricon-plus {
+    background-position: -20px 0px;
+}
+.coloricon-alarn {
+    background-position: -40px 0px;
+}
+.coloricon-anchor {
+    background-position: -60px 0px;
+}
+.coloricon-blank-window {
+    background-position: -80px 0px;
+}
+.coloricon-add-window {
+    background-position: -100px 0px;
+}
+.coloricon-switch-window {
+    background-position: -120px 0px;
+}
+.coloricon-close-window {
+    background-position: -140px 0px;
+}
+.coloricon- {
+    background-position: -160px 0px;
+}
+.coloricon-edit-window {
+    background-position: -180px 0px;
+}
+.coloricon-alert-window {
+    background-position: -200px 0px;
+}
+.coloricon-dialog-box {
+    background-position: -220px 0px;
+}
+.coloricon-upload-window {
+    background-position: -240px 0px;
+}
+.coloricon- {
+    background-position: -260px 0px;
+}
+.coloricon-home-window {
+    background-position: -280px 0px;
+}
+.coloricon-private-window {
+    background-position: -300px 0px;
+}
+.coloricon-lightning-window {
+    background-position: -320px 0px;
+}
+.coloricon-share-window {
+    background-position: -340px 0px;
+}
+.coloricon-blank-window-2 {
+    background-position: -360px 0px;
+}
+.coloricon-terminal {
+    background-position: -380px 0px;
+}
+.coloricon-download-window {
+    background-position: -400px 0px;
+}
+.coloricon-leftbar-window {
+    background-position: -420px 0px;
+}
+.coloricon-hideleftbar-window {
+    background-position: -440px 0px;
+}
+.coloricon-showleftbar-window {
+    background-position: -460px 0px;
+}
+.coloricon-leftlist-window {
+    background-position: -480px 0px;
+}
+.coloricon-lefttree-window {
+    background-position: -500px 0px;
+}
+.coloricon-split-window {
+    background-position: -520px 0px;
+}
+.coloricon-vertsplit-window {
+    background-position: -540px 0px;
+}
+.coloricon-two-window {
+    background-position: -560px 0px;
+}
+.coloricon-excel {
+    background-position: -580px 0px;
+}
+.coloricon-excel-2 {
+    background-position: -600px 0px;
+}
+.coloricon-image {
+    background-position: -620px 0px;
+}
+.coloricon-calendar {
+    background-position: -640px 0px;
+}
+.coloricon-todo {
+    background-position: -660px 0px;
+}
+.coloricon-icons-window {
+    background-position: -680px 0px;
+}
+.coloricon-blank-window-3 {
+    background-position: -700px 0px;
+}
+.coloricon-terminal-2 {
+    background-position: -720px 0px;
+}
+.coloricon-blank-window-4 {
+    background-position: -740px 0px;
+}
+.coloricon-split-up-right {
+    background-position: -760px 0px;
+}
+.coloricon-split-up-up {
+    background-position: -780px 0px;
+}
+.coloricon-zoom-in {
+    background-position: -800px 0px;
+}
+.coloricon-zoom-out {
+    background-position: -820px 0px;
+}
+.coloricon-merge {
+    background-position: -840px 0px;
+}
+.coloricon-left-arrow {
+    background-position: -860px 0px;
+}
+.coloricon-right-arrow {
+    background-position: -880px 0px;
+}
+.coloricon-zoom-out-2 {
+    background-position: -900px 0px;
+}
+.coloricon-recycle {
+    background-position: -920px 0px;
+}
+.coloricon-redo {
+    background-position: -940px 0px;
+}
+.coloricon-undo {
+    background-position: -960px 0px;
+}
+.coloricon-attach {
+    background-position: -980px 0px;
+}

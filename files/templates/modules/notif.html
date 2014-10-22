@@ -19,7 +19,6 @@
 	        {{ notification.verb|default:"" }} <span class="bold">{{ notification.target.wall|default:"" }}</span> 
 	        <br />
 	        {% autoescape off %} 
-	        {{ notification.action_object.description|striptags }} 
 	        {% endautoescape %}
 	    </div>
 	    <div class="notif_foot">
