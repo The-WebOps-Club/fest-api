@@ -17,11 +17,13 @@ from apps.walls.ajax import create_post,create_comment
 from apps.api.utils import *
 from apps.users.models import UserProfile, Team
 from apps.blog.models import Category, Feed
+from apps.events.models import EventRegistration
 
 from annoying.functions import get_object_or_None
 from django.views.decorators.csrf import csrf_exempt
 
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import permissions
 
 USER_MUTABLE_FIELDS = ["password", "first_name", "last_name"];
 PROFILE_MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","college_text","school_student","want_accomodation","age","city"];
@@ -481,3 +483,64 @@ class EventViewSet(viewsets.ViewSet):
             return Response({
                 "error": "An error occured ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
             }, status=status.HTTP_400_BAD_REQUEST)
+
+class RegistrationViewSet(viewsets.ViewSet):
+        def list(self, request):
+            user = request.user
+            registered_events = EventRegistration.objects.filter(users_registered=user)
+            if not registered_events :
+                return Response({
+                    "error": "You have not registered in any event."
+                }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(viewset_response('success',EventRegistrationSerializer(registered_events,many=True).data))
+
+        def create(self,request):
+            user=request.user
+            event_id = request.POST.get('event_id', None)
+            name = request.POST.get('name', None)
+            event=None
+            if event_id:
+                event = get_object_or_None(Event, id=event_id)
+            elif name:
+                event = get_object_or_None(Event, name=name)
+
+            if not event:
+                return Response({
+                    "error": "Cannot find this event ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        
+            if event.is_team_event:
+                # Take team info
+                team_name = request.DATA.get('team', None)
+                if not team_name :
+                    return Response({
+                        "error": "You need to enter a team name."
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                team = get_object_or_None(Team, name=team_name)
+                if not team:
+                    return Response({
+                        "error": "There exists no such team. You need to create the team first !"
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                if not team in user.teams.all():
+                    return Response({
+                        "error": "You are not a member of this team ! Ask the members to add you first."
+                    }, status=status.HTTP_400_BAD_REQUEST)
+
+                temp = EventRegistration(event=event, users_registered=user, teams_registered= team)
+                temp.save()
+                data = EventSerializer(event).data
+                return Response( viewset_response( "done", data ) )
+            else:
+                data = EventSerializer(event).data
+                temp = EventRegistration(event=event, users_registered=user)
+                temp.save()
+                return Response( viewset_response( "done", data ) )
+
+class EventDisplayViewset(viewsets.ViewSet):
+
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    def list(self, request):
+        event=Event.objects.all()
+        data=EventDisplaySerializer(event).data
+        return Response(viewset_response( "done", data ))

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 from apps.walls.models import Wall, Post, Comment
 from apps.blog.models import Category
-
+from apps.events.models import EventRegistration
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
@@ -50,6 +50,17 @@ class BlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         depth = 2
+class EventRegistrationSerializer(serializers.ModelSerializer):
+	class Meta:
+		model=EventRegistration
+		depth=1
+
+class EventDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+		model = Event
+		depth=1
+		fields=("id","name","short_description","event_type", "category","has_tdp","team_size_min","team_size_max","registration_starts","registration_ends","google_group","email","long_description","google_form","event_image","is_visible",'eventtab_set',)
+		
 
 #class NotificatioSerializer(serializers.Serializer):
 #    id = serializers.IntegerField()
