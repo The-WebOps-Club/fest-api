@@ -30,18 +30,18 @@ import select2.forms
 
 if FEST_NAME=='Saarang':
 	EVENT_CATEGORIES = (
-		('Word Games', 'Word Games'),
-		('Classical Arts', 'Classical Arts'),
-		('LecDems', 'LecDems'),
-		('Music', 'Music'),
-		('Thespian', 'Thespian'),
-		('Writing', 'Writing'),
-		('Speaking', 'Speaking'),
-		('Choreo', 'Choreo'),
-		('Design & Media', 'Design & Media'),
-		('Informals', 'Informals'),
-		('Quizzing', 'Quizzing'),
-		('Fine Arts', 'Fine Arts'),
+		('wordgames', 'Word Games'),
+		('classicalarts', 'Classical Arts'),
+		('lecdems', 'LecDems'),
+		('music', 'Music'),
+		('thespian', 'Thespian'),
+		('writing', 'Writing'),
+		('speaking', 'Speaking'),
+		('chroeo', 'Choreo'),
+		('designmedia', 'Design & Media'),
+		('informals', 'Informals'),
+		('quizzing', 'Quizzing'),
+		('finearts', 'Fine Arts'),
 	)
 else:
 	EVENT_CATEGORIES = (
