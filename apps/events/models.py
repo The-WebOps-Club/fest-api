@@ -96,7 +96,7 @@ class Event(models.Model):
     users_registered = models.ManyToManyField(User, blank=True, null=True,related_name='events_registered')
     teams_registered = models.ManyToManyField(Team, blank=True, null=True,related_name='events_registered')
     #added by Akshay/Arun
-    coords = select2.fields.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
+    coords = models.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
     long_description=models.TextField(blank = True, null=True)
     google_form=models.URLField(blank=True, null=True)
     event_image=models.ImageField(upload_to="events",blank=True, null=True)
@@ -155,3 +155,12 @@ class EventTab(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class EventRegistration(models.Model):
+    """
+        Each participant will have several fields 
+    """
+    event            = models.ForeignKey(Event, related_name='event_registered')
+    users_registered = models.ForeignKey(User, related_name='user_eventregis')
+    timestamp        = models.DateTimeField(auto_now_add=True)
+    teams_registered = models.ForeignKey(Team, blank=True, null=True,related_name='user_team')

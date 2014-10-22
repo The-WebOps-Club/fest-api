@@ -1,6 +1,5 @@
 BeautifulSoup==3.2.1
 Django==1.6.5
-MySQL-python==1.2.5
 South==0.8.4
 Werkzeug==0.9.4
 argparse==1.2.1
