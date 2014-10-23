@@ -156,6 +156,16 @@ Description: <textarea id="tab_Description_input" name="edit_taB_description"></
 <p id="edit_event_form_button"></p>
 </form>
 <br /> <br />
+<img src="" id='event-image' width='400p'>
+<br />
+<form action="" method="post" id="event_image_form" accept-charset="utf-8" enctype="multipart/form-data">
+{% csrf_token %}
+<table>
+<tr><td><input id="id_event_id" name="event_id" type="hidden" value=""/></td></tr>
+<tr><th><label for="id_image">Image:</label></th><td><input id="id_image" name="image" type="file" /></td></tr>
+</table>
+<p><input type="submit" class="btn success" value="submit" ></p>
+</form>
 </div>
 
 <!--JS FUNCTIONS -->
@@ -465,7 +475,9 @@ function delete_event_js(data){
 
 function edit_event_details_js(data){
     $('#edit_event_form_dyn').html("<table>"+data.form+"</table>");
-
+    $('#id_event_id').val(data.event_id);
+    $('#event-image').attr('src',(data.image_source));
+    console.log(data.event_id)
     document.getElementById("edit_event_form_div").style.display = 'inline';
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';

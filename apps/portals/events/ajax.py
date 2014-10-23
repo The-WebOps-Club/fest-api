@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
 
 # Decorators
 from django.contrib.auth.decorators import login_required, user_passes_test
-
+from django.conf import settings 
 
 #models
 from django.contrib.auth.models import User
@@ -132,7 +132,12 @@ from apps.portals.events.forms import AddEventForm
 def edit_event_details(request,event_name):
 	event_object=Event.objects.get(name=event_name)
 	form = AddEventForm(instance=event_object).as_table()
-	return json.dumps({'form':form, 'message': 'message','event_name':event_name})
+	event_id = event_object.id
+	try:
+		image_source= str(event_object.event_image.url)
+	except Exception,e:
+		image_source=""
+	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'event_id':event_id,'image_source':image_source})
     
     
 @dajaxice_register
