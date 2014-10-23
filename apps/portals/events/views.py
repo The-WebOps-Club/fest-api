@@ -34,7 +34,7 @@ def add_tabs( request ):
 
 	core_perm=None
 	
-	if request.user.is_superuser:
+	if request.user.is_staff:
 		core_perm=1
 	
 
