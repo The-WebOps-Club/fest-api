@@ -99,7 +99,7 @@ class Event(models.Model):
     coords = models.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
     long_description=models.TextField(blank = True, null=True)
     google_form=models.URLField(blank=True, null=True)
-    event_image=models.ImageField(upload_to="events",blank=True, null=True)
+    event_image=models.URLField(blank=True, null=True)
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
     

@@ -140,6 +140,11 @@ def edit_event_details(request,event_name):
 	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'event_id':event_id,'image_source':image_source})
     
     
+@dajaxice_register
+def display_add_event(request):
+	form = AddEventForm().as_table()
+	return json.dumps({'form':form})
+
 #try to make the deserialized form of the type addeventform then validate it
 
 @dajaxice_register    
@@ -196,11 +201,13 @@ def edit_event(request,event_name,edit_event_form):
 def view_edit_event(request):
 	event_names=""
 	event_emails=""
+	event_categories=""
 	event_array=Event.objects.all()
 	for event in event_array:
 		event_names=event_names+event.name+"|"
 		event_emails=event_emails+event.email+"|"
-	return json.dumps({'event_names': event_names,'event_emails':event_emails})
+		event_categories=event_categories+event.category+"|"
+	return json.dumps({'event_names': event_names,'event_emails':event_emails,'event_categories':event_categories})
 	
 
 @dajaxice_register    
