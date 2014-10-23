@@ -24,21 +24,27 @@ from django.contrib.auth.models import User
 from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
 from apps.events.models import Event, EventTab
 from django.contrib.auth.decorators import login_required
-from apps.portals.events.forms import AddEventForm
-
+from apps.portals.events.forms import AddEventForm, ImageEventForm
+from apps.events.models import Event
 @login_required
 def add_tabs( request ):
 	message=""
 	event_form=AddEventForm()
+	event_image_form=ImageEventForm()
 	events=Event.objects.all()
 
 	core_perm=None
 	
 	if request.user.is_staff:
 		core_perm=1
-	
+	if request.method == 'POST':
+		form = ImageEventForm(request.POST, request.FILES)
+		if form.is_valid():
+			event = Event.objects.get(id=int(form.cleaned_data['event_id'])) 
+			event.event_image = form.cleaned_data['image']
+			event.save() 
 
-	context_dict = {'event_list':events,'message':message,'event_form':event_form,'core_perm':core_perm}
+	context_dict = {'event_list':events,'message':message,'event_form':event_form,'core_perm':core_perm,'event_image_form':event_image_form}
 	return render_to_response('events/events2.html', context_dict, context_instance = global_context(request))
 
 @login_required
