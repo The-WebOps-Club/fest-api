@@ -533,12 +533,19 @@ class RegistrationViewSet(viewsets.ViewSet):
                     return Response({
                         "error": "You are not a member of this team ! Ask the members to add you first."
                     }, status=status.HTTP_400_BAD_REQUEST)
-
+                if request.FILES.get('tdp', None) and event.has_tdp:
+                    f = request.FILES.get('tdp')
+                    fname = os.path.join(settings.MEDIA_ROOT, "tdp", event.name, str(user.id) + "_" + user.first_name + "_" + user.last_name, f.name)
+                    handle_uploaded_file(f, fname)                
                 temp = EventRegistration(event=event, users_registered=user, teams_registered= team)
                 temp.save()
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
             else:
+                if request.FILES.get('tdp', None) and event.has_tdp:
+                    f = request.FILES.get('tdp')
+                    fname = os.path.join(settings.MEDIA_ROOT, "tdp", event.name, str(user.id) + "_" + user.first_name + "_" + user.last_name, f.name)
+                    handle_uploaded_file(f, fname)                
                 data = EventSerializer(event).data
                 temp = EventRegistration(event=event, users_registered=user)
                 temp.save()
