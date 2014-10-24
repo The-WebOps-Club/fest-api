@@ -69,6 +69,9 @@ class EventDisplaySerializer(serializers.ModelSerializer):
 class SponsImageUploadSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= SponsImageUpload
+class UserProfileEditSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ERPProfile
 #class NotificatioSerializer(serializers.Serializer):
 #    id = serializers.IntegerField()
 #    actor = serializers.CharField()
