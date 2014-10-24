@@ -135,6 +135,11 @@ def edit_event_details(request,event_name):
 	return json.dumps({'form':form, 'message': 'message','event_name':event_name})
     
     
+@dajaxice_register
+def display_add_event(request):
+	form = AddEventForm().as_table()
+	return json.dumps({'form':form})
+
 #try to make the deserialized form of the type addeventform then validate it
 
 @dajaxice_register    
