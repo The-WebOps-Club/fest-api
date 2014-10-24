@@ -503,8 +503,8 @@ class RegistrationViewSet(viewsets.ViewSet):
 
         def create(self,request):
             user=request.user
-            event_id = request.POST.get('event_id', None)
-            name = request.POST.get('name', None)
+            event_id = request.DATA.get('event_id', None)
+            name = request.DATA.get('name', None)
             event=None
             if event_id:
                 event = get_object_or_None(Event, id=event_id)
