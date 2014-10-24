@@ -196,11 +196,13 @@ def edit_event(request,event_name,edit_event_form):
 def view_edit_event(request):
 	event_names=""
 	event_emails=""
+	event_categories=""
 	event_array=Event.objects.all()
 	for event in event_array:
 		event_names=event_names+event.name+"|"
 		event_emails=event_emails+event.email+"|"
-	return json.dumps({'event_names': event_names,'event_emails':event_emails})
+		event_categories=event_categories+event.category+"|"
+	return json.dumps({'event_names': event_names,'event_emails':event_emails,'event_categories':event_categories})
 	
 
 @dajaxice_register    

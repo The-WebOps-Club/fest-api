@@ -60,7 +60,7 @@ CKEDITOR.replace('long_description');
 
 <div id="event_list">
 <table id="tableid">
-<thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>
+<thead><tr><th>Event </th><th> Event Category </th> <th> Event Email Id </th></tr></thead>
     {% for event in event_list %}
     <tr> <td>
                 <b>{{event.name}}</b>
@@ -68,8 +68,9 @@ CKEDITOR.replace('long_description');
                 <button class="btn small danger pull-right" onclick="confirm_delete_event('{{event.name}}')"> X Delete </button>
                 &nbsp &nbsp
                 {% endif %}
-                <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'});return false;"><i class="icon-pencil"></i></button></td><td> {{event.email}}</td>
-                
+                <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'});return false;"><i class="icon-pencil"></i></button></td>
+                <td> {{event.category}}</td>
+                <td> {{event.email}}</td>
         {% endfor %}
 </table>
 </div>     
@@ -338,11 +339,12 @@ function view_edit_event_js(data){
 	var name,email,i,length,text;
 	event_names_array=data.event_names.split("|");
     event_emails_array=data.event_emails.split("|");
+    event_categories_array=data.event_categories.split("|");
     len=event_names_array.length
-    text='<table id="tableid"><thead><tr><th>Event </th> <th> Event Email Id </th></tr></thead>';
+    text='<table id="tableid"><thead><tr><th>Event </th> <th> Event Category </th> <th> Event Email Id </th></tr></thead>';
     for (i=0;i<len-1;i++)
     	{
-    	text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b>{% if core_perm %}<button onclick="confirm_delete_event(\''+event_names_array[i]+'\')" class="btn btn-xs danger pull-right"> X Delete </button> &nbsp &nbsp {% endif %} <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'});return false;"><i class="icon-pencil"></i></button></td><td> '+event_emails_array[i]+'</td></tr>'
+    	text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b>{% if core_perm %}<button onclick="confirm_delete_event(\''+event_names_array[i]+'\')" class="btn btn-xs danger pull-right"> X Delete </button> &nbsp &nbsp {% endif %} <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'});return false;"><i class="icon-pencil"></i></button></td><td> '+event_categories_array[i]+'</td><td> '+event_emails_array[i]+'</td></tr>'
     	}
     text=text+'</table>';
     
