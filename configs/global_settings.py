@@ -87,6 +87,8 @@ API_APPS = (
     'apps.events',
     'apps.docs',
     'apps.portals.events',
+    'apps.portals.spons',
+    'apps.spons',
     'apps.portals.general',
     'apps.search',
     'apps.blog',
@@ -608,3 +610,4 @@ OPEN_PORTALS = {
     'admin': {}
 }
 
+SPONS_ACCESS_ID = ()

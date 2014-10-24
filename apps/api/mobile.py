@@ -18,6 +18,7 @@ from apps.api.utils import *
 from apps.users.models import UserProfile, Team
 from apps.blog.models import Category, Feed
 from apps.events.models import EventRegistration
+from apps.spons.models import SponsImageUpload
 
 from annoying.functions import get_object_or_None
 from django.views.decorators.csrf import csrf_exempt
@@ -550,4 +551,10 @@ class EventDisplayViewset(viewsets.ViewSet):
     def list(self, request):
         event=Event.objects.all()
         data=EventDisplaySerializer(event).data
+        return Response(viewset_response( "done", data ))
+
+class SponsImageViewset(viewsets.ViewSet):
+    def list(self,request):
+        spons = SponsImageUpload.objects.all()
+        data = SponsImageUploadSerializer(spons).data
         return Response(viewset_response( "done", data ))
