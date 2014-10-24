@@ -20,6 +20,7 @@ from apps.api.utils import *
 from apps.users.models import UserProfile, Team
 from apps.blog.models import Category, Feed
 from apps.events.models import EventRegistration
+from apps.spons.models import SponsImageUpload
 
 from annoying.functions import get_object_or_None
 from django.views.decorators.csrf import csrf_exempt
@@ -503,8 +504,8 @@ class RegistrationViewSet(viewsets.ViewSet):
 
         def create(self,request):
             user=request.user
-            event_id = request.POST.get('event_id', None)
-            name = request.POST.get('name', None)
+            event_id = request.DATA.get('event_id', None)
+            name = request.DATA.get('name', None)
             event=None
             if event_id:
                 event = get_object_or_None(Event, id=event_id)
@@ -558,3 +559,37 @@ class EventDisplayViewset(viewsets.ViewSet):
         event=Event.objects.all()
         data=EventDisplaySerializer(event).data
         return Response(viewset_response( "done", data ))
+class SponsImageViewset(viewsets.ViewSet):
+    def list(self,request):
+        spons = SponsImageUpload.objects.all()
+        data = SponsImageUploadSerializer(spons).data
+        return Response(viewset_response( "done", data ))
+class UserProfileEditViewSet(viewsets.ViewSet):
+    """
+        first_name
+        last_name
+        gender
+        age
+        college_text
+        roll_number
+        branch
+        city
+        mobile_number
+        password
+    """
+    def create(self, request):
+        user = self.request.user
+        profile = UserProfile.objects.get_or_create( user=user )[0]
+        user.first_name = request.DATA.get('first_name', user.first_name)
+        user.last_name = request.DATA.get('last_name', user.last_name)
+        profile.gender = request.DATA.get('gender', profile.gender)
+        profile.age = request.DATA.get('age', profile.age)
+        profile.college_text = request.DATA.get('college_text', profile.college_text)
+        profile.college_roll = request.DATA.get('roll_number', profile.college_roll)
+        profile.branch = request.DATA.get('branch', profile.branch)
+        profile.city = request.DATA.get('city', profile.city)
+        profile.mobile_number = request.DATA.get('mobile_number', profile.mobile_number)
+        user.save()
+        profile.save()
+
+        return Response({'message':"Successfully changed."})

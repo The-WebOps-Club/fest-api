@@ -87,6 +87,8 @@ API_APPS = (
     'apps.events',
     'apps.docs',
     'apps.portals.events',
+    'apps.portals.spons',
+    'apps.spons',
     'apps.portals.general',
     'apps.search',
     'apps.blog',
@@ -396,7 +398,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.get_username',
     # 'example.app.pipeline.require_email',
     # 'social.pipeline.mail.mail_validation',
-    # 'social.pipeline.user.create_user',
+    'social.pipeline.user.create_user',
     'apps.users.pipeline.check_existing_user',
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
@@ -608,3 +610,4 @@ OPEN_PORTALS = {
     'admin': {}
 }
 
+SPONS_ACCESS_ID = ()

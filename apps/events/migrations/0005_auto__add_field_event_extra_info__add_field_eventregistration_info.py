@@ -8,90 +8,23 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Event'
-        db.create_table(u'events_event', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50)),
-            ('short_description', self.gf('django.db.models.fields.CharField')(max_length=250, blank=True)),
-            ('event_type', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('category', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('has_tdp', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('team_size_min', self.gf('django.db.models.fields.IntegerField')(default=1, null=True, blank=True)),
-            ('team_size_max', self.gf('django.db.models.fields.IntegerField')(default=1, null=True, blank=True)),
-            ('registration_starts', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('registration_ends', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('google_group', self.gf('django.db.models.fields.EmailField')(max_length=100, null=True, blank=True)),
-            ('email', self.gf('django.db.models.fields.EmailField')(max_length=100, null=True, blank=True)),
-            ('is_visible', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal(u'events', ['Event'])
+        # Adding field 'Event.extra_info'
+        db.add_column(u'events_event', 'extra_info',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
+                      keep_default=False)
 
-        # Adding M2M table for field users_registered on 'Event'
-        m2m_table_name = db.shorten_name(u'events_event_users_registered')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('event', models.ForeignKey(orm[u'events.event'], null=False)),
-            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['event_id', 'user_id'])
-
-        # Adding M2M table for field teams_registered on 'Event'
-        m2m_table_name = db.shorten_name(u'events_event_teams_registered')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('event', models.ForeignKey(orm[u'events.event'], null=False)),
-            ('team', models.ForeignKey(orm[u'users.team'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['event_id', 'team_id'])
-
-        # Adding M2M table for field coords on 'Event'
-        m2m_table_name = db.shorten_name(u'events_event_coords')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('event', models.ForeignKey(orm[u'events.event'], null=False)),
-            ('erpprofile', models.ForeignKey(orm[u'users.erpprofile'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['event_id', 'erpprofile_id'])
-
-        # Adding model 'Tab'
-        db.create_table(u'events_tab', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('event', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['events.Event'], unique=True, null=True, blank=True)),
-            ('head', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('content', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('order', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('is_visible', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal(u'events', ['Tab'])
-
-        # Adding model 'EventTab'
-        db.create_table(u'events_eventtab', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('event', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['events.Event'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('content', self.gf('django.db.models.fields.TextField')(blank=True)),
-        ))
-        db.send_create_signal(u'events', ['EventTab'])
+        # Adding field 'EventRegistration.info'
+        db.add_column(u'events_eventregistration', 'info',
+                      self.gf('django.db.models.fields.TextField')(null=True, blank=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'Event'
-        db.delete_table(u'events_event')
+        # Deleting field 'Event.extra_info'
+        db.delete_column(u'events_event', 'extra_info')
 
-        # Removing M2M table for field users_registered on 'Event'
-        db.delete_table(db.shorten_name(u'events_event_users_registered'))
-
-        # Removing M2M table for field teams_registered on 'Event'
-        db.delete_table(db.shorten_name(u'events_event_teams_registered'))
-
-        # Removing M2M table for field coords on 'Event'
-        db.delete_table(db.shorten_name(u'events_event_coords'))
-
-        # Deleting model 'Tab'
-        db.delete_table(u'events_tab')
-
-        # Deleting model 'EventTab'
-        db.delete_table(u'events_eventtab')
+        # Deleting field 'EventRegistration.info'
+        db.delete_column(u'events_eventregistration', 'info')
 
 
     models = {
@@ -134,13 +67,17 @@ class Migration(SchemaMigration):
         u'events.event': {
             'Meta': {'object_name': 'Event'},
             'category': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'coords': ('select2.fields.ManyToManyField', [], {'related_name': "'coord_events'", 'to': u"orm['users.ERPProfile']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True', 'search_field': 'None'}),
+            'coords': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'coord_events'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['users.ERPProfile']"}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'event_image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'event_type': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'extra_info': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'google_form': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'google_group': ('django.db.models.fields.EmailField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'has_tdp': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'long_description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
             'registration_ends': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'registration_starts': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
@@ -149,6 +86,15 @@ class Migration(SchemaMigration):
             'team_size_min': ('django.db.models.fields.IntegerField', [], {'default': '1', 'null': 'True', 'blank': 'True'}),
             'teams_registered': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'events_registered'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['users.Team']"}),
             'users_registered': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'events_registered'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['auth.User']"})
+        },
+        u'events.eventregistration': {
+            'Meta': {'object_name': 'EventRegistration'},
+            'event': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'event_registered'", 'to': u"orm['events.Event']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'info': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'teams_registered': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'user_team'", 'null': 'True', 'to': u"orm['users.Team']"}),
+            'timestamp': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'users_registered': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'user_eventregis'", 'to': u"orm['auth.User']"})
         },
         u'events.eventtab': {
             'Meta': {'object_name': 'EventTab'},

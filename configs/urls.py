@@ -44,6 +44,8 @@ router.register(r'blogs',mobile.BlogFeedViewSet,base_name="blogs")
 router.register(r'events',mobile.EventViewSet,base_name="events")
 router.register(r'user_events',mobile.RegistrationViewSet,base_name="events_regis")
 router.register(r'display_events',mobile.EventDisplayViewset,base_name="events_display")
+router.register(r'display_spons',mobile.SponsImageViewset,base_name="spons_display")
+router.register(r'edit_profile',mobile.UserProfileEditViewSet,base_name="edit_profile")
 
 
 urlpatterns = patterns('',
@@ -152,6 +154,13 @@ urlpatterns = patterns('',
 
     # Mobile SDK Auth
     url(r'^api-mobile-auth/(?P<backend>[^/]+)/?$','apps.api.utils.mobile_auth'),
+
+    # Spons
+    url(r'^add_logo/$', 'apps.portals.spons.views.add_logo', name='spons_portal'),
+    url(r'^delete_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.delete_logo', name='spons_delete_logo'),
+    url(r'^edit_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.edit_logo', name='spons_edit_logo'),
+    url(r'^save_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.save_logo', name='spons_save_logo'),
+
 
 )
 

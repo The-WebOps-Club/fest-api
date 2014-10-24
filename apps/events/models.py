@@ -30,18 +30,18 @@ import select2.forms
 
 if FEST_NAME=='Saarang':
 	EVENT_CATEGORIES = (
-		('Word Games', 'Word Games'),
-		('Classical Arts', 'Classical Arts'),
-		('LecDems', 'LecDems'),
-		('Music', 'Music'),
-		('Thespian', 'Thespian'),
-		('Writing', 'Writing'),
-		('Speaking', 'Speaking'),
-		('Choreo', 'Choreo'),
-		('Design & Media', 'Design & Media'),
-		('Informals', 'Informals'),
-		('Quizzing', 'Quizzing'),
-		('Fine Arts', 'Fine Arts'),
+		('wordgames', 'Word Games'),
+		('classicalarts', 'Classical Arts'),
+		('lecdems', 'LecDems'),
+		('music', 'Music'),
+		('thespian', 'Thespian'),
+		('writing', 'Writing'),
+		('speaking', 'Speaking'),
+		('chroeo', 'Choreo'),
+		('designmedia', 'Design & Media'),
+		('informals', 'Informals'),
+		('quizzing', 'Quizzing'),
+		('finearts', 'Fine Arts'),
 	)
 else:
 	EVENT_CATEGORIES = (
@@ -100,6 +100,8 @@ class Event(models.Model):
     long_description=models.TextField(blank = True, null=True)
     google_form=models.URLField(blank=True, null=True)
     event_image=models.ImageField(blank=True, null=True, upload_to='events')
+    extra_info = models.BooleanField(blank=True, default=False)
+
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
     
@@ -162,5 +164,6 @@ class EventRegistration(models.Model):
     """
     event            = models.ForeignKey(Event, related_name='event_registered')
     users_registered = models.ForeignKey(User, related_name='user_eventregis')
+    info             = models.TextField(null=True, blank=True)
     timestamp        = models.DateTimeField(auto_now_add=True)
     teams_registered = models.ForeignKey(Team, blank=True, null=True,related_name='user_team')

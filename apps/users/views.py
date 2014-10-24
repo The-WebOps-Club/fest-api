@@ -75,7 +75,6 @@ def login_user(request):
             # Checks for username and password
             username = login_form.cleaned_data["username"][:30] # As django truncates username field upto 30 chars
             password = login_form.cleaned_data["password"]
-
             # Authenticates user against database
             user = authenticate(username=username, password=password)
             # if user is None:
