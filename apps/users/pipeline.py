@@ -47,3 +47,5 @@ def check_existing_user(strategy, details, response, uid, user=None, *args, **kw
     return user
 #    return redirect('apps.users.views.first_login_required')
 
+# Send Confirmation email
+

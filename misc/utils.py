@@ -120,3 +120,8 @@ def valid_phone_number(num_string):
 # ------------------ SIMPLE UTILS
 #----------------------------------------------------------------------
 
+def send_email_validation_mail(user):
+    return 
+
+def send_registration_mail(user):
+    return 
