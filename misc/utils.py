@@ -125,3 +125,8 @@ def send_email_validation_mail(user):
 
 def send_registration_mail(user):
     return 
+
+# A small helper class to create custom attributes
+class Bunch:
+    def __init__(self, **kwds):
+        self.__dict__.update(kwds)
