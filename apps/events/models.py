@@ -29,20 +29,7 @@ import select2.forms
 
 
 if FEST_NAME=='Saarang':
-	EVENT_CATEGORIES = (
-		('wordgames', 'Word Games'),
-		('classicalarts', 'Classical Arts'),
-		('lecdems', 'LecDems'),
-		('music', 'Music'),
-		('thespian', 'Thespian'),
-		('writing', 'Writing'),
-		('speaking', 'Speaking'),
-		('chroeo', 'Choreo'),
-		('designmedia', 'Design & Media'),
-		('informals', 'Informals'),
-		('quizzing', 'Quizzing'),
-		('finearts', 'Fine Arts'),
-	)
+	EVENT_CATEGORIES = settings.EVENT_CATEGORIES
 else:
 	EVENT_CATEGORIES = (
 		('Aerofest', 'Aerofest'),
