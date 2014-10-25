@@ -389,6 +389,8 @@ function add_new_event(data){
     document.getElementById("edit_event_form_dyn").innerHTML = ' ';
     $('#add_events_form').html("<table>"+data.form+"</table>");
     CKEDITOR.replace('long_description');
+
+    $("select[name=coords]").select2();
     //making data from the other tabs disappear
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
