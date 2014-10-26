@@ -20,6 +20,7 @@
 .DS_Store
 .c9revisions
 *.kate-swp
+
 # Server config files
 restart-project.sh
 

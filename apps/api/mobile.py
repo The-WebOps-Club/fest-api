@@ -192,7 +192,7 @@ class CommentsViewSet(viewsets.ViewSet):
         #   message='no comments to be displayed'
         #   return Response(viewset_response(message,data))
         #commentserializer=CommentSerializer(comments,many=True)
-        #print commentserializer
+
         #for i in range(len(commentserializer.data)):
         #   commentserializer.data[i]["description"]=HTMLParser.HTMLParser().unescape(strip_tags(commentserializer.data[i]["description"].strip()))
         #data=commentserializer.data
@@ -231,14 +231,12 @@ class UserProfileViewSet(viewsets.ViewSet):
         profile = UserProfile.objects.get_or_create( user=user )[0]
         try:
             for i in request.DATA:
-                print i
                 if i == "college": # foreign key
                     pass
                 elif i in PROFILE_MUTABLE_FIELDS and i != '':
                     setattr( profile, i, request.POST[i] )
                 elif i in USER_MUTABLE_FIELDS and i != '':
                     setattr( user, i, request.POST[i] )
-                    # print i
         except:
             return Response({
                 "message": "Invalid input data."
@@ -383,7 +381,7 @@ class EventViewSet(viewsets.ViewSet):
                 return Response({
                     "error": "Cannot find this event !"
                 }, status=status.HTTP_400_BAD_REQUEST)
-        print events_data
+
         for ev in events_data:
             ev['is_mine'] = False
             # Handle whether the user is registered for the event
@@ -399,7 +397,7 @@ class EventViewSet(viewsets.ViewSet):
             else:
                 user_team_ids = user.teams.values_list('id', flat=True) # get a list of all team ids
                 for team in ev['teams_registered']:
-                    print team, user_team_ids
+
                     if team in user_team_ids:
                         ev['is_mine'] = True
                         fname = settings.MEDIA_URL + "tdp/" + ev['name']+"/" + str(team) + ".*"
@@ -417,7 +415,7 @@ class EventViewSet(viewsets.ViewSet):
         name = request.POST.get('name', None)
         action = request.POST.get('action', 'register')
         event = None
-        print event_id, name, action
+
         if event_id:
             event = get_object_or_None(Event, id=event_id)
         elif name:
@@ -467,7 +465,7 @@ class EventViewSet(viewsets.ViewSet):
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
         elif action == "edit":
-            print request.POST
+
             try:
                 for i in request.POST:
                     if i in EVENT_MUTABLE_FIELDS:
