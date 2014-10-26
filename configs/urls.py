@@ -64,6 +64,8 @@ urlpatterns = patterns('',
     url(r'^identity$', 'apps.users.views.identity', name='identity'),
     # Email unsubscribe
     url(r'^unsubscribe/(?P<username>[\w.@+-]+)/(?P<token>[\w.:\-_=]+)/$', 'apps.users.views.unsubscribe'),
+    # Email Validation
+    url(r'^validate/(?P<uidb36>[0-9A-Za-z]{1,13})-(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', 'apps.users.views.validate_email', name='validate_email'), 
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'), # Shows newsfeed for a user
     url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
