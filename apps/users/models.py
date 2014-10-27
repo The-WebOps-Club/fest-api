@@ -17,6 +17,7 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
 # Apps
+from apps.users.utils import send_registration_mail
 # Decorators
 # Models
 from misc.models import College
@@ -245,7 +246,9 @@ class UserProfile(models.Model): # The corresponding auth user
 
     def save(self, *args, **kwargs):
         #self.user.save()
-	self.saarang_id = self.fest_id
+        if not self.pk: #First time profile creation
+	    self.saarang_id = self.fest_id
+            send_registration_mail(self.user)
         super(UserProfile, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
