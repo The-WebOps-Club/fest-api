@@ -236,7 +236,10 @@ class UserProfileViewSet(viewsets.ViewSet):
                 elif i in PROFILE_MUTABLE_FIELDS and i != '':
                     setattr( profile, i, request.POST[i] )
                 elif i in USER_MUTABLE_FIELDS and i != '':
-                    setattr( user, i, request.POST[i] )
+                    if i == "password":
+                        user.set_password(request.POST[i])
+                    else:
+                        setattr( user, i, request.POST[i] )
         except:
             return Response({
                 "message": "Invalid input data."
@@ -250,14 +253,21 @@ class UserProfileViewSet(viewsets.ViewSet):
 
 class UserViewSet(viewsets.ViewSet):
     def list(self, request):
-        return Response(viewset_response("done", UserSerializer(self.request.user).data))
+        user = self.request.user
+        user_ids = request.DATA.getlist('id[]', None)
+        if self.request.user.is_superuser and user_ids: # Let superuser get all data
+            user = User.objects.get(id__in=user_ids)
+        return Response(viewset_response("done", UserSerializer(user).data))
 
     def create(self, request):
         user = self.request.user
         try:
             for i in request.POST:
                 if i in USER_MUTABLE_FIELDS:
-                    setattr( user, i, request.POST[i] )
+                    if i == "password":
+                        user.set_password(request.POST[i])
+                    else:
+                        setattr( user, i, request.POST[i] )
         except:
             return Response("Invalid input data.",[]);
         user.save()
@@ -266,7 +276,12 @@ class UserViewSet(viewsets.ViewSet):
 class TeamViewSet(viewsets.ViewSet):
     def  list(self, request):
         user = self.request.user
-        teams = TeamSerializer(user.teams.all())
+        team_ids = request.GET.getlist('id[]', None)
+
+        if self.request.user.is_superuser and team_ids: # Let superuser get all data
+            teams = TeamSerializer(Team.objects.filter(id__in=team_ids))
+        else:
+            teams = TeamSerializer(user.teams.all())
         teams_data = teams.data
         return Response(viewset_response("done", teams_data))
 
@@ -400,7 +415,7 @@ class EventViewSet(viewsets.ViewSet):
 
                     if team in user_team_ids:
                         ev['is_mine'] = True
-                        fname = settings.MEDIA_URL + "tdp/" + ev['name']+"/" + str(team) + ".*"
+                        fname = settings.MEDIA_ROOT + "tdp/" + ev['name']+"/" + str(team) + ".*"
                         url = glob.glob(fname)
                         if len(url) >= 1:
                             url = url[0].replace(settings.MEDIA_ROOT, settings.MEDIA_URL) # Remove patha nd add url
@@ -465,7 +480,6 @@ class EventViewSet(viewsets.ViewSet):
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
         elif action == "edit":
-
             try:
                 for i in request.POST:
                     if i in EVENT_MUTABLE_FIELDS:
@@ -474,6 +488,24 @@ class EventViewSet(viewsets.ViewSet):
                 return Response("Invalid input data.",[]);
             event.save()
             return Response( viewset_response( "done", EventSerializer(event).data ) )
+        elif action == "list":
+            if event.is_team_event:
+                teams = TeamSerializer(event.teams_registered.all())
+                data = teams.data
+            else:
+                users = UserSerializer(event.users_registered.all())
+                data = users.data
+            if event.has_tdp:
+                for i in xrange(len(data)):
+                    fname = settings.MEDIA_ROOT+"tdp/"+event.name+"/"+str(data[i]['id'])+".*"
+                    url = glob.glob(fname)
+                    print url, fname
+                    if len(url) >= 1:
+                        url = url[0].replace(settings.MEDIA_ROOT, settings.MEDIA_URL) # Remove patha nd add url
+                    else:
+                        url = ""
+                    data[i]['tdp_submitted'] = url
+            return Response( viewset_response( "done", data ) )
         elif action == "unregister":
             if event.is_team_event:
                 team_name = request.DATA.get('team', None)

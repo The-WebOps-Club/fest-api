@@ -304,17 +304,13 @@ def identity(request, role_type=None, role_id=None):
 @permission_classes((AllowAny, ))
 def participant_registration(request):
     serialized = UserSerializer(data = request.DATA)
-    # print serialized
     if serialized.is_valid():
-        # print "check"
         user = get_object_or_None(User, email=serialized.init_data['email'])
         if user:
-            # print "email exists"
             return Response({
                 "email": ["This email address already exists. If you have logged in with Facebook or Google please do so again"]
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
-            # print "email creating"
             user = User.objects.create_user(
                 serialized.init_data['email'][:30],
                 serialized.init_data['email'],
@@ -323,16 +319,13 @@ def participant_registration(request):
             user.first_name = serialized.init_data['first_name']
             user.last_name = serialized.init_data['last_name']
             user.is_active = True
-            # print user
             user.save()
-            # print "user save"
             token = Token.objects.get_or_create(user=user)[0]
             user = authenticate(username=serialized.init_data['email'][:30], password=serialized.init_data['password'])
             login(request, user)
             data = serialized.data
             data['token'] = token.key
             data['user_id'] = user.id
-            data['valid_profile'] = "0"
             return Response(data, status=status.HTTP_201_CREATED)
     else:
         return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
@@ -369,7 +362,6 @@ def participant_login(request):
                 valid_profile = "1"
             else:
                 valid_profile = "0"
-            print "valid profile : " + valid_profile
 
             return Response({
                 'first_name': user.first_name,
