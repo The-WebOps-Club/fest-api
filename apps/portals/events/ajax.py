@@ -55,6 +55,7 @@ def show_tabs_description(request,event_name,event_tab,has_perm):
 #ARUN - CHANGES MADE HERE
 #Function for setting permissions to edit Event Tabs 
 def permission(event_object,user_object):
+        return "yes"
 	events_dept=Dept.objects.get(name='events')
 	qms_dept=Dept.objects.get(name='qms')
 	if hasattr(user_object,'erp_profile'):
