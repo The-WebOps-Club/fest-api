@@ -34,8 +34,20 @@ def add_tabs( request ):
 	events=Event.objects.all()
 
 	core_perm=None
+	user_coordship_list=[]
+	user_supercoordship_list=[]
+	events_dept_object=Dept.objects.get(name='events')
+
+	temp=request.user.erp_profile.coord_relations.all()	
+	for i in temp:
+		user_coordship_list=user_coordship_list+[i.dept]
+		
+	temp=request.user.erp_profile.supercoord_relations.all()
+	for i in temp:
+		user_supercoordship_list=user_supercoordship_list+[i.dept]
+
 	
-	if request.user.is_superuser:
+	if request.user.is_staff or events_dept_object in user_coordship_list or events_dept_object in user_supercoordship_list:
 		core_perm=1
 	if request.method == 'POST':
 		form = ImageEventForm(request.POST, request.FILES)
