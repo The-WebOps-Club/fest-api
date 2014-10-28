@@ -206,7 +206,7 @@ class UserProfile(models.Model): # The corresponding auth user
     # Fest organizational info
     # is_core            = models.BooleanField(default=False)
     # is_hospi           = models.BooleanField(default=False)
-
+    
 
 
     #Events registerd
@@ -219,12 +219,15 @@ class UserProfile(models.Model): # The corresponding auth user
     last_activity_date = models.DateTimeField(default = datetime.datetime(1950, 1, 1))
 
     send_mails         = models.BooleanField(default=True)
+		
+    #Saarang ID
+    saarang_id = models.CharField(max_length=10, null=True, blank=True)
 
     objects = CheckActiveManager()
 
     @property
     def fest_id(self):
-        return settings.FEST_NAME[:2].upper + str(self.user.id).zfill(6)
+        return settings.FEST_NAME[:2].upper() + '15' + str(self.user.id).zfill(5)
 
     def last_seen(self):
         return cache.get('seen_%s' % self.user.username)
@@ -242,6 +245,7 @@ class UserProfile(models.Model): # The corresponding auth user
 
     def save(self, *args, **kwargs):
         #self.user.save()
+	self.saarang_id = self.fest_id
         super(UserProfile, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
