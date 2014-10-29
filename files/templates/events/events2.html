@@ -156,6 +156,7 @@ Description: <textarea id="tab_Description_input" name="edit_taB_description"></
 <p id="edit_event_form_button"></p>
 </form>
 <br /> <br />
+Use this to add an image for the event. This has to be done separately. Make sure u have saved all the above changes, before adding/saving image
 <img src="" id='event-image' width='400p'>
 <br />
 <form action="" method="post" id="event_image_form" accept-charset="utf-8" enctype="multipart/form-data">
@@ -164,7 +165,7 @@ Description: <textarea id="tab_Description_input" name="edit_taB_description"></
 <tr><td><input id="id_event_id" name="event_id" type="hidden" value=""/></td></tr>
 <tr><th><label for="id_image">Image:</label></th><td><input id="id_image" name="image" type="file" /></td></tr>
 </table>
-<p><input type="submit" class="btn success" value="submit" ></p>
+<p><input type="submit" class="btn" value="submit" ></p>
 </form>
 </div>
 
@@ -496,7 +497,7 @@ function edit_event_details_js(data){
 
     //Printing the previous values
 
-    document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" type="button" onclick="Dajaxice.apps.portals.events.edit_event(edit_event_js, {\'event_name\':\''+data.event_name+'\',\'edit_event_form\':$(\'#edit_event_form\').serialize(true)});return false;" value="Edit Event"/>';
+    document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" type="button" class="btn success" onclick="Dajaxice.apps.portals.events.edit_event(edit_event_js, {\'event_name\':\''+data.event_name+'\',\'edit_event_form\':$(\'#edit_event_form\').serialize(true)});return false;" value="Edit Event"/>';
     
 	jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
 	jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});

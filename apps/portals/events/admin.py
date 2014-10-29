@@ -10,5 +10,5 @@ admin.site.register(Event)
 admin.site.register(Tab)
 
 #new
-admin.site.register(EventTab)
+#admin.site.register(EventTab)
 admin.site.register(EventRegistration)
