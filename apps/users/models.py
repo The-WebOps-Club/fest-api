@@ -228,7 +228,7 @@ class UserProfile(models.Model): # The corresponding auth user
 
     @property
     def fest_id(self):
-        return settings.FEST_NAME[:2].upper() + '15' + str(self.user.id).zfill(6)
+        return settings.FEST_NAME[:2].upper() + '15' + str(self.user.id).zfill(5)
 
     def last_seen(self):
         return cache.get('seen_%s' % self.user.username)
