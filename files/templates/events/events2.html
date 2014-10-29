@@ -150,7 +150,7 @@ Description: <textarea id="tab_Description_input" name="edit_taB_description"></
 <!--EDIT EVENT FORM use some inintialize in ajax.py to add initial values and then serialize the form before sending it-->
 <div id="edit_event_form_div" style="display:none;">
 <h3> EDIT EVENT FORM </h3> All fields left blank will keep the previous values
-<form action="" method="post" id="edit_event_form" accept-charset="utf-8" enctype="multipart/form-data">
+<form action=""name="edit_event_form_name" method="post" id="edit_event_form" accept-charset="utf-8" enctype="multipart/form-data">
 {%  csrf_token %}
 <div id="edit_event_form_dyn"></div>
 <p id="edit_event_form_button"></p>
@@ -390,8 +390,13 @@ function add_new_event(data){
     document.getElementById("edit_event_form_dyn").innerHTML = ' ';
     $('#add_events_form').html("<table>"+data.form+"</table>");
     CKEDITOR.replace('long_description');
+    //making select and datetime picker work
+    jQuery(function(){
+jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
+jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
+$("select[name=coords]").select2();
 
-    $("select[name=coords]").select2();
+});
     //making data from the other tabs disappear
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
@@ -475,6 +480,11 @@ function delete_event_js(data){
     }
 
 
+function edit_event_details_intermediate_js(event_name){
+    var data = CKEDITOR.instances.id_long_description.getData();
+	document.forms["edit_event_form_name"]["id_long_description"].value=data;
+	Dajaxice.apps.portals.events.edit_event(edit_event_js, {'event_name':event_name,'edit_event_form':$('#edit_event_form').serialize(true)});
+}
 
 function edit_event_details_js(data){
     $('#edit_event_form_dyn').html("<table>"+data.form+"</table>");
@@ -497,7 +507,8 @@ function edit_event_details_js(data){
 
     //Printing the previous values
 
-    document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" type="button" class="btn success" onclick="Dajaxice.apps.portals.events.edit_event(edit_event_js, {\'event_name\':\''+data.event_name+'\',\'edit_event_form\':$(\'#edit_event_form\').serialize(true)});return false;" value="Edit Event"/>';
+	
+    document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" type="button" onclick="edit_event_details_intermediate_js(\''+data.event_name+'\')" value="Edit Event"/>';
     
 	jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
 	jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
