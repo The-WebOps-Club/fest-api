@@ -10,7 +10,7 @@ from django.utils.http import int_to_base36, base36_to_int
 from misc.utils import *  #Import miscellaneous functions
 from misc import strings
 from misc.constants import HOSTEL_CHOICES, BRANCH_CHOICES
-from apps.users.utils import send_email_validation_mail
+from apps.users.utils import send_email_validation_mail, send_registration_mail
 from apps.users.token import default_token_generator as pset
 # Decorators
 from django.views.decorators.csrf import csrf_exempt
@@ -322,15 +322,14 @@ def participant_registration(request):
             user.last_name = serialized.init_data['last_name']
             user.is_active = True
             user.save()
+            profile = UserProfile.objects.get_or_create(user=user)[0]
+            profile.save()
             token = Token.objects.get_or_create(user=user)[0]
             user = authenticate(username=serialized.init_data['email'], password=serialized.init_data['password'])
             login(request, user)
             data = serialized.data
             data['token'] = token.key
             data['user_id'] = user.id
-            user.is_active = False
-            user.save()
-            send_email_validation_mail(user)
             return Response(data, status=status.HTTP_201_CREATED)
     else:
         return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
@@ -439,6 +438,7 @@ def validate_email(request, uidb36, token):
     if user is not None and pset.check_token(user, token):
         user.profile.is_active = True
         user.save()
+        send_registration_mail(user)
     else:
         return HttpResponse("ERROR")
-    return HttpResponseRedirect(MAIN_SITE)
+    return HttpResponseRedirect(settings.MAIN_SITE+'2015/main')

@@ -575,7 +575,6 @@ class UserProfileEditViewSet(viewsets.ViewSet):
         branch
         city
         mobile_number
-        password
     """
     def create(self, request):
         user = self.request.user
@@ -585,7 +584,7 @@ class UserProfileEditViewSet(viewsets.ViewSet):
         profile.gender = request.DATA.get('gender', profile.gender)
         profile.age = request.DATA.get('age', profile.age)
         profile.college_text = request.DATA.get('college_text', profile.college_text)
-        profile.college_roll = request.DATA.get('roll_number', profile.college_roll)
+        profile.college_roll = request.DATA.get('college_roll', profile.college_roll)
         profile.branch = request.DATA.get('branch', profile.branch)
         profile.city = request.DATA.get('city', profile.city)
         profile.mobile_number = request.DATA.get('mobile_number', profile.mobile_number)

@@ -399,12 +399,11 @@ SOCIAL_AUTH_PIPELINE = (
     # 'example.app.pipeline.require_email',
     # 'social.pipeline.mail.mail_validation',
     'social.pipeline.user.create_user',
-    'apps.users.pipeline.send_welcome_email',
     'apps.users.pipeline.check_existing_user',
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details',
-
+    #'apps.users.pipeline.send_welcome_email',
     
 )
 # Social auth - backend specific
@@ -616,3 +615,4 @@ SPONS_ACCESS_ID = ()
 
 EVENT_CATEGORIES = ()
 
+DEFAULT_MAIN_FROM_EMAIL = ''
