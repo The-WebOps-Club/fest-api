@@ -19,6 +19,7 @@ def finance_portal(request):
     erp_profile = user.erp_profile
     position = erp_profile.get_position(request) 
     date = datetime.date.today().strftime('%Y-%m-%d')
+    '''
     relations = list() + list(erp_profile.supercoord_relations.all()) + list(erp_profile.coord_relations.all())
     for core in erp_profile.core_relations.all():
         position = core.name + " Core for Saarang 2015"
@@ -37,6 +38,11 @@ def finance_portal(request):
         dept = coord.dept.name
         link = settings.GOOGLE_FORMS['finance_fest'] %(dept, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
         link_list.append((position, link))
+    '''
+    position = "Saarang 2015"
+    club = ''
+    link = settings.GOOGLE_FORMS['finance_fest'] %(club, position, erp_profile.name,user.profile.mobile_number, user.email, date  )
+    link_list.append((position,link))
 
     position = "Lit-Soc / Cultural Clubs"
     club = " "	
