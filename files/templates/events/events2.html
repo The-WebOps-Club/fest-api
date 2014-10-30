@@ -508,7 +508,7 @@ function edit_event_details_js(data){
     //Printing the previous values
 
 	
-    document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" type="button" onclick="edit_event_details_intermediate_js(\''+data.event_name+'\')" value="Edit Event"/>';
+    document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" class="btn success" type="button" onclick="edit_event_details_intermediate_js(\''+data.event_name+'\')" value="Edit Event"/>';
     
 	jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
 	jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
