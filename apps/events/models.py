@@ -49,9 +49,9 @@ else:
 	)
 
 EVENT_TYPE = (
-    ('Audience', 'Audience'),
-    ('Participant', 'Participant'),
-    ('None','None'),
+    ('online', 'Online Registration'),
+    ('onspot', 'On-spot Registration'),
+    ('noreg','No Registration'),
 )
     
 class Event(models.Model):
