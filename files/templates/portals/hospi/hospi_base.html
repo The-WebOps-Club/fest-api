@@ -64,10 +64,10 @@
       <ul class="nav navbar-nav">
         <li id = "list_all_teams_tab" class="active" onclick="Dajaxice.apps.portals.hospi.list_all_teams(list_all_teams);"><a href="#">Team Registrations</a></li>
         <li id = "accomodation_statistics_tab" class="" onclick="Dajaxice.apps.portals.hospi.accomodation_statistics(accomodation_statistics);"><a href="#">Accomodation Statistics</a></li>
-        <li id = "add_hostel_room_tab" class=""><a href="#">Add a Hostel/Room</a></li>
-        <li id = "room_map_tab" class=""><a href="#">Room Map</a></li>
+        <li id = "add_hostel_room_tab" class="" onclick="Dajaxice.apps.portals.hospi.add_hostel_room(add_hostel_room);"><a href="#">Add a Hostel/Room</a></li>
+        <li id = "room_map_tab" class="" onclick="Dajaxice.apps.portals.hospi.room_map(room_map);"><a href="#">Room Map</a></li>
       </ul>
-      <p class="navbar-text navbar-right"><a href="http://saarang.org" class="navbar-brand" style="height:20px;padding:0px" target="_blank"><img src="{% static 'img/saarang_pics/favicon.ico' %}" height="100%" width="45%"/></a></p>
+      <p class="navbar-text navbar-right"><a href="http://saarang.org" class="navbar-brand" style="height:20px;padding:0px" target="_blank"><img src="{% static 'img/saarang_pics/favicon.ico' %}" height="110%" width="40%"/></a></p>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
@@ -105,6 +105,13 @@
         <div class="span12" id="content" class="maincontent" style="padding-top:inherit" >
             <div id="list_all_teams"></div>
             <div id="accomodation_statistics"></div>
+            <div id="div1">
+              <div id ="div2">
+                <div id = "add_hostel_room"></div>
+              </div>
+            </div>
+            <div id="room_map"></div>
+            
             
         </div>
 <!-- Content ends -->
@@ -137,15 +144,54 @@
     function list_all_teams(data){
       document.getElementById("list_all_teams").innerHTML = data.html_content;
       document.getElementById("accomodation_statistics").innerHTML = "";
+      document.getElementById("add_hostel_room").innerHTML = "";
+      document.getElementById("room_map").innerHTML = "";
       document.getElementById("list_all_teams_tab").className = "active";
       document.getElementById("accomodation_statistics_tab").className = "";
+      document.getElementById("add_hostel_room_tab").className = "";
+      document.getElementById("room_map_tab").className = "";
+      document.getElementById("add_hostel_room_tab").className = "";
     }
     function accomodation_statistics(data){
       document.getElementById("list_all_teams").innerHTML = "";
       document.getElementById("accomodation_statistics").innerHTML = data.html_content;
+      document.getElementById("add_hostel_room").innerHTML = "";
+      document.getElementById("room_map").innerHTML = "";
       document.getElementById("list_all_teams_tab").className = "";
       document.getElementById("accomodation_statistics_tab").className = "active";
+      document.getElementById("add_hostel_room_tab").className = "";
+      document.getElementById("room_map_tab").className = "";
+      document.getElementById("add_hostel_room_tab").className = "";
     }
+    function add_hostel_room(data){//By Balaji
+      document.getElementById("list_all_teams").innerHTML = "";
+      document.getElementById("accomodation_statistics").innerHTML = "";
+      document.getElementById("room_map").innerHTML = "";
+      document.getElementById("add_hostel_room").innerHTML = data.html_content;
+      document.getElementById("list_all_teams_tab").className = "";
+      document.getElementById("accomodation_statistics_tab").className = "";
+      document.getElementById("add_hostel_room_tab").className = "";
+      document.getElementById("room_map_tab").className = "";
+      document.getElementById("add_hostel_room_tab").className = "active";
+    }
+    function room_map(data){//By Balaji
+      document.getElementById("list_all_teams").innerHTML = "";
+      document.getElementById("accomodation_statistics").innerHTML = "";
+      document.getElementById("add_hostel_room").innerHTML = "";
+      document.getElementById("room_map").innerHTML = data.html_content;
+      document.getElementById("list_all_teams_tab").className = "";
+      document.getElementById("accomodation_statistics_tab").className = "";
+      document.getElementById("add_hostel_room_tab").className = "";
+      document.getElementById("room_map_tab").className = "active";
+      document.getElementById("add_hostel_room_tab").className = "";
+    }
+    function add_hostel(data){
+      Dajaxice.apps.portals.hospi.room_map(room_map);
+    }
+    function add_room(data){
+      Dajaxice.apps.portals.hospi.room_map(room_map);
+    }
+    
     </script>
     <!--<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce.min.js"></script>-->
     <!--<script type="text/javascript">

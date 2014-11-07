@@ -3,7 +3,9 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 import json
 from apps.hospi.models import HospiTeam, Hostel, Room, Allotment, HospiLog
+from apps.hospi.forms import HostelForm, RoomForm, HospiTeamForm
 from dajaxice.decorators import dajaxice_register
+from dajaxice.utils import deserialize_form
 
 @dajaxice_register
 def list_all_teams(request):
@@ -80,6 +82,52 @@ def accomodation_statistics(request):
 
     html_content = render_to_string('portals/hospi/statistics.html', locals(), RequestContext(request))
     return json.dumps({'html_content':html_content})
+
+@dajaxice_register
+def add_hostel_room(request):
+    hostelform = HostelForm()
+    roomform = RoomForm()
+    to_return = {
+        'hostelform':hostelform,
+        'roomform':roomform,
+    }
+    html_content = render_to_string('portals/hospi/add_hostel_rooms.html', to_return , RequestContext(request))
+    return json.dumps({'html_content':html_content})
+
+@dajaxice_register
+def room_map(request):				#By Balaji
+    hostels = Hostel.objects.all()
+    to_return = {
+        'hostels':hostels,
+    }
+    html_content = render_to_string('portals/hospi/room_map.html', to_return , RequestContext(request))
+    return json.dumps({'html_content':html_content})
+
+@dajaxice_register
+def add_hostel(request,form_add_hostel):			#By Balaji
+    hostelform=HostelForm(deserialize_form(form_add_hostel))
+    message = ""
+    print "function"
+    if hostelform.is_valid():
+    	print "valid form"
+        hostelform.save()
+        message = "Successfully added"
+    else:
+        message = "Some error occured. Please contact webops"
+
+    return json.dumps({'message':message})
+
+@dajaxice_register
+def add_room(request,form_add_room):			#By Balaji
+    roomform=RoomForm(deserialize_form(form_add_room))
+    message = ""
+    if roomform.is_valid():
+        roomform.save()
+        message = "Successfully added"
+    else:
+        message = "Some error occured. Please contact webops"
+
+    return json.dumps({'message':message})
 
 @dajaxice_register
 def registered_teams(request):
