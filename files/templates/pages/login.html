@@ -14,7 +14,7 @@
                     <div class='span6' id='login_box'>
                         
                         {% if current_page == "login" %}
-                            <form class='span9 pull-right' action='{% url "login" %}' method='POST' id='login_form'  autocomplete="on">
+                            <form class='span9 pull-right' action='' method='POST' id='login_form'  autocomplete="on">
                                 {% csrf_token %}
                                 <div class='span5 input_box'>
                                     <label for='id_username'>Email ID</label><br />

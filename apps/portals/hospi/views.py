@@ -16,7 +16,7 @@ def auto_id(user_id):
     return sid
 
 def hospi_portal(request):
-    return render(request,'portals/hospi/master.html')
+    return render(request,'portals/hospi/hospi_base.html')
     '''
     user = request.user
     link_list = []

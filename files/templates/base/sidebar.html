@@ -92,27 +92,35 @@
                             <i class='icon-crown'></i> Admin Portal
                         </a>
                     </li>
+                    <li class="{% if current_page == 'portal_events' %}active{% endif %}">
                     <li class="{% if current_page == 'portal_finance' %}active{% endif %}">
                         <a href='{% url "finance_portal" %}'>
                             <i class='icon-crown'></i> Finance Portal
                         </a>
                     </li>
                     <li class="{% if current_page == 'portal_hospi' %}active{% endif %}">
-                        <a href='{% url "hospi_portal" %}'>
+                        <a href='{% url "hospi_portal" %}'target="_blank">
                             <i class='icon-crown'></i> Hospitality Portal
                         </a>
                     </li>
-		    {% comment %}
+		    
                     <!--<li class="{% if current_page == 'portal_events' %}active{% endif %}">
+
+	
+
+		-->
+                {% endif %}
+                 <li class="{% if current_page == 'portal_events' %}active{% endif %}">
                         <a href='{% url "events_portal" %}'>
                             <i class='icon-crown'></i> Events Portal
                         </a>
-		    </li>-->
-		    {% endcomment %}
-                {% else %}
-                    <span class="muted">You have no portals ...</span>
-                {% endif %}
-            </ul>
+            </li>
+                 <li class="{% if current_page == 'portal_spons' %}active{% endif %}">
+                        <a href='{% url "spons_portal" %}'>
+                            <i class='icon-crown'></i> Spons Portal
+                        </a>
+            </li>
+				</ul>
             <!-- <ul class='group_link vertical'>
                 <li><a href='#'>
                     <i class='icon-search'></i> Events Portal

@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response, redirect, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
 from django.core.files.base import ContentFile
 # Apps
+from apps.users.utils import send_email_validation_mail, send_registration_mail
 # Decorators
 # Models
 from django.contrib.auth.models import User
@@ -38,5 +39,19 @@ def save_profile_picture(strategy, user, response, details, is_new=False, *args,
 def check_existing_user(strategy, details, response, uid, user=None, *args, **kwargs):
     if user:
         return {'is_new': False}
-    return redirect('apps.users.views.first_login_required')
 
+    try:
+        if(strategy.session_get('type') == 'participant'):
+            return;
+    except:
+        pass;
+    return user
+#    return redirect('apps.users.views.first_login_required')
+
+# Send Confirmation email
+
+def send_welcome_email(user, details, is_new=False, new_association=False, **kwargs):
+    print "is new ========================== ", is_new
+    print "new association ================= ", new_association
+    if is_new:
+        send_registration_mail(user)

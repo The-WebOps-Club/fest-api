@@ -24,11 +24,11 @@
                     <div class="span12 new_post_textarea atwho_at_config resize_textarea new_post_primary" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here" contenteditable='true'></div>
                     <textarea class="span12 new_post_textarea atwho_at_config resize_textarea new_post_fallback" name="new_post" id="id_new_post" cols="30" rows="1" placeholder="Post your message here" style="display:none"></textarea>
                     <div class="span12 post_links new_post_bottom_bar" style="display : none">
-                        <!--<a href="javascript:void(0)" class="btn small attach_doc_post_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
+                        <a href="javascript:void(0)" class="btn small attach_doc_post_btn" data-placement="below" rel="twipsy" title="Insert a file from google drive">
                             <i class="icon-attach"></i>
                         </a>
                         
-                        <a href="javascript:void(0)" class="btn small attach_pic_post_btn" data-placement="below" rel="twipsy" title="Attach a Picture">
+                        <!--<a href="javascript:void(0)" class="btn small attach_pic_post_btn" data-placement="below" rel="twipsy" title="Attach a Picture">
                             <i class="icon-pic"></i>
                         </a>
                         
@@ -176,6 +176,7 @@
 }
 </style>
 
+
 <script type="text/javascript">
 
      
@@ -217,11 +218,12 @@
     function attach_doc_post_callback(el, data) {
         
 
+        var $el = $(".new_post_textarea")
+        $el.closest(".new_post_wrapper").find(".attach_doc_post_btn").prop("disabled", false).removeClass("disabled").removeData("clicked");
+
         if ( data.action != google.picker.Action.PICKED )
             return
 
-        var $el = $(el).find(".post_textarea")
-        $el.closest(".new_post_wrapper").find(".attach_doc_btn").removeData("clicked").prop("disabled", false).removeClass("disabled")
         var text = "", file_name = "", file_link = "", file_id = "", file_icon = ""
         for ( var i = 0, d; d = data.docs[i]; i++ ) {
             var clean_name = d.name.replace(/(\(|\)|\[|\]|\"|\")/gi, " ")
@@ -575,6 +577,10 @@ $(document).ready(function() {
             })
 
         })
-})
+});
+function onApiLoad(){
+    
+}
 </script>
+ <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
 {% endonce %}
