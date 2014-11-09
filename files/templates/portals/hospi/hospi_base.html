@@ -42,9 +42,16 @@
     <link rel="icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
 
 </head>
-
 <body >
- 
+<script type="text/javascript">
+$("a[data-target=#hostelModal]").click(function(event) {
+    event.preventDefault();
+    var target = $(this).attr("href");
+    $("#hostelModal .modal-body").load(target, function() {
+         $("#hostelModal").modal("show");
+    });
+});
+</script> 
  <!-- NavBar Begins -->
     {% block topbar %}
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -186,9 +193,15 @@
       document.getElementById("add_hostel_room_tab").className = "";
     }
     function add_hostel(data){
+      alert(data.message);
       Dajaxice.apps.portals.hospi.room_map(room_map);
     }
+    function hostel_details(data){
+      document.getElementById("hostelModalBody").innerHTML = data.html_content;
+      $('#hostelModal').modal('show')
+    }
     function add_room(data){
+      alert(data.message);
       Dajaxice.apps.portals.hospi.room_map(room_map);
     }
     

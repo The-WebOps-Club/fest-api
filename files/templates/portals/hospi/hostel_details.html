@@ -1,12 +1,11 @@
-    
-    <div class="row-fluid well">
+<div class="row-fluid well">
     {% for room in rooms %}
         {% if forloop.counter0|divisibleby:4 %}
             <div class="row-fluid">
         {% endif %}
-            <a class="span3" data-target="#roomModal" href="#{% url 'hospi.views.room_details' room.pk %}" onclick='open_modal(this);'>
-            <div class="wrapper alert {% if room.get_occupants_count %}alert-error{% else %}alert-success{%endif%}">
-                <button onclick="document.location = '{% url 'hospi.views.delete_room' room.pk %}';" >Delete</button>
+            <a class="span3" data-target="#roomModal" href ="#"{% comment %}href="#{% url 'hospi.views.room_details' room.pk %}"{% endcomment %} onclick='open_modal(this);'>
+            <div class="wrapper alert {% if room.get_occupants_count %}alert-danger{% else %}alert-success{%endif%}">
+                <button {% comment %}onclick="document.location = '{% url 'hospi.views.delete_room' room.pk %}';"{% endcomment %} >Delete</button>
                 <div class="inner">
                         <p>
                             <strong>{{ room.name }}</strong>

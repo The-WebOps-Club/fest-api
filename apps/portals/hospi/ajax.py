@@ -6,6 +6,7 @@ from apps.hospi.models import HospiTeam, Hostel, Room, Allotment, HospiLog
 from apps.hospi.forms import HostelForm, RoomForm, HospiTeamForm
 from dajaxice.decorators import dajaxice_register
 from dajaxice.utils import deserialize_form
+from django.shortcuts import get_object_or_404
 
 @dajaxice_register
 def list_all_teams(request):
@@ -128,6 +129,17 @@ def add_room(request,form_add_room):			#By Balaji
         message = "Some error occured. Please contact webops"
 
     return json.dumps({'message':message})
+
+@dajaxice_register
+def hostel_details(request, hostel_id):
+    hostel = get_object_or_404(Hostel, pk=hostel_id)
+    rooms = hostel.parent_hostel.all()
+    to_return={
+        'hostel':hostel,
+        'rooms':rooms,
+    }
+    html_content = render_to_string('portals/hospi/hostel_details.html', to_return , RequestContext(request))
+    return json.dumps({'html_content':html_content})
 
 @dajaxice_register
 def registered_teams(request):

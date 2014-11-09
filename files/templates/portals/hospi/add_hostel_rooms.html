@@ -28,11 +28,11 @@
             {{ field }}
         {% endfor %}
         <br>
-        <div> <input class="btn btn-primary" type="submit" onclick="Dajaxice.apps.portals.hospi.add_hostel(add_hostel,{'form_add_hostel':$('#form_add_hostel').serialize(true)});"value="Save"/> 
+        <div> <input class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.add_hostel(add_hostel,{'form_add_hostel':$('#form_add_hostel').serialize(true)});"value="Save"/> 
         </div>
 </form>
 
-<form id = "form_add_room" class="form-horizontal well" {% comment %}action="{% url 'hospi.views.add_room' %}"{% endcomment %} {% if roomform.is_multipart %}enctype="multipart/form-data"{% endif %}>
+<form id = "form_add_room" class="form-horizontal well" {% if roomform.is_multipart %}enctype="multipart/form-data"{% endif %}>
         <legend>Add room</legend>
         {% csrf_token %}
         {{ roomform.media }}
@@ -61,6 +61,6 @@
             {{ field }}
         {% endfor %}
         <br>
-        <div> <input class="btn btn-primary" type="submit" onclick="Dajaxice.apps.portals.hospi.add_room(add_room,{'form_add_room':$('#form_add_room').serialize(true)});" value="Save"/> 
+        <div> <input class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.add_room(add_room,{'form_add_room':$('#form_add_room').serialize(true)});" value="Save"/> 
         </div>
 </form>
