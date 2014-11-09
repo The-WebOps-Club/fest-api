@@ -234,7 +234,13 @@ class UserProfileViewSet(viewsets.ViewSet):
                 if i == "college": # foreign key
                     pass
                 elif i in PROFILE_MUTABLE_FIELDS and i != '':
-                    setattr( profile, i, request.POST[i] )
+                    if i == "want_accomodation":
+                        if request.POST[i] == "true" or request.POST[i] == "True" or request.POST[i] == "Wanted" or request.POST[i] == True or request.POST[i] == 1:
+                            profile.want_accomodation = True
+                        else:
+                            profile.want_accomodation = False
+                    else:
+                        setattr( profile, i, request.POST[i] )
                 elif i in USER_MUTABLE_FIELDS and i != '':
                     if i == "password":
                         user.set_password(request.POST[i])
