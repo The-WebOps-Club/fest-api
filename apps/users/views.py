@@ -355,7 +355,7 @@ def participant_login(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # Authenticates user against database
-    user = authenticate(username=email[:30], password=password)
+    user = authenticate(username=user.username, password=password)
     if user is not None:
         if user.is_active:
             login(request, user) # Logs in the User
