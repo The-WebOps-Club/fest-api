@@ -235,7 +235,7 @@ class UserProfileViewSet(viewsets.ViewSet):
                     pass
                 elif i in PROFILE_MUTABLE_FIELDS and i != '':
                     if i == "want_accomodation":
-                        if request.POST[i] == "true" or request.POST[i] == "True" or request.POST[i] == "Wanted" or request.POST[i] == True or request.POST[i] == 1:
+                        if request.POST[i] == "true" or request.POST[i] == "True" or request.POST[i].lower() == "wanted" or request.POST[i] == True or request.POST[i] == 1 or request.POST[i] == "1":
                             profile.want_accomodation = True
                         else:
                             profile.want_accomodation = False
