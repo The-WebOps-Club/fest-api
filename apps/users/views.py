@@ -339,7 +339,7 @@ def participant_login(request):
     password = data.get('password', None)
     if email == None:
         return Response({
-            "email": ["Email is required"]
+            "email": ["Email or Shaastra ID is required"]
         }, status=status.HTTP_400_BAD_REQUEST)
     if password == None:
         return Response({
@@ -348,8 +348,10 @@ def participant_login(request):
 
     user = get_object_or_None(User, email=email)
     if user == None:
+        user = get_object_or_None(User, id=int(email.upper().replace("SH15", "")))
+    if user == None:
         return Response({
-            "email": ["This email address doesn't have an account."]
+            "email": ["This email address or Shaastra ID doesn't have an account."]
         }, status=status.HTTP_400_BAD_REQUEST)
 
     # Authenticates user against database
