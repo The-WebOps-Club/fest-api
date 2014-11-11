@@ -142,6 +142,73 @@ def hostel_details(request, hostel_id):
     return json.dumps({'html_content':html_content})
 
 @dajaxice_register
+def room_details(request, room_id):
+    room = get_object_or_404(Room, pk=room_id)
+    occupants = room.occupants.all()
+    to_return={
+        'occupants':occupants,
+        'room':room,
+    }
+    html_content = render_to_string('portals/hospi/room_details.html', to_return , RequestContext(request))
+    return json.dumps({'html_content':html_content})
+
+@dajaxice_register
+def confirm_delete_room(request, room_id):
+    room = Room.objects.get(pk=room_id)
+    name = room.name
+    return json.dumps({'roomname':name, 'room_id':room_id})
+
+@dajaxice_register
+def delete_room(request, room_id):
+    room = Room.objects.get(pk=room_id)
+    message = ""
+    if(room):
+        room.delete()
+        message = "Successfully Deleted"
+    else:
+        message = "Unable to delete Room. Contact webops team"
+    return json.dumps({'message':message})
+
+@dajaxice_register
+def confirm_delete_hostel(request, hostel_id):
+    hostel = Hostel.objects.get(pk=hostel_id)
+    name = hostel.name
+    return json.dumps({'hostelname':name, 'hostel_id':hostel_id})
+
+@dajaxice_register
+def delete_hostel(request, hostel_id):
+    hostel = Hostel.objects.get(pk=hostel_id)
+    message = ""
+    if(hostel):
+        hostel.delete()
+        message = "Successfully Deleted"
+    else:
+        message = "Unable to delete Hostel. Contact webops team"
+    return json.dumps({'message':message})
+
+@dajaxice_register
+def add_team(request):
+    addteamForm = HospiTeamForm()
+    to_return={
+        'form': addteamForm,
+        }
+    html_content = render_to_string('portals/hospi/add_team.html', to_return , RequestContext(request))
+    return json.dumps({'html_content':html_content})
+
+@dajaxice_register
+def adding_team(request,form_add_team):			#By Balaji
+
+    teamform=HospiTeamForm(deserialize_form(form_add_team))
+    message = ""
+    if teamform.is_valid():
+        teamform.save()
+        message = "Successfully added"
+    else:
+        message = "Some error occured. Please contact webops"
+
+    return json.dumps({'message':message})
+
+@dajaxice_register
 def registered_teams(request):
     html_content = render_to_string('portals/hospi/registered_teams.html', {}, RequestContext(request))
     return json.dumps({'html_content':html_content})

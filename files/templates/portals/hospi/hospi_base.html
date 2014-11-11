@@ -42,16 +42,7 @@
     <link rel="icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
 
 </head>
-<body >
-<script type="text/javascript">
-$("a[data-target=#hostelModal]").click(function(event) {
-    event.preventDefault();
-    var target = $(this).attr("href");
-    $("#hostelModal .modal-body").load(target, function() {
-         $("#hostelModal").modal("show");
-    });
-});
-</script> 
+<body>
  <!-- NavBar Begins -->
     {% block topbar %}
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -200,11 +191,44 @@ $("a[data-target=#hostelModal]").click(function(event) {
       document.getElementById("hostelModalBody").innerHTML = data.html_content;
       $('#hostelModal').modal('show')
     }
+    function add_team(data){
+      document.getElementById("addteamModalBody").innerHTML = data.html_content;
+      $('#addteamModal').modal('show')
+    }
+    function room_details(data){
+      document.getElementById("roomModalBody").innerHTML = data.html_content;
+      $('#roomModal').modal('show')
+    }
+    function closeRoomModal(){
+      $('#roomModal').modal('hide')
+      $('#hostelModal').modal('show')
+    }
     function add_room(data){
       alert(data.message);
       Dajaxice.apps.portals.hospi.room_map(room_map);
     }
-    
+    function confirm_delete_room(data) {
+      if (confirm("Are you sure you want to delete room: " + data.roomname) == true) {
+        Dajaxice.apps.portals.hospi.delete_room(delete_room,{'room_id':data.room_id});
+      }
+    }
+    function delete_room(data){
+      alert(data.message);
+      Dajaxice.apps.portals.hospi.room_map(room_map);
+    }
+    function confirm_delete_hostel(data) {
+      if (confirm("Are you sure you want to delete hostel: " + data.hostelname) == true) {
+        Dajaxice.apps.portals.hospi.delete_hostel(delete_hostel,{'hostel_id':data.hostel_id});
+      }
+    }
+    function delete_hostel(data){
+      alert(data.message);
+      Dajaxice.apps.portals.hospi.room_map(room_map);
+    }
+    function adding_team(data){
+      alert(data.message);
+      Dajaxice.apps.portals.hospi.list_all_teams(list_all_teams);
+    }
     </script>
     <!--<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce.min.js"></script>-->
     <!--<script type="text/javascript">

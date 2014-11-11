@@ -1,5 +1,5 @@
 <div class="alert alert-info">
-<form class="form-horizontal" action="{% url 'hospi.views.save_team' %}" method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+<form id = "form_add_team" class="form-horizontal" {% comment %}action="{% url 'hospi.views.save_team' %}"{% endcomment %} method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
         {% csrf_token %}
         {{ form.media }}
         {% if form.errors %}
@@ -28,8 +28,6 @@
             {{ field }}
         {% endfor %}
 
-        <div class="pull-right"> <input class="btn btn-primary" type="submit" value="Save"/>
-        </div>
     </form>
 </div>
 <script type="text/javascript">

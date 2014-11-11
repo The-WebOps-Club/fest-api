@@ -28,7 +28,7 @@
             {{ field }}
         {% endfor %}
         <br>
-        <div> <input class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.add_hostel(add_hostel,{'form_add_hostel':$('#form_add_hostel').serialize(true)});"value="Save"/> 
+        <div> <input type="button" class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.add_hostel(add_hostel,{'form_add_hostel':$('#form_add_hostel').serialize(true)});$(this).val('Please wait');"value="Save"/> 
         </div>
 </form>
 
@@ -61,6 +61,6 @@
             {{ field }}
         {% endfor %}
         <br>
-        <div> <input class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.add_room(add_room,{'form_add_room':$('#form_add_room').serialize(true)});" value="Save"/> 
+        <div> <input type="button" class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.add_room(add_room,{'form_add_room':$('#form_add_room').serialize(true)});$(this).val('Please wait');" value="Save"/> 
         </div>
 </form>
