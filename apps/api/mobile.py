@@ -489,6 +489,14 @@ class EventViewSet(viewsets.ViewSet):
             try:
                 for i in request.POST:
                     if i in EVENT_MUTABLE_FIELDS:
+                        print i, request.POST[i], type(request.POST[i])
+                        if i == "has_tdp":
+                            print i, request.POST[i], type(request.POST[i])
+                            if request.POST[i] == "true" or request.POST[i] == "True" or request.POST[i].lower() == "wanted" or request.POST[i] == True or request.POST[i] == 1 or request.POST[i] == "1":
+                                event.has_tdp = True
+                            else:
+                                event.has_tdp = False
+
                         setattr( event, i, request.POST[i] )
             except:
                 return Response("Invalid input data.",[]);
