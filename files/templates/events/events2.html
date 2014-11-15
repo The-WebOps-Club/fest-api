@@ -68,7 +68,9 @@ CKEDITOR.replace('long_description');
                 <button class="btn small danger pull-right" onclick="confirm_delete_event('{{event.name}}')"> X Delete </button>
                 &nbsp &nbsp
                 {% endif %}
-                <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'});return false;"><i class="icon-pencil"></i></button></td>
+                <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'});return false;"><i class="icon-pencil"></i></button>
+                <button class="btn small info pull-right" onclick="Dajaxice.apps.portals.events.reg_list(reg_list_js, {'event_name':'{{event.name}}'})"> View Registrations </button>
+                </td>
                 <td> {{event.category}}</td>
                 <td> {{event.email}}</td>
         {% endfor %}
@@ -355,7 +357,7 @@ function view_edit_event_js(data){
     text='<table id="tableid"><thead><tr><th>Event </th> <th> Event Category </th> <th> Event Email Id </th></tr></thead>';
     for (i=0;i<len-1;i++)
     	{
-    	text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b>{% if core_perm %}<button onclick="confirm_delete_event(\''+event_names_array[i]+'\')" class="btn btn-xs danger pull-right"> X Delete </button> &nbsp &nbsp {% endif %} <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'});return false;"><i class="icon-pencil"></i></button></td><td> '+event_categories_array[i]+'</td><td> '+event_emails_array[i]+'</td></tr>'
+    	text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b>{% if core_perm %}<button onclick="confirm_delete_event(\''+event_names_array[i]+'\')" class="btn btn-xs danger pull-right"> X Delete </button> &nbsp &nbsp {% endif %} <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'});return false;"><i class="icon-pencil"></i></button><button class="btn small info pull-right" onclick="Dajaxice.apps.portals.events.reg_list(reg_list_js, {\'event_name\':\''+event_names_array[i]+'\'})"> View Registrations </button></td><td> '+event_categories_array[i]+'</td><td> '+event_emails_array[i]+'</td></tr>'
     	}
     text=text+'</table>';
     
@@ -418,7 +420,7 @@ $("select[name=coords]").select2();
 
 function event_registration_list(){
     
-    document.getElementById("option_selected").innerHTML = '<h2>EVENT REGISTRATION LIST</h3>';
+    document.getElementById("option_selected").innerHTML = '<h2>EVENT REGISTRATION LIST</h3>. <h3>Go to the Edit/View Events page to check the events registration list</h3>';
     //making data from the other tabs disappear
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
@@ -454,6 +456,42 @@ function add_event_js(data){
     
 }
 
+//events_registration list
+function reg_list_js(data){
+//making other stuff disappear
+    document.getElementById("event_name").innerHTML = "<h2>"+data.event_name+"</h2>";
+    document.getElementById("edit_tab_form").style.display="none";
+    document.getElementById("add_new_tab_form").style.display = 'none';
+    document.getElementById("registration_tab").innerHTML = ' '; 
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_list").innerHTML = ' ';
+    document.getElementById("option_selected").innerHTML = ' ';
+    document.getElementById("edit_event_form_div").style.display = 'none';
+    
+    //filling the text variable
+    user_names_array=data.user_names.split("|");
+    team_names_array=data.team_names.split("|");
+    info_array=data.info.split("|");
+    len=user_names_array.length;
+    //text will be filled into the events_tab div
+    
+    text='<table id="registrations_table"><thead><tr><th> User/Team Leader </th> <th> Team Name </th> <th> Extra Information </th></tr></thead>';
+    
+    for (i=0;i<len-1;i++)
+    {
+    	text=text+'<tr><td><b>'+user_names_array[i]+'&nbsp &nbsp</b></td><td>'+team_names_array[i]+'</td><td> '+info_array[i]+'</td></tr>'
+    }
+    text=text+"</table>";
+    
+    document.getElementById("event_tabs").innerHTML = text;
+    $('#registrations_table').dataTable();
+}
+    
+    
+    
 function edit_event_js(data){
     if (data.temp){
     document.getElementById("edit_event_form_div").style.display = 'none';
