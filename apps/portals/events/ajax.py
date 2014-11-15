@@ -229,7 +229,7 @@ def reg_list(request,event_name):
 	info=""
 	for reg in event_registrations:
 		user_names=user_names + reg.users_registered.username +" |"
-		if team_names==None:
+		if reg.teams_registered==None:
 			team_names=team_names + "None |"
 		else:
 			team_names=team_names + reg.teams_registered.name +" |"
