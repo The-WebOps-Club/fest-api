@@ -95,6 +95,8 @@ urlpatterns = patterns('',
     #url(r'^setup/$', 'misc.views.setup', name='setup'),
 
     url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
+    url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
+    url(r'^portals/hospi/$','apps.portals.hospi.views.hospi_portal', name='hospi_portal' ),
     
     # events portal
     url(r'^portals/events/$','apps.portals.events.views.add_tabs', name='events_portal'),
@@ -125,6 +127,8 @@ urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # THIRD PARTY APPS
     # Dajaxice
+   	 url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
+    
     url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
 
     # Notifications
@@ -162,6 +166,10 @@ urlpatterns = patterns('',
     url(r'^delete_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.delete_logo', name='spons_delete_logo'),
     url(r'^edit_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.edit_logo', name='spons_edit_logo'),
     url(r'^save_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.save_logo', name='spons_save_logo'),
+
+    # Had to do this
+    # Include urls from hospi
+    url(r'^hospi/', include('apps.hospi.urls')),
 
 
 )

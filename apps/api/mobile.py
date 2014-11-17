@@ -282,6 +282,7 @@ class TeamViewSet(viewsets.ViewSet):
         return Response(viewset_response("done", teams_data))
 
     def create(self, request):
+        print request.DATA
         user = self.request.user
         action = request.DATA.get('action', 'edit')
         if action == "delete":
@@ -314,7 +315,7 @@ class TeamViewSet(viewsets.ViewSet):
                     }, status=status.HTTP_400_BAD_REQUEST)
 
             team.name = request.DATA['name']
-            member_list_data = request.DATA.getlist('member[]', [])
+            member_list_data = request.DATA['members']
 
             if len(member_list_data) == 0 :
                 return Response({
@@ -322,14 +323,14 @@ class TeamViewSet(viewsets.ViewSet):
                 }, status=status.HTTP_400_BAD_REQUEST)
             for i in member_list_data:
                 try:
-                    i = int(i)
+                    i = int(i[4:])
                 except ValueError:
                     i = -1 # Didnt wanna type the error message again -_-
                 try:
                     member_list.add(User.objects.get(id=i))
                 except User.DoesNotExist:
                     return Response({
-                        "member": "The members you have given seem to be invalid. Check the Shaastra IDs again"
+                        "member": "The members you have given seem to be invalid. Check the Saarang IDs again"
                     }, status=status.HTTP_400_BAD_REQUEST)
             member_list = list(member_list)
 
@@ -341,7 +342,7 @@ class TeamViewSet(viewsets.ViewSet):
             return Response( viewset_response( "done", data ) )
         else:
             return Response({
-                "error": "An error occured ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
+                "error": "An error occured ! Please contact webops team at : <a href='mailto:webops@saarang.org'>webops@saarang.org</a>"
             }, status=status.HTTP_400_BAD_REQUEST)
 
 # API methods for Blog App
@@ -415,7 +416,7 @@ class EventViewSet(viewsets.ViewSet):
 
         if not event:
             return Response({
-                "error": "Cannot find this event ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
+                "error": "Cannot find this event ! Please contact webops team at : <a href='mailto:webops@saarang.org'>webops@saarang.org</a>"
             }, status=status.HTTP_400_BAD_REQUEST)
 
         if action == "register":
@@ -489,7 +490,7 @@ class EventViewSet(viewsets.ViewSet):
                 return Response( viewset_response( "done", data ) )
         else:
             return Response({
-                "error": "An error occured ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
+                "error": "An error occured ! Please contact webops team at : <a href='mailto:webops@saarang.org'>webops@saarang.org</a>"
             }, status=status.HTTP_400_BAD_REQUEST)
 
 class RegistrationViewSet(viewsets.ViewSet):
@@ -507,6 +508,12 @@ class RegistrationViewSet(viewsets.ViewSet):
             event_id = request.DATA.get('event_id', None)
             name = request.DATA.get('name', None)
             event=None
+            action = request.DATA.get("action",None)
+            if action == "delete":
+                id =request.DATA.get('id',None)
+                temp = EventRegistration.objects.get(id=int(id))
+                temp.delete()
+                return Response(viewset_response("done", {"msg":"success"}))
             if event_id:
                 event = get_object_or_None(Event, id=event_id)
             elif name:
@@ -514,7 +521,7 @@ class RegistrationViewSet(viewsets.ViewSet):
 
             if not event:
                 return Response({
-                    "error": "Cannot find this event ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
+                    "error": "Cannot find this event ! Please contact webops team at : <a href='mailto:webops@saarang.org'>webops@saarang.org</a>"
                 }, status=status.HTTP_400_BAD_REQUEST)
 
         
@@ -538,8 +545,15 @@ class RegistrationViewSet(viewsets.ViewSet):
                     f = request.FILES.get('tdp')
                     fname = os.path.join(settings.MEDIA_ROOT, "tdp", event.name, str(user.id) + "_" + user.first_name + "_" + user.last_name, f.name)
                     handle_uploaded_file(f, fname)                
-                temp = EventRegistration(event=event, users_registered=user, teams_registered= team)
+                if request.DATA.get("action", None):
+                    if request.DATA["action"] == "edit":
+                        temp = EventRegistration.objects.get(id=int(request.DATA["id"]))
+                else:
+                    temp = EventRegistration(event=event, users_registered=user, teams_registered= team)
                 temp.save()
+                if request.DATA.get("extra_info",None):
+                    temp.info = request.DATA["extra_info"]
+                    temp.save()
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
             else:
@@ -550,6 +564,9 @@ class RegistrationViewSet(viewsets.ViewSet):
                 data = EventSerializer(event).data
                 temp = EventRegistration(event=event, users_registered=user)
                 temp.save()
+                if request.DATA.get("extra_info",None):
+                    temp.info = request.DATA["extra_info"]
+                    temp.save()
                 return Response( viewset_response( "done", data ) )
 
 class EventDisplayViewset(viewsets.ViewSet):

@@ -220,11 +220,59 @@ class UserProfile(models.Model): # The corresponding auth user
     last_activity_date = models.DateTimeField(default = datetime.datetime(1950, 1, 1))
 
     send_mails         = models.BooleanField(default=True)
+
 		
     #Saarang ID
     saarang_id = models.CharField(max_length=10, null=True, blank=True)
 
+    '''
+    Added from SaarangUser to incorporate hospi
+    '''
+    last_login = models.DateTimeField(blank=True, null=True)
+    desk_id = models.CharField(max_length=20, default='SA14D0000')
+    name = models.CharField(max_length=60, blank = True, null=True)
+    email = models.EmailField(max_length=100, blank = True, null=True)
+    mobile = models.BigIntegerField(max_length=10, blank = True, null=True)
+    fb_id = models.CharField(max_length=50, blank = True, null=True)
+    friend_list = models.TextField(max_length=1000, blank = True, null=True)
+    college_id_hospi = models.CharField(max_length=50, blank = True, null=True)
+    fb_token = models.TextField(max_length=1000, blank = True, null=True)
+    password = models.CharField(max_length=128, blank = True, null=True)
+    GENDER_CHOICES_2 = (
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+    )
+    ACTIVATION_CHOICES = (
+        (0,'Activation email sent'),
+        (1,'Activated'),
+        (2,'Profile completed'),
+    )
+    gender_hospi = models.CharField(max_length=10, choices=GENDER_CHOICES_2,default='Male', blank = True, null=True) #Used for Hospi Portal
+    activate_status = models.IntegerField(choices = ACTIVATION_CHOICES, default=2, blank=True, null=True)
+    accomod_is_confirmed = models.BooleanField(default=False)
+
     objects = CheckActiveManager()
+
+    
+    
+    def profile_is_complete(self):
+        # print self.user.first_name 
+        # print self.gender 
+        # print self.age 
+        # print len(str((self.mobile_number)))>=10
+        # print self.branch 
+        # print self.college_text 
+        # print self.college_roll 
+        # print self.city
+        if (self.user.first_name and self.gender and self.age and len(str((self.mobile_number)))>=10 and self.college_text and self.city):
+            return True
+        else:
+            return False
+
+    '''
+    Addition to hospi ends here
+    '''
+    
 
     @property
     def fest_id(self):
@@ -246,8 +294,8 @@ class UserProfile(models.Model): # The corresponding auth user
 
     def save(self, *args, **kwargs):
         #self.user.save()
-        if not self.pk: #First time profile creation
-	    self.saarang_id = self.fest_id
+        if not self.pk and not settings.DEBUG: #First time profile creation
+            self.saarang_id = self.fest_id
             send_registration_mail(self.user)
         super(UserProfile, self).save(*args, **kwargs)
 
@@ -299,8 +347,6 @@ class UserProfile(models.Model): # The corresponding auth user
     def __unicode__(self):
         return self.user.first_name
 
-    class Admin:
-        pass
 
 class ERPProfile(models.Model):
     # Relations to other models
@@ -400,5 +446,19 @@ class Team(models.Model):
     is_active       = models.BooleanField(default=True)
     name            = models.CharField(max_length=100, unique=True)
     members         = models.ManyToManyField(User, null=True, blank=True, related_name='teams')
+    ACCOMODATION_CHOICES = (
+        ('not_req', 'Accomodation not required'),
+        ('requested', 'Accomodation requested'),
+        ('confirmed', 'Request confirmed'),
+        ('waitlisted', 'Waitlisted'),
+        ('rejected', 'Rejected'),
+        ('hospi', 'Added to hospi portal')
+    )
+    accomodation_status = models.CharField(max_length=50, choices=ACCOMODATION_CHOICES, default='not_req', blank=True, null=True)
+    
+    def __unicode__(self):
+        return str(self.name)
 
-
+    def get_total_count(self):
+        mem = len(self.members.all())
+        return mem
