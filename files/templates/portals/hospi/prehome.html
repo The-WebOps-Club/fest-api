@@ -1,4 +1,4 @@
-{% extends "hospi/hospi_base.html" %}
+{% extends "portals/hospi/hospi_base_main.html" %}
 {% load url from future %}
 {% load staticfiles %}
 {% block title %}Welcome | Hospitality | Saarang 2014{% endblock %}
@@ -16,7 +16,7 @@
             <div class="span6"><center>{{ user.name }}
                 <h3>Welcome to accommodation portal</h3><hr/></center>
             </div>
-            <div class="pull-right"><a class="btn btn-danger" href="{% url 'hospi.views.logout' %}" ><i class="icon-off icon-white"></i> Logout</a></div>
+            <!-- <div class="pull-right"><a class="btn btn-danger" href="{% url 'apps.hospi.views.logout' %}" ><i class="icon-off icon-white"></i> Logout</a></div> -->
         </div>
 
         <div class="alert alert-warning">
@@ -24,7 +24,7 @@
         <li><strong style="color: red;">The profile of every individual registering for accommodation should be complete in all manner. No field should be left blank in the profile. It is very important to update these, to help us serve you better.</strong></li>    
 	<li>You can request for accommodation inside IIT Madras Campus through this portal</li>
             <li>One individual can avail accommodation in <strong>only one</strong> team</li>
-            <li>Accommodation will be provided only from 10 AM on 8th January to 9AM on 13th January.</li>
+            <li>Accommodation will be provided only from 10 AM on 7th January to 9AM on 12th January.</li>
             <li>All requests have to get confirmed by Saarang</li>
             <li>Upon confirmation you will receive SAAR (Saarang Advance Accommodation Registration)<br/> document which can also be downloaded from here</li>
             <li>For more information and pricing system, refer <a href="{% static 'docs/PricingSystem_v2_final.pdf' %}" target="_blank" >this document</a></li>
@@ -43,13 +43,13 @@
                     <td>Accommodation status:
                         {% if team.accomodation_status == 'not_req' %}
                         {% if team.leader.profile_is_complete %}
-                        <a href="{% url 'hospi.views.set_event_team' team.pk %}" role="button" class="btn btn-success btn-small pull-right" data-toggle="modal">Request for accomodation</a>
+                        <a href="{% url 'apps.hospi.views.set_event_team' team.pk %}" role="button" class="btn btn-success btn-small pull-right" data-toggle="modal">Request for accomodation</a>
                         {% else %}Please update your profile to place request{% endif %}
                         {% elif team.accomodation_status == 'requested' %}
                         <span class="label label-info">Requested</span>
                         {% elif team.accomodation_status == 'confirmed' %}
                         <span class="label label-success">Confirmed</span>
-                        <a href="{% url 'hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
+                        <a href="{% url 'apps.hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
                         {% elif team.accomodation_status == 'waitlisted' %}
                         <span class="label label-warning">Waitlisted</span>
                         {% elif team.accomodation_status == 'rejected' %}
@@ -63,20 +63,20 @@
             <strong>created for accommodation :</strong>
             <table class="table table-bordered">
             {% for team in hospi_teams_leading %}
-                <tr class="rowlink" onclick="document.location = '{% url 'hospi.views.details' team.pk %}';" >
-                    <td>{% if team.accomodation_status == 'not_req' %}<a class="" href="{% url 'hospi.views.delete_team' team.pk %}" onclick="return confirm('Do you want to Delete this team?');"><span class="badge badge-important">&times; Del</span></a>{% endif %}  {{ team.team_sid }}</td>
+                <tr class="rowlink" onclick="document.location = '{% url 'apps.hospi.views.details' team.pk %}';" >
+                    <td>{% if team.accomodation_status == 'not_req' %}<a class="" href="{% url 'apps.hospi.views.delete_team' team.pk %}" onclick="return confirm('Do you want to Delete this team?');"><span class="badge badge-important">&times; Del</span></a>{% endif %}  {{ team.team_sid }}</td>
                     <td>{{ team.name }}</td>
                     <td>{{ team.get_total_count }} members</td>
                     <td>Accommodation status:
                         {% if team.accomodation_status == 'not_req' %}
                         {% if team.leader.profile_is_complete %}
-                        <a href="{% url 'hospi.views.set_hospi_team' team.pk %}" role="button" class="btn btn-success btn-small pull-right" data-toggle="modal">Request for accomodation</a>
+                        <a href="{% url 'apps.hospi.views.set_hospi_team' team.pk %}" role="button" class="btn btn-success btn-small pull-right" data-toggle="modal">Request for accomodation</a>
                         {% else %}Please update your profile to place request{% endif %}
                         {% elif team.accomodation_status == 'requested' %}
                         <span class="label label-info">Requested</span>
                         {% elif team.accomodation_status == 'confirmed' %}
                         <span class="label label-success">Confirmed</span>
-                        <a href="{% url 'hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
+                        <a href="{% url 'apps.hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
                         {% elif team.accomodation_status == 'waitlisted' %}
                         <span class="label label-warning">Waitlisted</span>
                         {% elif team.accomodation_status == 'rejected' %}
@@ -106,7 +106,7 @@
                         <span class="label label-info">Requested</span>
                         {% elif team.accomodation_status == 'confirmed' %}
                         <span class="label label-success">Confirmed</span>
-                        <a href="{% url 'hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
+                        <a href="{% url 'apps.hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
                         {% elif team.accomodation_status == 'waitlisted' %}
                         <span class="label label-warning">Waitlisted</span>
                         {% elif team.accomodation_status == 'rejected' %}
@@ -132,7 +132,7 @@
                         <span class="label label-info">Requested</span>
                         {% elif team.accomodation_status == 'confirmed' %}
                         <span class="label label-success">Confirmed</span>
-                        <a href="{% url 'hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
+                        <a href="{% url 'apps.hospi.views.generate_saar' team.pk %}" target="_blank" class="btn btn-inverse btn-small"><i class="icon-file icon-white"></i> Get SAAR</a>
                         {% elif team.accomodation_status == 'waitlisted' %}
                         <span class="label label-warning">Waitlisted</span>
                         {% elif team.accomodation_status == 'rejected' %}
@@ -147,7 +147,7 @@
     </center>
         <div class="alert alert-info"><center>
             <h5>Create a new team:</h5><hr/>    
-            <form class="form-horizontal" action="{% url 'hospi.views.user_save_team' %}" method="POST">
+            <form class="form-horizontal" action="{% url 'apps.hospi.views.user_save_team' %}" method="POST">
                 {% csrf_token %}
                 <input name="team_name" type="text" placeholder="Team name">
                 <input class="btn btn-primary" type="submit" value="Create"/>

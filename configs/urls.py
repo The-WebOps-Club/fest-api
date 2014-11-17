@@ -167,6 +167,10 @@ urlpatterns = patterns('',
     url(r'^edit_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.edit_logo', name='spons_edit_logo'),
     url(r'^save_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.save_logo', name='spons_save_logo'),
 
+    # Had to do this
+    # Include urls from hospi
+    url(r'^hospi/', include('apps.hospi.urls')),
+
 
 )
 

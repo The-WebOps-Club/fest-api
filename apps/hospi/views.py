@@ -9,33 +9,28 @@ from django.core.mail import send_mail, send_mass_mail, EmailMessage
 import utility as u
 import random, string, json
 from random import *
-from registration.views import auto_id as uid
-from registration.models import SaarangUser
-from registration.forms import SaarangUserForm
 from models import Hostel, Room, HospiTeam, Allotment, HospiLog
-from events.models import Team, EventRegistration, Event
+from apps.events.models import Team, EventRegistration, Event
 from forms import HostelForm, RoomForm, HospiTeamForm
-from events.forms import AddTeamForm
-from mailer.models import MailLog
+#from apps.events.forms import AddTeamForm
 from post_office import mail
 import datetime
 from django.views.decorators.csrf import csrf_exempt
-
+from apps.users.models import UserProfile
 ####################################################################
 # Mainsite Views
 
+@login_required
 def prehome(request):
-    if not request.session.get('saaranguser_email'):
-        return redirect('hospi_login')
-    email = request.session.get('saaranguser_email')
-    user = SaarangUser.objects.get(email=email)
-    teams_leading = user.team_leader.all().exclude(accomodation_status='hospi')
-    teams_member = user.team_members.all()
+    user = request.user.profile
+    #events teams
+    # teams_leading = user.team_leader.all().exclude(accomodation_status='hospi')
+    # teams_member = user.team_members.all()
     hospi_teams_leading = user.hospi_team_leader.all()
     hospi_teams_member = user.hospi_team_members.all()
     if not user.profile_is_complete():
         messages.error(request, "Your profile is not complete. Click <a href='http://saarang.org/2014/main/#profile' target='_blank'>here</a> to update your profile. ")
-    return render(request, 'hospi/prehome.html', locals())
+    return render(request, 'portals/hospi/prehome.html', locals())
 
 def set_hospi_team(request, team_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
@@ -74,10 +69,7 @@ def details(request, team_id):
     return redirect('hospi_home')
     
 def home(request):
-    if not request.session.get('saaranguser_email'):
-        return redirect('hospi_login')
-    email = request.session.get('saaranguser_email')
-    user = SaarangUser.objects.get(email=email)
+    user = request.user.profile
     if not user.profile_is_complete():
         messages.error(request, "Your profile is not complete. Click <a href='http://saarang.org/2014/main/#profile' target='_blank'>here</a> to update your profile. ")
         return redirect('hospi_prehome')
@@ -85,7 +77,7 @@ def home(request):
         return redirect('hospi_prehome')
     team_id = request.session.get('current_team')
     team = get_object_or_404(HospiTeam, pk=team_id)
-    if team.members.filter(email=team.leader.email):
+    if team.members.filter(saarang_id=team.leader.saarang_id):
         team.members.remove(team.leader)
         messages.warning(request, 'Team leader found in members list also. Successfully removed!')
     members = team.members.all()
@@ -111,7 +103,7 @@ def home(request):
         'members':members,
         'bill_data':bill_data,
     }
-    return render(request, 'hospi/home.html', to_return)
+    return render(request, 'portals/hospi/home.html', to_return)
 
 def login(request):
     if request.method == 'POST':
@@ -144,34 +136,31 @@ def logout(request):
 def add_members(request):
     data = request.POST.copy()
     team = get_object_or_404(HospiTeam, pk=data['team_id'])
-    return_list = zip(dict(request.POST)['email'],dict(request.POST)['college_id'])
+    return_list = dict(request.POST)['saarang_id']
     not_registered =[]
     members = []
     profile_not_complete=[]
     added=[]
+    print return_list
     for member in return_list:
-        uemail = member[0]
-        uid = member[1]
-        members.append(uemail)
+        print member
+        members.append(member)
         try:
-            user = SaarangUser.objects.get(email=uemail)
-            if uid:
-                user.college_id = uid
-                user.save()
+            user = UserProfile.objects.get(saarang_id=member)
             if user.profile_is_complete():
                 new = team.members.add(user)
-                added.append(uemail)
+                added.append(user.user.email)
             else:
-                profile_not_complete.append(uemail)
+                profile_not_complete.append(user.user.email)
         except Exception, e:
-            not_registered.append(uemail)
+            not_registered.append(member)
     if added:
         t=''
         for email in added:
             t+=email+', '
         messages.success(request, "Successfully added "+t)
         mail.send(
-            added, template='email/hospi/leader_added_member',
+            added, template='hospi_leader_added_member.email',
             context={'team':team,},
             )
 
@@ -181,44 +170,30 @@ def add_members(request):
             msg += email + ', '
         messages.error(request,'Partially added /could not add members. ' + msg + 'have not registered \
                 with Saarang yet. Please ask them to register and try adding them again.')
-        mail.send(
-            not_registered, template='email/hospi/register_invitation',
-            context={'team':team,}
-            )
 
     if profile_not_complete:
         print profile_not_complete
         txt = ''
         for email in profile_not_complete:
             txt += email + ', '
-        messages.warning(request, 'Profile not complete. '+txt+" have not completed their profile at Saarang. Please ask them to click on the link they recieved thru email to update their profile, or ask them to Click <a href='http://saarang.org/2014/main/#login' target='_blank'>here</a> to update profile. ")
+        messages.warning(request, 'Profile not complete. '+txt+" have not completed their profile at Saarang. Please ask them to click on the link they recieved thru email to update their profile, or ask them to update profile. ")
         mail.send(
-            profile_not_complete, template='email/hospi/profile_incomplete',
+            profile_not_complete, template='hospi_profile_incomplete.email',
             context={'team':team,}
             )
     return redirect('hospi_home')
 
 def delete_member(request, team_id, member_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
-    user = get_object_or_404(SaarangUser, pk=member_id)
+    user = get_object_or_404(UserProfile, pk=member_id)
 
     team.members.remove(user)
-    mail.send(
-        [user.email], template='email/hospi/member_deleted',
-        context={'team':team,}
-        )
     return redirect('hospi_home')
 
 def add_accomodation(request):
     data = request.POST.copy()
     team = get_object_or_404(HospiTeam, pk=data['team_id'])
-    if data['updating'] == 'city':
-        team.city = data['city']
-        team.save()
-        messages.success(request, 'City updated.')
-        return redirect('hospi_home')
-    elif data['updating'] == 'all':
-        team.city = data['city']
+    if data['updating'] == 'all':
         team.date_of_arrival = data['arr_date']
         team.date_of_departure = data['dep_date']
         team.time_of_arrival = data['arr_time']
@@ -235,7 +210,6 @@ def add_accomodation(request):
         team.date_of_departure = data['dep_date']
         team.time_of_arrival = data['arr_time']
         team.time_of_departure = data['dep_time']
-        team.city = data['city']
         team.save()
         messages.success(request, 'Saved successfully')
         return redirect('hospi_team_details', int(data['team_id']))
@@ -251,9 +225,9 @@ def user_add_team(request):
 
 def user_save_team(request):
     data = request.POST.copy()
-    user = SaarangUser.objects.get(email=request.session.get('saaranguser_email'))
+    user = request.user.profile
     try:
-        team = HospiTeam.objects.create(name=data['team_name'], leader=user )
+        team = HospiTeam.objects.create(name=data['team_name'], leader=user, city=user.city )
         team.team_sid = auto_id(team.pk)
         team.save()
         messages.success(request, team.name +' added successfully. Saarang ID is '+team.team_sid)
@@ -262,10 +236,7 @@ def user_save_team(request):
     return redirect('hospi_prehome')
 
 def cancel_request(request):
-    if not request.session.get('saaranguser_email'):
-        return redirect('hospi_login')
-    email = request.session.get('saaranguser_email')
-    user = SaarangUser.objects.get(email=email)
+    user = request.user.profile
     if not request.session.get('current_team'):
         return redirect('hospi_prehome')
     team_id = request.session.get('current_team')
@@ -278,13 +249,6 @@ def cancel_request(request):
     team.accomodation_status = 'not_req'
     team.save()
     messages.success(request, 'Accommodation request cancelled successfully!')
-    users=[]
-    for user in team.get_all_members():
-        users.append(user.email)
-    mail.send(
-        users, template='email/hospi/cancel_accommodation',
-        context={'team':team,}
-        )
     return redirect('hospi_prehome')
 
 def delete_team(request, team_id):
@@ -583,7 +547,7 @@ def list_all_teams(request):
     return render(request, 'hospi/list_all_teams.html', to_return)    
 
 def auto_id(team_id):
-    base = 'SA2014A'
+    base = 'SA2015A'
     num = "{0:0>3d}".format(team_id)
     sid = base + num
     return sid

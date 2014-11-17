@@ -243,12 +243,12 @@ class UserProfile(models.Model): # The corresponding auth user
         ('Female', 'Female'),
     )
     ACTIVATION_CHOICES = (
-        ('0','Activation email sent'),
-        ('1','Activated'),
-        ('2','Profile completed'),
+        (0,'Activation email sent'),
+        (1,'Activated'),
+        (2,'Profile completed'),
     )
     gender_hospi = models.CharField(max_length=10, choices=GENDER_CHOICES_2,default='Male', blank = True, null=True) #Used for Hospi Portal
-    activate_status = models.IntegerField(choices = ACTIVATION_CHOICES, default=0, blank=True, null=True)
+    activate_status = models.IntegerField(choices = ACTIVATION_CHOICES, default=2, blank=True, null=True)
     accomod_is_confirmed = models.BooleanField(default=False)
 
     objects = CheckActiveManager()
@@ -256,7 +256,15 @@ class UserProfile(models.Model): # The corresponding auth user
     
     
     def profile_is_complete(self):
-        if (self.name and len(str((self.mobile)))==10 and self.gender and self.college):
+        # print self.user.first_name 
+        # print self.gender 
+        # print self.age 
+        # print len(str((self.mobile_number)))>=10
+        # print self.branch 
+        # print self.college_text 
+        # print self.college_roll 
+        # print self.city
+        if (self.user.first_name and self.gender and self.age and len(str((self.mobile_number)))>=10 and self.college_text and self.city):
             return True
         else:
             return False
@@ -339,8 +347,6 @@ class UserProfile(models.Model): # The corresponding auth user
     def __unicode__(self):
         return self.user.first_name
 
-    class Admin:
-        pass
 
 class ERPProfile(models.Model):
     # Relations to other models
