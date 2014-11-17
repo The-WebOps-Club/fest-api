@@ -7,10 +7,10 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>SAAR | {{team.team_sid }} | Saarang 2014</title>
+    <title>SAAR | {{team.team_sid }} | Saarang 2015</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Saarang Advance Accommodation Registration">
-    <meta name="author" content="Web Operations Saarang 2014">
+    <meta name="author" content="Web Operations Saarang 2015">
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
@@ -98,19 +98,19 @@
 
     <tr><th colspan=2><h3>Team Leader</h3></th> </tr>
     <tr>
-        <td width=40%>Name</td><td >{{ leader.name }}</td>
+        <td width=40%>Name</td><td >{{ leader.user.get_full_name }}</td>
     </tr>
     <tr>
         <td >Saarang ID</td><td >{{ leader.saarang_id }}</td>
     </tr>
     <tr>
-        <td >Email</td><td >{{ leader.email }}</td>
+        <td >Email</td><td >{{ leader.user.email }}</td>
     </tr>
     <tr>
-        <td >Mobile</td><td >{{ leader.mobile }}</td>
+        <td >Mobile</td><td >{{ leader.mobile_number }}</td>
     </tr>
     <tr>
-        <td >College</td><td >{{ leader.college }}</td>
+        <td >College</td><td >{{ leader.college_text }}</td>
     </tr>
 </table>
 
@@ -133,11 +133,11 @@
     <tr id="memberRow">
         <td style="width: 3%; text-align:center;  padding-left:1px">{{ forloop.counter }}</td>
         <td style="width: 12%; text-align:center; padding-left:1px">{{ member.saarang_id }}</td>
-        <td style="width: 32%;">{{ member.name }}</td>
-        <td style="width: 35%;">{{ member.email }}</td>
+        <td style="width: 32%;">{{ member.user.get_full_name }}</td>
+        <td style="width: 35%;">{{ member.user.email }}</td>
 
         <td style="width: 8%; text-align:center; padding-left:0px;">{{ member.gender|title }}</td>
-        <td style="width: 10%;">{{ member.mobile }}</td>
+        <td style="width: 10%;">{{ member.mobile_number }}</td>
     </tr>
     {% endfor %}
 </table>
@@ -170,7 +170,7 @@
 <div>
     <pdf:nextpage /> 
 </div> 
-<p align="center"><b><u>TERMS AND CONDITIONS - ACCOMMODATION - SAARANG 2014</u></b></p>
+<p align="center"><b><u>TERMS AND CONDITIONS - ACCOMMODATION - SAARANG 2015</u></b></p>
 
 <li>
 Accommodation Charges per person = Rs. 300 for first day and Rs. 250 for each following day.
@@ -181,29 +181,29 @@ Accommodation Charges per person = Rs. 300 for first day and Rs. 250 for each fo
 <li><b>Bonafide certificate</b> from college is necessary to avail accommodation.</li><li>
 The process of Checking in will be done at Control rooms located in the hostel zone. So, participants are requested to come to the Control rooms as soon as they come to IIT Campus. The exact location of the control rooms will be intimated later.</li><li>
 
-Accommodation will be provided only from 10 AM on 8th  January to 9AM on 13th January (A participant can stay for the days he/she registered for. Any cases of overstay within the above time period will attract additional payment of 250 INR per day.)</li><li>
+Accommodation will be provided only from 10 AM on 7th  January to 9AM on 13th January (A participant can stay for the days he/she registered for. Any cases of overstay within the above time period will attract additional payment of 300 INR per day.)</li><li>
 We will provide you with mattresses.But participants are requested to get their own locks &amp; keys for the rooms that they will be allotted during Saarang.(Note: You may have to share rooms with other participants. So plan accordingly upon reaching).</li><li>
 Girls are not allowed in boys hostels and vice versa.</li><li>
 Control room is open from midnight (12 AM) to 5PM everyday, i.e. for 17 hours per day.</li><li>
 It will remain closed from 5PM to 12AM due to Professional Shows.</li><li>
-The control room will close at 9 AM on 13th January 2013. All the formalities of checking out have to be done before that.</li><li>
+The control room will close at 9 AM on 12th January 2015. All the formalities of checking out have to be done before that.</li><li>
 If any delay is made in checking out, caution deposit will not be refunded.</li><li>
 Refund of caution deposit is subject to terms and conditions (like condition of the room, condition of mattresses while checking out) along with the return of receipt provided at the time of check in.</li><li>
 Participants would necessarily need to share accommodation. Single rooms will not be provided to any participant.</li><li>
-Valuable items should not be kept along with the luggage in the room. Saarang 2014 will not be responsible for any loss or damage of property. Please secure your belongings and put your details on the same.</li><li>
+Valuable items should not be kept along with the luggage in the room. Saarang 2015 will not be responsible for any loss or damage of property. Please secure your belongings and put your details on the same.</li><li>
 Please make entries in the register kept with the hostel security whenever you move in and out of the allotted room.</li><li>
 Possession and consumption of alcohol and narcotics in any form is strictly prohibited. If reported, the participant status of the person will be ipso facto null and void and the case will be severely dealt with.</li><li>
 Smoking is prohibited in the campus.</li><li>
-Outstation participants are not allowed to use the sports equipments of the hostels. If any usage or damage is reported, the cost of the equipment will be collected. </li><li>Participants will not be allowed to occupy the rooms they have been allotted beyond the date for which they have registered.</li><li>
-Please keep the rooms and hostel area clean.
-Hospitality Desk and Info Desk will be functional on the days of the </li><li>fest. Please approach us for and event related queries or any sortof general assistance .
+Outstation participants are not allowed to use the sports equipments of the hostels. If any usage or damage is reported, the cost of the equipment will be collected. </li><li>Participants will not be allowed to occupy the rooms they have been allotted beyond the date for which they have registered.</li><li></li><li>
+Please keep the rooms and hostel area clean.</li><li>
+Hospitality Desk and Info Desk will be functional on the days of the fest. Please approach us for and event related queries or any sortof general assistance .
 
 
 <p align="center"><b><u>DECLARATION</u></b></p>
-<p>I agree to abide by the Rules and Regulations of Saarang 2014. Failing to do so will result in my accommodation being cancelled.</p>
+<p>I agree to abide by the Rules and Regulations of Saarang 2015. Failing to do so will result in my accommodation being cancelled.</p>
 <br/>
-<p align="right">(Signature)<br/>{{team.leader.name}}<br/>Team Leader<br/>Team: {{team.name}}</p>
+<p align="right">(Signature)<br/>{{team.leader.user.get_full_name}}<br/>Team Leader<br/>Team: {{team.name}}</p>
 
 
-<center>-- Wishing you a pleasant, comfortable stay and a Great Carnival at IIT Madras. -Hospitality Team, Saarang 2014 --</center>
+<center>-- Wishing you a pleasant, comfortable stay and a Great Out of the World Experiece at IIT Madras. -Hospitality Team, Saarang 2015 --</center>
 </body>

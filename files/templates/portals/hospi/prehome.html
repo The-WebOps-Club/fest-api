@@ -37,14 +37,14 @@
             <table class="table table-bordered">
             {% for team in teams_leading %}
                 <tr>
-                    <td>{{ team.team_sid }}</td>
+                    <td>{{ team.pk }}</td>
                     <td>{{ team.name }}</td>
                     <td>{{ team.get_total_count }} members</td>
                     <td>Accommodation status:
                         {% if team.accomodation_status == 'not_req' %}
-                        {% if team.leader.profile_is_complete %}
+                        
                         <a href="{% url 'apps.hospi.views.set_event_team' team.pk %}" role="button" class="btn btn-success btn-small pull-right" data-toggle="modal">Request for accomodation</a>
-                        {% else %}Please update your profile to place request{% endif %}
+                        
                         {% elif team.accomodation_status == 'requested' %}
                         <span class="label label-info">Requested</span>
                         {% elif team.accomodation_status == 'confirmed' %}

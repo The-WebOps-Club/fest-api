@@ -16,7 +16,8 @@ from forms import HostelForm, RoomForm, HospiTeamForm
 from post_office import mail
 import datetime
 from django.views.decorators.csrf import csrf_exempt
-from apps.users.models import UserProfile
+from apps.users.models import UserProfile, Team
+from apps.events.models import EventRegistration
 ####################################################################
 # Mainsite Views
 
@@ -26,6 +27,15 @@ def prehome(request):
     #events teams
     # teams_leading = user.team_leader.all().exclude(accomodation_status='hospi')
     # teams_member = user.team_members.all()
+    teams_leading = []
+    teams_member = []
+    events_leading = EventRegistration.objects.filter(users_registered=user.user, teams_registered__isnull=False)
+    events_members = user.user.teams
+    for event in events_leading:
+        teams_leading.append(event.teams_registered)
+    for team in events_members.all():
+        if team not in teams_leading:
+            teams_member.append(team)
     hospi_teams_leading = user.hospi_team_leader.all()
     hospi_teams_member = user.hospi_team_members.all()
     if not user.profile_is_complete():
@@ -47,15 +57,17 @@ def set_hospi_team(request, team_id):
     return redirect('hospi_home')
 
 def set_event_team(request, event_team_id):
+    user=request.user.profile
     event_team = get_object_or_404(Team, pk=event_team_id)
-    if event_team.leader.accomod_is_confirmed:
+    if user.accomod_is_confirmed:
         messages.error(request, 'Your accommodation has been confirmed in another team. \
             You cannot request for accommodation again.')
         return redirect('hospi_prehome')
     team = HospiTeam.objects.create(name=event_team.name, \
-        leader=event_team.leader, accomodation_status='requested')
-    for user in event_team.members.all():
-        team.members.add(user)
+        leader=user, accomodation_status='requested',\
+        city=user.city)
+    for user2 in event_team.members.all():
+        team.members.add(user2.profile)
     team.team_sid = auto_id(team.pk)
     event_team.accomodation_status = 'hospi'
     event_team.save()
@@ -252,28 +264,14 @@ def cancel_request(request):
     return redirect('hospi_prehome')
 
 def delete_team(request, team_id):
-    if not request.session.get('saaranguser_email'):
-        messages.error(request, 'Please login to continue')
-        return redirect('hospi_login')
-    email = request.session.get('saaranguser_email')
-    user = SaarangUser.objects.get(email=email)
+    user = request.user.profile
     team = get_object_or_404(HospiTeam, pk=team_id)
-    users=[]
-    for user in team.get_all_members():
-        users.append(user.email)
-    mail.send(
-        users, template='email/hospi/team_deleted',
-        context={'team':team,}
-        )
     team.delete()
     messages.success(request, 'Team has been successfully deleted')
     return redirect('hospi_prehome')
 
 def generate_saar(request, team_id):
-    if not request.session.get('saaranguser_email'):
-        return redirect('hospi_login')
-    email = request.session.get('saaranguser_email')
-    user = SaarangUser.objects.get(email=email)
+    user = request.user.profile
     team = get_object_or_404(HospiTeam, pk=team_id)
     leader = team.leader
     if team.leader != user:

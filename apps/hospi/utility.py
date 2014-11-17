@@ -101,7 +101,7 @@ def generate_pdf(request, team_id):
     }
 
     # Render html content through html template with context
-    template = get_template('hospi/saar.html')
+    template = get_template('portals/hospi/saar.html')
     html  = template.render(Context(data))
 
     # Write PDF to file
@@ -135,7 +135,7 @@ def checkout_bill(request, team_id):
         'rooms':rooms,
     }
     # Render html content through html template with context
-    template = get_template('hospi/check_out_bill.html')
+    template = get_template('portals/hospi/check_out_bill.html')
     html  = template.render(Context(data))
 
     # Write PDF to file
