@@ -2,7 +2,13 @@
 {% load staticfiles %}
 {% load url from future %}
 <html lang="en">
+<style type="text/css">
 
+  div.padded{
+        padding-top: 60px;
+    padding-bottom: 60px;
+  }
+</style>
 <head>
     <meta charset="utf-8">
     <title>{% block title %}Hospitality | Saarang{% endblock %}</title>
@@ -40,11 +46,11 @@
     <link rel="icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
 
 </head>
-<body>
+<body class="container">
 
 
 <!-- Content begin -->
-        <div class="container" id="content">
+        <div class="container padded" id="content">
             {% block content %}{% endblock %}
         </div>
 <!-- Content ends -->
