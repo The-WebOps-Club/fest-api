@@ -85,8 +85,10 @@ API_APPS = (
     'apps.users',
     'apps.walls',
     'apps.events',
+    'apps.hospi',
     'apps.docs',
     'apps.portals.events',
+    'apps.portals.hospi',
     'apps.portals.spons',
     'apps.spons',
     'apps.portals.general',
@@ -120,7 +122,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
     'apps.users.middleware.SocialAuthExceptionMiddleware',
     
@@ -621,3 +623,4 @@ SPONS_ACCESS_ID = ()
 EVENT_CATEGORIES = ()
 
 DEFAULT_MAIN_FROM_EMAIL = ''
+
