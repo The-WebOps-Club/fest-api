@@ -49,9 +49,9 @@ else:
 	)
 
 EVENT_TYPE = (
-    ('Audience', 'Audience'),
-    ('Participant', 'Participant'),
-    ('None','None'),
+    ('online', 'Online Registration'),
+    ('onspot', 'On-spot Registration'),
+    ('noreg','No Registration'),
 )
     
 class Event(models.Model):
@@ -154,3 +154,6 @@ class EventRegistration(models.Model):
     info             = models.TextField(null=True, blank=True)
     timestamp        = models.DateTimeField(auto_now_add=True)
     teams_registered = models.ForeignKey(Team, blank=True, null=True,related_name='user_team')
+    
+    def __unicode__(self):
+        return str(self.users_registered) +' - '+ str(self.event)

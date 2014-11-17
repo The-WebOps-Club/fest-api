@@ -417,13 +417,18 @@ SOCIAL_AUTH_GOOGLE_CONSUMER_SECRET       = ''
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY            = '186928535147.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET         = 'N2LxEfSraUVwC79sn4aqtqFE'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
-    'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/calendar',
     'https://www.googleapis.com/auth/plus.login',    
 ]
 
+#SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
+#    'https://www.googleapis.com/auth/drive',
+#    'https://www.googleapis.com/auth/userinfo.profile',
+#    'https://www.googleapis.com/auth/userinfo.email',
+#    'https://www.googleapis.com/auth/calendar',
+#    'https://www.googleapis.com/auth/plus.login',    
+#]
     # Facebook
 SOCIAL_AUTH_FACEBOOK_KEY                = ''
 SOCIAL_AUTH_FACEBOOK_SECRET             = ''
