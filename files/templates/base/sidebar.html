@@ -92,6 +92,7 @@
                             <i class='icon-crown'></i> Admin Portal
                         </a>
                     </li>
+                {% endif %}
                     <li class="{% if current_page == 'portal_events' %}active{% endif %}">
                     <li class="{% if current_page == 'portal_finance' %}active{% endif %}">
                         <a href='{% url "finance_portal" %}'>
@@ -101,7 +102,6 @@
 	
 
 		
-                {% endif %}
                  <li class="{% if current_page == 'portal_events' %}active{% endif %}">
                         <a href='{% url "events_portal" %}'>
                             <i class='icon-crown'></i> Events Portal
