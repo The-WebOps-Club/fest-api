@@ -86,7 +86,6 @@
         <div id='portal_links' class='span12 links'>
             <div class='group_link_head'>PORTALS</div>
             <ul class='group_link vertical'>
-                {% if erp_profile.core_relations.count %}
                     <li class="{% if current_page == 'portal_admin' %}active{% endif %}">
                         <a href='{% url "admin_portal" %}'>
                             <i class='icon-crown'></i> Admin Portal
@@ -109,7 +108,6 @@
 	
 
 		-->
-                {% endif %}
                  <li class="{% if current_page == 'portal_events' %}active{% endif %}">
                         <a href='{% url "events_portal" %}'>
                             <i class='icon-crown'></i> Events Portal
