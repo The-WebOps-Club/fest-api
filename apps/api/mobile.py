@@ -577,6 +577,7 @@ class EventDisplayViewset(viewsets.ViewSet):
         data=EventDisplaySerializer(event).data
         return Response(viewset_response( "done", data ))
 class SponsImageViewset(viewsets.ViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     def list(self,request):
         spons = SponsImageUpload.objects.all()
         data = SponsImageUploadSerializer(spons).data
