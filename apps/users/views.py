@@ -1,6 +1,6 @@
 # Django
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect, render, HttpResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -442,3 +442,10 @@ def validate_email(request, uidb36, token):
     else:
         return HttpResponse("ERROR")
     return HttpResponseRedirect(settings.MAIN_SITE+'2015/main')
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes((AllowAny, ))
+def logout_user(request):
+    logout(request)
+    return Response({'done':1}, status=status.HTTP_202_ACCEPTED)
