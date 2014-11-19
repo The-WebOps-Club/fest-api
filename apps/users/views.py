@@ -448,4 +448,4 @@ def validate_email(request, uidb36, token):
 @permission_classes((AllowAny, ))
 def logout_user(request):
     logout(request)
-    return Response({'done':1}, status=status.HTTP_202_ACCEPTED)
+    return HttpResponseRedirect(settings.MAIN_SITE)
