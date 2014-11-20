@@ -21,7 +21,7 @@
     }
 </style>
 <div class="well well-large">
-    Welcome, {{ leader.first_name }}
+    Logged in as:  {{ leader.user.get_full_name }}
     <div class="row">
         <div class="pull-right">
         <a class="btn btn-warning" href="{% url 'apps.hospi.views.prehome' %}" ><i class="icon-chevron-left icon-white"></i> Back</a></div>
@@ -31,10 +31,12 @@
         </div>
         <div class="span8">
             <h1 class="span5">SAAR</h1>
+            <h4 class="span5">
+            Saarang Advance Accommodation Registration
+            </h4>
         </div>
 
     </div>
-            Saarang Advance Accommodation Registration
 <br/>
     <div class="alert alert-info">
         <p>Click "Edit Team" to Add/Remove Members
@@ -57,15 +59,16 @@
     margin-bottom: 0px;
 }
 </style>
-<div class="alert alert-success">
-    <legend>Team Details</legend>
+<div class="panel panel-success">
+    <div class="panel-heading">Team Details</div>
+    <div class="panel-body">
     <p>
         <table class="table table-condensed table-borderless">
             <tr>
                 <td style="text-align: right; width: 45%;">Name</td><td style="text-align: center; width: 10%;"> : </td><td style="text-align: left; width: 45%;">{{ team.name }}</td>
             </tr>
             <tr>
-                <td style="text-align: right; width: 45%;">ID</td><td style="text-align: center; width: 10%;"> : </td><td style="text-align: left; width: 45%;">{{ team.team_sid }}</td>
+                <td style="text-align: right; width: 45%;">SAAR ID</td><td style="text-align: center; width: 10%;"> : </td><td style="text-align: left; width: 45%;">{{ team.team_sid }}</td>
             </tr>
             <tr>
                 <td style="text-align: right; width: 45%;">City</td><td style="text-align: center; width: 10%;"> : </td><td style="text-align: left; width: 45%;">{% if not team.city %}<span style="color:red"><a href="#addCityModal" role="button" class="btn btn-warning btn-mini" data-toggle="modal">Please update your city</a>{% else %}{{ team.city }}{% endif %}</td>
@@ -88,23 +91,24 @@
                 {% endif %}
 
                 {% if team.accomodation_status != 'not_req' %}
-                <a href="{% url 'apps.hospi.views.cancel_request' %}" onclick="return confirm('Are you sure you want to cancel your request?');" class="btn btn-danger btn-mini pull-right"><i class="icon-remove-circle icon-white"></i> Cancel request</a>
+                <a href="{% url 'apps.hospi.views.cancel_request' team.pk %}" onclick="return confirm('Are you sure you want to cancel your request?');" class="btn btn-danger btn-mini pull-right"><i class="icon-remove-circle icon-white"></i> Cancel request</a>
                 {% endif %}
                 </td>
             </tr>
         </table>
-    </p>
+    </p></div>
 </div>
 
-<div class="alert alert-block">
-  <legend>Team Leader</legend>
+<div class="panel panel-primary">
+  <div class="panel-heading">Team Leader</div>
+  <div class="panel-body">
   <p>
     <table class="table table-condensed table-borderless">
         <tr>
             <td style="text-align: right; width: 45%;">Name</td><td style="text-align: center; width: 10%;"> : </td><td style="text-align: left; width: 45%;">{{ leader.user.first_name }}</td>
         </tr>
         <tr>
-            <td style="text-align: right; width: 45%;">ID</td><td style="text-align: center; width: 10%;"> : </td><td style="text-align: left; width: 45%;">{{ leader.saarang_id }}</td>
+            <td style="text-align: right; width: 45%;">Saarang ID</td><td style="text-align: center; width: 10%;"> : </td><td style="text-align: left; width: 45%;">{{ leader.saarang_id }}</td>
         </tr>
         <tr>
             <td style="text-align: right; width: 45%;">Email</td><td style="text-align: center; width: 10%;"> : </td><td style="text-align: left; width: 45%;">{{ leader.user.email }}</td>
@@ -117,12 +121,13 @@
 <tr>
             <td style="text-align: right; width: 45%;">College</td><td style="text-align: center; width: 10%;"> : </td><td style="text-align: left; width: 45%;">{{ leader.college_text }} </td>  </tr>
     </table>
-</p>
+</p></div>
 </div>
 
 {% if not team.accomodation_status == 'not_req' %}
-<div class="alert alert-error">
-  <legend>Accommodation details</legend>
+<div class="panel panel-danger">
+  <div class="panel-heading">Accommodation details</div>
+  <div class="panel-body">
   <p>
     <table class="table table-condensed table-borderless">
         <tr>
@@ -144,11 +149,12 @@
         Accommodation will be provided only from 10 AM on 7th January to 9AM on 12th January. Also check-in will only be possible from 12 midnight to 5 PM. 
     </p>
 </p>
-</div>
+</div></div>
 {% endif %}
 
-<div class="alert alert-info">
-  <legend>Billing details</legend>
+<div class="panel panel-info">
+  <div class="panel-heading">Billing details</div>
+  <div class="panel-body">
   {% if not bill_data.days %}
   <span style="color:red;">Please make sure that your check in and checkout times fall under predscribed limits</span>
   {% else %}
@@ -178,16 +184,21 @@
 
 </table>
 </p>{% endif %}
-    <p>
+    <div style="text-align:left">
+    <ul>
         <li>
 Accommodation Charges per person = Rs. 300 for each day.
 </li>
+<li>1 Day is from 5 AM to 5 PM</li>
 <li>Caution deposit: Rs. 500 for two persons.</li> 
-    </p>
+<li>Refer for more details: <a href="{% static 'docs/Pricing_System_Saarang2015.pdf' %}" target="_blank" >Pricing document.</a></li> 
+</ul>
+    </div>
 </p>
-</div>
-<div class="alert alert-success">
-  <legend>Team Members</legend>
+</div></div>
+<div class="panel panel-success">
+  <div class="panel-heading">Team Members</div>
+  <div class="panel-bdy">
   <p>
     <table class="table table-bordered"
 <thead>
@@ -227,7 +238,14 @@ Accommodation Charges per person = Rs. 300 for each day.
 </tbody>    </table>
 
 </p>
+<div style="text-align:left; padding:10px;"><h5>Documents required for availing accommodation:</h5><hr/>
+<ul>
+<li>College ID cards of each team member, including leader, along with photocopies.</li>
+<li>Bonafide certificate from college authorities, showing names of each team member including team leader.</li>
+<li>Printed copy of SAAR along with Terms and Conditions signed by Team leader (SAAR will be emailed to you when accommodation is confirmed)</li>
+</ul>
 </div>
+</div></div>
 
 <div class="alert alert-info">
   <p>
@@ -249,7 +267,7 @@ Accommodation Charges per person = Rs. 300 for each day.
                     {% csrf_token %}
                     <table id="mytable">
                         <tr> 
-                            <td style="width: 70%"><input class="form-control" type="text" name="saarang_id" placeholder="Saarang ID"/></td>
+                            <td style="width: 70%"><input style="margin-bottom:5px;" class="form-control" type="text" name="saarang_id" placeholder="Saarang ID"/></td>
                         </tr>
                     </table>          
                     <script type="text/javascript">
@@ -258,15 +276,15 @@ Accommodation Charges per person = Rs. 300 for each day.
                         var row=table.insertRow(-1);
                         var cell1=row.insertCell(0);
                         var cell2=row.insertCell(1);
-                        cell1.innerHTML='<input class="form-control" type="text" name="saarang_id" placeholder="Saarang ID"/>';
+                        cell1.innerHTML='<input class="form-control" type="text" style="margin-bottom:5px;" name="saarang_id" placeholder="Saarang ID"/>';
                         }
                     </script>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn" value="+" type="button" id="morepos" onclick="addpos()"><i class="icon-plus"></i>+</button>
-                        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                        <button class="btn btn-primary" value="+" type="button" id="morepos" onclick="addpos()"><i class="icon-plus"></i>+</button>
+                        <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Close</button>
                         <input type='hidden' name='team_id' value='{{ team.pk }}'>
-                        <input type='submit' class="btn btn-primary" value='Save changes'/>
+                        <input type='submit' class="btn btn-success" value='Save changes'/>
                     </div>
                 </form>
             </div>
