@@ -215,7 +215,7 @@ def add_accomodation(request):
         else:
             messages.success(request, 'Details successfully updated.')
         team.save()
-        return redirect('hospi_home')
+        return redirect('hospi_home',team_id=team.pk)
     elif data['updating'] == 'control_room':
         team.date_of_arrival = data['arr_date']
         team.date_of_departure = data['dep_date']
