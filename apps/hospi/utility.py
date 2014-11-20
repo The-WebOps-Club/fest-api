@@ -35,10 +35,7 @@ def bill(in_date, in_time, out_date, out_time, n):
     '''Calculate bill amount'''
     dos = days(in_date,in_time,out_date,out_time)
     diff_rate = 300
-    if dos == 5:
-        days_of_stay = 4
-    else:
-        days_of_stay = dos
+    days_of_stay = dos
     amt_per_head = 300 + diff_rate*(days_of_stay-1)
     amt_without_caution_deposit = ((300 + diff_rate*(days_of_stay-1))*n)
     caution_deposit = cd(n)
