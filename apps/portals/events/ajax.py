@@ -232,6 +232,6 @@ def reg_list(request,event_name):
 		if reg.teams_registered==None:
 			team_names=team_names + "None |"
 		else:
-			team_names=team_names + reg.teams_registered.name +" |"
-		info=info + reg.info + " |"
+			team_names=team_names + reg.teams_registered.name + " (" + str(reg.teams_registered.get_total_count())+") "+" |"
+		info=str(info) + str(reg.info) + " |"
 	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info})
