@@ -83,9 +83,7 @@ def details(request, team_id):
 def home(request, team_id):
     user = request.user.profile
     if not user.profile_is_complete():
-        messages.error(request, "Your profile is not complete. Click <a href='http://saarang.org/2014/main/#profile' target='_blank'>here</a> to update your profile. ")
-        return redirect('hospi_prehome')
-    if not request.session.get('current_team'):
+        messages.warning(request, "Your profile is not complete. Click on your name on upper right corner to update your profile. ")
         return redirect('hospi_prehome')
     team = get_object_or_404(HospiTeam, pk=team_id)
     if team.members.filter(saarang_id=team.leader.saarang_id):
