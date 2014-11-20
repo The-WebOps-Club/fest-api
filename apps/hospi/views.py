@@ -21,8 +21,10 @@ from apps.events.models import EventRegistration
 ####################################################################
 # Mainsite Views
 
-@login_required
 def prehome(request):
+    if not request.user.is_authenticated():
+        return render(request, 'portals/hospi/login.html', locals())
+
     user = request.user.profile
     #events teams
     # teams_leading = user.team_leader.all().exclude(accomodation_status='hospi')
