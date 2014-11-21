@@ -88,6 +88,9 @@ def home(request, team_id):
         messages.warning(request, "Your profile is not complete. Click on your name on upper right corner to update your profile. ")
         return redirect('hospi_prehome')
     team = get_object_or_404(HospiTeam, pk=team_id)
+    if not team.city:
+        team.city = user.city
+        team.save()
     if team.members.filter(saarang_id=team.leader.saarang_id):
         team.members.remove(team.leader)
         messages.warning(request, 'Team leader found in members list also. Successfully removed!')
