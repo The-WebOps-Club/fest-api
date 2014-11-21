@@ -8,9 +8,11 @@ from apps.walls.models import Wall, Post, Comment
 from apps.blog.models import Category
 
 class UserSerializer(serializers.ModelSerializer):
-	class Meta:
+    want_accomodation = serializers.BooleanField(source='profile.want_accomodation')
+    mobile_number = serializers.CharField(source='profile.mobile_number')
+    class Meta:
 		model = User
-		fields = ('id', 'first_name', 'last_name', 'email', 'password')
+		# fields = ('id', 'first_name', 'last_name', 'email', 'password')
 
 class UserProfileSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -21,7 +23,7 @@ class EventSerializer(serializers.ModelSerializer):
 		model = Event
 
 class ParticipantProfileSerializer(serializers.ModelSerializer):
-	class Meta:
+    class Meta:
 		model = UserProfile
 
 class TeamSerializer(serializers.ModelSerializer):
