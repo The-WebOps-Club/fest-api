@@ -41,7 +41,7 @@ def prehome(request):
     hospi_teams_leading = user.hospi_team_leader.all()
     hospi_teams_member = user.hospi_team_members.all()
     if not user.profile_is_complete():
-        messages.error(request, "Your profile is not complete. Click <a href='http://saarang.org/2014/main/#profile' target='_blank'>here</a> to update your profile. ")
+        messages.error(request, "Your profile is not complete. Click on your name on upper right corner to update your profile. ")
     return render(request, 'portals/hospi/prehome.html', locals())
 
 def set_hospi_team(request, team_id):
@@ -389,7 +389,7 @@ def update_status(request, team_id):
         team.accomodation_status = stat
         team.save()
         messages.success(request, 'Status for '+team.name+' successfully updated to '+stat)
-        emailsubject='Accommodation request '+stat+', Saarang 2014'
+        emailsubject='Accommodation request '+stat+', Saarang 2015'
         users=[]
         for user in team.get_all_members():
             users.append(user.email)
