@@ -352,9 +352,14 @@ def participant_login(request):
 
     user = get_object_or_None(User, username=email)
     if user == None:
-        return Response({
-            "email": ["This email address doesn't have an account."]
-        }, status=status.HTTP_400_BAD_REQUEST)
+        userprofile=get_object_or_None(UserProfile, saarang_id=email)
+        if user==None:
+            return Response({
+                "email": ["This email address doesn't have an account."]
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            user=userprofile.user
+            email=user.email
 
     # Authenticates user against database
     user = authenticate(username=email, password=password)
