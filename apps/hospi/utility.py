@@ -17,7 +17,7 @@ def days(in_date, in_time, out_date, out_time):
     l4 = dt.datetime(2015, 1, 10, 5, 0)
     u4 = dt.datetime(2015, 1, 11, 17, 0)
     l5 = dt.datetime(2015, 1, 11, 5, 0)
-    u5 = dt.datetime(2015, 1, 12, 10, 0)
+    u5 = dt.datetime(2015, 1, 12, 9, 0)
     
     span = [[l1,u1],[l2,u2],[l3,u3],[l4,u4],[l5,u5]]
 

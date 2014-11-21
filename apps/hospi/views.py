@@ -321,8 +321,8 @@ def print_saar(request, team_id):
 @login_required
 def split_team(request, team_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
-    M=['male', 'Male']
-    F=['female', 'Female']
+    M=['male', 'Male', 'm','M']
+    F=['female', 'Female','f','F']
     if team.leader.gender in M:
         female_members = team.get_female_members()
         team_leader = female_members.pop(0)
