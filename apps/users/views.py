@@ -345,14 +345,11 @@ You can register for events by going to the website (http://www.shaastra.org) an
 Thank you,
 Organizing Team,
 Shaastra 2015.
-            """ % (user.email, user.password, user.id)
+            """ % (user.email, serialized.init_data['password'], user.id)
             u = user
             print "Sending email : ", u.email
-            try:
-                server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
-                    u.email, msg)
-            except:
-                pass
+            server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
+                u.email, msg)
             server.quit()
             token = Token.objects.get_or_create(user=user)[0]
             user = authenticate(username=serialized.init_data['email'][:30], password=serialized.init_data['password'])
