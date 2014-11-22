@@ -448,6 +448,7 @@ class EventViewSet(viewsets.ViewSet):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         if action == "register":
+            new_reg = False
             if event.is_team_event:
                 # Take team info
                 team_name = request.DATA.get('team', None)
@@ -464,7 +465,36 @@ class EventViewSet(viewsets.ViewSet):
                     return Response({
                         "error": "You are not a member of this team ! Ask the members to add you first."
                     }, status=status.HTTP_400_BAD_REQUEST)
+                if event.teams_registered.filter(id=team.id).count() == 0:
+                    import smtplib
+                    server = smtplib.SMTP('smtp.gmail.com:587')
+                    server.starttls()
+                    server.login("shaastra@smail.iitm.ac.in" , "Sa2H7$a(")
+                    if "workshop" in event.name.lower():
+                        event_type = "Workshop"
+                    else:
+                        event_type = "Event"
+                    msg = """
+Subject: Registration for Shaastra 2015
 
+
+Greetings from Shaastra 2015!
+    Thank you for registering with us for the %s %s, Shaastra 2015 .
+
+    This mail is a acknowledgement mail for your registration. Please note that this does not confirm your participation in the %s you registered. You will get a detail mail regarding the upcoming procedures soon.
+
+Thank you,
+Organizing Team,
+Shaastra 2015.
+                    """ % (event_type, event.name, event_type)
+                    for u in team.members.all():
+                        print "Sending email : ", u.email
+                        try:
+                            server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
+                                u.email, msg)
+                        except:
+                            pass
+                    server.quit()
                 event.teams_registered.add(team)
                 # ALSO TAKE FILE
                 if request.FILES.get('tdp', None) and event.has_tdp:
@@ -476,6 +506,36 @@ class EventViewSet(viewsets.ViewSet):
                 return Response( viewset_response( "done", data ) )
             else:
                 # Take participant info
+                if event.users_registered.filter(id=user.id).count() == 0:
+                    import smtplib
+                    server = smtplib.SMTP('smtp.gmail.com:587')
+                    server.starttls()
+                    server.login("shaastra@smail.iitm.ac.in" , "Sa2H7$a(")
+                    if "workshop" in event.name.lower():
+                        event_type = "Workshop"
+                    else:
+                        event_type = "Event"
+                    msg = """
+Subject: Registration for Shaastra 2015
+
+
+Greetings from Shaastra 2015!
+    Thank you for registering with us for the %s %s, Shaastra 2015 .
+
+    This mail is a acknowledgement mail for your registration. Please note that this does not confirm your participation in the %s you registered. You will get a detail mail regarding the upcoming procedures soon.
+
+Thank you,
+Organizing Team,
+Shaastra 2015.
+                    """ % (event_type, event.name, event_type)
+                    u = user
+                    print "Sending email : ", u.email
+                    try:
+                        server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
+                            u.email, msg)
+                    except:
+                        pass
+                    server.quit()
                 event.users_registered.add(user)
                 # ALSO TAKE FILE
                 if request.FILES.get('tdp', None) and event.has_tdp:
@@ -539,23 +599,26 @@ class EventViewSet(viewsets.ViewSet):
                 event.teams_registered.remove(team)
                 if event.has_tdp:
                     fname = settings.MEDIA_ROOT + "tdp/" + event.name + "/" + str(team.id) + ".*"
-                    fname = glob.glob(fname)[0]
-                    try:
-                        os.remove(fname)
-                    except OSError:
-                        pass
-
+                    fname = glob.glob(fname)
+                    if len(fname):
+                        fname = fname[0]
+                        try:
+                            os.remove(fname)
+                        except OSError:
+                            pass
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
             else:
                 event.users_registered.remove(user)
                 if event.has_tdp:
                     fname = settings.MEDIA_ROOT + "tdp/" + event.name + "/" + str(user.id) + ".*"
-                    fname = glob.glob(fname)[0]
-                    try:
-                        os.remove(fname)
-                    except OSError:
-                        pass
+                    fname = glob.glob(fname)
+                    if len(fname):
+                        fname = fname[0]
+                        try:
+                            os.remove(fname)
+                        except OSError:
+                            pass
                 data = EventSerializer(event).data
                 return Response( viewset_response( "done", data ) )
         else:
