@@ -308,7 +308,7 @@ def participant_registration(request):
         user = get_object_or_None(User, email=serialized.init_data['email'])
         if user:
             return Response({
-                "email": ["This email address already exists. If you have logged in with Facebook or Google please do so again"]
+                "email": ["This email address already exists. Please try logging in with this. If you have forogtten your password, please contact <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"]
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             user = User.objects.create_user(
@@ -320,13 +320,11 @@ def participant_registration(request):
             user.last_name = serialized.init_data['last_name']
             user.is_active = True
             user.save()
-            if event.users_registered.filter(id=user.id).count() == 0:
-                import smtplib
-                server = smtplib.SMTP('smtp.gmail.com:587')
-                server.starttls()
-                server.login("shaastra@smail.iitm.ac.in" , "Sa2H7$a(")
-                mail =
-                msg = """
+            import smtplib
+            server = smtplib.SMTP('smtp.gmail.com:587')
+            server.starttls()
+            server.login("shaastra@smail.iitm.ac.in" , "Sa2H7$a(")
+            msg = """
 Subject: Login details for Shaastra 2015
 
 
@@ -347,15 +345,15 @@ You can register for events by going to the website (http://www.shaastra.org) an
 Thank you,
 Organizing Team,
 Shaastra 2015.
-                """ % (user.email, user.password, user.id)
-                u = user
-                print "Sending email : ", u.email
-                try:
-                    server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
-                        u.email, msg)
-                except:
-                    pass
-                server.quit()
+            """ % (user.email, user.password, user.id)
+            u = user
+            print "Sending email : ", u.email
+            try:
+                server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
+                    u.email, msg)
+            except:
+                pass
+            server.quit()
             token = Token.objects.get_or_create(user=user)[0]
             user = authenticate(username=serialized.init_data['email'][:30], password=serialized.init_data['password'])
             login(request, user)

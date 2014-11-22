@@ -9,10 +9,10 @@ from apps.blog.models import Category
 
 class UserSerializer(serializers.ModelSerializer):
     want_accomodation = serializers.BooleanField(source='profile.want_accomodation')
-    mobile_number = serializers.CharField(source='profile.mobile_number')
+    mobile_number = serializers.CharField(source='profile.mobile_number', required=False)
     class Meta:
 		model = User
-		# fields = ('id', 'first_name', 'last_name', 'email', 'password')
+		fields = ('id', 'first_name', 'last_name', 'email', 'password')
 
 class UserProfileSerializer(serializers.ModelSerializer):
 	class Meta:
