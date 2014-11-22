@@ -240,6 +240,8 @@ def user_add_team(request):
 def user_save_team(request):
     data = request.POST.copy()
     user = request.user.profile
+    if not data['team_name']:
+        data['team_name'] = user.user.first_name + " Team"
     try:
         team = HospiTeam.objects.create(name=data['team_name'], leader=user, city=user.city )
         team.team_sid = auto_id(team.pk)
