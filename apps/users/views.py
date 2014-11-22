@@ -348,8 +348,11 @@ Shaastra 2015.
             """ % (user.email, serialized.init_data['password'], user.id)
             u = user
             print "Sending email : ", u.email
-            server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
+            try:
+                server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
                 u.email, msg)
+            except:
+                pass
             server.quit()
             token = Token.objects.get_or_create(user=user)[0]
             user = authenticate(username=serialized.init_data['email'][:30], password=serialized.init_data['password'])
