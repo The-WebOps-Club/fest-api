@@ -465,7 +465,7 @@ class EventViewSet(viewsets.ViewSet):
                     return Response({
                         "error": "You are not a member of this team ! Ask the members to add you first."
                     }, status=status.HTTP_400_BAD_REQUEST)
-                if event.teams_registered.filter(id=team.id).count() == 0:
+                if 0 and event.teams_registered.filter(id=team.id).count() == 0:
                     import smtplib
                     server = smtplib.SMTP('smtp.gmail.com:587')
                     server.starttls()
@@ -488,7 +488,7 @@ Organizing Team,
 Shaastra 2015.
                     """ % (event_type, event.name, event_type)
                     for u in team.members.all():
-                        print "Sending email : ", u.email
+                        # print "Sending email : ", u.email
                         try:
                             server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
                                 u.email, msg)
@@ -506,7 +506,7 @@ Shaastra 2015.
                 return Response( viewset_response( "done", data ) )
             else:
                 # Take participant info
-                if event.users_registered.filter(id=user.id).count() == 0:
+                if 0 and event.users_registered.filter(id=user.id).count() == 0:
                     import smtplib
                     server = smtplib.SMTP('smtp.gmail.com:587')
                     server.starttls()
@@ -529,7 +529,7 @@ Organizing Team,
 Shaastra 2015.
                     """ % (event_type, event.name, event_type)
                     u = user
-                    print "Sending email : ", u.email
+                    # print "Sending email : ", u.email
                     try:
                         server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
                             u.email, msg)
@@ -549,9 +549,7 @@ Shaastra 2015.
             try:
                 for i in request.POST:
                     if i in EVENT_MUTABLE_FIELDS:
-                        print i, request.POST[i], type(request.POST[i])
                         if i == "has_tdp":
-                            print i, request.POST[i], type(request.POST[i])
                             if request.POST[i] == "true" or request.POST[i] == "True" or request.POST[i].lower() == "wanted" or request.POST[i] == True or request.POST[i] == 1 or request.POST[i] == "1":
                                 event.has_tdp = True
                             else:
@@ -564,8 +562,14 @@ Shaastra 2015.
             return Response( viewset_response( "done", EventSerializer(event).data ) )
         elif action == "list":
             if event.is_team_event:
-                teams = TeamSerializer(event.teams_registered.all())
+                teams = event.teams_registered.all()
+                teams = TeamSerializer(teams)
                 data = teams.data
+                # for t in xrange(len(data)):
+                #     print [i['college_text'] for i in UserSerializer(Team.objects.get(id=data[t]['id']).members.all()).data]
+                #     data[t]['members'] = UserSerializer(Team.objects.get(id=data[t]['id']).members.all()).data
+                # print ".................."
+                # print data
             else:
                 users = UserSerializer(event.users_registered.all())
                 data = users.data
@@ -573,7 +577,6 @@ Shaastra 2015.
                 for i in xrange(len(data)):
                     fname = settings.MEDIA_ROOT+"tdp/"+event.name+"/"+str(data[i]['id'])+".*"
                     url = glob.glob(fname)
-                    print url, fname
                     if len(url) >= 1:
                         url = url[0].replace(settings.MEDIA_ROOT, settings.MEDIA_URL) # Remove patha nd add url
                     else:

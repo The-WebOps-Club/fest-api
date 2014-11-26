@@ -320,40 +320,40 @@ def participant_registration(request):
             user.last_name = serialized.init_data['last_name']
             user.is_active = True
             user.save()
-            import smtplib
-            server = smtplib.SMTP('smtp.gmail.com:587')
-            server.starttls()
-            server.login("shaastra@smail.iitm.ac.in" , "Sa2H7$a(")
-            msg = """
-Subject: Login details for Shaastra 2015
+#             import smtplib
+#             server = smtplib.SMTP('smtp.gmail.com:587')
+#             server.starttls()
+#             server.login("shaastra@smail.iitm.ac.in" , "Sa2H7$a(")
+#             msg = """
+# Subject: Login details for Shaastra 2015
 
 
-Greetings from Shaastra 2015!
-Thank you for registering with us at Shaastra 2015.
+# Greetings from Shaastra 2015!
+# Thank you for registering with us at Shaastra 2015.
 
-This mail is a acknowledgement mail for your registration.
+# This mail is a acknowledgement mail for your registration.
 
-You have registered with the following details :
-Email : %s
-Password : %s
-Your Shaastra ID is : SH15%05d
+# You have registered with the following details :
+# Email : %s
+# Password : %s
+# Your Shaastra ID is : SH15%05d
 
-Please note that this does not confirm your participation in any of the events.
-You can register for events by going to the website (http://www.shaastra.org) and finding out the procedure to register for a specific event/workshop of interest at the event page.
+# Please note that this does not confirm your participation in any of the events.
+# You can register for events by going to the website (http://www.shaastra.org) and finding out the procedure to register for a specific event/workshop of interest at the event page.
 
 
-Thank you,
-Organizing Team,
-Shaastra 2015.
-            """ % (user.email, serialized.init_data['password'], user.id)
-            u = user
-            print "Sending email : ", u.email
-            try:
-                server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
-                u.email, msg)
-            except:
-                pass
-            server.quit()
+# Thank you,
+# Organizing Team,
+# Shaastra 2015.
+#             """ % (user.email, serialized.init_data['password'], user.id)
+#             u = user
+#             print "Sending email : ", u.email
+#             try:
+#                 server.sendmail("Shaastra <shaastra@smail.iitm.ac.in>",
+#                 u.email, msg)
+#             except:
+#                 pass
+#             server.quit()
             token = Token.objects.get_or_create(user=user)[0]
             user = authenticate(username=serialized.init_data['email'][:30], password=serialized.init_data['password'])
             login(request, user)
