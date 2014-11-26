@@ -10,6 +10,7 @@ from apps.blog.models import Category
 class UserSerializer(serializers.ModelSerializer):
     want_accomodation = serializers.BooleanField(source='profile.want_accomodation')
     mobile_number = serializers.CharField(source='profile.mobile_number', required=False)
+    college_text = serializers.CharField(source='profile.college_text', required=False)
     class Meta:
 		model = User
 		fields = ('id', 'first_name', 'last_name', 'email', 'password')
