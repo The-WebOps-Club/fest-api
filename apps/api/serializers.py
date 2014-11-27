@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from apps.walls.models import Wall, Post, Comment
 from apps.blog.models import Category
 
-class UserSerializer(serializers.ModelSerializer):
+class UserInfoSerializer(serializers.ModelSerializer):
     want_accomodation = serializers.BooleanField(source='profile.want_accomodation', required=False)
     mobile_number = serializers.CharField(source='profile.mobile_number', required=False)
     college_text = serializers.CharField(source='profile.college_text', required=False)
@@ -15,6 +15,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         # fields = ('id', 'first_name', 'last_name', 'email', 'password')
         exclude = ("password", "user_permissions", "username", "last_login", "is_staff", "is_superuser", "is_active", "groups", "date_joined")
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'email', 'password')
+        # exclude = ("password", "user_permissions", "username", "last_login", "is_staff", "is_superuser", "is_active", "groups", "date_joined")
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,7 +35,7 @@ class ParticipantProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
 
 class TeamSerializer(serializers.ModelSerializer):
-    members = UserSerializer(source='members', many=True)
+    members = UserInfoSerializer(source='members', many=True)
     class Meta:
         model = Team
 

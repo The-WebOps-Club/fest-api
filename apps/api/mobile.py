@@ -263,7 +263,7 @@ class UserViewSet(viewsets.ViewSet):
         user_ids = request.DATA.getlist('id[]', None)
         if self.request.user.is_superuser and user_ids: # Let superuser get all data
             user = User.objects.get(id__in=user_ids)
-        return Response(viewset_response("done", UserSerializer(user).data))
+        return Response(viewset_response("done", UserInfoSerializer(user).data))
 
     def create(self, request):
         user = self.request.user
@@ -277,7 +277,7 @@ class UserViewSet(viewsets.ViewSet):
         except:
             return Response("Invalid input data.",[]);
         user.save()
-        return Response( viewset_response( "done", UserSerializer(user).data ) )
+        return Response( viewset_response( "done", UserInfoSerializer(user).data ) )
 
 class TeamViewSet(viewsets.ViewSet):
     def  list(self, request):
@@ -565,13 +565,8 @@ Shaastra 2015.
                 teams = event.teams_registered.all()
                 teams = TeamSerializer(teams)
                 data = teams.data
-                # for t in xrange(len(data)):
-                #     print [i['college_text'] for i in UserSerializer(Team.objects.get(id=data[t]['id']).members.all()).data]
-                #     data[t]['members'] = UserSerializer(Team.objects.get(id=data[t]['id']).members.all()).data
-                # print ".................."
-                # print data
             else:
-                users = UserSerializer(event.users_registered.all())
+                users = UserInfoSerializer(event.users_registered.all())
                 data = users.data
             if event.has_tdp:
                 for i in xrange(len(data)):
