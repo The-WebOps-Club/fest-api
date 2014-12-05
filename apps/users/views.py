@@ -306,7 +306,7 @@ def identity(request, role_type=None, role_id=None):
 @permission_classes((AllowAny, ))
 def participant_registration(request):
     serialized = UserSerializer(data = request.DATA)
-    if serialized.is_valid():
+    if serialized.init_data['email']:
         user = get_object_or_None(User, username=serialized.init_data['email'])
         if user:
             return Response({
