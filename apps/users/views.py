@@ -327,7 +327,7 @@ def participant_registration(request):
             token = Token.objects.get_or_create(user=user)[0]
             user = authenticate(username=serialized.init_data['email'], password=serialized.init_data['password'])
             login(request, user)
-            data = serialized.data
+            data = serialized.init_data
             data['token'] = token.key
             data['user_id'] = user.id
             return Response(data, status=status.HTTP_201_CREATED)
