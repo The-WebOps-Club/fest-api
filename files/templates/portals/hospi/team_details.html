@@ -1,6 +1,3 @@
-{% extends 'base/base.html' %}
-{% load staticfiles %}
-{% block content %}
 {% load humanize %}
 <center>
 <style type="text/css">
@@ -42,7 +39,9 @@ a.danger
 {
   color: #F00;
 }
-</style><div class="alert alert-{% if team.accomodation_status == 'confirmed' and not team.checked_in %}success{% elif team.checked_in and not team.checked_out %}info{% elif team.checked_in and team.checked_out %}warning{% else %}error{% endif %}">
+</style>
+<br><br>
+<div class="alert alert-{% if team.accomodation_status == 'confirmed' and not team.checked_in %}success{% elif team.checked_in and not team.checked_out %}info{% elif team.checked_in and team.checked_out %}warning{% else %}danger{% endif %}">
 
 <table id="team_details" class="table table-borderless">
     <tr>
@@ -52,17 +51,18 @@ a.danger
         <td style="text-align:center;"><a href="#addAccomodationModal" role="button" class="btn btn-danger" data-toggle="modal">Change time</a></td>
         <td style="text-align:center;">
 {% if editable %}
-  <a type="button" id="myPopover" onclick="$('#myPopover').popover();" class="btn btn-default" data-toggle="popover" data-html="true" data-placement="bottom" data-content="<form action=&quot;{% url 'hospi.views.update_status' team.pk %}&quot; method='post'>{% csrf_token %}<label class='radio inline'><input type='radio' name='status' value='not_req'><span class='label'>Not required</span></label><label class='radio inline'><input type='radio' name='status' value='requested'><span class='label label-info'>Pending</span></label><label class='radio inline'><input type='radio' name='status' value='confirmed'><span class='label label-success'>Confirm</span></label><label class='radio inline'><input type='radio' name='status' value='waitlisted'><span class='label label-warning'>Waitlist</span></label><label class='radio inline'><input type='radio' name='status' value='rejected'><span class='label label-important'>Reject</span></label><hr/>Status once changed to Confirm or Reject cannot be reverted back<input type='submit' class='btn btn-small' value='Update'></input></form>" data-original-title="Update status" title="">{% endif %}
+  <!--<a type="button" id="myPopover" onclick="$('#myPopover').popover();" class="btn btn-default" data-toggle="popover" data-html="true" data-placement="bottom" data-content="<form><label class='radio inline control-label'><input type='radio' name='status' value='not_req'><span class='label label-primary'>Not required</span></label><label class='radio inline'><input type='radio' name='status' value='requested'><span class='label label-info'>Pending</span></label><label class='radio inline'><input type='radio' name='status' value='confirmed'><span class='label label-success'>Confirm</span></label><label class='radio inline control-label'><input type='radio' name='status' value='waitlisted'><span class='label label-warning'>Waitlist</span></label><label class='radio inline control-label'><input type='radio' name='status' value='rejected'><span class='label label-danger'>Reject</span></label><hr/>Status once changed to Confirm or Reject cannot be reverted back<input type='button' onclick='Dajaxice.apps.portals.hospi.update_status(update_status,{'team_id':{{team.pk}}});'class='btn btn-small' value='Update '></input></form>" data-original-title="Update status" title="">-->
+  <a type="button" id="myPopover" onclick="$('#changestatusModal').modal('show')">{% endif %}
     {% if team.accomodation_status == 'requested' %}
       <span class="label label-info">Pending for approval</span>
     {% elif team.accomodation_status == 'confirmed' %}
       <span class="label label-success">Confirmed</span>
     {% elif team.accomodation_status == 'not_req' %}
-      <span class="label">Not required</span>
+      <span class="label label-primary">Not required</span>
     {% elif team.accomodation_status == 'waitlisted' %}
       <span class="label label-warning">Waitlisted</span>
     {% elif team.accomodation_status == 'rejected' %}
-      <span class="label label-important">Rejected</span>   
+      <span class="label label-danger">Rejected</span>   
     {% endif %}
 {% if editable %} 
   </a>{% endif %}
@@ -72,9 +72,9 @@ a.danger
         <td>{{ team.city }} - {{ team.leader.college }}</td>
         <td style="text-align:center;">{{ team.time_of_departure|title }} on {{ team.date_of_departure }} </td>
         <td style="text-align:center;">{% if team.accomodation_status == 'confirmed' and not team.checked_in and not team.checked_out %}
-<a href="{% url 'hospi.views.check_in_team' team.pk %}" data-target="#checkinModal" class="btn btn-success"><i class="icon-home"></i> Check-in</a>
+<a {% comment %}href="{% url 'hospi.views.check_in_team' team.pk %}"{% endcomment %} data-target="#checkinModal" class="btn btn-success"><i class="icon-home"></i> Check-in</a>
 {% elif team.accomodation_status == 'confirmed' and team.checked_in and not team.checked_out %}
-<a href="{% url 'hospi.views.check_out_team' team.pk %}" data-target="#checkoutModal" class="btn btn-danger require-alert"><i class="icon-home"></i> Check-out</a>
+<a {% comment %}href="{% url 'hospi.views.check_out_team' team.pk %}"{% endcomment %} data-target="#checkoutModal" class="btn btn-danger require-alert"><i class="icon-home"></i> Check-out</a>
 {% endif %}</td>
 <td><a class='btn btn-info' target="_blank" {% comment %} href="{% url 'hospi.views.print_bill' team.pk %}" {% endcomment %} >Print bill</a></td>
 <td><a class='btn btn-info' target="_blank" {% comment %} href="{% url 'hospi.views.print_saar' team.pk %}" {% endcomment %}>Print SAAR</a></td>
@@ -99,7 +99,7 @@ a.danger
         <td style="text-align: right;padding-right: 5px;" ><b>{{ bill_data.cd|intcomma }} INR</b></td>
     </tr>
     <tr>
-      <td>{% if team.is_mixed  %}<a class="btn btn-warning" href="{% url 'hospi.views.split_team' team.pk %}">Split team{% endif %}</td>
+      <td>{% if team.is_mixed  %}<a class="btn btn-warning" {% comment %}href="{% url 'hospi.views.split_team' team.pk %}"{% endcomment %}>Split team{% endif %}</td>
         <td colspan=2 style="text-align: right;padding-right: 5px;" ><font size="6em"><b>Amount payable</b></font></td>
         <td style="text-align: right;padding-right: 5px;" ><font size="6em"><b>{{ bill_data.grand_total|intcomma }} INR</b></font></td>
     </tr>
@@ -136,7 +136,7 @@ a.danger
     {% for member in team.members.all %}
     <tr id="{{member.id}}" {% if member.accomod_is_confirmed and team.accomodation_status != 'confirmed' %}class="error"{% endif %} >
       <td>{{ forloop.counter|add:1 }}</td>
-      <td><a class="table-action-deletelink btn btn-danger btn-mini" href="{% url 'hospi.views.del_member' team.id %}"><i class='icon-remove-circle icon-white'></i></a></td>
+      <td><a class="table-action-deletelink btn btn-danger btn-mini" {% comment %}href="{% url 'hospi.views.del_member' team.id %}"{% endcomment %}><i class='icon-remove-circle icon-white'></i></a></td>
       <td><a href="#">{{ member.saarang_id }}</a></td>
       <td>{{ member.desk_id }}</td>
       <td>{{ member.gender|title }}</td>
@@ -169,6 +169,48 @@ Members highlighted in red indicates people who have accommodation confirmed alr
     <button class="btn" onclick="$('#checkinModal').modal('hide');" aria-hidden="true">Close</button>
    
   </div>
+
+<div class="modal fade" id="changestatusModal" tabindex="-1" role="dialog" aria-labelledby="changestatusModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="changestatusLabel">Change Accomodation Status</h4>
+      </div>
+      <div id = "changestatusModalBody" class="modal-body">
+        <div class="alert alert-info">
+          <form name="changestatusform" {% comment %}onsubmit="init_change_status(this)" {% endcomment %}>
+            <label class='radio inline control-label'>
+            <input type='radio' name='status' value='not_req'>
+              <span class='label label-primary'>Not required</span>
+            </label>
+            <label class='radio inline'>
+              <input type='radio' name='status' value='requested'>
+              <span class='label label-info'>Pending</span>
+            </label><label class='radio inline'>
+              <input type='radio' name='status' value='confirmed'>
+              <span class='label label-success'>Confirm</span>
+            </label>
+            <label class='radio inline control-label'>
+              <input type='radio' name='status' value='waitlisted'>
+              <span class='label label-warning'>Waitlist</span>
+            </label>
+            <label class='radio inline control-label'>
+              <input type='radio' name='status' value='rejected'>
+              <span class='label label-danger'>Reject</span>
+            </label>
+            <p>Status once changed to Confirm or Reject cannot be reverted back</p>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" type="Submit" id="change_status_save_button"class="btn btn-primary" onclick="$(this).val('Please wait');"value="Save"/>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 
 
@@ -242,6 +284,8 @@ $("a[data-target=#checkinModal]").click(function(event) {
    
   </div>
 </div>
+
+
 
 <script type="text/javascript">
 var flag= true;
@@ -408,4 +452,3 @@ $("input[name=value").change(function(){
         </form>
         </div>
     </div>
-{% endblock content %}

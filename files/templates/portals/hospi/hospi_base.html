@@ -3,6 +3,7 @@
 {% load url from future %}
 {% load dajaxice_templatetags %}
 {% dajaxice_js_import %}
+{% load humanize %}
 <html lang="en">
 
 <head>
@@ -149,6 +150,7 @@
       document.getElementById("add_hostel_room_tab").className = "";
       document.getElementById("room_map_tab").className = "";
       document.getElementById("add_hostel_room_tab").className = "";
+      $('#hospitable').dataTable();
     }
     function accomodation_statistics(data){
       document.getElementById("list_all_teams").innerHTML = "";
@@ -229,6 +231,27 @@
       alert(data.message);
       Dajaxice.apps.portals.hospi.list_all_teams(list_all_teams);
     }
+    function team_details(data){
+      document.getElementById("team_details").innerHTML = data.html_content;
+    }
+    function init_change_status(frm){
+
+      var radioArray = frm.prep;
+      var i;
+      var value;
+
+      for (i=0; i < radioArray.length; i++){
+        if (radioArray[i].checked){
+          value = radioArray[i].value;
+          break;
+        }
+      }
+      {% comment %}Dajaxice.apps.portals.hospi.update_status(update_status,'stat':value, 'team_id':{{team.pk}});{% endcomment %}
+    }
+    function update_status(data){
+      alert("Done");
+    }
+    
     </script>
     <!--<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce.min.js"></script>-->
     <!--<script type="text/javascript">

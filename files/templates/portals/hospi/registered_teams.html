@@ -19,13 +19,13 @@
   </thead>
   <tbody>
     {% for team in teams %}
-    <tr class="rowlink" {% comment %}href="{% url 'hospi.views.team_details' team.pk %}"{% endcomment %} >
+    <tr class="rowlink" onclick="Dajaxice.apps.portals.hospi.team_details(team_details,{'team_id':{{team.pk}}});" {% comment %}href="{% url 'hospi_details' team.pk %}"{% endcomment %} target="_blank" >
       <td><span class="badge badge-{% if team.checked_in and not team.checked_out %}success{% elif team.checked_in and team.checked_out %}danger{% elif not team.checked_in and not team_checked_out %}inverse{% endif %}"><i class="icon-home icon-white"></i>{% if team.checked_in and not team.checked_out %} IN{% elif team.checked_in and team.checked_out %} OUT {% elif not team.checked_in and not team_checked_out %} ?{% endif %} </span></td>
-      <td>{{ team.team_sid }}</td>
-      <td>{{ team.name }}</td>
-      <td>{{ team.leader.name }}</td>
-      <td>{{ team.leader.mobile }}</td>
-      <td>{{ team.get_total_count }}</td>
+      <td style="color:black">{{ team.team_sid }}</td>
+      <td style="color:black">{{ team.name }}</td>
+      <td style="color:black">{{ team.leader.name }}</td>
+      <td style="color:black">{{ team.leader.mobile }}</td>
+      <td style="color:black">{{ team.get_total_count }}</td>
       <td>
         {% if team.accomodation_status == 'requested' %}
         <span class="label label-info">Pending</span>
@@ -36,7 +36,7 @@
         {% elif team.accomodation_status == 'waitlisted' %}
         <span class="label label-warning">Waitlisted</span>
         {% elif team.accomodation_status == 'rejected' %}
-        <span class="label label-important">Rejected</span>   
+        <span class="label label-danger">Rejected</span>   
         {% endif %}
 
       </td>
@@ -45,7 +45,7 @@
     {% endfor %}
   </tbody>
 </table>
-
+<div id="team_details"></div>
 
 <!-- Modal -->
 <div id="teamdetailsModal" class="modal widemodal hide fade" tabindex="-1" role="dialog" aria-labelledby="teamdetailsModalLabel" aria-hidden="true" >
@@ -73,7 +73,7 @@
       <div id = "addteamModalBody" class="modal-body">
       </div>
       <div class="modal-footer">
-        <input id="add_team_save_button"class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.adding_team(adding_team,{'form_add_team':$('#form_add_team').serialize(true)});$(this).val('Please wait');"value="Save"/>
+        <input type="button" id="add_team_save_button"class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.adding_team(adding_team,{'form_add_team':$('#form_add_team').serialize(true)});$(this).val('Please wait');"value="Save"/>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
