@@ -217,3 +217,21 @@ def delete_event(request,event_name):
 	event_object.delete()
 	message="The event " + event_name + " has been successfully deleted."
 	return json.dumps({'message':message})
+	
+	
+	
+@dajaxice_register    
+def reg_list(request,event_name):
+	event_object=Event.objects.get(name=event_name)
+	event_registrations=event_object.event_registered.all()
+	user_names=""
+	team_names=""
+	info=""
+	for reg in event_registrations:
+		user_names=user_names + reg.users_registered.username +" |"
+		if reg.teams_registered==None:
+			team_names=team_names + "None |"
+		else:
+			team_names=team_names + reg.teams_registered.name + " (" + str(reg.teams_registered.get_total_count())+") "+" |"
+		info=str(info) + str(reg.info) + " |"
+	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info})

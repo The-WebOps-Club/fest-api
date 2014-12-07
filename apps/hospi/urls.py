@@ -3,7 +3,7 @@ from django.conf.urls import patterns, url
 urlpatterns = patterns('',
     # For mainsite
     url(r'^$', 'apps.hospi.views.prehome', name='hospi_prehome'),
-    url(r'^home/$', 'apps.hospi.views.home', name='hospi_home'),
+    url(r'^home/(?P<team_id>\d+)/$', 'apps.hospi.views.home', name='hospi_home'),
     url(r'^login/$', 'apps.hospi.views.login', name='hospi_login'),
     url(r'^logout/$', 'apps.hospi.views.logout', name='hospi_logout'),
     url(r'^add_members/$', 'apps.hospi.views.add_members', name='hospi_add_members'),
@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'^set/hospi/(?P<team_id>\d+)/$', 'apps.hospi.views.set_hospi_team', name='hospi_set_hospi_team'),
     url(r'^set/event/(?P<event_team_id>\d+)/$', 'apps.hospi.views.set_event_team', name='hospi_set_event_team'),
     url(r'^details/(?P<team_id>\d+)/$', 'apps.hospi.views.details', name='hospi_details'),
-    url(r'^cancel/$', 'apps.hospi.views.cancel_request', name='hospi_cancel_request'),
+    url(r'^cancel/(?P<team_id>\d+)/$', 'apps.hospi.views.cancel_request', name='hospi_cancel_request'),
     url(r'^delete/(?P<team_id>\d+)/$', 'apps.hospi.views.delete_team', name='delete_team'),
 
     # For ERP

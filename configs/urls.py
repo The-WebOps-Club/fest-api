@@ -39,6 +39,7 @@ router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
 router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
 router.register(r'contacts',mobile.ContactsViewSet, base_name="contacts")
 router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
+router.register(r'profile_post',mobile.UserProfilePostViewSet,base_name="profile")
 router.register(r'teams',mobile.TeamViewSet,base_name="teams")
 router.register(r'blogs',mobile.BlogFeedViewSet,base_name="blogs")
 router.register(r'events',mobile.EventViewSet,base_name="events")
@@ -108,6 +109,7 @@ urlpatterns = patterns('',
     url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
     url(r'^participant_login/$','apps.users.views.participant_login', name='participant_login'),
     url(r'^social_login/$','apps.users.views.social_login', name='social_login'),
+    url(r'^logout_user/$','apps.users.views.logout_user', name='logout_user'), 
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE

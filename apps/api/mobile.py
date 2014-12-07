@@ -259,6 +259,15 @@ class UserProfileViewSet(viewsets.ViewSet):
         data['last_name'] = user.last_name
         return Response( viewset_response( "done", data ) )
 
+class UserProfilePostViewSet(viewsets.ViewSet):
+    def create(self, request):
+        user = self.request.user
+        data = ParticipantProfileSerializer(UserProfile.objects.get_or_create( user = self.request.user )[0]).data
+        data['first_name'] = user.first_name
+        data['last_name'] = user.last_name
+        data['user_id'] = user.id
+        return Response(viewset_response("done", data))
+
 class UserViewSet(viewsets.ViewSet):
     def list(self, request):
         return Response(viewset_response("done", UserSerializer(self.request.user).data))
@@ -577,6 +586,7 @@ class EventDisplayViewset(viewsets.ViewSet):
         data=EventDisplaySerializer(event).data
         return Response(viewset_response( "done", data ))
 class SponsImageViewset(viewsets.ViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     def list(self,request):
         spons = SponsImageUpload.objects.all()
         data = SponsImageUploadSerializer(spons).data

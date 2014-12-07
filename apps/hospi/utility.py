@@ -10,14 +10,14 @@ def cd(n):
 def days(in_date, in_time, out_date, out_time):
     l1 = dt.datetime(2015, 1, 7, 10, 0)
     u1 = dt.datetime(2015, 1, 8, 17, 0)
-    l2 = dt.datetime(2015, 1, 8, 9, 0)
+    l2 = dt.datetime(2015, 1, 8, 5, 0)
     u2 = dt.datetime(2015, 1, 9, 17, 0)
-    l3 = dt.datetime(2015, 1, 9, 9, 0)
+    l3 = dt.datetime(2015, 1, 9, 5, 0)
     u3 = dt.datetime(2015, 1, 10, 17, 0)
-    l4 = dt.datetime(2015, 1, 10, 9, 0)
+    l4 = dt.datetime(2015, 1, 10, 5, 0)
     u4 = dt.datetime(2015, 1, 11, 17, 0)
-    l5 = dt.datetime(2015, 1, 11, 9, 0)
-    u5 = dt.datetime(2015, 1, 12, 10, 0)
+    l5 = dt.datetime(2015, 1, 11, 5, 0)
+    u5 = dt.datetime(2015, 1, 12, 9, 0)
     
     span = [[l1,u1],[l2,u2],[l3,u3],[l4,u4],[l5,u5]]
 
@@ -35,10 +35,7 @@ def bill(in_date, in_time, out_date, out_time, n):
     '''Calculate bill amount'''
     dos = days(in_date,in_time,out_date,out_time)
     diff_rate = 300
-    if dos == 5:
-        days_of_stay = 4
-    else:
-        days_of_stay = dos
+    days_of_stay = dos
     amt_per_head = 300 + diff_rate*(days_of_stay-1)
     amt_without_caution_deposit = ((300 + diff_rate*(days_of_stay-1))*n)
     caution_deposit = cd(n)

@@ -21,8 +21,10 @@ from apps.events.models import EventRegistration
 ####################################################################
 # Mainsite Views
 
-@login_required
 def prehome(request):
+    if not request.user.is_authenticated():
+        return render(request, 'portals/hospi/login.html', locals())
+
     user = request.user.profile
     #events teams
     # teams_leading = user.team_leader.all().exclude(accomodation_status='hospi')
@@ -39,7 +41,7 @@ def prehome(request):
     hospi_teams_leading = user.hospi_team_leader.all()
     hospi_teams_member = user.hospi_team_members.all()
     if not user.profile_is_complete():
-        messages.error(request, "Your profile is not complete. Click <a href='http://saarang.org/2014/main/#profile' target='_blank'>here</a> to update your profile. ")
+        messages.error(request, "Your profile is not complete. Click on your name on upper right corner to update your profile. ")
     return render(request, 'portals/hospi/prehome.html', locals())
 
 def set_hospi_team(request, team_id):
@@ -54,7 +56,7 @@ def set_hospi_team(request, team_id):
     team.accomodation_status = 'requested'
     team.save()
     request.session['current_team'] = team_id
-    return redirect('hospi_home')
+    return redirect('hospi_home', team_id=team_id)
 
 def set_event_team(request, event_team_id):
     user=request.user.profile
@@ -73,22 +75,22 @@ def set_event_team(request, event_team_id):
     event_team.save()
     team.save()
     request.session['current_team'] = team.pk
-    return redirect('hospi_home')
+    return redirect('hospi_home', team_id=team.pk)
 
 def details(request, team_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
     request.session['current_team'] = team.pk
-    return redirect('hospi_home')
+    return redirect('hospi_home', team_id=team.pk)
     
-def home(request):
+def home(request, team_id):
     user = request.user.profile
     if not user.profile_is_complete():
-        messages.error(request, "Your profile is not complete. Click <a href='http://saarang.org/2014/main/#profile' target='_blank'>here</a> to update your profile. ")
+        messages.warning(request, "Your profile is not complete. Click on your name on upper right corner to update your profile. ")
         return redirect('hospi_prehome')
-    if not request.session.get('current_team'):
-        return redirect('hospi_prehome')
-    team_id = request.session.get('current_team')
     team = get_object_or_404(HospiTeam, pk=team_id)
+    if not team.city:
+        team.city = user.city
+        team.save()
     if team.members.filter(saarang_id=team.leader.saarang_id):
         team.members.remove(team.leader)
         messages.warning(request, 'Team leader found in members list also. Successfully removed!')
@@ -193,14 +195,14 @@ def add_members(request):
             profile_not_complete, template='hospi_profile_incomplete.email',
             context={'team':team,}
             )
-    return redirect('hospi_home')
+    return redirect('hospi_home', team_id=team.pk)
 
 def delete_member(request, team_id, member_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
     user = get_object_or_404(UserProfile, pk=member_id)
 
     team.members.remove(user)
-    return redirect('hospi_home')
+    return redirect('hospi_home', team_id=team.pk)
 
 def add_accomodation(request):
     data = request.POST.copy()
@@ -216,7 +218,7 @@ def add_accomodation(request):
         else:
             messages.success(request, 'Details successfully updated.')
         team.save()
-        return redirect('hospi_home')
+        return redirect('hospi_home',team_id=team.pk)
     elif data['updating'] == 'control_room':
         team.date_of_arrival = data['arr_date']
         team.date_of_departure = data['dep_date']
@@ -225,7 +227,7 @@ def add_accomodation(request):
         team.save()
         messages.success(request, 'Saved successfully')
         return redirect('hospi_team_details', int(data['team_id']))
-    return redirect('hospi_home')
+    return redirect('hospi_home', team_id=team.pk)
 
 
 def user_add_team(request):
@@ -238,6 +240,8 @@ def user_add_team(request):
 def user_save_team(request):
     data = request.POST.copy()
     user = request.user.profile
+    if not data['team_name']:
+        data['team_name'] = user.user.first_name + " Team"
     try:
         team = HospiTeam.objects.create(name=data['team_name'], leader=user, city=user.city )
         team.team_sid = auto_id(team.pk)
@@ -247,11 +251,10 @@ def user_save_team(request):
         messages.error(request, 'Some random error occured. please try again: ' + e.message)
     return redirect('hospi_prehome')
 
-def cancel_request(request):
+def cancel_request(request, team_id):
     user = request.user.profile
     if not request.session.get('current_team'):
         return redirect('hospi_prehome')
-    team_id = request.session.get('current_team')
     team = get_object_or_404(HospiTeam, pk=team_id)
     members = team.get_all_members()
     if team.accomodation_status == 'confirmed':
@@ -323,8 +326,8 @@ def print_saar(request, team_id):
 @login_required
 def split_team(request, team_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
-    M=['male', 'Male']
-    F=['female', 'Female']
+    M=['male', 'Male', 'm','M']
+    F=['female', 'Female','f','F']
     if team.leader.gender in M:
         female_members = team.get_female_members()
         team_leader = female_members.pop(0)
@@ -391,7 +394,7 @@ def update_status(request, team_id):
         team.accomodation_status = stat
         team.save()
         messages.success(request, 'Status for '+team.name+' successfully updated to '+stat)
-        emailsubject='Accommodation request '+stat+', Saarang 2014'
+        emailsubject='Accommodation request '+stat+', Saarang 2015'
         users=[]
         for user in team.get_all_members():
             users.append(user.email)

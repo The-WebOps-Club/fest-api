@@ -1,4 +1,4 @@
-{% extends "hospi/hospi_base.html" %}
+{% extends "portals/hospi/hospi_base_main.html" %}
 {% load url from future %}
 {% load staticfiles %}
 {% block title %}Login Hospitality | Saarang 2014{% endblock %}
@@ -82,7 +82,11 @@
 }
 </style>
     <div class="row">
-        <div class="span6 offset3">
+        <div class="span6 offset3" style="padding-top:150px;">
+<center>
+        <h2>Please Login and then refresh the page to continue</h2>
+        </center>
+        <!-- 
             <h1 class="text-center login-title">Sign in to continue to Accommodation Portal</h1>
             <div class="account-wall">
                 <img class="profile-img" src="{% static 'img/logo.png' %}"
@@ -101,7 +105,7 @@
                 <a href="mailto:webadmin@saarang.org" target="_blank" class="pull-right need-help">Need help?  </a><span class="clearfix"></span>
                 </form>
             </div>
-            <!--
+         -->    <!--
             <a href="#" class="text-center new-account">Create an account </a>-->
         </div>
     </div>

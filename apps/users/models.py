@@ -294,6 +294,8 @@ class UserProfile(models.Model): # The corresponding auth user
 
     def save(self, *args, **kwargs):
         #self.user.save()
+        if not self.saarang_id:
+            self.saarang_id = self.fest_id
         if not self.pk and not settings.DEBUG: #First time profile creation
             self.saarang_id = self.fest_id
             send_registration_mail(self.user)
