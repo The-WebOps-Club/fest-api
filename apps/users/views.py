@@ -320,6 +320,7 @@ def participant_registration(request):
             user.last_name = serialized.init_data['last_name']
             user.is_active = True
             user.save()
+            profile = UserProfile.objects.get_or_create(user=user)
 #             import smtplib
 #             server = smtplib.SMTP('smtp.gmail.com:587')
 #             server.starttls()
