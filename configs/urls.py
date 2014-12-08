@@ -40,6 +40,7 @@ router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
 router.register(r'teams',mobile.TeamViewSet,base_name="teams")
 router.register(r'blogs',mobile.BlogFeedViewSet,base_name="blogs")
 router.register(r'events',mobile.EventViewSet,base_name="events")
+router.register(r'users',mobile.UserViewSet,base_name="users")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------

@@ -196,6 +196,9 @@ class UserProfile(models.Model): # The corresponding auth user
     school_student     = models.BooleanField(default=False)
     city               = models.CharField(max_length=50, null=True, blank=True)
 
+    # Barcode
+    barcode            = models.IntegerField(null=True, default=-1)
+
     # Fest related info
     want_accomodation  = models.BooleanField(default=False, help_text = "Doesn't assure accommodation.")
 
