@@ -1,0 +1,63 @@
+<legend>Accommodation request statistics</legend>
+<style type="text/css">
+.table td {
+   text-align: center;   
+}
+.table th {
+   text-align: center;   
+}
+</style>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Status</th>
+            <th>Teams</th>
+            <th>Participants</th>
+            <th>Males</th>
+            <th>Females</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th><span class="label label-info">Pending</span></th>
+            <td>{{ num_pending_teams }}</td>
+            <td>{{ num_total_members_pending }}</td>
+            <td>{{ num_male_members_pending }}</td>
+            <td>{{ num_female_members_pending }}</td>
+        </tr>
+        <tr>
+            <th><span class="label label-success">Confirmed</span></th>
+            <td>{{ num_confirmed_teams }}</td>
+            <td>{{ num_total_members_confirmed }}</td>
+            <td>{{ num_male_members_confirmed }}</td>
+            <td>{{ num_female_members_confirmed }}</td>
+        </tr>
+        <tr>
+            <th><span class="label label-warning">Waitlisted</span></th>
+            <td>{{ num_waitlisted_teams }}</td>
+            <td>{{ num_total_members_waitlisted }}</td>
+            <td>{{ num_male_members_waitlisted }}</td>
+            <td>{{ num_female_members_waitlisted }}</td>
+        </tr>
+        <tr>
+            <th><span class="label label-danger">Rejected</span></th>
+            <td>{{ num_rejected_teams }}</td>
+            <td>{{ num_total_members_rejected }}</td>
+            <td>{{ num_male_members_rejected }}</td>
+            <td>{{ num_female_members_rejected }}</td>
+        </tr>
+        <tr>
+            <th>Total</th>
+            <th>{{ num_total_teams }}</th>
+            <th>{{ num_total_members }}</th>
+            <th>{{ num_male_members }}</th>
+            <th>{{ num_female_members }}</th>
+        </tr>
+    </tbody>
+
+</table>
+<script type="text/javascript">
+$(function () {
+  $('#tab_statistics').addClass('active');
+})
+</script>

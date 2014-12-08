@@ -1,0 +1,43 @@
+{% load staticfiles %}
+{% load url from future %}
+{% load erp_tags %}
+<div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#sidebar" href="#hospi"><i class="icon-fire"></i> Hospi</a>
+    </div>
+    <div id="hospi" class="accordion-body collapse {% if request.path|app_name == 'hospi' %}in{% endif %} ">
+      <div class="accordion-inner">
+        <ul class="nav-list nav">
+          <li id='tab_registered'>
+            <a href="{% url 'hospi.views.list_registered_teams' %}"><i class="icon-chevron-right"></i> Team registrations</a>
+          </li>
+          <li id='tab_statistics'>
+            <a href="{% url 'hospi.views.statistics' %}"><i class="icon-chevron-right"></i> Accommodation statistics</a>
+          </li>
+          <li>
+            <a data-target="#addhostelroomsModal" href="{% url 'hospi.views.add_hostel_rooms' %}" data-toggle="modal"><i class="icon-chevron-right"></i> Add hostel/room</a>
+          </li>
+          <li id='tab_map'>
+            <a href="{% url 'hospi.views.room_map' %}"><i class="icon-chevron-right"></i> Room map</a>
+          </li>
+          <li>
+            <a href="{% url 'hospi.views.list_all_teams' %}"><i class="icon-chevron-right"></i> All teams</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+<div id="addhostelroomsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addhostelroomsModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="addhostelroomsModalLabel">Add hostel/room</h3>
+  </div>
+  <div class="modal-body">
+    <p>One fine body…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>

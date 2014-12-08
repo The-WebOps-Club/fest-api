@@ -2,7 +2,6 @@
 {% load humanize %}
 {% load markdown_tags %}
 {% load once %}
-{% load keeptags %}
 <table cellspacing="0" cellpadding="0" id="email_table" style="border-collapse: collapse;width: 100% !important" border="0">
 <tbody>
 <tr>
@@ -49,7 +48,7 @@ Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif;"><span style="font
 {{ notification.verb|default:"" }} <span style="font-weight: bold; color: #3b5998;">{{ notification.target.wall|default:"" }}.</span>
 <br><br>
 {% autoescape off %} 
-{{ notification.action_object.description|keeptags:"a p" }} 
+{{ notification.action_object.description }} 
 {% endautoescape %}
 </span></td></tr></tbody></table></div><table cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tbody><tr><td style="padding:20px 10px 3px 0px;"><table cellspacing="0" cellpadding="0" style="border-collapse:collapse;"><tbody><tr><td valign="middle" style="width:100%;"><a href="" style="color: #3b5998;text-decoration: none"><span style="color:#141823;font-size:14px;line-height:20px;font-family:Helvetica Neue,Helvetica,Lucida Grande,tahoma,verdana,arial,sans-serif;">{{ notification.timestamp }}</span> </a></td></tr></tbody></table></td><td style="padding:20px 10px 3px
 0px;"></td>

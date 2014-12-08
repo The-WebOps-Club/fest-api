@@ -234,23 +234,27 @@ def reg_list(request,event_name):
 			team_names=team_names + "None |"
 		else:
 			team_names=team_names + reg.teams_registered.name +" |"
-		info=info + reg.info + " |"
+		info=str(info) + str(reg.info) + " |"
 	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info})
 
 @dajaxice_register    
 def participant_info(request,participant_name,team_name):
-	data=[]
-	temp={}
+
 	try :
+		data=[]
+		temp={}		
 		team = Team.objects.get(name=team_name)
 		members=team.members.all()
 		for i in range(len(members)):
+			temp={}
 			temp['name']=str(members[i].username)
 			temp['number']=members[i].profile.mobile_number
 			temp['email']=str(members[i].email)
 			data.append(temp)
 	except Exception, e:
 		print e
+		temp={}
+		data=[]
 		participant = User.objects.get(username=participant_name)
 		temp['name']=str(participant_name)
 		temp['number']=participant.profile.mobile_number

@@ -26,3 +26,5 @@ def keeptags(value, tags):
     recreate_re = re.compile('##~~~([^~]+)~~~##')
     value = recreate_re.sub('<\g<1>>', value)
     return value
+
+register.filter('keeptags', keeptags)

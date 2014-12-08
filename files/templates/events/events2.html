@@ -172,9 +172,7 @@ Use this to add an image for the event. This has to be done separately. Make sur
 </div>
 
 
-<div id="tempdiv">
 
-</div>
 
 <!--JS FUNCTIONS -->
 <script>
@@ -489,7 +487,7 @@ function reg_list_js(data){
     {
         text=text+'<tr><td><b>'+user_names_array[i]+'&nbsp &nbsp</b></td><td>'+team_names_array[i]+'</td><td> '+info_array[i]+'<button href="#tempdiv" id="partic_info" class="btn small info pull-right" onclick="Dajaxice.apps.portals.events.participant_info(participant_info_js, {\'participant_name\':\''+user_names_array[i]+'\',\'team_name\':\''+team_names_array[i]+'\'})"><i class="icon-info-sign"></i></button></td></tr>'
     }
-    text=text+"</table>";
+    text=text+"</table><br /><br /><div id='tempdiv'></div>";
     
     document.getElementById("event_tabs").innerHTML = text;
     $('#registrations_table').dataTable();

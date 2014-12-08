@@ -1,6 +1,6 @@
 # Django
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect, render, HttpResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -306,7 +306,7 @@ def identity(request, role_type=None, role_id=None):
 @permission_classes((AllowAny, ))
 def participant_registration(request):
     serialized = UserSerializer(data = request.DATA)
-    if serialized.is_valid():
+    if serialized.init_data['email']:
         user = get_object_or_None(User, username=serialized.init_data['email'])
         if user:
             return Response({
@@ -352,9 +352,14 @@ def participant_login(request):
 
     user = get_object_or_None(User, username=email)
     if user == None:
-        return Response({
-            "email": ["This email address doesn't have an account."]
-        }, status=status.HTTP_400_BAD_REQUEST)
+        userprofile=get_object_or_None(UserProfile, saarang_id=email)
+        if user==None:
+            return Response({
+                "email": ["This email address doesn't have an account."]
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            user=userprofile.user
+            email=user.email
 
     # Authenticates user against database
     user = authenticate(username=email, password=password)
@@ -442,3 +447,10 @@ def validate_email(request, uidb36, token):
     else:
         return HttpResponse("ERROR")
     return HttpResponseRedirect(settings.MAIN_SITE+'2015/main')
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes((AllowAny, ))
+def logout_user(request):
+    logout(request)
+    return HttpResponseRedirect(settings.MAIN_SITE)
