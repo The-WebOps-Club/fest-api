@@ -1,6 +1,7 @@
 # For simple dajax(ice) functionalities
 from django.utils import simplejson
 import json
+import unicodedata
 from dajaxice.decorators import dajaxice_register
 
 # For rendering templates
@@ -13,7 +14,7 @@ from django.conf import settings
 
 #models
 from django.contrib.auth.models import User
-from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
+from apps.users.models import ERPProfile, UserProfile, Dept, Subdept, Team
 from apps.events.models import EventTab, Event
 #dajaxice stuff
 from dajaxice.utils import deserialize_form
@@ -235,3 +236,24 @@ def reg_list(request,event_name):
 			team_names=team_names + reg.teams_registered.name +" |"
 		info=info + reg.info + " |"
 	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info})
+
+@dajaxice_register    
+def participant_info(request,participant_name,team_name):
+	data=[]
+	temp={}
+	try :
+		team = Team.objects.get(name=team_name)
+		members=team.members.all()
+		for i in range(len(members)):
+			temp['name']=str(members[i].username)
+			temp['number']=members[i].profile.mobile_number
+			temp['email']=str(members[i].email)
+			data.append(temp)
+	except Exception, e:
+		print e
+		participant = User.objects.get(username=participant_name)
+		temp['name']=str(participant_name)
+		temp['number']=participant.profile.mobile_number
+		temp['email']=str(participant.email)
+		data.append(temp)
+	return json.dumps({'inf':data,'len':len(data),})	

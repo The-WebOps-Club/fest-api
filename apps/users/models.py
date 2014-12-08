@@ -401,4 +401,6 @@ class Team(models.Model):
     name            = models.CharField(max_length=100, unique=True)
     members         = models.ManyToManyField(User, null=True, blank=True, related_name='teams')
 
+    def __unicode__(self):
+        return self.name
 
