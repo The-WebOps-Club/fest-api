@@ -1,5 +1,26 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load url from future %}
+{% load dajaxice_templatetags %}
+{% dajaxice_js_import %}
 {% load humanize %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Hospitality | Saarang{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+
+    <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 col-md-12">
 <center>
+
 <style type="text/css">
 /* borderless table */
 .table.table-borderless td, .table.table-borderless th {
@@ -40,8 +61,12 @@ a.danger
   color: #F00;
 }
 </style>
-<br><br>
-<div class="alert alert-{% if team.accomodation_status == 'confirmed' and not team.checked_in %}success{% elif team.checked_in and not team.checked_out %}info{% elif team.checked_in and team.checked_out %}warning{% else %}danger{% endif %}">
+<br>
+
+<div class="panel panel-{% if team.accomodation_status == 'confirmed' and not team.checked_in %}success{% elif team.checked_in and not team.checked_out %}info{% elif team.checked_in and team.checked_out %}warning{% else %}danger{% endif %}">
+
+<div class="panel-heading">{{team.name}}</div>
+<div class="panel-body">
 
 <table id="team_details" class="table table-borderless">
     <tr>
@@ -52,17 +77,17 @@ a.danger
         <td style="text-align:center;">
 {% if editable %}
   <!--<a type="button" id="myPopover" onclick="$('#myPopover').popover();" class="btn btn-default" data-toggle="popover" data-html="true" data-placement="bottom" data-content="<form><label class='radio inline control-label'><input type='radio' name='status' value='not_req'><span class='label label-primary'>Not required</span></label><label class='radio inline'><input type='radio' name='status' value='requested'><span class='label label-info'>Pending</span></label><label class='radio inline'><input type='radio' name='status' value='confirmed'><span class='label label-success'>Confirm</span></label><label class='radio inline control-label'><input type='radio' name='status' value='waitlisted'><span class='label label-warning'>Waitlist</span></label><label class='radio inline control-label'><input type='radio' name='status' value='rejected'><span class='label label-danger'>Reject</span></label><hr/>Status once changed to Confirm or Reject cannot be reverted back<input type='button' onclick='Dajaxice.apps.portals.hospi.update_status(update_status,{'team_id':{{team.pk}}});'class='btn btn-small' value='Update '></input></form>" data-original-title="Update status" title="">-->
-  <a type="button" id="myPopover" onclick="$('#changestatusModal').modal('show')">{% endif %}
+  <a class="btn" role="button" data-toggle="modal" href="#changestatusModal">{% endif %}
     {% if team.accomodation_status == 'requested' %}
-      <span class="label label-info">Pending for approval</span>
+      <div class="btn btn-info">Pending for approval</div>
     {% elif team.accomodation_status == 'confirmed' %}
-      <span class="label label-success">Confirmed</span>
+      <div class="btn btn-success">Confirmed</div>
     {% elif team.accomodation_status == 'not_req' %}
-      <span class="label label-primary">Not required</span>
+      <div class="btn btn-primary">Not required</div>
     {% elif team.accomodation_status == 'waitlisted' %}
-      <span class="label label-warning">Waitlisted</span>
+      <div class="btn btn-warning">Waitlisted</div>
     {% elif team.accomodation_status == 'rejected' %}
-      <span class="label label-danger">Rejected</span>   
+      <div class="btn btn-danger">Rejected</div>   
     {% endif %}
 {% if editable %} 
   </a>{% endif %}
@@ -104,7 +129,10 @@ a.danger
         <td style="text-align: right;padding-right: 5px;" ><font size="6em"><b>{{ bill_data.grand_total|intcomma }} INR</b></font></td>
     </tr>
 
-</table></div>
+</table>
+</div>
+</div>
+
 <div class="alert alert-info">
 <strong>Total {{ team.get_total_count }} members. ( {{ team.get_male_count }} males and {{ team.get_female_count }} females )</strong><div class="buttonPlaceholder pull-right"><button id='btnAddNewRow' class='btn btn-primary' href='#adduserModal' data-toggle='modal'>Add new member</button></div>
 <table class="member_data table table-borderless">
@@ -288,122 +316,122 @@ $("a[data-target=#checkinModal]").click(function(event) {
 
 
 <script type="text/javascript">
-var flag= true;
-$(document).ready(function() {
-  event.preventDefault();
-  var target = $(this).attr("href");
-  $('.member_data').dataTable({
-    "bJQueryUI": true,
-    "bPaginate": false,
-    "sDom": '<"buttonPlaceholder"><"H"Tfr>t<"F"ip>',
-    "oTableTools": {
-      "aButtons": [
-      "copy", "csv", "xls", "pdf",
-      {
-        "sExtends":    "collection",
-        "sButtonText": "Save",
-        "aButtons":    [ "csv", "xls", "pdf" ]
-      }
-      ]
-    },
-      "bDestroy": flag?false:true
-  }
-  ).makeEditable({
-      {% comment %}sUpdateURL: "{% url 'hospi.views.update_member' %}",{% endcomment %}
-      {% comment %}//sAddURL: "{% url 'hospi.views.add_member' team.id %}",{% endcomment %}
-      {% comment %}sDeleteURL: "{% url 'hospi.views.del_member' team.id %}",{% endcomment %}
-      "aoColumns":[
-        null,
-        null,
-        null,
-        {},
-        {
-          type: 'select',
-          submit:'Ok',
-          data: "{ 'male': 'Male', 'female':'Female' }"
-        },
-        {},
-        {},
-        {},
-        {},
-        {}
-      ]
-    }
-  );
-  flag=false;
-  /*$('.member_data').css({
-    'width':'100%'
-  })
-  $('.modal').css({
-    'z-index':99
-  })
-  $('.modal-backdrop').css({
-    'z-index':98
-  })*/
+// var flag= true;
+// $(document).ready(function() {
+//   event.preventDefault();
+//   var target = $(this).attr("href");
+//   $('.member_data').dataTable({
+//     "bJQueryUI": true,
+//     "bPaginate": false,
+//     "sDom": '<"buttonPlaceholder"><"H"Tfr>t<"F"ip>',
+//     "oTableTools": {
+//       "aButtons": [
+//       "copy", "csv", "xls", "pdf",
+//       {
+//         "sExtends":    "collection",
+//         "sButtonText": "Save",
+//         "aButtons":    [ "csv", "xls", "pdf" ]
+//       }
+//       ]
+//     },
+//       "bDestroy": flag?false:true
+//   }
+//   ).makeEditable({
+//       {% comment %}sUpdateURL: "{% url 'hospi.views.update_member' %}",{% endcomment %}
+//       {% comment %}//sAddURL: "{% url 'hospi.views.add_member' team.id %}",{% endcomment %}
+//       {% comment %}sDeleteURL: "{% url 'hospi.views.del_member' team.id %}",{% endcomment %}
+//       "aoColumns":[
+//         null,
+//         null,
+//         null,
+//         {},
+//         {
+//           type: 'select',
+//           submit:'Ok',
+//           data: "{ 'male': 'Male', 'female':'Female' }"
+//         },
+//         {},
+//         {},
+//         {},
+//         {},
+//         {}
+//       ]
+//     }
+//   );
+//   flag=false;
+//   /*$('.member_data').css({
+//     'width':'100%'
+//   })
+//   $('.modal').css({
+//     'z-index':99
+//   })
+//   $('.modal-backdrop').css({
+//     'z-index':98
+//   })*/
 
- //});
-$('#start,.jumbotron').hide();
-$('.span9').removeClass('span9').addClass('span12');
+//  //});
+// $('#start,.jumbotron').hide();
+// $('.span9').removeClass('span9').addClass('span12');
 
 
-    function movieFormatResult(user) {
-        var markup = "<table padding=3><tr>";
-            markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div class='movie-title' style='padding-right:5px;'><b>" + user.sid + "</b></div></td>";
+//     function movieFormatResult(user) {
+//         var markup = "<table padding=3><tr>";
+//             markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div class='movie-title' style='padding-right:5px;'><b>" + user.sid + "</b></div></td>";
         
-        markup += "<td><div>" + user.name + "</div>";
+//         markup += "<td><div>" + user.name + "</div>";
         
-        markup += "</td></tr><tr><td><div>" + user.mobile + "</div>";
+//         markup += "</td></tr><tr><td><div>" + user.mobile + "</div>";
         
-            markup += "</td></tr><tr><td><div>" + user.email + "</div>";
+//             markup += "</td></tr><tr><td><div>" + user.email + "</div>";
         
         
         
-        markup += "</td></tr></table>"
-        return markup;
-    }
+//         markup += "</td></tr></table>"
+//         return markup;
+//     }
 
-    function movieFormatSelection(user) {
-        return user.sid;
-    }
+//     function movieFormatSelection(user) {
+//         return user.sid;
+//     }
 
-$("#website_id").select2({
-    placeholder: "Search for an existing user",
-    minimumInputLength: 3,
-    ajax: {
-        url: {% comment %}"{% url 'hospi.views.website_id_search' %}",{% endcomment %}
-        dataType: 'json',
-        quietMillis: 100,
-        data: function (term, page) { // page is the one-based page number tracked by Select2
-            return {
-                q: term, //search term
-                page_limit: 10, // page size
-                page: page, // page number
-                apikey: "ju6z9mjyajq2djue3gbvv26t" // please do not use so this example keeps working
-            };
-        },
-        results: function (data, page) {
-            //var more = (page * 10) < data.total; // whether or not there are more results available
+// $("#website_id").select2({
+//     placeholder: "Search for an existing user",
+//     minimumInputLength: 3,
+//     ajax: {
+//         url: {% comment %}"{% url 'hospi.views.website_id_search' %}",{% endcomment %}
+//         dataType: 'json',
+//         quietMillis: 100,
+//         data: function (term, page) { // page is the one-based page number tracked by Select2
+//             return {
+//                 q: term, //search term
+//                 page_limit: 10, // page size
+//                 page: page, // page number
+//                 apikey: "ju6z9mjyajq2djue3gbvv26t" // please do not use so this example keeps working
+//             };
+//         },
+//         results: function (data, page) {
+//             //var more = (page * 10) < data.total; // whether or not there are more results available
 
-            //console.log(data.movies)
-            // notice we return the value of more so Select2 knows if more results can be loaded
-            return {results: data};
-        }
-    },
-    formatResult: movieFormatResult, // omitted for brevity, see the source of this page
-    formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
-    dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
-    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
-});
+//             //console.log(data.movies)
+//             // notice we return the value of more so Select2 knows if more results can be loaded
+//             return {results: data};
+//         }
+//     },
+//     formatResult: movieFormatResult, // omitted for brevity, see the source of this page
+//     formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
+//     dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
+//     escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+// });
 
-/*$('td').each(function(i,e){
-  if($(this).html()=='Click to edit')
-    $(this).addClass('label').addClass('label-important')
-})
-$("input[name=value").change(function(){
-  $(this).parent().removeClass('label').removeClass('label-important')
-})*/
+// /*$('td').each(function(i,e){
+//   if($(this).html()=='Click to edit')
+//     $(this).addClass('label').addClass('label-important')
+// })
+// $("input[name=value").change(function(){
+//   $(this).parent().removeClass('label').removeClass('label-important')
+// })*/
 
-});
+// });
 
 </script>
 <script type="text/javascript">
@@ -451,4 +479,8 @@ $("input[name=value").change(function(){
             </div>
         </form>
         </div>
+    </div>
+
+    </div>
+    </div>
     </div>

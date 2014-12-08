@@ -313,11 +313,10 @@ def team_details(request, team_id):
     to_return = {
         'leader':leader,
         'bill_data':bill_data,
-        'addUserForm':SaarangUserForm(),
         'editable':editable,
         'team':team,
     }
-    return render(request, 'hospi/team_details.html', to_return)
+    return render(request, 'portals/hospi/team_details.html', to_return)
 
 @login_required
 def print_saar(request, team_id):

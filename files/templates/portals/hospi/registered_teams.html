@@ -19,7 +19,7 @@
   </thead>
   <tbody>
     {% for team in teams %}
-    <tr class="rowlink" onclick="Dajaxice.apps.portals.hospi.team_details(team_details,{'team_id':{{team.pk}}});" {% comment %}href="{% url 'hospi_details' team.pk %}"{% endcomment %} target="_blank" >
+    <tr class="rowlink" onclick="window.open('{% url 'hospi_team_details' team.pk %}');" {% comment %}href="{% url 'hospi_details' team.pk %}"{% endcomment %} target="_blank" >
       <td><span class="badge badge-{% if team.checked_in and not team.checked_out %}success{% elif team.checked_in and team.checked_out %}danger{% elif not team.checked_in and not team_checked_out %}inverse{% endif %}"><i class="icon-home icon-white"></i>{% if team.checked_in and not team.checked_out %} IN{% elif team.checked_in and team.checked_out %} OUT {% elif not team.checked_in and not team_checked_out %} ?{% endif %} </span></td>
       <td style="color:black">{{ team.team_sid }}</td>
       <td style="color:black">{{ team.name }}</td>

@@ -27,6 +27,8 @@
     <link href="{% static 'css/TableTools_JUI.css' %}" rel="stylesheet" media="screen">
     <link href="{% static 'css/select2.css' %}" rel="stylesheet">
   
+    <link href="{% static 'bootstrap/dataTables/bootstrap.css' %}">
+
     <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
     <!--<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js"></script>-->
 
@@ -101,34 +103,37 @@
 ==================================================--> 
 </div>
 <!-- Content begin -->
-        <div class="span12" id="content" class="maincontent" style="padding-top:inherit" >
-            <div id="list_all_teams"></div>
-            <div id="accomodation_statistics"></div>
-            <div id="div1">
-              <div id ="div2">
-                <div id = "add_hostel_room"></div>
-              </div>
-            </div>
-            <div id="room_map"></div>
-            
-            
-        </div>
-<!-- Content ends -->
-        </div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-12" id="content" class="maincontent" style="padding-top:60px;" >
+      <div id="list_all_teams"></div>
+      <div id="accomodation_statistics"></div>
+      <div id="div1">
+      <div id ="div2">
+        <div id = "add_hostel_room"></div>
+      </div>
+      </div>
+      <div id="room_map"></div>
     </div>
+  </div>
+</div>
+<!-- Content ends -->
 
 <!-- Copyright bar begin -->
-    <div class = "navbar navbar-fixed-bottom ">
+    <!-- <div class = "navbar navbar-fixed-bottom ">
       <div class="navbar-inner">
         <div class="container">
         <p class="text-center muted" style="padding-top:10px;">&copy; Copyright 2015 - Saarang WebOps Team</p></div>
       </div>
-    </div>
+    </div> -->
 <!-- Copyright bar ends -->
 
 <!-- JavaScripts begin -->
     <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap-rowlink.min.js' %}"></script>
+
+
+
     <script src="{% static 'js/jquery.dataTables.js' %}"></script>
     <script src="{% static 'js/TableTools.js' %}"></script>
     <script src="{% static 'js/ZeroClipboard.js' %}"></script>
@@ -139,6 +144,11 @@
     <script type="text/javascript" src="{% static 'js/jquery.jeditable.js' %}" ></script>
     <script type="text/javascript" src="{% static 'js/jquery.validate.js' %}" ></script>
     <script type="text/javascript" src="{% static 'js/jquery.dataTables.editable.js' %}" ></script>
+
+
+        <script src="{% static 'bootstrap/dataTables/bootstrap.js' %}"></script>
+
+
     <script type="text/javascript">
     function list_all_teams(data){
       document.getElementById("list_all_teams").innerHTML = data.html_content;
@@ -150,7 +160,21 @@
       document.getElementById("add_hostel_room_tab").className = "";
       document.getElementById("room_map_tab").className = "";
       document.getElementById("add_hostel_room_tab").className = "";
-      $('#hospitable').dataTable();
+      $('#hospitable').dataTable( {
+              "bJQueryUI": true,
+              "sPaginationType": "full_numbers",
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } );
     }
     function accomodation_statistics(data){
       document.getElementById("list_all_teams").innerHTML = "";
@@ -252,6 +276,14 @@
       alert("Done");
     }
     
+    </script>
+
+
+
+    <script type="text/javascript">
+        $(function(){
+          Dajaxice.apps.portals.hospi.list_all_teams(list_all_teams);
+        });
     </script>
     <!--<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce.min.js"></script>-->
     <!--<script type="text/javascript">

@@ -20,7 +20,7 @@ urlpatterns = patterns('',
 
     # For ERP
     # url(r'^admin/$', 'hospi.views.list_registered_teams', name='hospi_list_registered_teams'),
-    # url(r'^admin/details/(?P<team_id>\d+)/$', 'hospi.views.team_details', name='hospi_team_details'),
+    url(r'^admin/details/(?P<team_id>\d+)/$', 'apps.hospi.views.team_details', name='hospi_team_details'),
     # url(r'^admin/update/(?P<team_id>\d+)/$', 'hospi.views.update_status', name='hospi_update_status'),
     # url(r'^admin/statistics/$', 'hospi.views.statistics', name='hospi_statistics'),
     # url(r'^admin/add/$', 'hospi.views.add_hostel_rooms', name='hospi_add_hostel_rooms'),
