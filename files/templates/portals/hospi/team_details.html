@@ -77,7 +77,7 @@ a.danger
         <td style="text-align:center;">
 {% if editable %}
   <!--<a type="button" id="myPopover" onclick="$('#myPopover').popover();" class="btn btn-default" data-toggle="popover" data-html="true" data-placement="bottom" data-content="<form><label class='radio inline control-label'><input type='radio' name='status' value='not_req'><span class='label label-primary'>Not required</span></label><label class='radio inline'><input type='radio' name='status' value='requested'><span class='label label-info'>Pending</span></label><label class='radio inline'><input type='radio' name='status' value='confirmed'><span class='label label-success'>Confirm</span></label><label class='radio inline control-label'><input type='radio' name='status' value='waitlisted'><span class='label label-warning'>Waitlist</span></label><label class='radio inline control-label'><input type='radio' name='status' value='rejected'><span class='label label-danger'>Reject</span></label><hr/>Status once changed to Confirm or Reject cannot be reverted back<input type='button' onclick='Dajaxice.apps.portals.hospi.update_status(update_status,{'team_id':{{team.pk}}});'class='btn btn-small' value='Update '></input></form>" data-original-title="Update status" title="">-->
-  <a class="btn" role="button" data-toggle="modal" href="#changestatusModal">{% endif %}
+  <a class="btn" role="button" onclick="$('#changestatusModal').modal('show');" href="#">{% endif %}
     {% if team.accomodation_status == 'requested' %}
       <div class="btn btn-info">Pending for approval</div>
     {% elif team.accomodation_status == 'confirmed' %}
@@ -195,8 +195,22 @@ Members highlighted in red indicates people who have accommodation confirmed alr
   </div>
   <div class="modal-footer">
     <button class="btn" onclick="$('#checkinModal').modal('hide');" aria-hidden="true">Close</button>
-   
   </div>
+</div>
+
+
+<script type="text/javascript">
+  function init_change_status(team_id){
+    stat = document.querySelector('input[name="stat"]:checked').value;
+    //alert("Selected: "+stat);
+
+    Dajaxice.apps.portals.hospi.update_status(update_status, {'stat':stat, 'team_id':team_id});
+  }
+  function update_status(data){
+    alert("Done");
+    location.reload();
+  }
+</script>
 
 <div class="modal fade" id="changestatusModal" tabindex="-1" role="dialog" aria-labelledby="changestatusModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -206,25 +220,25 @@ Members highlighted in red indicates people who have accommodation confirmed alr
         <h4 class="modal-title" id="changestatusLabel">Change Accomodation Status</h4>
       </div>
       <div id = "changestatusModalBody" class="modal-body">
-        <div class="alert alert-info">
-          <form name="changestatusform" {% comment %}onsubmit="init_change_status(this)" {% endcomment %}>
+        <div style="padding-left:2em">
+          <form name="changestatusform" onsubmit="">
             <label class='radio inline control-label'>
-            <input type='radio' name='status' value='not_req'>
+            <input type='radio' name='stat' value='not_req'>
               <span class='label label-primary'>Not required</span>
             </label>
             <label class='radio inline'>
-              <input type='radio' name='status' value='requested'>
+              <input type='radio' name='stat' value='requested'>
               <span class='label label-info'>Pending</span>
             </label><label class='radio inline'>
-              <input type='radio' name='status' value='confirmed'>
+              <input type='radio' name='stat' value='confirmed'>
               <span class='label label-success'>Confirm</span>
             </label>
             <label class='radio inline control-label'>
-              <input type='radio' name='status' value='waitlisted'>
+              <input type='radio' name='stat' value='waitlisted'>
               <span class='label label-warning'>Waitlist</span>
             </label>
             <label class='radio inline control-label'>
-              <input type='radio' name='status' value='rejected'>
+              <input type='radio' name='stat' value='rejected'>
               <span class='label label-danger'>Reject</span>
             </label>
             <p>Status once changed to Confirm or Reject cannot be reverted back</p>
@@ -232,14 +246,13 @@ Members highlighted in red indicates people who have accommodation confirmed alr
         </div>
       </div>
       <div class="modal-footer">
-        <input type="button" type="Submit" id="change_status_save_button"class="btn btn-primary" onclick="$(this).val('Please wait');"value="Save"/>
+        <input type="Submit" id="change_status_save_button"class="btn btn-primary" onclick="$(this).val('Please wait');init_change_status({{team.pk}});"value="Save"/>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-</div>
 
 
 

@@ -258,23 +258,7 @@
     function team_details(data){
       document.getElementById("team_details").innerHTML = data.html_content;
     }
-    function init_change_status(frm){
-
-      var radioArray = frm.prep;
-      var i;
-      var value;
-
-      for (i=0; i < radioArray.length; i++){
-        if (radioArray[i].checked){
-          value = radioArray[i].value;
-          break;
-        }
-      }
-      {% comment %}Dajaxice.apps.portals.hospi.update_status(update_status,'stat':value, 'team_id':{{team.pk}});{% endcomment %}
-    }
-    function update_status(data){
-      alert("Done");
-    }
+    
     
     </script>
 

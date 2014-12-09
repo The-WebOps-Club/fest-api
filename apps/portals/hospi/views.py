@@ -11,7 +11,7 @@ import time, datetime
 
 # Create your views here.
 def auto_id(user_id):
-    base = 'SA14W'
+    base = 'SA15W'
     num = "{0:0>5d}".format(user_id)
     sid = base + num
     return sid
