@@ -262,7 +262,12 @@ class UserViewSet(viewsets.ViewSet):
         user = self.request.user
         user_ids = request.DATA.getlist('id[]', None)
         if self.request.user.is_superuser and user_ids: # Let superuser get all data
-            user = User.objects.get(id__in=user_ids)
+            user = User.objects.filter(id__in=user_ids)
+        else:
+            user_emails = request.DATA.getlist('email[]', None)
+            if self.request.user.is_superuser and user_emails:
+                user = User.objects.filter(email__in=user_emails)
+                
         return Response(viewset_response("done", UserInfoSerializer(user).data))
 
     def create(self, request):
