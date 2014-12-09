@@ -99,6 +99,7 @@ urlpatterns = patterns('',
     url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
     url(r'^portals/hospi/$','apps.portals.hospi.views.hospi_portal', name='hospi_portal' ),
     
+    
     # events portal
     url(r'^portals/events/$','apps.portals.events.views.add_tabs', name='events_portal'),
 

@@ -460,7 +460,8 @@ class Team(models.Model):
     
     def __unicode__(self):
         return str(self.name)
-
+        
     def get_total_count(self):
         mem = len(self.members.all())
         return mem
+

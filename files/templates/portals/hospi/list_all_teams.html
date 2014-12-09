@@ -4,7 +4,7 @@
 {% block title %}Hospitality | Saarang ERP{% endblock %}
 
 {% block content %}
-<legend>Teams registered <div class="pull-right"><a data-target="#addteamModal" href="{% url 'hospi.views.add_team' %}" class="btn btn-info" >Add new team</a></div></legend>
+<legend> <div class="pull-right"><a data-target="#addteamModal" href="{% url 'hospi.views.add_team' %}" class="btn btn-info" >Add new team</a></div></legend>
 <table id="datatable">
         <thead>
             <tr>
@@ -20,10 +20,10 @@
             {% for team in teams %}
                 <tr class="rowlink" data-target="#teamdetailsModal" href="{% url 'hospi.views.team_details' team.pk %}" >
                     <td><span class="badge badge-{% if team.checked_status == 'in' %}success{% else %}inverse{% endif %}"><i class="icon-home icon-white"></i>{% if team.checked_status == 'in' %} IN{% else %} OUT{% endif %} </span></td>
-                    <td>{{ team.team_sid }}</td>
-                    <td>{{ team.name }}</td>
-                    <td>{{ team.leader }}</td>
-                    <td>{{ team.get_total_count }}</td>
+                    <td style="color:black">{{ team.team_sid }}</td>
+                    <td style="color:black">{{ team.name }}</td>
+                    <td style="color:black">{{ team.leader }}</td>
+                    <td style="color:black">{{ team.get_total_count }}</td>
                     <td>
                         {% if team.accomodation_status == 'requested' %}
                             <span class="label label-info">Pending for approval</span>

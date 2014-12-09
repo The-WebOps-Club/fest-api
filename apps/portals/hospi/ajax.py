@@ -2,11 +2,16 @@
 from django.template import RequestContext
 from django.template.loader import render_to_string
 import json
+from apps.users.forms import UserProfileForm
 from apps.hospi.models import HospiTeam, Hostel, Room, Allotment, HospiLog
 from apps.hospi.forms import HostelForm, RoomForm, HospiTeamForm
 from dajaxice.decorators import dajaxice_register
 from dajaxice.utils import deserialize_form
 from django.shortcuts import get_object_or_404
+from apps.hospi import utility as u
+from django.contrib import messages
+
+from post_office import mail
 
 @dajaxice_register
 def list_all_teams(request):
@@ -204,9 +209,68 @@ def adding_team(request,form_add_team):			#By Balaji
         teamform.save()
         message = "Successfully added"
     else:
-        message = "Some error occured. Please contact webops"
+        message = "Some error occured. Please fill the form again. If problem persists, contact webops Team."
 
     return json.dumps({'message':message})
+
+@dajaxice_register
+def team_details(request, team_id):
+    team = get_object_or_404(HospiTeam, pk=team_id)
+    edit_list = ['confirmed', 'rejected']
+    leader = team.leader
+    bill_data = u.bill(team.date_of_arrival, team.time_of_arrival, team.date_of_departure, team.time_of_departure, team.get_total_count())
+    if team.accomodation_status in edit_list:
+        editable = False
+    else:
+        editable=True
+    to_return = {
+        'leader':leader,
+        'bill_data':bill_data,
+        'addUserForm':UserProfileForm(),
+        'editable':editable,
+        'team':team,
+    }
+    html_content = render_to_string('portals/hospi/team_details.html', to_return , RequestContext(request))
+    return json.dumps({'html_content':html_content})
+
+@dajaxice_register
+def update_status(request, stat, team_id):
+    team = get_object_or_404(HospiTeam, pk=team_id)
+    if team.members.filter(email=team.leader.email):
+        team.members.remove(team.leader)
+        messages.warning(request, 'For '+ team.name + ' : ' + team.team_sid +', Team leader found in members list also. Successfully removed!')
+    if stat:
+        if stat == 'confirmed':
+            team.leader.accomod_is_confirmed = True
+            team.leader.save()
+            for member in team.members.all():
+                if member.accomod_is_confirmed == False:
+                    member.accomod_is_confirmed = True
+                    member.save()
+                else:
+                    team.members.remove(member)
+            team.save()
+            a=Allotment.objects.create(team=team, alloted_by=request.user)
+            a.save()
+        team.accomodation_status = stat
+        team.save()
+        messages.success(request, 'Status for '+team.name+' successfully updated to '+stat)
+        emailsubject='Accommodation request '+stat+', Saarang 2015'
+        users=[]
+        for user in team.get_all_members():
+            users.append(user.user.email)
+        if stat == 'confirmed':
+            mail.send(
+                users, template='confirm_accommodation.email',
+                context={'team':team,}
+                )
+        else:
+            mail.send(
+                users, template='status_update.email',
+                context={'status':stat, 'team':team,}
+                )
+		
+    return json.dumps({'stat':stat})
 
 @dajaxice_register
 def registered_teams(request):

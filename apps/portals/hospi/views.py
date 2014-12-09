@@ -6,11 +6,12 @@ from django.core.exceptions import PermissionDenied
 from misc.utils import *
 #from itertools import chain
 from django.conf import settings
+from apps.hospi import utility as u
 import time, datetime
 
 # Create your views here.
 def auto_id(user_id):
-    base = 'SA14W'
+    base = 'SA15W'
     num = "{0:0>5d}".format(user_id)
     sid = base + num
     return sid
@@ -52,6 +53,25 @@ def hospi_portal(request):
     }
     
     return render_to_response('portals/hospi/hospi_portal.html', local_context, context_instance= global_context(request))
+'''
+def team_details(request, team_id):
+    team = get_object_or_404(HospiTeam, pk=team_id)
+    edit_list = ['confirmed', 'rejected']
+    leader = team.leader
+    bill_data = u.bill(team.date_of_arrival, team.time_of_arrival, team.date_of_departure, team.time_of_departure, team.get_total_count())
+    if team.accomodation_status in edit_list:
+        editable = False
+    else:
+        editable=True
+    to_return = {
+        'leader':leader,
+        'bill_data':bill_data,
+        'addUserForm':SaarangUserForm(),
+        'editable':editable,
+        'team':team,
+    }
+    return render(request, 'portals/hospi/team_details.html', to_return)
+    '''
 '''
 # Create your views here.
 from django.http import HttpResponseRedirect, HttpResponse, Http404

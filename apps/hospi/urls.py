@@ -20,7 +20,7 @@ urlpatterns = patterns('',
 
     # For ERP
     # url(r'^admin/$', 'hospi.views.list_registered_teams', name='hospi_list_registered_teams'),
-    # url(r'^admin/details/(?P<team_id>\d+)/$', 'hospi.views.team_details', name='hospi_team_details'),
+    url(r'^admin/details/(?P<team_id>\d+)/$', 'apps.hospi.views.team_details', name='hospi_team_details'),
     # url(r'^admin/update/(?P<team_id>\d+)/$', 'hospi.views.update_status', name='hospi_update_status'),
     # url(r'^admin/statistics/$', 'hospi.views.statistics', name='hospi_statistics'),
     # url(r'^admin/add/$', 'hospi.views.add_hostel_rooms', name='hospi_add_hostel_rooms'),
@@ -47,7 +47,7 @@ urlpatterns = patterns('',
 
     # url(r'^admin/split/(?P<team_id>\d+)/$', 'hospi.views.split_team', name='hospi_split_team'),
     # url(r'^admin/print/(?P<team_id>\d+)/$', 'hospi.views.print_bill', name='hospi_print_bill'),
-    # url(r'^admin/print_saar/(?P<team_id>\d+)/$', 'hospi.views.print_saar', name='hospi_print_saar'),
+    url(r'^admin/print_saar/(?P<team_id>\d+)/$', 'apps.hospi.views.print_saar', name='hospi_print_saar'),
     # url(r'^admin/delete/(?P<room_id>\d+)/$', 'hospi.views.delete_room', name='hospi_delete_room'),
 
     )
