@@ -63,7 +63,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 def link_callback(uri, rel):
     # use short variable names
     sUrl = settings.STATIC_URL      # Typically /static/
-    sRoot = settings.STATIC_ROOT    # Typically /home/userX/project_static/
+    sRoot = settings.STAT    # Typically /home/userX/project_static/
     mUrl = settings.MEDIA_URL       # Typically /static/media/
     mRoot = settings.MEDIA_ROOT     # Typically /home/userX/project_static/media/
 

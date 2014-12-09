@@ -1,3 +1,4 @@
+{% load url from future %}
 <style type="text/css">
 .widemodal{
   width: 1200px;
@@ -19,12 +20,12 @@
   </thead>
   <tbody>
     {% for team in teams %}
-    <tr class="rowlink" onclick="window.open('{% url 'hospi_team_details' team.pk %}');" {% comment %}href="{% url 'hospi_details' team.pk %}"{% endcomment %} target="_blank" >
+    <tr class="rowlink" onclick="window.open('{% url 'apps.hospi.views.team_details' team.pk %}');" {% comment %}href="{% url 'hospi_details' team.pk %}"{% endcomment %} target="_blank" >
       <td><span class="badge badge-{% if team.checked_in and not team.checked_out %}success{% elif team.checked_in and team.checked_out %}danger{% elif not team.checked_in and not team_checked_out %}inverse{% endif %}"><i class="icon-home icon-white"></i>{% if team.checked_in and not team.checked_out %} IN{% elif team.checked_in and team.checked_out %} OUT {% elif not team.checked_in and not team_checked_out %} ?{% endif %} </span></td>
       <td style="color:black">{{ team.team_sid }}</td>
       <td style="color:black">{{ team.name }}</td>
-      <td style="color:black">{{ team.leader.name }}</td>
-      <td style="color:black">{{ team.leader.mobile }}</td>
+      <td style="color:black">{{ team.leader.user.get_full_name }}</td>
+      <td style="color:black">{{ team.leader.mobile_number }}</td>
       <td style="color:black">{{ team.get_total_count }}</td>
       <td>
         {% if team.accomodation_status == 'requested' %}
@@ -32,7 +33,7 @@
         {% elif team.accomodation_status == 'confirmed' %}
         <span class="label label-success">Confirmed</span>
         {% elif team.accomodation_status == 'not_req' %}
-        <span class="label">Not required</span>
+        <span class="label" style="color:black">Not required</span>
         {% elif team.accomodation_status == 'waitlisted' %}
         <span class="label label-warning">Waitlisted</span>
         {% elif team.accomodation_status == 'rejected' %}

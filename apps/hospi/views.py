@@ -18,9 +18,11 @@ import datetime
 from django.views.decorators.csrf import csrf_exempt
 from apps.users.models import UserProfile, Team
 from apps.events.models import EventRegistration
+from django.views.decorators.cache import never_cache
 ####################################################################
 # Mainsite Views
 
+@never_cache
 def prehome(request):
     if not request.user.is_authenticated():
         return render(request, 'portals/hospi/login.html', locals())
@@ -82,6 +84,7 @@ def details(request, team_id):
     request.session['current_team'] = team.pk
     return redirect('hospi_home', team_id=team.pk)
     
+@never_cache
 def home(request, team_id):
     user = request.user.profile
     if not user.profile_is_complete():
