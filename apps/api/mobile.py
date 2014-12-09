@@ -260,14 +260,20 @@ class UserProfileViewSet(viewsets.ViewSet):
 class UserViewSet(viewsets.ViewSet):
     def list(self, request):
         user = self.request.user
-        user_ids = request.DATA.getlist('id[]', None)
-        if self.request.user.is_superuser and user_ids: # Let superuser get all data
-            user = User.objects.filter(id__in=user_ids)
+        user_id = request.GET.get('id', None)
+        # try:
+        if self.request.user.is_superuser and user_id:
+            user = User.objects.get(id=user_id)
+            print "User id found ! ", user.id
         else:
-            user_emails = request.DATA.getlist('email[]', None)
-            if self.request.user.is_superuser and user_emails:
-                user = User.objects.filter(email__in=user_emails)
-                
+            user_email = request.GET.get('email', None)
+            if self.request.user.is_superuser and user_email:
+                user = User.objects.get(email=user_email)
+                print "User email found ! ", [u.email for i in users]
+        # except:
+        #     return Response({
+        #         "message": "Invalid input data - maybe we got multiple possible accounts for the data you gave."
+        #     }, status=status.HTTP_400_BAD_REQUEST);
         return Response(viewset_response("done", UserInfoSerializer(user).data))
 
     def create(self, request):
