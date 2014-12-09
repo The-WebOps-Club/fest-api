@@ -47,7 +47,7 @@ urlpatterns = patterns('',
 
     # url(r'^admin/split/(?P<team_id>\d+)/$', 'hospi.views.split_team', name='hospi_split_team'),
     # url(r'^admin/print/(?P<team_id>\d+)/$', 'hospi.views.print_bill', name='hospi_print_bill'),
-    # url(r'^admin/print_saar/(?P<team_id>\d+)/$', 'hospi.views.print_saar', name='hospi_print_saar'),
+    url(r'^admin/print_saar/(?P<team_id>\d+)/$', 'apps.hospi.views.print_saar', name='hospi_print_saar'),
     # url(r'^admin/delete/(?P<room_id>\d+)/$', 'hospi.views.delete_room', name='hospi_delete_room'),
 
     )

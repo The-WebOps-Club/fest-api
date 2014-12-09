@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 {% load url from future %}
-{% load dajaxice_templatetags %}
-{% dajaxice_js_import %}
+
 {% load humanize %}
 <html lang="en">
 
@@ -14,6 +13,9 @@
     <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
 
     <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+    {% load dajaxice_templatetags %}
+    {% dajaxice_js_import %}
 </head>
 <body>
 <div class="container">
@@ -73,7 +75,7 @@ a.danger
         <td rowspan=2><strong><h1>{{team.name}}</h1></strong></td>
         <td>{{ team.team_sid }}</td>
         <td style="text-align:center;">{{ team.time_of_arrival|title }} on {{ team.date_of_arrival }} -to- </td>
-        <td style="text-align:center;"><a href="#addAccomodationModal" role="button" class="btn btn-danger" data-toggle="modal">Change time</a></td>
+        <td style="text-align:center;"><a href="#addAccomodationModal" role="button" disabled class="btn btn-danger" data-toggle="modal">Change time</a></td>
         <td style="text-align:center;">
 {% if editable %}
   <!--<a type="button" id="myPopover" onclick="$('#myPopover').popover();" class="btn btn-default" data-toggle="popover" data-html="true" data-placement="bottom" data-content="<form><label class='radio inline control-label'><input type='radio' name='status' value='not_req'><span class='label label-primary'>Not required</span></label><label class='radio inline'><input type='radio' name='status' value='requested'><span class='label label-info'>Pending</span></label><label class='radio inline'><input type='radio' name='status' value='confirmed'><span class='label label-success'>Confirm</span></label><label class='radio inline control-label'><input type='radio' name='status' value='waitlisted'><span class='label label-warning'>Waitlist</span></label><label class='radio inline control-label'><input type='radio' name='status' value='rejected'><span class='label label-danger'>Reject</span></label><hr/>Status once changed to Confirm or Reject cannot be reverted back<input type='button' onclick='Dajaxice.apps.portals.hospi.update_status(update_status,{'team_id':{{team.pk}}});'class='btn btn-small' value='Update '></input></form>" data-original-title="Update status" title="">-->
@@ -97,12 +99,12 @@ a.danger
         <td>{{ team.city }} - {{ team.leader.college }}</td>
         <td style="text-align:center;">{{ team.time_of_departure|title }} on {{ team.date_of_departure }} </td>
         <td style="text-align:center;">{% if team.accomodation_status == 'confirmed' and not team.checked_in and not team.checked_out %}
-<a {% comment %}href="{% url 'hospi.views.check_in_team' team.pk %}"{% endcomment %} data-target="#checkinModal" class="btn btn-success"><i class="icon-home"></i> Check-in</a>
+<a disabled {% comment %}href="{% url 'hospi.views.check_in_team' team.pk %}"{% endcomment %} data-target="#checkinModal" class="btn btn-success"><i class="icon-home"></i> Check-in</a>
 {% elif team.accomodation_status == 'confirmed' and team.checked_in and not team.checked_out %}
 <a {% comment %}href="{% url 'hospi.views.check_out_team' team.pk %}"{% endcomment %} data-target="#checkoutModal" class="btn btn-danger require-alert"><i class="icon-home"></i> Check-out</a>
 {% endif %}</td>
-<td><a class='btn btn-info' target="_blank" {% comment %} href="{% url 'hospi.views.print_bill' team.pk %}" {% endcomment %} >Print bill</a></td>
-<td><a class='btn btn-info' target="_blank" {% comment %} href="{% url 'hospi.views.print_saar' team.pk %}" {% endcomment %}>Print SAAR</a></td>
+<td><a disabled class='btn btn-info' target="_blank" {% comment %} href="{% url 'hospi.views.print_bill' team.pk %}" {% endcomment %} >Print bill</a></td>
+<td><a class='btn btn-info' target="_blank"  href="{% url 'apps.hospi.views.print_saar' team.pk %}" >Print SAAR</a></td>
     </tr>
 </table>
 <table class="table table-bordered" id="bill" >
@@ -133,8 +135,11 @@ a.danger
 </div>
 </div>
 
-<div class="alert alert-info">
-<strong>Total {{ team.get_total_count }} members. ( {{ team.get_male_count }} males and {{ team.get_female_count }} females )</strong><div class="buttonPlaceholder pull-right"><button id='btnAddNewRow' class='btn btn-primary' href='#adduserModal' data-toggle='modal'>Add new member</button></div>
+<div class="panel panel-info">
+<div class="panel-heading">
+<strong>Total {{ team.get_total_count }} members. ( {{ team.get_male_count }} males and {{ team.get_female_count }} females )</strong><div class="buttonPlaceholder pull-right"><button disabled id='btnAddNewRow' class='btn btn-warning btn-xs' href='#adduserModal' data-toggle='modal'>Add new member</button></div>
+</div>
+<div class="panel-body">
 <table class="member_data table table-borderless">
   <thead>
     <th>N</th>
@@ -155,24 +160,24 @@ a.danger
       <td><a href="#">{{ team.leader.saarang_id }}</a></td>
       <td>{{ team.leader.desk_id }}</td>
       <td>{{ team.leader.gender|title }}</td>
-      <td>{{ team.leader.email }}</td>
-      <td>{{ team.leader.name }}</td>
-      <td>{{ team.leader.mobile }}</td>
-      <td>{{ team.leader.college_id }}</td>
-      <td>{{ team.leader.college }}</td>
+      <td>{{ team.leader.user.email }}</td>
+      <td>{{ team.leader.user.get_full_name }}</td>
+      <td>{{ team.leader.mobile_number }}</td>
+      <td>{{ team.leader.college_roll }}</td>
+      <td>{{ team.leader.college_text }}</td>
     </tr>
     {% for member in team.members.all %}
-    <tr id="{{member.id}}" {% if member.accomod_is_confirmed and team.accomodation_status != 'confirmed' %}class="error"{% endif %} >
+    <tr id="{{member.id}}" {% if member.accomod_is_confirmed and team.accomodation_status != 'confirmed' %}class="danger"{% endif %} >
       <td>{{ forloop.counter|add:1 }}</td>
-      <td><a class="table-action-deletelink btn btn-danger btn-mini" {% comment %}href="{% url 'hospi.views.del_member' team.id %}"{% endcomment %}><i class='icon-remove-circle icon-white'></i></a></td>
+      <td><a disabled class="table-action-deletelink btn btn-danger btn-xs" {% comment %}href="{% url 'hospi.views.del_member' team.id %}"{% endcomment %}>&times;</a></td>
       <td><a href="#">{{ member.saarang_id }}</a></td>
       <td>{{ member.desk_id }}</td>
       <td>{{ member.gender|title }}</td>
-      <td>{{ member.email }}</td>
-      <td>{{ member.name }}</td>
-      <td>{{ member.mobile }}</td>
-      <td>{{ member.college_id }}</td>
-      <td>{{ member.college }}</td>
+      <td>{{ member.user.email }}</td>
+      <td>{{ member.user.get_full_name }}</td>
+      <td>{{ member.mobile_number }}</td>
+      <td>{{ member.college_roll }}</td>
+      <td>{{ member.college_text }}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -182,7 +187,7 @@ a.danger
 
 Members highlighted in red indicates people who have accommodation confirmed already in other teams. They will be automatically removed upon confirmation of this team. (Leader has been pre-notified)
 </div>
-
+</div>
 </center>
   
 <div id="checkinModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="checkinModalLabel" aria-hidden="true">

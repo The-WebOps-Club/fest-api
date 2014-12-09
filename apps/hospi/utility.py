@@ -49,7 +49,7 @@ def bill(in_date, in_time, out_date, out_time, n):
     }
 
 
-#from xhtml2pdf import pisa
+from xhtml2pdf import pisa
 import os
 from django.conf import settings
 from django.http import HttpResponse
@@ -63,7 +63,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 def link_callback(uri, rel):
     # use short variable names
     sUrl = settings.STATIC_URL      # Typically /static/
-    sRoot = settings.STAT           # Typically /home/userX/project_static/
+    sRoot = settings.STATIC_ROOT    # Typically /home/userX/project_static/
     mUrl = settings.MEDIA_URL       # Typically /static/media/
     mRoot = settings.MEDIA_ROOT     # Typically /home/userX/project_static/media/
 
@@ -83,7 +83,7 @@ def link_callback(uri, rel):
                     (sUrl, mUrl))
 
     return path
-'''
+
 def generate_pdf(request, team_id):
     # Prepare context
     team = get_object_or_404(HospiTeam, pk=team_id)
@@ -148,4 +148,4 @@ def checkout_bill(request, team_id):
     response =  HttpResponse(pdf, mimetype='application/pdf')
     # response['Content-Disposition'] = "attachment; filename='Bill_"+team.team_sid+"_Saarang2014.pdf'"
     return response
-'''
+
