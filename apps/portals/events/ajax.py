@@ -273,13 +273,15 @@ def display_add_event_slot(request):
 	slot_start=""
 	slot_end=""
 	slot_comment=""
+	slot_venue=""
 	slot_array = EventSchedule.objects.all()
 	for slot in slot_array:
 		slot_event=slot_event+slot.event.name+"|"
 		slot_start=slot_start+str(slot.slot_start)+"|"
 		slot_end=slot_end+str(slot.slot_end)+"|"
 		slot_comment=slot_comment+ str(slot.comment) + "|" 
-	return json.dumps({'form':form, 'slot_comment':slot_comment, 'slot_event': slot_event,'slot_start':slot_start,'slot_end':slot_end})
+		slot_venue=slot_venue + str(slot.venue) + "|"
+	return json.dumps({'form':form, 'slot_venue':slot_venue, 'slot_comment':slot_comment, 'slot_event': slot_event,'slot_start':slot_start,'slot_end':slot_end})
 
 @dajaxice_register    
 def add_slot(request,slot_form):

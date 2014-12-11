@@ -463,11 +463,12 @@ function event_slot(data){
     slot_start_array=(data.slot_start).split("|");
     slot_end_array=(data.slot_end).split("|");
     slot_comment_array=(data.slot_comment).split("|");
+    slot_venue_array=(data.slot_venue).split("|");
     len=slot_event_array.length
-    text='<br /><br /><br /><br /><b>EVENT SLOTS :<b><br /><br /><br /><br /><table id="slottableid"><thead><tr><th>Event </th> <th> Slot Start </th> <th> Slot End </th><th> Comment </th></tr></thead>';
+    text='<br /><br /><br /><br /><b>EVENT SLOTS :<b><br /><br /><br /><br /><table id="slottableid"><thead><tr><th>Event </th> <th> Slot Start </th> <th> Slot End </th><th> Comment </th><th> Venue </th></tr></thead>';
     for (i=0;i<len-1;i++)
         {
-        text=text+'<tr><td><b>'+slot_event_array[i]+'&nbsp &nbsp</b></td><td> '+slot_start_array[i]+'</td><td> '+slot_end_array[i]+'</td><td> '+slot_comment_array[i]+'</td></tr>'
+        text=text+'<tr><td><b>'+slot_event_array[i]+'&nbsp &nbsp</b></td><td> '+slot_start_array[i]+'</td><td> '+slot_end_array[i]+'</td><td> '+slot_comment_array[i]+'</td><td> '+slot_venue_array[i]+'</td></tr>'
         }
     text=text+'</table>';
     document.getElementById("view_slot_table").innerHTML=text;
