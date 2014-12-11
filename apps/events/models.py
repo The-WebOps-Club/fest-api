@@ -157,3 +157,15 @@ class EventRegistration(models.Model):
     
     def __unicode__(self):
         return str(self.users_registered) +' - '+ str(self.event)
+
+class EventSchedule(models.Model):
+    """
+        each slot for an event will have a fields
+    """
+    event            = models.ForeignKey(Event, related_name='event_slot')
+    slot_start       = models.DateTimeField(null=True, blank=True)
+    slot_end         = models.DateTimeField(null=True, blank=True)
+    comment          = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return str(self.event)

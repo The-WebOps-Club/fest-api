@@ -15,7 +15,10 @@ from django.conf import settings
 #models
 from django.contrib.auth.models import User
 from apps.users.models import ERPProfile, UserProfile, Dept, Subdept, Team
-from apps.events.models import EventTab, Event
+from apps.events.models import EventTab, Event, EventSchedule
+
+from apps.portals.events.forms import AddSlotForm
+
 #dajaxice stuff
 from dajaxice.utils import deserialize_form
 
@@ -261,3 +264,36 @@ def participant_info(request,participant_name,team_name):
 		temp['email']=str(participant.email)
 		data.append(temp)
 	return json.dumps({'inf':data,'len':len(data),})	
+
+
+@dajaxice_register
+def display_add_event_slot(request):
+	form = AddSlotForm().as_table()
+	slot_event=""
+	slot_start=""
+	slot_end=""
+	slot_comment=""
+	slot_array = EventSchedule.objects.all()
+	for slot in slot_array:
+		slot_event=slot_event+slot.event.name+"|"
+		slot_start=slot_start+str(slot.slot_start)+"|"
+		slot_end=slot_end+str(slot.slot_end)+"|"
+		slot_comment=slot_comment+ str(slot.comment) + "|" 
+	return json.dumps({'form':form, 'slot_comment':slot_comment, 'slot_event': slot_event,'slot_start':slot_start,'slot_end':slot_end})
+
+@dajaxice_register    
+def add_slot(request,slot_form):
+	message="Your form has the following errors <br>"
+	slot_form = AddSlotForm(deserialize_form(slot_form))
+	if slot_form.is_valid():
+		slot_form.save()
+		message="successfully added event"
+	else:
+		for field in slot_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"<br>"
+
+	return json.dumps({'message': message})		
+
+
+
