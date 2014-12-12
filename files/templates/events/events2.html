@@ -180,6 +180,10 @@ Use this to add an image for the event. This has to be done separately. Make sur
 </table>
 <p><input type="submit" class="btn" value="submit" ></p>
 </form>
+<div id="edit_event_slot">
+
+</div>
+
 </div>
 
 
@@ -470,7 +474,7 @@ function event_slot(data){
         {
         text=text+'<tr><td><b>'+slot_event_array[i]+'&nbsp &nbsp</b></td><td> '+slot_start_array[i]+'</td><td> '+slot_end_array[i]+'</td><td> '+slot_comment_array[i]+'</td><td> '+slot_venue_array[i]+'</td></tr>'
         }
-    text=text+'</table>';
+    text=text+'</table><br /><br /><br /><br /><br />';
     document.getElementById("view_slot_table").innerHTML=text;
     $('#add_slot_form').html("<b>ADD SLOTS FOR EVENTS :</b><br /><br />" + "<table>"+data.form+"</table>");
     document.getElementById("option_selected").style.display='none';
@@ -608,7 +612,22 @@ function edit_event_details_js(data){
     $('#edit_event_form_dyn').html("<table>"+data.form+"</table>");
     $('#id_event_id').val(data.event_id);
     $('#event-image').attr('src',(data.image_source));
-    console.log(data.event_id)
+    var i,len,text;
+    slot_id_array=(data.slot_id).split("|");
+    slot_start_array=(data.slot_start).split("|");
+    slot_end_array=(data.slot_end).split("|");
+    slot_comment_array=(data.slot_comment).split("|");
+    slot_venue_array=(data.slot_venue).split("|");
+    len=data.length_count
+    text='<br /><br /><br /><br /><b>EVENT SLOTS :<b><br /><br /><br /><br /><table id="eventslottable"><thead><tr><th> Slot Start </th> <th> Slot End </th><th> Venue </th><th> Comment </th><th></th></tr></thead>';
+    for (i=0;i<len;i++)
+        {
+        text=text+'<tr><<td> '+slot_start_array[i]+'</td><td> '+slot_end_array[i]+'</td><td> '+slot_venue_array[i]+'</td><td> '+slot_comment_array[i]+'</td><td><button class = "btn small danger pull-right" type="button" onclick="Dajaxice.apps.portals.events.delete_slot(delete_slot_js, {\'slot_id\':'+slot_id_array[i]+'});return false;">X</button></td></tr>'
+        }
+    text=text+'</table><br /><br /><br /><br /><br />';
+    $('#edit_event_slot').val(text);
+    document.getElementById("edit_event_slot").innerHTML = text;
+    console.log(slot_start_array)
     document.getElementById("edit_event_form_div").style.display = 'inline';
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
@@ -642,7 +661,11 @@ $(document).ready(function(){
 $('#tableid').dataTable();
 });
 
+function delete_slot_js(data){
 
+toastr.success(data.message);
+$( "#edit_event_clickable" ).trigger( "click" );
+}
 
 
 

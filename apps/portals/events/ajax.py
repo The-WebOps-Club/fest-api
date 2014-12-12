@@ -142,7 +142,27 @@ def edit_event_details(request,event_name):
 		image_source= str(event_object.event_image.url)
 	except Exception,e:
 		image_source=""
-	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'event_id':event_id,'image_source':image_source})
+	
+	slot_id=""
+	slot_start=""
+	slot_end=""
+	slot_comment=""
+	slot_venue=""
+
+	try:
+		event_slots= EventSchedule.objects.filter(event=event_object)
+		for slot in event_slots:
+			slot_id=slot_id+str(slot.id)+"|"
+			slot_start=slot_start+((slot.slot_start).strftime('%c'))+"|"
+			slot_end=slot_end+((slot.slot_end).strftime('%c'))+"|"
+			slot_comment=slot_comment+ str(slot.comment) + "|" 
+			slot_venue=slot_venue + str(slot.venue) + "|"
+		length= len(event_slots)
+		print length
+	except Exception,e:
+		pass
+	print event_slots
+	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'event_id':event_id,'image_source':image_source, 'slot_venue':slot_venue, 'slot_comment':slot_comment, 'slot_start':slot_start,'slot_end':slot_end, 'length_count':length, 'slot_id':slot_id})
     
     
 @dajaxice_register
@@ -277,8 +297,8 @@ def display_add_event_slot(request):
 	slot_array = EventSchedule.objects.all()
 	for slot in slot_array:
 		slot_event=slot_event+slot.event.name+"|"
-		slot_start=slot_start+str(slot.slot_start)+"|"
-		slot_end=slot_end+str(slot.slot_end)+"|"
+		slot_start=slot_start+((slot.slot_start).strftime('%c'))+"|"
+		slot_end=slot_end+((slot.slot_end).strftime('%c'))+"|"
 		slot_comment=slot_comment+ str(slot.comment) + "|" 
 		slot_venue=slot_venue + str(slot.venue) + "|"
 	return json.dumps({'form':form, 'slot_venue':slot_venue, 'slot_comment':slot_comment, 'slot_event': slot_event,'slot_start':slot_start,'slot_end':slot_end})
@@ -297,5 +317,14 @@ def add_slot(request,slot_form):
 
 	return json.dumps({'message': message})		
 
+@dajaxice_register    
+def delete_slot(request,slot_id):
+	message="successfully Deleted slot"
+	try:
+		slot=EventSchedule.objects.get(id=int(slot_id))
+		slot.delete()
+	except Exception, e:
+		message="no such slot exists"
+	return json.dumps({'message': message})
 
 
