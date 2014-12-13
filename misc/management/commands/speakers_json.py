@@ -11,7 +11,7 @@ class Command(BaseCommand):
     """
         Generate the JSON for Google IO android app    
     """
-    help = 'Generate the JSON required by Saarang Android app'
+    help = 'Generate the JSON required by Saarang Android app Speakers'
 
     def handle(self, arg=None, **options):
 
@@ -186,7 +186,7 @@ class Command(BaseCommand):
                 print data
                 speakers_list.append(data)
         final["speakers"] = speakers_list
-        android_file = os.path.abspath(os.path.join(data_root, "android.json"))
+        android_file = os.path.abspath(os.path.join(data_root, "speakers.json"))
 
         with open(android_file, 'w') as outfile:
             json.dump(final, outfile)
