@@ -49,6 +49,8 @@ CKEDITOR.replace('long_description');
 <button type="button" id="viewid" onclick="Dajaxice.apps.portals.events.view_edit_event(view_edit_event_js);return false;" class="btn  primary">View/Edit Event</button> 
 <button type="button" onclick="event_registration_list();return false;" class="btn primary">View Event Registration List</button> 
 
+<button type="button" onclick="Dajaxice.apps.portals.events.display_add_event_slot(event_slot);return false;" class="btn primary">Add Event Slot</button> 
+
 <br />
 <br />
 <div id="option_selected">
@@ -146,7 +148,16 @@ Description: <textarea id="tab_Description_input" name="edit_taB_description"></
 </div>
 
 
-
+<div id="slot_form_div" style="display:none;">
+<form action="" method="post" id="slot_form" accept-charset="utf-8" enctype="multipart/form-data">
+{%  csrf_token %}
+<div id="add_slot_form">
+</div>
+<p><input type="button" class="btn success" onclick="Dajaxice.apps.portals.events.add_slot(add_slot_js, {'slot_form':$('#slot_form').serialize(true)});return false;" value="Add Slot"/></p>
+</form>
+<div id="view_slot_table">
+</div>
+</div>
 
 
 <!--EDIT EVENT FORM use some inintialize in ajax.py to add initial values and then serialize the form before sending it-->
@@ -169,6 +180,10 @@ Use this to add an image for the event. This has to be done separately. Make sur
 </table>
 <p><input type="submit" class="btn" value="submit" ></p>
 </form>
+<div id="edit_event_slot">
+
+</div>
+
 </div>
 
 
@@ -384,7 +399,7 @@ function view_edit_event_js(data){
     document.getElementById("delete_tab_button").innerHTML = ' ';
     document.getElementById("selected_event_tab").innerHTML = ' ';
     document.getElementById("event_tabs_description").innerHTML = ' ';
-    
+    document.getElementById("slot_form_div").style.display = 'none';
 }
 
 
@@ -418,6 +433,7 @@ $("select[name=coords]").select2();
     
     //making the add event form visible
     document.getElementById("event_form_div").style.display = 'inline';
+    document.getElementById("slot_form_div").style.display = 'none';
 }
 
 
@@ -440,8 +456,49 @@ function event_registration_list(){
     
     //make the add_event_form disappear
     document.getElementById("event_form_div").style.display = 'none';
+    document.getElementById("slot_form_div").style.display = 'none';    
 }
 
+
+
+function event_slot(data){
+    var i,len,text;
+    slot_event_array=(data.slot_event).split("|");
+    slot_start_array=(data.slot_start).split("|");
+    slot_end_array=(data.slot_end).split("|");
+    slot_comment_array=(data.slot_comment).split("|");
+    slot_venue_array=(data.slot_venue).split("|");
+    len=slot_event_array.length
+    text='<br /><br /><br /><br /><b>EVENT SLOTS :<b><br /><br /><br /><br /><table id="slottableid"><thead><tr><th>Event </th> <th> Slot Start </th> <th> Slot End </th><th> Comment </th><th> Venue </th></tr></thead>';
+    for (i=0;i<len-1;i++)
+        {
+        text=text+'<tr><td><b>'+slot_event_array[i]+'&nbsp &nbsp</b></td><td> '+slot_start_array[i]+'</td><td> '+slot_end_array[i]+'</td><td> '+slot_comment_array[i]+'</td><td> '+slot_venue_array[i]+'</td></tr>'
+        }
+    text=text+'</table><br /><br /><br /><br /><br />';
+    document.getElementById("view_slot_table").innerHTML=text;
+    $('#add_slot_form').html("<b>ADD SLOTS FOR EVENTS :</b><br /><br />" + "<table>"+data.form+"</table>");
+    document.getElementById("option_selected").style.display='none';
+    $('#slottableid').dataTable();
+    //making data from the other tabs disappear
+    document.getElementById("edit_tab_form").style.display='none';
+    document.getElementById("add_new_tab_form").style.display = 'none';
+    document.getElementById("registration_tab").innerHTML = ' '; 
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_list").innerHTML = '';
+    document.getElementById("edit_event_form_div").style.display = 'none';
+    // this set has the additional 2 statements that is not there in most of the other set of commands of this type
+    document.getElementById("event_name").innerHTML = ' ';
+    document.getElementById("event_tabs").innerHTML = ' ';
+    
+    //make the add_event_form disappear
+    document.getElementById("event_form_div").style.display = 'none';
+    document.getElementById("slot_form_div").style.display = 'inline';
+    jQuery("input[name=slot_start]" ).datetimepicker({format:'m/d/Y H:i'});
+    jQuery("input[name=slot_end]" ).datetimepicker({format:'m/d/Y H:i'});
+}
 
 
 function add_event_js(data){
@@ -458,6 +515,20 @@ function add_event_js(data){
     }
     
 }
+
+function add_slot_js(data){
+    
+    if (data.message[0]=='s')
+    {
+    toastr.success(data.message);
+    document.getElementById("slot_form_div").style.display = 'none';
+    }
+    else {
+        toastr.warning(data.message);
+    }
+    
+}
+
 
 //events_registration list
 function reg_list_js(data){
@@ -541,7 +612,22 @@ function edit_event_details_js(data){
     $('#edit_event_form_dyn').html("<table>"+data.form+"</table>");
     $('#id_event_id').val(data.event_id);
     $('#event-image').attr('src',(data.image_source));
-    console.log(data.event_id)
+    var i,len,text;
+    slot_id_array=(data.slot_id).split("|");
+    slot_start_array=(data.slot_start).split("|");
+    slot_end_array=(data.slot_end).split("|");
+    slot_comment_array=(data.slot_comment).split("|");
+    slot_venue_array=(data.slot_venue).split("|");
+    len=data.length_count
+    text='<br /><br /><br /><br /><b>EVENT SLOTS :<b><br /><br /><br /><br /><table id="eventslottable"><thead><tr><th> Slot Start </th> <th> Slot End </th><th> Venue </th><th> Comment </th><th></th></tr></thead>';
+    for (i=0;i<len;i++)
+        {
+        text=text+'<tr><<td> '+slot_start_array[i]+'</td><td> '+slot_end_array[i]+'</td><td> '+slot_venue_array[i]+'</td><td> '+slot_comment_array[i]+'</td><td><button class = "btn small danger pull-right" type="button" onclick="Dajaxice.apps.portals.events.delete_slot(delete_slot_js, {\'slot_id\':'+slot_id_array[i]+'});return false;">X</button></td></tr>'
+        }
+    text=text+'</table><br /><br /><br /><br /><br />';
+    $('#edit_event_slot').val(text);
+    document.getElementById("edit_event_slot").innerHTML = text;
+    console.log(slot_start_array)
     document.getElementById("edit_event_form_div").style.display = 'inline';
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
@@ -575,7 +661,11 @@ $(document).ready(function(){
 $('#tableid').dataTable();
 });
 
+function delete_slot_js(data){
 
+toastr.success(data.message);
+$( "#edit_event_clickable" ).trigger( "click" );
+}
 
 
 

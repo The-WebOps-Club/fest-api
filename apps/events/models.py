@@ -28,6 +28,8 @@ import select2.models
 import select2.forms
 
 
+EVENT_VENUES=settings.EVENT_VENUES
+
 if FEST_NAME=='Saarang':
 	EVENT_CATEGORIES = settings.EVENT_CATEGORIES
 else:
@@ -157,3 +159,15 @@ class EventRegistration(models.Model):
     
     def __unicode__(self):
         return str(self.users_registered) +' - '+ str(self.event)
+
+class EventSchedule(models.Model):
+    """
+        each slot for an event will have a fields
+    """
+    event            = models.ForeignKey(Event, related_name='event_slot')
+    slot_start       = models.DateTimeField(null=True, blank=True)
+    slot_end         = models.DateTimeField(null=True, blank=True)
+    comment          = models.TextField(null=True, blank=True)
+    venue            = models.CharField(max_length=100, choices=EVENT_VENUES)
+    def __unicode__(self):
+        return str(self.event)

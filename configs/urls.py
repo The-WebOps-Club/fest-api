@@ -111,6 +111,9 @@ urlpatterns = patterns('',
     url(r'^social_login/$','apps.users.views.social_login', name='social_login'),
     url(r'^logout_user/$','apps.users.views.logout_user', name='logout_user'), 
 
+    # Facebook
+    url(r'^fb/opc/$','apps.fb.views.opc', name='facebook_opc'), 
+
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
 
