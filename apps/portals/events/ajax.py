@@ -158,10 +158,8 @@ def edit_event_details(request,event_name):
 			slot_comment=slot_comment+ str(slot.comment) + "|" 
 			slot_venue=slot_venue + str(slot.venue) + "|"
 		length= len(event_slots)
-		print length
 	except Exception,e:
 		pass
-	print event_slots
 	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'event_id':event_id,'image_source':image_source, 'slot_venue':slot_venue, 'slot_comment':slot_comment, 'slot_start':slot_start,'slot_end':slot_end, 'length_count':length, 'slot_id':slot_id})
     
     
@@ -275,7 +273,6 @@ def participant_info(request,participant_name,team_name):
 			temp['email']=str(members[i].email)
 			data.append(temp)
 	except Exception, e:
-		print e
 		temp={}
 		data=[]
 		participant = User.objects.get(username=participant_name)
