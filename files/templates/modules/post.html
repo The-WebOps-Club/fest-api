@@ -19,7 +19,8 @@
 			{{ notification.verb }}
 			<a href="{% url 'wall' post.wall.id %}" class="bold">{{ post.wall }}</a>'s Wall
 			<span class="muted small">
-				{{ notification.timestamp|naturaltime }}
+				{%comment%}{{ notification.timestamp|naturaltime }}{%endcomment%}
+				{{ notification.timestamp }}
 			</span>
 		</div>
 		{% endif %}
@@ -44,7 +45,8 @@
 				<a href="{% url 'wall' post.wall.id %}">{{ post.wall }}</a>'s wall. 
 
 				<span class="muted small">
-					{{ post.time_created|naturaltime }}
+					{%comment%}{{ post.time_created|naturaltime }}{%endcomment%}
+					{{ post.time_created }}
 				</span>
 
 			</div>
