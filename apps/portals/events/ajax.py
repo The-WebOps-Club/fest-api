@@ -1,6 +1,7 @@
 # For simple dajax(ice) functionalities
 from django.utils import simplejson
 import json
+from pytz import timezone
 import unicodedata
 from dajaxice.decorators import dajaxice_register
 
@@ -153,8 +154,8 @@ def edit_event_details(request,event_name):
 		event_slots= EventSchedule.objects.filter(event=event_object)
 		for slot in event_slots:
 			slot_id=slot_id+str(slot.id)+"|"
-			slot_start=slot_start+((slot.slot_start).strftime('%c'))+"|"
-			slot_end=slot_end+((slot.slot_end).strftime('%c'))+"|"
+			slot_start=slot_start+((slot.slot_start).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
+			slot_end=slot_end+((slot.slot_end).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
 			slot_comment=slot_comment+ str(slot.comment) + "|" 
 			slot_venue=slot_venue + str(slot.venue) + "|"
 		length= len(event_slots)
@@ -297,8 +298,8 @@ def display_add_event_slot(request):
 	slot_array = EventSchedule.objects.all()
 	for slot in slot_array:
 		slot_event=slot_event+slot.event.name+"|"
-		slot_start=slot_start+((slot.slot_start).strftime('%c'))+"|"
-		slot_end=slot_end+((slot.slot_end).strftime('%c'))+"|"
+		slot_start=slot_start+((slot.slot_start).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
+		slot_end=slot_end+((slot.slot_end).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
 		slot_comment=slot_comment+ str(slot.comment) + "|" 
 		slot_venue=slot_venue + str(slot.venue) + "|"
 	return json.dumps({'form':form, 'slot_venue':slot_venue, 'slot_comment':slot_comment, 'slot_event': slot_event,'slot_start':slot_start,'slot_end':slot_end})
