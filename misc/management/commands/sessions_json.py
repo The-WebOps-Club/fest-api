@@ -7,6 +7,8 @@ from apps.walls.models import Wall, Post, Comment
 import json
 import os
 from django.conf import settings
+import random
+r = lambda: random.randint(0,255)
 
 class Command(BaseCommand):
     """
@@ -27,15 +29,17 @@ class Command(BaseCommand):
         sessions_list = []
         events = Event.objects.all()
         for event in events:
+            color = '#%02X%02X%02X' % (r(),r(),r())
             data = {
                 "title": event.name,
-                "description": event.long_description,
+                "description": " ".join(" ".join(event.long_description.split("\n")).split("\r")),
                 "photoUrl": settings.SITE_URL + 'media/'+str(event.event_image),
-                "url": settings.MAIN_SITE_URL + 'events/'+"".join(event.category.lower().split(" "))+"/"+event.name,
+                "url": settings.MAIN_SITE + '2015/main/events/'+"".join(event.category.lower().split(" "))+"/"+event.name,
                 "startTimestamp":"",
                 "endTimestamp":"",
                 "id": "".join(event.category.split(" ")).lower()+"_"+"".join(event.name.split(" ")).lower(),
-                "room":""
+                "room":"",
+                "color": color
             }
             i=0
             speakers=[]
