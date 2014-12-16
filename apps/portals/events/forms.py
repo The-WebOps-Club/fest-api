@@ -1,6 +1,6 @@
 from django import forms
 from django.db import models
-from apps.events.models import Event, EventSchedule
+from apps.events.models import Event, EventSchedule, EventWinner
 from apps.users.models import ERPProfile
 import select2.fields
 
@@ -19,3 +19,8 @@ class ImageEventForm(forms.Form):
 class AddSlotForm(forms.ModelForm):
 	class Meta:
 		model = EventSchedule
+
+class EventWinnerForm(forms.ModelForm):
+    class Meta:
+        model=EventWinner
+        fields=('event','position','comment','user')

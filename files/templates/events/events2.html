@@ -51,6 +51,8 @@ CKEDITOR.replace('long_description');
 
 <button type="button" onclick="Dajaxice.apps.portals.events.display_add_event_slot(event_slot);return false;" class="btn primary">Add Event Slot</button> 
 
+<button type="button" onclick="Dajaxice.apps.portals.events.display_add_event_winner(event_winner);return false;" class="btn primary">Add Event Winner</button> 
+
 <br />
 <br />
 <div id="option_selected">
@@ -183,9 +185,20 @@ Use this to add an image for the event. This has to be done separately. Make sur
 <div id="edit_event_slot">
 
 </div>
+<div id="edit_event_winner">
 
 </div>
 
+</div>
+
+<div id="winner_form_div" style="display:none;">
+<form action="" method="post" id="winner_form" accept-charset="utf-8" enctype="multipart/form-data">
+{%  csrf_token %}
+<div id="add_winner_form">
+</div>
+<p><input type="button" class="btn success" onclick="Dajaxice.apps.portals.events.add_winner(add_winner_js, {'winner_form':$('#winner_form').serialize(true)});return false;" value="Add Winner"/></p>
+</form>
+</div>
 
 
 
@@ -406,6 +419,7 @@ function view_edit_event_js(data){
 function add_new_event(data){
    
     document.getElementById("option_selected").innerHTML = '<h2>ADD NEW EVENT</h2>';
+
     //part of the fix for the html editor
     document.getElementById("edit_event_form_dyn").innerHTML = ' ';
     $('#add_events_form').html("<table>"+data.form+"</table>");
@@ -434,6 +448,7 @@ $("select[name=coords]").select2();
     //making the add event form visible
     document.getElementById("event_form_div").style.display = 'inline';
     document.getElementById("slot_form_div").style.display = 'none';
+    document.getElementById("winner_form_div").style.display = 'none';
 }
 
 
@@ -457,6 +472,7 @@ function event_registration_list(){
     //make the add_event_form disappear
     document.getElementById("event_form_div").style.display = 'none';
     document.getElementById("slot_form_div").style.display = 'none';    
+    document.getElementById("winner_form_div").style.display = 'none';
 }
 
 
@@ -496,10 +512,33 @@ function event_slot(data){
     //make the add_event_form disappear
     document.getElementById("event_form_div").style.display = 'none';
     document.getElementById("slot_form_div").style.display = 'inline';
+    document.getElementById("winner_form_div").style.display = 'none';
     jQuery("input[name=slot_start]" ).datetimepicker({format:'m/d/Y H:i'});
     jQuery("input[name=slot_end]" ).datetimepicker({format:'m/d/Y H:i'});
 }
 
+function event_winner(data){
+    $('#add_winner_form').html("<b>ADD WINNERS FOR EVENTS :</b><br /><br />" + "<table>"+data.form+"</table>");
+    document.getElementById("option_selected").style.display='none';
+    //making data from the other tabs disappear
+    document.getElementById("edit_tab_form").style.display='none';
+    document.getElementById("add_new_tab_form").style.display = 'none';
+    document.getElementById("registration_tab").innerHTML = ' '; 
+    document.getElementById("edit_tab_div").innerHTML = ' ';
+    document.getElementById("delete_tab_button").innerHTML = ' ';
+    document.getElementById("selected_event_tab").innerHTML = ' ';
+    document.getElementById("event_tabs_description").innerHTML = ' ';
+    document.getElementById("event_list").innerHTML = '';
+    document.getElementById("edit_event_form_div").style.display = 'none';
+    // this set has the additional 2 statements that is not there in most of the other set of commands of this type
+    document.getElementById("event_name").innerHTML = ' ';
+    document.getElementById("event_tabs").innerHTML = ' ';
+    
+    //make the add_event_form disappear
+    document.getElementById("event_form_div").style.display = 'none';
+    document.getElementById("winner_form_div").style.display = 'inline';
+    document.getElementById("slot_form_div").style.display = 'none';
+}
 
 function add_event_js(data){
     
@@ -529,6 +568,19 @@ function add_slot_js(data){
     
 }
 
+function add_winner_js(data){
+    
+    if (data.message[0]=='s')
+    {
+    toastr.success(data.message);
+    document.getElementById("winner_form_div").style.display = 'none';
+    }
+    else {
+        toastr.warning(data.message);
+    }
+    
+}
+
 
 //events_registration list
 function reg_list_js(data){
@@ -544,6 +596,7 @@ function reg_list_js(data){
     document.getElementById("event_list").innerHTML = ' ';
     document.getElementById("option_selected").innerHTML = ' ';
     document.getElementById("edit_event_form_div").style.display = 'none';
+    document.getElementById("winner_form_div").style.display = 'none';
     
     //filling the text variable
     user_names_array=data.user_names.split("|");
@@ -626,6 +679,23 @@ function edit_event_details_js(data){
         }
     text=text+'</table><br /><br /><br /><br /><br />';
     $('#edit_event_slot').val(text);
+
+
+    winner_id_array=(data.winner_id).split("|");
+    winner_position_array=(data.winner_position).split("|");
+    winner_comment_array=(data.winner_comment).split("|");
+    winner_added_by_array=(data.winner_added_by).split("|");
+    winner_user_array=(data.winner_user).split("|");
+    leng=data.length_count_winner
+    textwinner='<br /><br /><br /><br /><b>EVENT WINNERS :<b><br /><br /><br /><br /><table id="eventwinnertable"><thead><tr><th> Winner </th> <th> Position </th><th> Added By </th><th> Comment </th><th></th></tr></thead>';
+    for (i=0;i<leng;i++)
+        {
+        textwinner=textwinner+'<tr><<td> '+winner_user_array[i]+'</td><td> '+winner_position_array[i]+'</td><td> '+winner_added_by_array[i]+'</td><td> '+winner_comment_array[i]+'</td><td><button class = "btn small danger pull-right" type="button" onclick="Dajaxice.apps.portals.events.delete_winner(delete_winner_js, {\'winner_id\':'+winner_id_array[i]+'});return false;">X</button></td></tr>'
+        }
+    textwinner=textwinner+'</table><br /><br /><br /><br /><br />';
+    $('#edit_event_winner').val(text);
+    document.getElementById("edit_event_winner").innerHTML = textwinner;
+
     document.getElementById("edit_event_slot").innerHTML = text;
     console.log(slot_start_array)
     document.getElementById("edit_event_form_div").style.display = 'inline';
@@ -640,6 +710,7 @@ function edit_event_details_js(data){
     document.getElementById("event_list").innerHTML = '';
     
     document.getElementById("add_new_tab_form").style.display = 'none';
+    document.getElementById("winner_form_div").style.display = 'none';
     
 
     //Printing the previous values
@@ -667,6 +738,11 @@ toastr.success(data.message);
 $( "#edit_event_clickable" ).trigger( "click" );
 }
 
+function delete_winner_js(data){
+
+toastr.success(data.message);
+$( "#edit_event_clickable" ).trigger( "click" );
+}
 
 
 
