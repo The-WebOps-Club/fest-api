@@ -90,9 +90,10 @@ urlpatterns = patterns('',
     
     # events portal
     url(r'^portals/events/$','apps.portals.events.views.add_tabs', name='events_portal'),
-
+	#finance portal
     url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
-
+	#qms portal
+	url(r'^portals/qms/$','apps.portals.qms.views.qms_portal', name='qms_portal' ),
     # Participant - Login/registration
     url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
     url(r'^participant_login/$','apps.users.views.participant_login', name='participant_login'),

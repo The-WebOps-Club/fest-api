@@ -1,0 +1,74 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+{% load dajaxice_templatetags %}
+{% dajaxice_js_import %}
+{%  csrf_token %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
+
+<!-- Latest compiled and minified JavaScript -->
+
+<!-- Static files for the datatables
+<link href="{% static 'css/datatable.css' %}" rel="stylesheet" media="screen">
+<link href="{% static 'js/datatable.js' %}" rel="stylesheet" media="screen">
+-->
+
+
+
+
+
+<h1>QMS Portal</h1>
+
+<!-- Top Level Tabs -->
+<p id="message"> </p> </br>
+<button type="button" onclick="" class="btn primary">Add New User</button> 
+<button type="button" id="viewid" onclick="" class="btn  primary">Add New Team</button> 
+<button type="button" onclick="" class="btn primary">Register User Or Team</button> 
+<br />
+<br />
+
+<!-- Main Content Div Container -->
+<div id="add_user_div">
+<!-- Clear Form Button -->
+        <div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class='btn btn-danger'>Clear form</a></div>
+        
+        
+<br />
+<br />
+
+<!--Add User Form -->
+
+<form>
+        {% csrf_token %}
+		{{userform.as_p }}
+		{{userprofileform.as_p }}
+       <input type="button" value="Save" onclick="Dajaxice.apps.portals.qms.add_user(add_user_js)"/>
+</form>
+
+</div>
+
+<!-- Javascript functions-->
+<script type="text/javascript">
+//CLEAR FORM
+function clearForm() {
+        $('#id_first_name').val('')
+        $('#id_last_name').val('')
+        $('#id_email').val('')
+        $('#id_dob').val('')
+        $('#id_mobile_number').val('')
+        $('#id_college').val('')
+        $('#id_gender').val('')
+        $('#id_branch').val('')
+        $('#id_college_roll').val('')
+        $('#id_school_student').val('')
+        $('#id_want_accomodation').val('')
+    }
+    
+function add_user_js(data){
+	alert(data.message);
+}   
+    
+    
+</script>
+{% endblock content %}

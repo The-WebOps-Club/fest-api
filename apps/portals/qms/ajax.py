@@ -30,7 +30,13 @@ def hello(request):
     """
         Used for testing Dajaxice
     """
+
     #html_content = render_to_string("dash/task_tables/coord_you.html", query_dictionary, RequestContext(request))
     return json.dumps({'message': 'hello'})
 
-########## FOR ADMIN PORTAL #######################
+
+@dajaxice_register    
+def add_user(request):
+	print "ypppppppppppppppppppppppppppppppp"
+	return json.dumps({'message': 'message'})
+

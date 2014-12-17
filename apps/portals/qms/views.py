@@ -1,11 +1,18 @@
 from django.shortcuts import render
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+
 from apps.walls.models import Wall
-from apps.users.models import ERPProfile, Dept, Subdept, Page
+from apps.users.models import ERPProfile, Dept, Subdept, Page,UserProfile
+from django.contrib.auth.models import User
+
+from apps.users.forms import LoginForm,UserProfileForm,UserForm
+
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from misc.utils import *
 from itertools import chain
-
+#
 # Create your views here.
 def erp_analytics(request):
     """
@@ -33,3 +40,10 @@ def erp_analytics(request):
            
     }
     return render_to_response('portals/general/admin_portal.html', local_context, context_instance= global_context(request))
+    
+@login_required   
+def qms_portal(request):
+    user_form = UserForm()
+    user_profile_form = UserProfileForm()
+    to_return={'userform':user_form,'userprofileform':user_profile_form}
+    return render(request, 'portals/qms/qms.html', to_return)
