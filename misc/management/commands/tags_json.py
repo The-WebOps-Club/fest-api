@@ -7,6 +7,7 @@ from apps.walls.models import Wall, Post, Comment
 import json
 import os
 from django.conf import settings
+r = lambda: random.randint(0,255)
 
 class Command(BaseCommand):
     """
@@ -44,11 +45,12 @@ class Command(BaseCommand):
         for sname,name in categories:
             print sname, name
             j+=1
+            color = '#%02X%02X%02X' % (r(),r(),r())
             tags_list.append(
                 {
                     "category": "TOPIC",
                     "name": name,
-                    "color": "#607d8b",
+                    "color": color,
                     "abstract": "",
                     "tag": "TOPIC_"+sname.upper(),
                     "original_id": "id-"+sname.upper,
