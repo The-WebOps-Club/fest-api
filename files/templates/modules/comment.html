@@ -57,9 +57,11 @@
 		        <a href="{% url 'profile' comment.by.id %}" class="bold">{{ comment.by.get_full_name }}</a> 
 		        <span class="news_comment_info">
 		            {% if comment.time_updated == comment.time_created %}
-		            	commented {{ comment.time_created|naturaltime }} 
+		            	{%comment%}commented {{ comment.time_created|naturaltime }} {%endcomment%}
+		            	commented {{ comment.time_created }} 
 		            {% else %}
-		            	edited {{ comment.time_updated|naturaltime }}
+		            	{%comment%}edited {{ comment.time_updated|naturaltime }}{%endcomment%}
+		            	edited {{ comment.time_updated }}
 		            {% endif %}
 		        </span>
 		        <span style="font-size : 11px" class="comment_small_bar">
