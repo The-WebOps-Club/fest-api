@@ -102,7 +102,7 @@ def home(request, team_id):
     if team.accomodation_status != 'confirmed':
         for member in members:
             if member.accomod_is_confirmed:
-                msg += member.email +', '
+                msg += str(member.email) +', '
         if msg:
             messages.warning(request, msg + ': These members already have accommodation \
                 confirmed in other team. Please remove them, or they will be automatically \

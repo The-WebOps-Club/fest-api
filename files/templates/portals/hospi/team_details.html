@@ -251,7 +251,7 @@ Members highlighted in red indicates people who have accommodation confirmed alr
         </div>
       </div>
       <div class="modal-footer">
-        <input type="Submit" id="change_status_save_button"class="btn btn-primary" onclick="$(this).val('Please wait');init_change_status({{team.pk}});"value="Save"/>
+        <input type="Submit" id="change_status_save_button"class="btn btn-primary" onclick="$(this).val('Please wait').attr('disabled','disabled');init_change_status({{team.pk}});"value="Save"/>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
