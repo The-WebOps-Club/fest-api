@@ -199,7 +199,7 @@ def add_team(request):
     return json.dumps({'html_content':html_content})
 
 @dajaxice_register
-def adding_team(request,form_add_team):			#By Balaji
+def adding_team(request,form_add_team):
 
     teamform=HospiTeamForm(deserialize_form(form_add_team))
     message = ""

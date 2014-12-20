@@ -17,6 +17,7 @@ from post_office import mail
 import datetime
 from django.views.decorators.csrf import csrf_exempt
 from apps.users.models import UserProfile, Team
+from apps.hospi.forms import UserProfileForm
 from apps.events.models import EventRegistration
 ####################################################################
 # Mainsite Views
@@ -313,6 +314,7 @@ def team_details(request, team_id):
     to_return = {
         'leader':leader,
         'bill_data':bill_data,
+        'addUserForm':UserProfileForm(),
         'editable':editable,
         'team':team,
     }
@@ -707,7 +709,7 @@ def update_member(request):
 def add_member(request,team_id):
     team = HospiTeam.objects.get(pk=team_id)
     if request.method == 'POST':
-        userform =SaarangUserForm(request.POST)
+        userform =UserProfileForm(request.POST)
         print request.POST
         if userform.is_valid():
             user = userform.save()
@@ -719,10 +721,10 @@ def add_member(request,team_id):
             user.save()
             team.members.add(user)
             team.save()
-            mail.send(
+            '''mail.send(
                 [user.email], template='email/main/activate_confirm',
                 context={'saarang_id':user.saarang_id, 'password':user.password}
-            )
+            )'''
             messages.success(request, 'User added successfully')
         else:
             print "Invalid"
@@ -744,10 +746,10 @@ def del_member(request, team_id):
 def website_id_search(request):
     data=request.GET.copy()
     user_list = []
-    users_id = SaarangUser.objects.filter(saarang_id__contains=data['q'].upper())[:10]
-    users_email = SaarangUser.objects.filter(email__contains=data['q'].lower())[:10]
-    users_name = SaarangUser.objects.filter(name__contains=data['q'])[:10]
-    users_mobile = SaarangUser.objects.filter(mobile__contains=data['q'])[:10]
+    users_id = UserProfile.objects.filter(saarang_id__contains=data['q'].upper())[:10]
+    users_email = UserProfile.objects.filter(email__contains=data['q'].lower())[:10]
+    users_name = UserProfile.objects.filter(name__contains=data['q'])[:10]
+    users_mobile = UserProfile.objects.filter(mobile__contains=data['q'])[:10]
     for user in users_id:
         user_list.append({"id":user.id,'sid':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile })
     for user in users_email:

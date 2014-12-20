@@ -12,8 +12,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/select2.js' %}"></script>
 
     <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/select2.css' %}" rel="stylesheet">
 </head>
 <body>
 <div class="container">
@@ -73,7 +75,7 @@ a.danger
         <td rowspan=2><strong><h1>{{team.name}}</h1></strong></td>
         <td>{{ team.team_sid }}</td>
         <td style="text-align:center;">{{ team.time_of_arrival|title }} on {{ team.date_of_arrival }} -to- </td>
-        <td style="text-align:center;"><a href="#addAccomodationModal" role="button" class="btn btn-danger" data-toggle="modal">Change time</a></td>
+        <td style="text-align:center;"><a href="#" role="button" class="btn btn-danger" onclick="$('#addAccomodationModal').modal('show');$(this).val('Please wait');$('#change_status_save_button').val('Save Changes');">Change Date/time</a></td>
         <td style="text-align:center;">
 {% if editable %}
   <!--<a type="button" id="myPopover" onclick="$('#myPopover').popover();" class="btn btn-default" data-toggle="popover" data-html="true" data-placement="bottom" data-content="<form><label class='radio inline control-label'><input type='radio' name='status' value='not_req'><span class='label label-primary'>Not required</span></label><label class='radio inline'><input type='radio' name='status' value='requested'><span class='label label-info'>Pending</span></label><label class='radio inline'><input type='radio' name='status' value='confirmed'><span class='label label-success'>Confirm</span></label><label class='radio inline control-label'><input type='radio' name='status' value='waitlisted'><span class='label label-warning'>Waitlist</span></label><label class='radio inline control-label'><input type='radio' name='status' value='rejected'><span class='label label-danger'>Reject</span></label><hr/>Status once changed to Confirm or Reject cannot be reverted back<input type='button' onclick='Dajaxice.apps.portals.hospi.update_status(update_status,{'team_id':{{team.pk}}});'class='btn btn-small' value='Update '></input></form>" data-original-title="Update status" title="">-->
@@ -134,7 +136,7 @@ a.danger
 </div>
 
 <div class="alert alert-info">
-<strong>Total {{ team.get_total_count }} members. ( {{ team.get_male_count }} males and {{ team.get_female_count }} females )</strong><div class="buttonPlaceholder pull-right"><button id='btnAddNewRow' class='btn btn-primary' href='#adduserModal' data-toggle='modal'>Add new member</button></div>
+<strong>Total {{ team.get_total_count }} members. ( {{ team.get_male_count }} males and {{ team.get_female_count }} females )</strong><div class="buttonPlaceholder pull-right"><button id='btnAddNewRow' class='btn btn-primary' onclick="$('#adduserModal').modal('show');$('#add_existing_user_button').val('Add User');$('#add_new_user_button').val('Save and Add to Team');">Add new member</button></div>
 <table class="member_data table table-borderless">
   <thead>
     <th>N</th>
@@ -272,59 +274,63 @@ $("a[data-target=#checkinModal]").click(function(event) {
 </script> 
 {% endif %}
 
-
-<div id="adduserModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="adduserModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" onclick="$('#adduserModal').modal('hide');" aria-hidden="true">×</button>
-    <h3 id="adduserModalLabel">Add</h3>
-  </div>
-  <div class="modal-body">
-    <form class='form-horizontal' {% comment %}action="{% url 'hospi.views.add_user_to_team' %}"{% endcomment %} method='POST' id='existing_member' >
-      {% csrf_token %}
-      <div class="control-group website_id">
-                  <input id='website_id' class='input input-block-level' type='text' name='website_id' />
+<div class="modal fade" id="adduserModal" tabindex="-1" role="dialog" aria-labelledby="adduserModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="adduserLabel">Change Accomodation Status</h4>
       </div>
-      <div id="user_info"></div>
-      <input type="hidden" name="team_id" value="{{team.pk}}" />
-      <input type='submit' name='submit' value='add user' class='btn btn-info btn-block'>
-    </form>
-    <form class='form-horizontal' method='POST' id='new_member' {% comment %} action="{% url 'hospi.views.add_member' team.id %}" {% endcomment %}>
-      <legend>new user</legend>
-      {% csrf_token %}
-        {{ addUserForm.media }}
-        {% if addUserForm.errors %}
+      <div class="modal-body">
+        <form class='form-horizontal' {% comment %}action="{% url 'hospi.views.add_user_to_team' %}"{% endcomment %} method='POST' id='existing_member' >
+        {% csrf_token %}
+        <div class="control-group website_id">
+          <input id='website_id' class='input input-block-level' type='text' name='website_id' />
+        </div>
+        <div id="user_info"></div>
+          <input type="hidden" name="team_id" value="{{team.pk}}" />
+          <input id = "add_existing_user_button" type="button" name='submit' value='Add User' onclick="$(this).val('Please wait');" class='btn btn-info btn-block'>
+        </form>
+        <form class='form-horizontal' method='POST' id='new_member' action="{% url 'hospi_add_member' team.id %}">
+          <legend>new user</legend>
+            {% csrf_token %}
+            {{ addUserForm.media }}
+            {% if addUserForm.errors %}
             <div class="alert alert-error">
-                <ul>
-                    {% for error in addUserForm.non_field_errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
+              <ul>
+                {% for error in addUserForm.non_field_errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
             </div>
-        {% endif %}
-        {% for field in addUserForm.visible_fields %}
+            {% endif %}
+            {% for field in addUserForm.visible_fields %}
             <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
             <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
-                <div class="controls"> {{ field }}
-                    {% if field.errors %}
-                        <span class="help-inline">
-                            {{ field.errors.as_text }}
-                        </span>
-                    {% endif %} 
-                </div>
+              <div class="controls"> {{ field }}
+                {% if field.errors %}
+                <span class="help-inline">
+                  {{ field.errors.as_text }}
+                </span>
+                {% endif %} 
+              </div>
             </div>
-        {% endfor %}
-        {% for field in addUserForm.hidden_fields %}
-            {{ field }}
-        {% endfor %}
-  <input type="hidden" name="team_id" value="{{team.pk}}" />
-  <input type='submit' class='btn btn-success btn-block' value='Save and add to team' name='submit'>
-</form>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" onclick="$('#adduserModal').modal('hide');" aria-hidden="true">Close</button>
-   
+            {% endfor %}
+            {% for field in addUserForm.hidden_fields %}
+                {{ field }}
+            {% endfor %}
+            <input type="hidden" name="team_id" value="{{team.pk}}" />
+            <input id="add_new_user_button" type="button" class='btn btn-success btn-block' onclick="$(this).val('Please wait');" value='Save and Add to Team' name='submit'>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
+
+
 
 
 
@@ -406,35 +412,34 @@ $("a[data-target=#checkinModal]").click(function(event) {
 //     function movieFormatSelection(user) {
 //         return user.sid;
 //     }
-
-// $("#website_id").select2({
-//     placeholder: "Search for an existing user",
-//     minimumInputLength: 3,
-//     ajax: {
-//         url: {% comment %}"{% url 'hospi.views.website_id_search' %}",{% endcomment %}
-//         dataType: 'json',
-//         quietMillis: 100,
-//         data: function (term, page) { // page is the one-based page number tracked by Select2
-//             return {
-//                 q: term, //search term
-//                 page_limit: 10, // page size
-//                 page: page, // page number
-//                 apikey: "ju6z9mjyajq2djue3gbvv26t" // please do not use so this example keeps working
-//             };
-//         },
-//         results: function (data, page) {
-//             //var more = (page * 10) < data.total; // whether or not there are more results available
-
-//             //console.log(data.movies)
-//             // notice we return the value of more so Select2 knows if more results can be loaded
-//             return {results: data};
-//         }
-//     },
-//     formatResult: movieFormatResult, // omitted for brevity, see the source of this page
-//     formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
-//     dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
-//     escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
-// });
+//  $("#website_id").select2();
+/*$("#website_id").select2({
+    placeholder: "Search for an existing user",
+    minimumInputLength: 3,
+    ajax: {
+        url: "{% url 'hospi_website_id_search' %}",  //Url located in apps.hospi
+        dataType: 'json',
+        quietMillis: 100,
+        data: function (term, page) { // page is the one-based page number tracked by Select2
+            return {
+                q: term, //search term
+                page_limit: 10, // page size
+                page: page, // page number
+                apikey: "ju6z9mjyajq2djue3gbvv26t" // please do not use so this example keeps working
+            };
+        },
+        results: function (data, page) {
+            //var more = (page * 10) < data.total; // whether or not there are more results available
+            //console.log(data.movies)
+            // notice we return the value of more so Select2 knows if more results can be loaded
+            return {results: data};
+        }
+    },
+    formatResult: movieFormatResult, // omitted for brevity, see the source of this page
+    formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
+    dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+});*/
 
 // /*$('td').each(function(i,e){
 //   if($(this).html()=='Click to edit')
@@ -453,13 +458,16 @@ $("a[data-target=#checkinModal]").click(function(event) {
   });
 </script>
 
-<div id="addAccomodationModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addAccomodationLabel" aria-hidden="true">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+<div class="modal fade" id="addAccomodationModal" tabindex="-1" role="dialog" aria-labelledby="addAccomodationLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 id="addAccomodationLabel">Change accomodation details for team: {{ team.name }}</h4>
-    </div>
-    <div class="modal-body">
-        <form {% comment %}action="{% url 'hospi.views.add_accomodation' %}"{% endcomment %} method="post" id="add_form">
+      </div>
+      <div id = "addAccomodationModalBody" class="modal-body">
+          <form action="{% url 'hospi_portal_add_accomodation' team.pk %}" method="post" id="change_time_form">
 
             {% csrf_token %}
             <table id="mytable" class="table table-borderless">
@@ -469,31 +477,37 @@ $("a[data-target=#checkinModal]").click(function(event) {
                 </tr>
                 <tr> 
                     <th>Required from:</th>
-                    <td><input type='date' name="arr_date" value="{{ team.date_of_arrival|date:"Y-m-d" }}" min="2014-01-08" max="2014-01-12" >
-                    <td><input type='time' name="arr_time" value="{{ team.time_of_arrival|date:"H:i:s" }}" min="00:00:00" max="17:00:00">
+                    <td><input type='date' name="arr_date" value="{{ team.date_of_arrival|date:"Y-m-d" }}" min="2015-01-07" max="2015-01-11" >
+                    <td><input type='time' name="arr_time" value="{{ team.time_of_arrival|date:"H:i:s" }}" min="00:00:00" max="23:59:59">
                 </tr>
                 <tr> 
                     <th>to</th>
-                    <td><input type='date' name="dep_date" value="{{ team.date_of_departure|date:"Y-m-d" }}" min="2014-01-09" max="2014-01-13">
-                    <td><input type='time' name="dep_time" value="{{ team.time_of_departure|date:"H:i:s" }}" min="00:00:00" max="17:00:00">
+                    <td><input type='date' name="dep_date" value="{{ team.date_of_departure|date:"Y-m-d" }}" min="2015-01-08" max="2015-01-12">
+                    <td><input type='time' name="dep_time" value="{{ team.time_of_departure|date:"H:i:s" }}" min="00:00:00" max="23:59:59">
                 </tr>
                 <tr>
                   <th>Mattress</th>
-                  <td><input type='number' name='mattress' value="{{ team.mattress_count }}" ></td>
+                  <td><input type='number' name='mattress_count' value="{{ team.mattress_count }}" ></td>
                 </tr>
                     <input type='hidden' name="updating" value="control_room"/>
 
             </table>
-        </div>
-            <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                <input type='hidden' name='team_id' value='{{ team.pk }}'>
-                <input type='submit' class="btn btn-primary" value='Save changes'/>
-            </div>
-        </form>
-        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <input type="Submit" id="change_status_save_button"class="btn btn-primary" onclick="$(this).val('Please wait');"value="Save Changes"/>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </form>
+      </div>
     </div>
+  </div>
+</div>
 
-    </div>
-    </div>
-    </div>
+<script type="text/javascript">
+  function submit_change_time(){
+    document.getElementById("change_time_form").submit();
+    alert("Done");
+    location.reload();
+  }
+</script>
+

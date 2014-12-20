@@ -27,7 +27,9 @@
       <td style="color:black">{{ team.leader.mobile }}</td>
       <td style="color:black">{{ team.get_total_count }}</td>
       <td>
-        {% if team.accomodation_status == 'requested' %}
+        {% if team.accomodation_status == 'not_req' %}
+        <span class="label label-primary">Not required</span>
+        {% elif team.accomodation_status == 'requested' %}
         <span class="label label-info">Pending</span>
         {% elif team.accomodation_status == 'confirmed' %}
         <span class="label label-success">Confirmed</span>

@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from apps.walls.models import Wall
 from apps.users.models import UserProfile, ERPProfile, Dept, Subdept, Page
+from apps.hospi.models import HospiTeam, Hostel, Room, Allotment, HospiLog
+from apps.hospi.forms import HostelForm, RoomForm, HospiTeamForm
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from misc.utils import *
@@ -53,25 +55,34 @@ def hospi_portal(request):
     }
     
     return render_to_response('portals/hospi/hospi_portal.html', local_context, context_instance= global_context(request))
-'''
-def team_details(request, team_id):
+
+#Exclusively handles control room, but added 'all' feature just in case. Take note, one in apps.hospi.views has 0 arguments
+def add_accomodation(request, team_id):
+    data = request.POST.copy()
     team = get_object_or_404(HospiTeam, pk=team_id)
-    edit_list = ['confirmed', 'rejected']
-    leader = team.leader
-    bill_data = u.bill(team.date_of_arrival, team.time_of_arrival, team.date_of_departure, team.time_of_departure, team.get_total_count())
-    if team.accomodation_status in edit_list:
-        editable = False
-    else:
-        editable=True
-    to_return = {
-        'leader':leader,
-        'bill_data':bill_data,
-        'addUserForm':SaarangUserForm(),
-        'editable':editable,
-        'team':team,
-    }
-    return render(request, 'portals/hospi/team_details.html', to_return)
-    '''
+    if data['updating'] == 'all':
+        team.date_of_arrival = data['arr_date']
+        team.date_of_departure = data['dep_date']
+        team.time_of_arrival = data['arr_time']
+        team.time_of_departure = data['dep_time']
+        if team.accomodation_status == 'not_req':
+            team.accomodation_status = 'requested'
+            messages.success(request, 'Successfully requested for accommodation.')
+        else:
+            messages.success(request, 'Details successfully updated.')
+        team.save()
+        return redirect('hospi_team_details', int(team_id))
+    elif data['updating'] == 'control_room':
+        team.city = data['city']
+        team.date_of_arrival = data['arr_date']
+        team.date_of_departure = data['dep_date']
+        team.time_of_arrival = data['arr_time']
+        team.time_of_departure = data['dep_time']
+        team.mattress_count = int(data['mattress_count'])
+        team.save()
+        messages.success(request, 'Saved successfully')
+        return redirect('hospi_team_details', int(team_id))
+    return redirect('hospi_team_details', int(team_id))
 '''
 # Create your views here.
 from django.http import HttpResponseRedirect, HttpResponse, Http404

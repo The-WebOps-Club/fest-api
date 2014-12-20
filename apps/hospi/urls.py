@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     # For ERP
     # url(r'^admin/$', 'hospi.views.list_registered_teams', name='hospi_list_registered_teams'),
     url(r'^admin/details/(?P<team_id>\d+)/$', 'apps.hospi.views.team_details', name='hospi_team_details'),
+    url(r'^portal_add_accomod/(?P<team_id>\d+)/$', 'apps.portals.hospi.views.add_accomodation', name='hospi_portal_add_accomodation'),
     # url(r'^admin/update/(?P<team_id>\d+)/$', 'hospi.views.update_status', name='hospi_update_status'),
     # url(r'^admin/statistics/$', 'hospi.views.statistics', name='hospi_statistics'),
     # url(r'^admin/add/$', 'hospi.views.add_hostel_rooms', name='hospi_add_hostel_rooms'),
@@ -39,10 +40,10 @@ urlpatterns = patterns('',
     # url(r'^admin/check_out/(?P<team_id>\d+)/$', 'hospi.views.check_out_team', name='hospi_check_out_team'),
 
     # url(r'^admin/update_member/$', 'hospi.views.update_member', name='hospi_update_member'),
-    # url(r'^admin/add_member/(?P<team_id>\d+)/$', 'hospi.views.add_member', name='hospi_add_member'),
+    url(r'^admin/add_member/(?P<team_id>\d+)/$', 'apps.hospi.views.add_member', name='hospi_add_member'),
     # url(r'^admin/del_member/(?P<team_id>\d+)/$', 'hospi.views.del_member', name='hospi_del_member'),
 
-    # url(r'^admin/web_id_search/$', 'hospi.views.website_id_search', name='hospi_website_id_search'),
+    url(r'^admin/web_id_search/$', 'apps.hospi.views.website_id_search', name='hospi_website_id_search'),
     # url(r'^admin/add_user/$', 'hospi.views.add_user_to_team', name='hospi_add_user_to_team'),
 
     # url(r'^admin/split/(?P<team_id>\d+)/$', 'hospi.views.split_team', name='hospi_split_team'),

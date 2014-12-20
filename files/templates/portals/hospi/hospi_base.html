@@ -219,6 +219,8 @@
     }
     function add_team(data){
       document.getElementById("addteamModalBody").innerHTML = data.html_content;
+      $("#multiselect1").select2();
+      $("#multiselect").select2();
       $('#addteamModal').modal('show')
     }
     function room_details(data){
@@ -268,6 +270,7 @@
         $(function(){
           Dajaxice.apps.portals.hospi.list_all_teams(list_all_teams);
         });
+        
     </script>
     <!--<script type="text/javascript" src="{{ STATIC_URL }}js/tinymce/tinymce.min.js"></script>-->
     <!--<script type="text/javascript">
