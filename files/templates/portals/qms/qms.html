@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-
+{% load check_access %}
 {% block content %}
 {% load dajaxice_templatetags %}
 {% dajaxice_js_import %}
@@ -30,22 +30,27 @@
 
 <!-- Main Content Div Container -->
 <div id="add_user_div">
-<!-- Clear Form Button -->
-        <div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class='btn btn-danger'>Clear form</a></div>
-        
-        
-<br />
-<br />
+	<!-- Clear Form Button -->
+		    <div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class='btn btn-danger'>Clear form</a></div>
+		    
+		    
+	<br />
+	<br />
 
-<!--Add User Form -->
+	<!--Add User Form -->
 
-<form>
-        {% csrf_token %}
-		{{userform.as_p }}
-		{{userprofileform.as_p }}
-       <input type="button" value="Save" onclick="Dajaxice.apps.portals.qms.add_user(add_user_js)"/>
-</form>
-
+	<form id="add_user_userform" accept-charset="utf-8">
+		    {% csrf_token %}
+			{{userform.as_p }}
+			{{userform.hidden_fields.as_p }}	
+	</form>			   
+	<form id="add_user_userprofileform" accept-charset="utf-8">
+		    {% csrf_token %}
+			{{userprofileform.as_p }}
+	</form>
+<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.add_user(add_user_js,{'userform':$('#add_user_userform').serialize(true),'userprofileform':$('#add_user_userprofileform').serialize(true)});"/>
+	
+		   
 </div>
 
 <!-- Javascript functions-->

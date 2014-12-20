@@ -1,5 +1,7 @@
 # For simple dajax(ice) functionalities
 from dajaxice.decorators import dajaxice_register
+#dajaxice stuff
+from dajaxice.utils import deserialize_form
 
 # For rendering templates
 from django.template import RequestContext
@@ -37,6 +39,5 @@ def hello(request):
 
 @dajaxice_register    
 def add_user(request):
-	print "ypppppppppppppppppppppppppppppppp"
 	return json.dumps({'message': 'message'})
 

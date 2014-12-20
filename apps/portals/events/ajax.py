@@ -28,10 +28,6 @@ def hello(request):
     return json.dumps({'message': 'aslkfhas'})
 
 
-
-
-
-
 @dajaxice_register
 def show_tabs(request,event_name,username):
     event_object=Event.objects.get(name=event_name)
@@ -200,3 +196,42 @@ def view_edit_event(request):
 	return json.dumps({'event_names': event_names,'event_emails':event_emails})
 	
 
+
+
+
+
+
+
+
+
+
+#QMS PORTAL FUNCTIONS - IT IS HERE BECAUSE I CAN'T GET DAJAXICE FUNCTIONS TO WORK THERE. WILL SHIFT EVERYTHING THERE LATER         
+from apps.users.forms import LoginForm,UserProfileForm,UserForm
+
+@dajaxice_register    
+def add_user(request,userform,userprofileform):
+	message="Your form has the following errors:\n"
+	user_form = UserForm(deserialize_form(userform))
+	user_profile_form = UserProfileForm(deserialize_form(userprofileform))
+	valid=0
+	if (user_form.is_valid() and user_profile_form.is_valid()):
+		valid=1
+		user = user_form.save()
+		user.username=user.email
+		print user.email
+		user.password=user.email
+		user.set_password(user.email)
+		user.save()
+		
+		profile = user_profile_form.save(commit=False)
+		profile.user = user
+		profile.save()
+		message="Success"
+	if valid==0:
+		for field in user_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"\n"
+		for field in user_profile_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"\n"
+	return json.dumps({'message': message})   
