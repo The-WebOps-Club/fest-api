@@ -24,22 +24,14 @@ from apps.users.models import User,UserProfile,Team,ERPProfile
 from misc.utils import *
 # Python
 from configs.settings import FEST_NAME
+import select2.models
+import select2.forms
+
+
+EVENT_VENUES=settings.EVENT_VENUES
 
 if FEST_NAME=='Saarang':
-	EVENT_CATEGORIES = (
-		('Word Games', 'Word Games'),
-		('Classical Arts', 'Classical Arts'),
-		('LecDems', 'LecDems'),
-		('Music', 'Music'),
-		('Thespian', 'Thespian'),
-		('Writing', 'Writing'),
-		('Speaking', 'Speaking'),
-		('Choreo', 'Choreo'),
-		('Design & Media', 'Design & Media'),
-		('Informals', 'Informals'),
-		('Quizzing', 'Quizzing'),
-		('Fine Arts', 'Fine Arts'),
-	)
+	EVENT_CATEGORIES = settings.EVENT_CATEGORIES
 else:
 	EVENT_CATEGORIES = (
 		('Aerofest', 'Aerofest'),
@@ -59,9 +51,9 @@ else:
 	)
 
 EVENT_TYPE = (
-    ('Audience', 'Audience'),
-    ('Participant', 'Participant'),
-    ('None','None'),
+    ('online', 'Online Registration'),
+    ('onspot', 'On-spot Registration'),
+    ('noreg','No Registration'),
 )
     
 class Event(models.Model):
@@ -92,8 +84,13 @@ class Event(models.Model):
 	# List of registered participants
     users_registered = models.ManyToManyField(User, blank=True, null=True,related_name='events_registered')
     teams_registered = models.ManyToManyField(Team, blank=True, null=True,related_name='events_registered')
-    
-    coords = select2.fields.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
+    #added by Akshay/Arun
+    coords = models.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
+    long_description=models.TextField(blank = True, null=True)
+    google_form=models.URLField(blank=True, null=True)
+    event_image=models.ImageField(blank=True, null=True, upload_to='events')
+    extra_info = models.BooleanField(blank=True, default=False)
+
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
     
@@ -149,3 +146,28 @@ class EventTab(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class EventRegistration(models.Model):
+    """
+        Each participant will have several fields 
+    """
+    event            = models.ForeignKey(Event, related_name='event_registered')
+    users_registered = models.ForeignKey(User, related_name='user_eventregis')
+    info             = models.TextField(null=True, blank=True)
+    timestamp        = models.DateTimeField(auto_now_add=True)
+    teams_registered = models.ForeignKey(Team, blank=True, null=True,related_name='user_team')
+    
+    def __unicode__(self):
+        return str(self.users_registered) +' - '+ str(self.event)
+
+class EventSchedule(models.Model):
+    """
+        each slot for an event will have a fields
+    """
+    event            = models.ForeignKey(Event, related_name='event_slot')
+    slot_start       = models.DateTimeField(null=True, blank=True)
+    slot_end         = models.DateTimeField(null=True, blank=True)
+    comment          = models.TextField(null=True, blank=True)
+    venue            = models.CharField(max_length=100, choices=EVENT_VENUES)
+    def __unicode__(self):
+        return str(self.event)

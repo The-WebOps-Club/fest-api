@@ -119,3 +119,9 @@ def valid_phone_number(num_string):
 
 # ------------------ SIMPLE UTILS
 #----------------------------------------------------------------------
+
+# A small helper class to create custom attributes
+class Bunch:
+    def __init__(self, **kwds):
+        self.__dict__.update(kwds)
+

@@ -85,12 +85,17 @@ API_APPS = (
     'apps.users',
     'apps.walls',
     'apps.events',
+    'apps.hospi',
     'apps.docs',
     'apps.portals.events',
+    'apps.portals.hospi',
+    'apps.portals.spons',
+    'apps.spons',
     'apps.portals.general',
     'apps.search',
     'apps.blog',
     'apps.api',
+    'apps.fb',
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 
@@ -118,7 +123,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
     'apps.users.middleware.SocialAuthExceptionMiddleware',
     
@@ -396,11 +401,12 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.user.get_username',
     # 'example.app.pipeline.require_email',
     # 'social.pipeline.mail.mail_validation',
-    # 'social.pipeline.user.create_user',
+    'social.pipeline.user.create_user',
     'apps.users.pipeline.check_existing_user',
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details',
+    #'apps.users.pipeline.send_welcome_email',
     
 )
 # Social auth - backend specific
@@ -412,13 +418,18 @@ SOCIAL_AUTH_GOOGLE_CONSUMER_SECRET       = ''
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY            = '186928535147.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET         = 'N2LxEfSraUVwC79sn4aqtqFE'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
-    'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/calendar',
     'https://www.googleapis.com/auth/plus.login',    
 ]
 
+#SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE           = [
+#    'https://www.googleapis.com/auth/drive',
+#    'https://www.googleapis.com/auth/userinfo.profile',
+#    'https://www.googleapis.com/auth/userinfo.email',
+#    'https://www.googleapis.com/auth/calendar',
+#    'https://www.googleapis.com/auth/plus.login',    
+#]
     # Facebook
 SOCIAL_AUTH_FACEBOOK_KEY                = ''
 SOCIAL_AUTH_FACEBOOK_SECRET             = ''
@@ -607,4 +618,12 @@ OPEN_PORTALS = {
     'finance': {},
     'admin': {}
 }
+
+SPONS_ACCESS_ID = ()
+
+EVENT_VENUES=()
+
+EVENT_CATEGORIES = ()
+
+DEFAULT_MAIN_FROM_EMAIL = ''
 

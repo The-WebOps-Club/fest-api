@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load url from future %}
+<html lang="en">
+<style type="text/css">
+
+  div.padded{
+        padding-top: 40px;
+    padding-bottom: 60px;
+  }
+</style>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Hospitality | Saarang{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Saarang ERP is the Enterprise Resource Planner for Saarang, which is the annual cultural festival of IIT Madras, with a footfall of over 50000 a year.">
+    <meta name="author" content="Web Operations Team - Saarang, IIT Madras">
+    <meta name="keywords" contents="saarang, erp, enterprise resource planner, saarang 2014, iit madras, chennai, college, planning, management">
+<!-- Styles begin -->
+    <link href="{% static 'css/jquery-ui-1.10.3.custom.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap/css/bootstrap-responsive.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/docs.css' %}" rel="stylesheet">
+    <link href="{% static 'css/prettify.css' %}" rel="stylesheet">
+   
+    <link href="{% static 'bootstrap/css/bootstrap-rowlink.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/jquery.dataTables.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/jquery.dataTables_themeroller.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/TableTools2.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/TableTools_JUI.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/select2.css' %}" rel="stylesheet">
+  
+    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <!--<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js"></script>-->
+
+    <script type="text/javascript" src='{% static "js/dajaxice.core.js" %}'></script>
+    
+    <!--<script type="text/javascript" src='{% static "dajax/jquery.dajax.core.js" %}'></script>-->
+    
+
+
+<!-- Styles end -->
+
+<!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+</head>
+<body class="container">
+
+
+<!-- Content begin -->
+        <div class="container padded" id="content">
+            {% block content %}{% endblock %}
+        </div>
+<!-- Content ends -->
+
+<!-- JavaScripts begin -->
+    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap-rowlink.min.js' %}"></script>
+    <script src="{% static 'js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'js/TableTools.js' %}"></script>
+    <script src="{% static 'js/ZeroClipboard.js' %}"></script>
+    <script src="{% static 'js/prettify.js' %}"></script>
+    <script src="{% static 'js/holder.js' %}"></script>
+    <script src="{% static 'js/select2.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.bootstrap-growl.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.jeditable.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery.validate.js' %}" ></script>
+    <script type="text/javascript" src="{% static 'js/jquery.dataTables.editable.js' %}" ></script>
+</body>
+</html>

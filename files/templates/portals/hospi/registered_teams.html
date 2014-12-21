@@ -1,0 +1,108 @@
+{% load url from future %}
+<style type="text/css">
+.widemodal{
+  width: 1200px;
+  margin-left: -600px;
+}
+</style>
+<legend>Teams registered <div class="pull-right"><a data-target="#addteamModal" href="#" onclick="Dajaxice.apps.portals.hospi.add_team(add_team)" class="btn btn-info" >Add new team</a></div></legend>
+<table id="hospitable">
+  <thead>
+    <tr>
+      <th><span class="badge badge-info"><i class="icon-home icon-white"></i> I/O</span></th>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Leader</th>
+      <th>Mobile</th>
+      <th>No.</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for team in teams %}
+    <tr class="rowlink" onclick="window.open('{% url 'apps.hospi.views.team_details' team.pk %}');" {% comment %}href="{% url 'hospi_details' team.pk %}"{% endcomment %} target="_blank" >
+      <td><span class="badge badge-{% if team.checked_in and not team.checked_out %}success{% elif team.checked_in and team.checked_out %}danger{% elif not team.checked_in and not team_checked_out %}inverse{% endif %}"><i class="icon-home icon-white"></i>{% if team.checked_in and not team.checked_out %} IN{% elif team.checked_in and team.checked_out %} OUT {% elif not team.checked_in and not team_checked_out %} ?{% endif %} </span></td>
+      <td style="color:black">{{ team.team_sid }}</td>
+      <td style="color:black">{{ team.name }}</td>
+      <td style="color:black">{{ team.leader.user.get_full_name }}</td>
+      <td style="color:black">{{ team.leader.mobile_number }}</td>
+      <td style="color:black">{{ team.get_total_count }}</td>
+      <td>
+        {% if team.accomodation_status == 'requested' %}
+        <span class="label label-info">Pending</span>
+        {% elif team.accomodation_status == 'confirmed' %}
+        <span class="label label-success">Confirmed</span>
+        {% elif team.accomodation_status == 'not_req' %}
+        <span class="label" style="color:black">Not required</span>
+        {% elif team.accomodation_status == 'waitlisted' %}
+        <span class="label label-warning">Waitlisted</span>
+        {% elif team.accomodation_status == 'rejected' %}
+        <span class="label label-danger">Rejected</span>   
+        {% endif %}
+
+      </td>
+    </tr>
+  </a>
+    {% endfor %}
+  </tbody>
+</table>
+<div id="team_details"></div>
+
+<!-- Modal -->
+<div id="teamdetailsModal" class="modal widemodal hide fade" tabindex="-1" role="dialog" aria-labelledby="teamdetailsModalLabel" aria-hidden="true" >
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="teamdetailsModalLabel">Team details</h3>
+  </div>
+  <div class="modal-body">
+    <p>Loading…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button class="btn btn-primary">Save changes</button>
+  </div>
+</div>
+
+
+<div class="modal fade" id="addteamModal" tabindex="-1" role="dialog" aria-labelledby="addteamModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add a New Team</h4>
+      </div>
+      <div id = "addteamModalBody" class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <input type="button" id="add_team_save_button"class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.adding_team(adding_team,{'form_add_team':$('#form_add_team').serialize(true)});$(this).val('Please wait');"value="Save"/>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--
+<div id="addteamModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addteamModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="addteamModalLabel">Add new team</h3>
+  </div>
+  <div class="modal-body">
+    <p>Loading…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+    <button class="btn btn-primary">Save changes</button>
+  </div>
+</div>
+-->
+
+<script type="text/javascript">
+$('.rowlink').click(function(){
+  window.open($(this).attr('href'));
+})
+$('[data-target="#addteamModal"]').click(function()
+{
+  $('#addteamModal .modal-body').load($(this).attr('href').slice(1))
+  $('#addteamModal').modal('show')
+})
+</script>

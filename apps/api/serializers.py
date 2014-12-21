@@ -6,11 +6,13 @@ from django.contrib.auth.models import User
 
 from apps.walls.models import Wall, Post, Comment
 from apps.blog.models import Category
-
+from apps.events.models import EventRegistration
+from apps.spons.models import SponsImageUpload
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ('id', 'first_name', 'last_name', 'email', 'password')
+		fields = ('id', 'first_name', 'last_name', 'email' , 'profile')
+                depth = 1
 
 class UserProfileSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -30,6 +32,7 @@ class TeamSerializer(serializers.ModelSerializer):
 	members = UserSerializer(source='members', many=True)
 	class Meta:
 		model = Team
+                fields = ('id','name','members')
 
 class WallSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -53,7 +56,24 @@ class BlogSerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id','name', 'feeds')
         depth = 1
+        depth = 2
+class EventRegistrationSerializer(serializers.ModelSerializer):
+	class Meta:
+		model=EventRegistration
+		depth=1
 
+class EventDisplaySerializer(serializers.ModelSerializer):
+    class Meta:
+		model = Event
+		depth=1
+		fields=("id","name","short_description","event_type", "category","has_tdp","team_size_min","team_size_max","registration_starts","registration_ends","google_group","email","long_description","google_form","event_image","is_visible",'eventtab_set', 'extra_info',)
+		
+class SponsImageUploadSerializer(serializers.ModelSerializer):
+	class Meta:
+		model= SponsImageUpload
+class UserProfileEditSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ERPProfile
 #class NotificatioSerializer(serializers.Serializer):
 #    id = serializers.IntegerField()
 #    actor = serializers.CharField()

@@ -1,6 +1,8 @@
 # For simple dajax(ice) functionalities
 from django.utils import simplejson
 import json
+from pytz import timezone
+import unicodedata
 from dajaxice.decorators import dajaxice_register
 
 # For rendering templates
@@ -9,19 +11,19 @@ from django.template.loader import render_to_string
 
 # Decorators
 from django.contrib.auth.decorators import login_required, user_passes_test
-
+from django.conf import settings 
 
 #models
 from django.contrib.auth.models import User
-from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
-from apps.events.models import EventTab, Event
+from apps.users.models import ERPProfile, UserProfile, Dept, Subdept, Team
+from apps.events.models import EventTab, Event, EventSchedule
+
+from apps.portals.events.forms import AddSlotForm
+
 #dajaxice stuff
 from dajaxice.utils import deserialize_form
 
-#HTML Parser
-import HTMLParser
-from django.utils.html import strip_tags
-
+import re
 
 @dajaxice_register
 def hello(request):
@@ -45,12 +47,16 @@ def show_tabs(request,event_name,username):
 def show_tabs_description(request,event_name,event_tab,has_perm):
     event_object=Event.objects.get(name=event_name)
     event_tab=EventTab.objects.get(name=event_tab,event=event_object)
-    description=HTMLParser.HTMLParser().unescape(strip_tags(event_tab.content.strip()))
+    description=event_tab.content
+    description=" ".join(description.split())
+    #print description
     return json.dumps({'description': description,'event_name':event_name,'event_tab_name': event_tab.name,'has_perm':has_perm})
 
+#"<br/>".join(description.split("\r"))
 #ARUN - CHANGES MADE HERE
 #Function for setting permissions to edit Event Tabs 
 def permission(event_object,user_object):
+        return "yes"
 	events_dept=Dept.objects.get(name='events')
 	qms_dept=Dept.objects.get(name='qms')
 	if hasattr(user_object,'erp_profile'):
@@ -60,7 +66,7 @@ def permission(event_object,user_object):
 			return "participant_event_has_tdp"
 		else:
 			return "participant"
-	if user_object.is_superuser or user_object.erp_profile in event_object.coords.all():
+	if user_object.is_staff or user_object.erp_profile in event_object.coords.all():
 		return "yes"
 	else:
 		return "no"
@@ -110,10 +116,8 @@ def edit_tab(request,username,edit_tab_form):
     message=""
     if edit_tab_form['tab_Name']!='' and  edit_tab_form['tab_Name'][0]!=' ':
 			event_object=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
-			event_Tab=EventTab.objects.get(name=edit_tab_form['event_tab_Name_edit_form'],event=event_object)
-			event_Tab.delete()
+			event_tab=EventTab.objects.get(name=edit_tab_form['event_tab_Name_edit_form'],event=event_object)
 
-			event_tab=EventTab()
 			event_tab.name=edit_tab_form['tab_Name']
 			event_tab.content=edit_tab_form['tab_Description']
 			event_tab.event=Event.objects.get(name=edit_tab_form['event_Name_edit_form'])
@@ -130,9 +134,37 @@ from apps.portals.events.forms import AddEventForm
 def edit_event_details(request,event_name):
 	event_object=Event.objects.get(name=event_name)
 	form = AddEventForm(instance=event_object).as_table()
-	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'short_description':event_object.short_description,'event_type':event_object.event_type,'category':event_object.category,'has_tdp':event_object.has_tdp,'team_size_min':event_object.team_size_min,'team_size_max':event_object.team_size_max,'registration_starts':event_object.registration_starts,'registration_ends':event_object.registration_ends,'google_group':event_object.google_group,'email':event_object.email})
+	event_id = event_object.id
+	try:
+		image_source= str(event_object.event_image.url)
+	except Exception,e:
+		image_source=""
+	
+	slot_id=""
+	slot_start=""
+	slot_end=""
+	slot_comment=""
+	slot_venue=""
+
+	try:
+		event_slots= EventSchedule.objects.filter(event=event_object)
+		for slot in event_slots:
+			slot_id=slot_id+str(slot.id)+"|"
+			slot_start=slot_start+((slot.slot_start).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
+			slot_end=slot_end+((slot.slot_end).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
+			slot_comment=slot_comment+ str(slot.comment) + "|" 
+			slot_venue=slot_venue + str(slot.venue) + "|"
+		length= len(event_slots)
+	except Exception,e:
+		pass
+	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'event_id':event_id,'image_source':image_source, 'slot_venue':slot_venue, 'slot_comment':slot_comment, 'slot_start':slot_start,'slot_end':slot_end, 'length_count':length, 'slot_id':slot_id})
     
     
+@dajaxice_register
+def display_add_event(request):
+	form = AddEventForm().as_table()
+	return json.dumps({'form':form})
+
 #try to make the deserialized form of the type addeventform then validate it
 
 @dajaxice_register    
@@ -189,12 +221,106 @@ def edit_event(request,event_name,edit_event_form):
 def view_edit_event(request):
 	event_names=""
 	event_emails=""
+	event_categories=""
 	event_array=Event.objects.all()
 	for event in event_array:
 		event_names=event_names+event.name+"|"
 		event_emails=event_emails+event.email+"|"
-	return json.dumps({'event_names': event_names,'event_emails':event_emails})
+		event_categories=event_categories+event.category+"|"
+	return json.dumps({'event_names': event_names,'event_emails':event_emails,'event_categories':event_categories})
 	
+
+
+@dajaxice_register    
+def delete_event(request,event_name):
+	event_object=Event.objects.get(name=event_name)
+	event_object.delete()
+	message="The event " + event_name + " has been successfully deleted."
+	return json.dumps({'message':message})
+	
+	
+	
+@dajaxice_register    
+def reg_list(request,event_name):
+	event_object=Event.objects.get(name=event_name)
+	event_registrations=event_object.event_registered.all()
+	user_names=""
+	team_names=""
+	info=""
+	for reg in event_registrations:
+		user_names=user_names + reg.users_registered.username +" |"
+		if reg.teams_registered==None:
+			team_names=team_names + "None |"
+		else:
+			team_names=team_names + reg.teams_registered.name +" |"
+		info=str(info) + str(reg.info) + " |"
+	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info})
+
+@dajaxice_register    
+def participant_info(request,participant_name,team_name):
+
+	try :
+		data=[]
+		temp={}		
+		team = Team.objects.get(name=team_name)
+		members=team.members.all()
+		for i in range(len(members)):
+			temp={}
+			temp['name']=str(members[i].username)
+			temp['number']=members[i].profile.mobile_number
+			temp['email']=str(members[i].email)
+			data.append(temp)
+	except Exception, e:
+		temp={}
+		data=[]
+		participant = User.objects.get(username=participant_name)
+		temp['name']=str(participant_name)
+		temp['number']=participant.profile.mobile_number
+		temp['email']=str(participant.email)
+		data.append(temp)
+	return json.dumps({'inf':data,'len':len(data),})	
+
+
+@dajaxice_register
+def display_add_event_slot(request):
+	form = AddSlotForm().as_table()
+	slot_event=""
+	slot_start=""
+	slot_end=""
+	slot_comment=""
+	slot_venue=""
+	slot_array = EventSchedule.objects.all()
+	for slot in slot_array:
+		slot_event=slot_event+slot.event.name+"|"
+		slot_start=slot_start+((slot.slot_start).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
+		slot_end=slot_end+((slot.slot_end).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
+		slot_comment=slot_comment+ str(slot.comment) + "|" 
+		slot_venue=slot_venue + str(slot.venue) + "|"
+	return json.dumps({'form':form, 'slot_venue':slot_venue, 'slot_comment':slot_comment, 'slot_event': slot_event,'slot_start':slot_start,'slot_end':slot_end})
+
+@dajaxice_register    
+def add_slot(request,slot_form):
+	message="Your form has the following errors <br>"
+	slot_form = AddSlotForm(deserialize_form(slot_form))
+	if slot_form.is_valid():
+		slot_form.save()
+		message="successfully added event"
+	else:
+		for field in slot_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"<br>"
+
+	return json.dumps({'message': message})		
+
+@dajaxice_register    
+def delete_slot(request,slot_id):
+	message="successfully Deleted slot"
+	try:
+		slot=EventSchedule.objects.get(id=int(slot_id))
+		slot.delete()
+	except Exception, e:
+		message="no such slot exists"
+	return json.dumps({'message': message})
 
 
 
@@ -251,4 +377,4 @@ def add_team(request,teamform):
 		for field in team_form:
 			for error in field.errors:
 				message=message+field.html_name+" : "+error+"\n"
-	return json.dumps({'message': message})   
+	return json.dumps({'message': message}) 

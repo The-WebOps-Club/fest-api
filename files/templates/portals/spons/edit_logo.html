@@ -1,0 +1,35 @@
+<form class="form-horizontal" action="{% url 'apps.portals.spons.views.save_logo' logo.pk %}" method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+    <center><img class="thumbnail" src="{{ MEDIA_URL }}{{ form.logo.value }} " width='300px'></center>
+    {% csrf_token %}
+    {{ form.media }}
+    {% if form.errors %}
+    <div class="alert alert-error">
+        <ul>
+            {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% for field in form.visible_fields %}
+    <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+        <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+        <div class="controls"> {{ field }}
+            <br/>
+            <span class="help">
+                {{ field.help_text }}
+            </span>
+            {% if field.errors %}
+            <span class="help-inline">
+                {{ field.errors.as_text }}
+            </span>
+            {% endif %} 
+        </div>
+    </div>
+    {% endfor %}
+    {% for field in form.hidden_fields %}
+    {{ field }}
+    {% endfor %}
+    <br/>
+    <input class="btn btn-primary btn-block" type="submit" value="Submit"/> {% block extra_buttons %} {% endblock extra_buttons %}
+</form>

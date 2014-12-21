@@ -81,6 +81,30 @@
 </div>
 
 
+<!-- Edit User Div Container -->
+<div id="add_user_div">
+<h2> EDIT USER </h2>
+<span id="alert-user2"></span>
+	<!-- Clear Form Button -->
+		    <div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user2').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class="btn danger">Clear form</a></div>	    
+	<br />
+	<br />
+
+	<!--Select User -->
+	
+
+
+	<!--Edit User Form -->
+	<form id="edit_user_userform" accept-charset="utf-8">
+		    {% csrf_token %}	
+		    <div id="edit_user_userform_div"></div>
+	</form>			   
+	<form id="edit_user_userprofileform" accept-charset="utf-8">
+	
+			<div id="edit_user_userprofileform_div"></div>
+	</form>
+<input type="button" value="Save" onclick=""/>	   
+</div>
 
 
 
