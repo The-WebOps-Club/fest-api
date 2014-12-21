@@ -207,6 +207,8 @@ def view_edit_event(request):
 
 #QMS PORTAL FUNCTIONS - IT IS HERE BECAUSE I CAN'T GET DAJAXICE FUNCTIONS TO WORK THERE. WILL SHIFT EVERYTHING THERE LATER         
 from apps.users.forms import LoginForm,UserProfileForm,UserForm
+from apps.users.models import Team
+from apps.portals.qms.forms import AddTeamForm
 
 @dajaxice_register    
 def add_user(request,userform,userprofileform):
@@ -214,6 +216,7 @@ def add_user(request,userform,userprofileform):
 	user_form = UserForm(deserialize_form(userform))
 	user_profile_form = UserProfileForm(deserialize_form(userprofileform))
 	valid=0
+	
 	if (user_form.is_valid() and user_profile_form.is_valid()):
 		valid=1
 		user = user_form.save()
@@ -225,12 +228,27 @@ def add_user(request,userform,userprofileform):
 		profile = user_profile_form.save(commit=False)
 		profile.user = user
 		profile.save()
-		message="Success"
+		message="Successfully added User"
 	if valid==0:
 		for field in user_form:
 			for error in field.errors:
 				message=message+field.html_name+" : "+error+"\n"
 		for field in user_profile_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"\n"
+	return json.dumps({'message': message})   
+	
+	
+	
+@dajaxice_register    
+def add_team(request,teamform):
+	message="Your form has the following errors:\n"
+	team_form = AddTeamForm(deserialize_form(teamform))
+	if team_form.is_valid():
+		team_form.save()
+		message="Successfully added Team"
+	else:
+		for field in team_form:
 			for error in field.errors:
 				message=message+field.html_name+" : "+error+"\n"
 	return json.dumps({'message': message})   

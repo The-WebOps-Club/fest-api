@@ -7,6 +7,7 @@ from apps.users.models import ERPProfile, Dept, Subdept, Page,UserProfile
 from django.contrib.auth.models import User
 
 from apps.users.forms import LoginForm,UserProfileForm,UserForm
+from apps.portals.qms.forms import AddTeamForm
 
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
@@ -45,5 +46,6 @@ def erp_analytics(request):
 def qms_portal(request):
     user_form = UserForm()
     user_profile_form = UserProfileForm()
-    to_return={'userform':user_form,'userprofileform':user_profile_form}
+    teamform = AddTeamForm()
+    to_return={'userform':user_form,'userprofileform':user_profile_form,'teamform':teamform}
     return render(request, 'portals/qms/qms.html', to_return)

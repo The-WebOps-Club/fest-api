@@ -22,16 +22,20 @@
 
 <!-- Top Level Tabs -->
 <p id="message"> </p> </br>
-<button type="button" onclick="" class="btn primary">Add New User</button> 
-<button type="button" id="viewid" onclick="" class="btn  primary">Add New Team</button> 
+<button type="button" onclick="add_user_tab()" class="btn primary">Add New User</button> 
+<button type="button" onclick="" class="btn primary">Edit User</button>
+<button type="button" id="viewid" onclick="add_team_tab()" class="btn  primary">Add New Team</button> 
+<button type="button" id="viewid" onclick="" class="btn  primary">Edit Team</button>
 <button type="button" onclick="" class="btn primary">Register User Or Team</button> 
 <br />
 <br />
 
-<!-- Main Content Div Container -->
+<!-- Add User Div Container -->
 <div id="add_user_div">
+<h2> ADD NEW USER </h2>
+<span id="alert-user"></span>
 	<!-- Clear Form Button -->
-		    <div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class='btn btn-danger'>Clear form</a></div>
+		    <div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class="btn danger">Clear form</a></div>
 		    
 		    
 	<br />
@@ -48,15 +52,45 @@
 		    {% csrf_token %}
 			{{userprofileform.as_p }}
 	</form>
-<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.add_user(add_user_js,{'userform':$('#add_user_userform').serialize(true),'userprofileform':$('#add_user_userprofileform').serialize(true)});"/>
-	
-		   
+<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.add_user(add_user_js,{'userform':$('#add_user_userform').serialize(true),'userprofileform':$('#add_user_userprofileform').serialize(true)});"/>		   
 </div>
+
+
+
+
+
+<!-- Add Team Div Container -->
+<div id="add_team_div" style="display:none">
+<h2> ADD NEW TEAM </h2>
+<span id="alert-team"></span>
+	<!-- Clear Form Button -->
+		    <div class='pull-right'><a name='clear' onclick="clearForm2();$('#alert-team').html('<h3>Form Cleared<br>Proceed adding new team</h3>').show();" class="btn danger">Clear form</a></div>
+		    
+		    
+	<br />
+	<br />
+
+	<!--Add Team Form -->
+
+	<form id="add_team_form" accept-charset="utf-8">
+		    {% csrf_token %}
+			{{teamform.as_p }}
+			{{teamform.hidden_fields.as_p }}	
+	</form>			   
+<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.add_team(add_team_js,{'teamform':$('#add_team_form').serialize(true)});"/>		   
+</div>
+
+
+
+
+
+
 
 <!-- Javascript functions-->
 <script type="text/javascript">
 //CLEAR FORM
-function clearForm() {
+function clearForm()
+{
         $('#id_first_name').val('')
         $('#id_last_name').val('')
         $('#id_email').val('')
@@ -68,12 +102,40 @@ function clearForm() {
         $('#id_college_roll').val('')
         $('#id_school_student').val('')
         $('#id_want_accomodation').val('')
-    }
-    
-function add_user_js(data){
+}
+ 
+function clearForm2()
+{
+        $('#id_name').val('')
+        $('#id_members').val('')
+}
+
+//Top Level Tabs Javascript Functions
+function add_user_tab()
+{
+	document.getElementById("add_user_div").style.display = 'inline';
+	document.getElementById("add_team_div").style.display = 'none';
+}
+
+function add_team_tab()
+{
+	document.getElementById("add_user_div").style.display = 'none';
+	document.getElementById("add_team_div").style.display = 'inline';
+}
+
+//Dajaxice Js Functions   
+function add_user_js(data)
+{
 	alert(data.message);
+	clearForm();
 }   
-    
+  
+function add_team_js(data)
+{
+	alert(data.message);
+	clearForm2();
+} 
+
     
 </script>
 {% endblock content %}
