@@ -218,7 +218,6 @@ def add_user(request,userform,userprofileform):
 		valid=1
 		user = user_form.save()
 		user.username=user.email
-		print user.email
 		user.password=user.email
 		user.set_password(user.email)
 		user.save()
