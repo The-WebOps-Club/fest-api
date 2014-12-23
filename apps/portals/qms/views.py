@@ -5,11 +5,14 @@ from django.contrib.auth.decorators import login_required
 from apps.walls.models import Wall
 from apps.users.models import ERPProfile, Dept, Subdept, Page,UserProfile
 from django.contrib.auth.models import User
+from misc.models import College
 
-from apps.users.forms import LoginForm,UserProfileForm,UserForm
-from apps.portals.qms.forms import AddTeamForm
+from apps.users.forms import LoginForm,UserForm
+from apps.portals.qms.forms import AddTeamForm,UserProfileForm
 
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect
+from django.http import HttpResponse
+
 from django.core.exceptions import PermissionDenied
 from misc.utils import *
 from itertools import chain
@@ -49,3 +52,27 @@ def qms_portal(request):
     teamform = AddTeamForm()
     to_return={'userform':user_form,'userprofileform':user_profile_form,'teamform':teamform}
     return render(request, 'portals/qms/qms.html', to_return)
+    
+    
+@login_required
+def id_search(request):
+    print "yooooooooooooooooooooooooooooooooooooooooooooooo"
+    data=request.GET.copy()
+    user_list = []
+    users_id = UserProfile.objects.filter(saarang_id__contains=data['q'].upper())[:10]
+    users_email = UserProfile.objects.filter(email__contains=data['q'].lower())[:10]
+    users_name = UserProfile.objects.filter(name__contains=data['q'])[:10]
+    users_mobile = UserProfile.objects.filter(mobile_number__contains=data['q'])[:10]
+    for user in users_id:
+        user_list.append({"desk_id":user.desk_id,'saarang_id':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile, 'city':user.city, 'college':user.college.name, 'gender':user.gender.capitalize() })
+    for user in users_email:
+        user_list.append({"desk_id":user.desk_id,'saarang_id':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile, 'city':user.city, 'college':user.college.name, 'gender':user.gender.capitalize() })
+    for user in users_name:
+        user_list.append({"desk_id":user.desk_id,'saarang_id':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile, 'city':user.city, 'college':user.college.name, 'gender':user.gender.capitalize() })
+    for user in users_mobile:
+        user_list.append({"desk_id":user.desk_id,'saarang_id':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile, 'city':user.city, 'college':user.college.name, 'gender':user.gender.capitalize() })
+    user_dict = json.dumps(user_list)
+    print user_list
+    print user_dict
+    return HttpResponse(user_dict)
+

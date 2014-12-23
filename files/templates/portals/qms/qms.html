@@ -5,18 +5,25 @@
 {% dajaxice_js_import %}
 {%  csrf_token %}
 {% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
 
-<!-- Latest compiled and minified JavaScript -->
-
-<!-- Static files for the datatables
-<link href="{% static 'css/datatable.css' %}" rel="stylesheet" media="screen">
-<link href="{% static 'js/datatable.js' %}" rel="stylesheet" media="screen">
--->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 
 
 
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.datetimepicker.css' %}">
+<script type="text/javascript" src="{% static 'js/jquery.datetimepicker.js' %}"></script>
 
+<link rel="stylesheet" type="text/css" href="{% static 'css/select2.css' %}">
+<script type="text/javascript" src="{% static 'js/select2.js' %}"></script>
+
+<style>
+.select2-container{
+ width:550px;   
+}
+
+</style>
 
 <h1>QMS Portal</h1>
 
@@ -85,16 +92,16 @@
 <div id="add_user_div">
 <h2> EDIT USER </h2>
 <span id="alert-user2"></span>
-	<!-- Clear Form Button -->
-		    <div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user2').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class="btn danger">Clear form</a></div>	    
+	<!-- Clear Form Button 
+		    <div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user2').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class="btn danger">Clear form</a></div>	-->    
 	<br />
 	<br />
 
 	<!--Select User -->
-	
+	 <input id='website_id' class='input input-block-level' type='text' name='website_id' />
 
 
-	<!--Edit User Form -->
+	<!--Edit User Form 
 	<form id="edit_user_userform" accept-charset="utf-8">
 		    {% csrf_token %}	
 		    <div id="edit_user_userform_div"></div>
@@ -103,7 +110,7 @@
 	
 			<div id="edit_user_userprofileform_div"></div>
 	</form>
-<input type="button" value="Save" onclick=""/>	   
+<input type="button" value="Save" onclick=""/>-->	   
 </div>
 
 
@@ -160,6 +167,68 @@ function add_team_js(data)
 	clearForm2();
 } 
 
-    
+ 
+//Select2 Function
+$(function(){
+    function movieFormatResult(user) {
+        var markup = "<table padding=3><tr>";
+            markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
+        
+        markup += "<td><div>" + user.name + "</div></td>";
+        
+        markup += "<td><div>" + user.mobile + "</div>";
+        
+            markup += "</td><td><div>" + user.email + "</div>";
+         
+        
+        
+        markup += "</td></tr></table>"
+        return markup;
+    }
+
+    function movieFormatSelection(user) {
+    /*
+        $('#id_email').val(user.email)
+        $('#id_city').val(user.city)
+        $('#id_mobile_number').val(user.mobile_number)
+        $('#id_college').val(user.college)
+        $('#id_gender').val(user.gender)
+        $('#id_desk_id').val(user.desk_id=='SA14W00'||user.desk_id==''?'SA14D0000':user.desk_id)
+        $('#alert-user').hide()*/
+        return user.id;
+    }
+
+$("#website_id").select2({
+    placeholder: "Enter existing user's saarang id, name, mobile, email",
+    minimumInputLength: 1,
+    ajax: {
+        url: "{% url 'qms_id_search' %}",
+        dataType: 'json',
+        quietMillis: 100,
+        data: function (term, page) { // page is the one-based page number tracked by Select2
+            return {
+                q: term, //search term
+                page_limit: 10, // page size
+                page: page, // page number
+                //apikey: "ju6z9mjyajq2djue3gbvv26t"
+            };
+        },
+        results: function (data, page) {
+            //var more = (page * 10) < data.total; // whether or not there are more results available
+
+            //console.log(data.movies)
+            // notice we return the value of more so Select2 knows if more results can be loaded
+            return {results: data};
+        }
+    },
+    formatResult: movieFormatResult, // omitted for brevity, see the source of this page
+    formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
+    dropdownCssClass: 'bigdrop', // apply css that makes the dropdown taller
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+});
+
+}); 
+ 
+ 
 </script>
 {% endblock content %}

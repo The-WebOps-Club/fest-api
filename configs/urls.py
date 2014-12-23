@@ -106,6 +106,7 @@ urlpatterns = patterns('',
     url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
 	#qms portal
 	url(r'^portals/qms/$','apps.portals.qms.views.qms_portal', name='qms_portal' ),
+	url(r'^search2/$', 'apps.portals.qms.views.id_search', name='qms_id_search'),
     # Participant - Login/registration
     url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
     url(r'^participant_login/$','apps.users.views.participant_login', name='participant_login'),

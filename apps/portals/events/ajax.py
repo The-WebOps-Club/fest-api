@@ -332,9 +332,9 @@ def delete_slot(request,slot_id):
 
 
 #QMS PORTAL FUNCTIONS - IT IS HERE BECAUSE I CAN'T GET DAJAXICE FUNCTIONS TO WORK THERE. WILL SHIFT EVERYTHING THERE LATER         
-from apps.users.forms import LoginForm,UserProfileForm,UserForm
+from apps.users.forms import LoginForm,UserForm
 from apps.users.models import Team
-from apps.portals.qms.forms import AddTeamForm
+from apps.portals.qms.forms import AddTeamForm,UserProfileForm
 
 @dajaxice_register    
 def add_user(request,userform,userprofileform):
@@ -353,6 +353,13 @@ def add_user(request,userform,userprofileform):
 		
 		profile = user_profile_form.save(commit=False)
 		profile.user = user
+		profile.email=user.email
+		if profile.mobile_number:
+			profile.mobile=profile.mobile_number
+		if user.first_name:
+			profile.name=user.first_name
+			if user.last_name:
+				profile.name=user.first_name + " " + user.last_name
 		profile.save()
 		message="Successfully added User"
 	if valid==0:
