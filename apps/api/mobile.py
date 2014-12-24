@@ -693,8 +693,8 @@ class AccomViewSet(viewsets.ViewSet):
             "start_time" : None,
             "end_date" : None,
             "end_time" : None
-        } for i in xrange(5)]
-        for i in xrange(5):
+        } for i in xrange(7)]
+        for i in xrange(7):
             for key in people[i]:
                 _data = request.DATA.get(key + "_" + str(i+1))
                 # print _data
@@ -719,7 +719,7 @@ class AccomViewSet(viewsets.ViewSet):
                             }, status=status.HTTP_400_BAD_REQUEST);
                     people[i][key] = _data
         # Coming here means stuff is valid
-        for i in xrange(5):
+        for i in xrange(7):
             _data = people[i]["shid"]
             if _data and _data != None:
                 accom = Accom(user=User.objects.get(id=_data))
