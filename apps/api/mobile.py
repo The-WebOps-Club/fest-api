@@ -261,20 +261,28 @@ class UserViewSet(viewsets.ViewSet):
     def list(self, request):
         user = self.request.user
         user_id = request.GET.get('id', None)
-        # try:
-        if self.request.user.is_superuser and user_id:
-            user = User.objects.get(id=user_id)
-            print "User id found ! ", user.id
-        else:
-            user_email = request.GET.get('email', None)
-            if self.request.user.is_superuser and user_email:
-                user = User.objects.get(email=user_email)
-                print "User email found ! ", [u.email for i in users]
-        # except:
-        #     return Response({
-        #         "message": "Invalid input data - maybe we got multiple possible accounts for the data you gave."
-        #     }, status=status.HTTP_400_BAD_REQUEST);
-        return Response(viewset_response("done", UserInfoSerializer(user).data))
+        try:
+            if self.request.user.is_superuser and user_id:
+                user = User.objects.get(id=user_id)
+                print "User id found ! ", user.id
+            else:
+                user_email = request.GET.get('email', None)
+                if self.request.user.is_superuser and user_email:
+                    user = User.objects.get(email=user_email)
+#                    print "User email found ! ", [u.email for i in users]
+        except User.DoesNotExist:
+            return Response({
+                "message": "Invalid input data - User does not exist."
+            }, status=status.HTTP_400_BAD_REQUEST);
+
+        except:
+            return Response({
+                "message": "Theres some error ! Contact webops team !"
+            }, status=status.HTTP_400_BAD_REQUEST);
+
+        user_data = UserInfoSerializer(user).data
+        user_data['token'] = Token.objects.get_or_create(user=user)[0].key
+        return Response(viewset_response("done", user_data))
 
     def create(self, request):
         user = self.request.user
