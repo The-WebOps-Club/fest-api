@@ -41,6 +41,7 @@ router.register(r'teams',mobile.TeamViewSet,base_name="teams")
 router.register(r'blogs',mobile.BlogFeedViewSet,base_name="blogs")
 router.register(r'events',mobile.EventViewSet,base_name="events")
 router.register(r'users',mobile.UserViewSet,base_name="users")
+router.register(r'accom',mobile.AccomViewSet,base_name="accom")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------

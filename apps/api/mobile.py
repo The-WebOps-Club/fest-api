@@ -16,7 +16,7 @@ from apps.walls.models import Wall,Post
 from apps.api.serializers import *
 from apps.walls.ajax import create_post,create_comment
 from apps.api.utils import *
-from apps.users.models import UserProfile, Team
+from apps.users.models import UserProfile, Team, Accom
 from apps.blog.models import Category, Feed
 
 from annoying.functions import get_object_or_None
@@ -269,14 +269,18 @@ class UserViewSet(viewsets.ViewSet):
                 user_email = request.GET.get('email', None)
                 if self.request.user.is_superuser and user_email:
                     user = User.objects.get(email=user_email)
-                    print "User email found ! ", user.email
+                    # print "User email found ! ", user.email
+        except user.DoesNotExist:
+            return Response({
+                "message": "We could not find any user with that info."
+            }, status=status.HTTP_400_BAD_REQUEST);
         except:
             return Response({
-                "message": "Invalid input data - maybe we got multiple possible accounts for the data you gave."
+                "message": "Theres some error ! Contact webops team !"
             }, status=status.HTTP_400_BAD_REQUEST);
         user_data = UserInfoSerializer(user).data
         user_data['token'] = Token.objects.get_or_create(user=user)[0].key
-        return Response(viewset_response("done", ))
+        return Response(viewset_response("done", user_data))
 
     def create(self, request):
         user = self.request.user
@@ -636,3 +640,98 @@ Shaastra 2015.
             return Response({
                 "error": "An error occured ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
             }, status=status.HTTP_400_BAD_REQUEST)
+
+class UserViewSet(viewsets.ViewSet):
+    def list(self, request):
+        user = self.request.user
+        user_id = request.GET.get('id', None)
+        try:
+            if self.request.user.is_superuser and user_id:
+                user = User.objects.get(id=user_id)
+                print "User id found ! ", user.id
+            else:
+                user_email = request.GET.get('email', None)
+                if self.request.user.is_superuser and user_email:
+                    user = User.objects.get(email=user_email)
+                    # print "User email found ! ", user.email
+        except user.DoesNotExist:
+            return Response({
+                "message": "We could not find any user with that info."
+            }, status=status.HTTP_400_BAD_REQUEST);
+        except:
+            return Response({
+                "message": "Theres some error ! Contact webops team !"
+            }, status=status.HTTP_400_BAD_REQUEST);
+        user_data = UserInfoSerializer(user).data
+        user_data['token'] = Token.objects.get_or_create(user=user)[0].key
+        return Response(viewset_response("done", user_data))
+
+    def create(self, request):
+        user = self.request.user
+        try:
+            for i in request.POST:
+                if i in USER_MUTABLE_FIELDS:
+                    if i == "password":
+                        user.set_password(request.POST[i])
+                    else:
+                        setattr( user, i, request.POST[i] )
+        except:
+            return Response("Invalid input data.",[]);
+        user.save()
+        return Response( viewset_response( "done", UserInfoSerializer(user).data ) )
+
+class AccomViewSet(viewsets.ViewSet):
+    def  list(self, request):
+        return Response(viewset_response("done", {}))
+
+    def create(self, request):
+        user = self.request.user
+        people = [{
+            "shid" : None,
+            "gender" : None,
+            "start_date" : None,
+            "start_time" : None,
+            "end_date" : None,
+            "end_time" : None
+        } for i in xrange(5)]
+        for i in xrange(5):
+            for key in people[i]:
+                _data = request.DATA.get(key + "_" + str(i+1))
+                # print _data
+                if _data and _data != None:
+                    if key == "shid":
+                        _data = "15".join(_data.split("15")[1:])
+                        try:
+                            _data = int(_data)
+                        except ValueError:
+                            return Response({
+                                "message": "The Shaastra ID for member " + str(i+1) + " is invalid !"
+                            }, status=status.HTTP_400_BAD_REQUEST);
+                        user = get_object_or_None(User, id=_data)
+                        if not user:
+                            return Response({
+                                "message": "The Shaastra ID for member " + str(i+1) + " is not in our systems !"
+                            }, status=status.HTTP_400_BAD_REQUEST);
+                        test = get_object_or_None(Accom, user__id=_data)
+                        if test:
+                            return Response({
+                                "message": "Member " + str(i+1) + " has already paid according to our systems !"
+                            }, status=status.HTTP_400_BAD_REQUEST);
+                    people[i][key] = _data
+        # Coming here means stuff is valid
+        for i in xrange(5):
+            _data = people[i]["shid"]
+            if _data and _data != None:
+                accom = Accom(user=User.objects.get(id=_data))
+                for key in people[i]:
+                    if key == "start_date":
+                        accom.start_date = people[i]["start_date"]
+                    elif key == "start_time":
+                        accom.start_time = people[i]["start_time"]
+                    elif key == "end_date":
+                        accom.end_date = people[i]["end_date"]
+                    elif key == "end_time":
+                        accom.end_time = people[i]["end_time"]
+                accom.save()
+        return Response(viewset_response( "done", people ))
+
