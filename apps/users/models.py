@@ -210,7 +210,9 @@ class UserProfile(models.Model): # The corresponding auth user
     # is_core            = models.BooleanField(default=False)
     # is_hospi           = models.BooleanField(default=False)
 
-
+    accom_start        = models.DateTimeField(default=timezone.now() + datetime.timedelta(2))
+    accom_end          = models.DateTimeField(default=timezone.now() + datetime.timedelta(2))
+    accom_gender       = models.CharField(max_length=1, choices=GENDER_CHOICES, default='F')
 
     #Events registerd
 
@@ -397,4 +399,14 @@ class Team(models.Model):
     name            = models.CharField(max_length=100, unique=True)
     members         = models.ManyToManyField(User, null=True, blank=True, related_name='teams')
 
+
+class Accom(models.Model):
+    user = models.OneToOneField(User, related_name='accom')
+    # room = models.CharField(max_length=5)
+    # hostel = models.CharField(max_length=15, choices = HOSTEL_CHOICES, null=True)
+    start_date = models.CharField(max_length=30)
+    start_time = models.CharField(max_length=30)
+    end_date = models.CharField(max_length=30)
+    end_time = models.CharField(max_length=30)
+    gender = models.CharField(max_length=1)
 
