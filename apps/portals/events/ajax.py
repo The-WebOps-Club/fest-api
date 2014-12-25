@@ -334,7 +334,10 @@ def delete_slot(request,slot_id):
 #QMS PORTAL FUNCTIONS - IT IS HERE BECAUSE I CAN'T GET DAJAXICE FUNCTIONS TO WORK THERE. WILL SHIFT EVERYTHING THERE LATER         
 from apps.users.forms import LoginForm,UserForm
 from apps.users.models import Team
-from apps.portals.qms.forms import AddTeamForm,UserProfileForm
+from apps.portals.qms.forms import AddTeamForm,UserProfileForm,AddEventRegistrationForm
+
+from apps.events.models import EventRegistration
+
 
 @dajaxice_register    
 def add_user(request,userform,userprofileform):
@@ -385,3 +388,20 @@ def add_team(request,teamform):
 			for error in field.errors:
 				message=message+field.html_name+" : "+error+"\n"
 	return json.dumps({'message': message}) 
+	
+	
+	
+	
+@dajaxice_register    
+def register_user_team(request,registerform):
+	message="Your form has the following errors:\n"
+	register_form = AddEventRegistrationForm(deserialize_form(registerform))
+	if register_form.is_valid():
+		register_form.save()
+		message="Successfully added registration"
+	else:
+		for field in register_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"\n"
+	return json.dumps({'message': message}) 	
+

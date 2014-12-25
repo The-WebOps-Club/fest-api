@@ -1,6 +1,7 @@
 from django import forms
 from django.db import models
 from apps.users.models import UserProfile, Team
+from apps.events.models import EventRegistration
 from django.contrib.auth.models import User
 
 
@@ -51,3 +52,9 @@ class UserProfileForm(forms.ModelForm):
 			instance.save()
 		return instance
 
+
+
+class AddEventRegistrationForm(forms.ModelForm):
+    class Meta:
+        model = EventRegistration
+        #fields = ['name','members','accomodation_status']

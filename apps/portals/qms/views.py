@@ -6,9 +6,10 @@ from apps.walls.models import Wall
 from apps.users.models import ERPProfile, Dept, Subdept, Page,UserProfile
 from django.contrib.auth.models import User
 from misc.models import College
+from apps.events.models import EventRegistration
 
 from apps.users.forms import LoginForm,UserForm
-from apps.portals.qms.forms import AddTeamForm,UserProfileForm
+from apps.portals.qms.forms import AddTeamForm,UserProfileForm,AddEventRegistrationForm
 
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect
 from django.http import HttpResponse
@@ -50,13 +51,41 @@ def qms_portal(request):
     user_form = UserForm()
     user_profile_form = UserProfileForm()
     teamform = AddTeamForm()
-    to_return={'userform':user_form,'userprofileform':user_profile_form,'teamform':teamform}
+    registrationform=AddEventRegistrationForm()
+    to_return={'userform':user_form,'userprofileform':user_profile_form,'teamform':teamform,'registrationform':registrationform}
     return render(request, 'portals/qms/qms.html', to_return)
     
     
 @login_required
 def id_search(request):
-    print "yooooooooooooooooooooooooooooooooooooooooooooooo"
+    data=request.GET.copy()
+    user_list = []
+    selected_users=[]
+    users_id = UserProfile.objects.filter(saarang_id__contains=data['q'].upper())[:10]
+    users_email = UserProfile.objects.filter(email__contains=data['q'].lower())[:10]
+    users_name = UserProfile.objects.filter(name__contains=data['q'])[:10]
+    users_mobile = UserProfile.objects.filter(mobile_number__contains=data['q'])[:10]
+    
+    
+    for user in users_id:
+        selected_users=selected_users+[user]
+    for user in users_email:
+        selected_users=selected_users+[user]
+    for user in users_name:
+        selected_users=selected_users+[user]
+    for user in users_mobile:
+        selected_users=selected_users+[user]
+    selected_users=set(selected_users)
+    
+    for user in selected_users:
+        user_list.append({"desk_id":user.desk_id,'saarang_id':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile, 'city':user.city, 'college':user.college.name, 'gender':user.gender.capitalize() })
+    user_dict = json.dumps(user_list)
+    return HttpResponse(user_dict)
+
+
+'''
+@login_required
+def id_search(request):
     data=request.GET.copy()
     user_list = []
     users_id = UserProfile.objects.filter(saarang_id__contains=data['q'].upper())[:10]
@@ -72,7 +101,7 @@ def id_search(request):
     for user in users_mobile:
         user_list.append({"desk_id":user.desk_id,'saarang_id':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile, 'city':user.city, 'college':user.college.name, 'gender':user.gender.capitalize() })
     user_dict = json.dumps(user_list)
-    print user_list
-    print user_dict
+    for user in user_list:
+    	print user
     return HttpResponse(user_dict)
-
+'''
