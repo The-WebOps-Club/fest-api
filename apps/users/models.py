@@ -401,7 +401,7 @@ class Team(models.Model):
 
 
 class Accom(models.Model):
-    paid_by = models.OneToOneField(User, related_name='accom_paid', null=True)
+    paid_by = models.ForeignKey(User, related_name='accom_paid', null=True)
     user = models.OneToOneField(User, related_name='accom')
     # room = models.CharField(max_length=5)
     # hostel = models.CharField(max_length=15, choices = HOSTEL_CHOICES, null=True)

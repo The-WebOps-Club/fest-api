@@ -732,9 +732,7 @@ class AccomViewSet(viewsets.ViewSet):
                     elif key == "end_date":
                         accom.end_date = people[i]["end_date"]
                     elif key == "end_time":
-                        accom.end_time = people[i]["end_time"]
-                
-                    
+                        accom.end_time = people[i]["end_time"]     
                 accom.save()
         return Response(viewset_response( "done", people ))
 
