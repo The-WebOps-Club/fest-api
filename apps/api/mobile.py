@@ -685,7 +685,7 @@ class AccomViewSet(viewsets.ViewSet):
         return Response(viewset_response("done", {}))
 
     def create(self, request):
-        user = self.request.user
+        self_user = self.request.user
         people = [{
             "shid" : None,
             "gender" : None,
@@ -723,6 +723,7 @@ class AccomViewSet(viewsets.ViewSet):
             _data = people[i]["shid"]
             if _data and _data != None:
                 accom = Accom(user=User.objects.get(id=_data))
+                accom.paid_by = self_user
                 for key in people[i]:
                     if key == "start_date":
                         accom.start_date = people[i]["start_date"]
@@ -732,6 +733,8 @@ class AccomViewSet(viewsets.ViewSet):
                         accom.end_date = people[i]["end_date"]
                     elif key == "end_time":
                         accom.end_time = people[i]["end_time"]
+                
+                    
                 accom.save()
         return Response(viewset_response( "done", people ))
 
