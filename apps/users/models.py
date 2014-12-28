@@ -410,4 +410,5 @@ class Accom(models.Model):
     end_date = models.CharField(max_length=30)
     end_time = models.CharField(max_length=30)
     gender = models.CharField(max_length=1)
+    ref_no = models.CharField(max_length=20)
 

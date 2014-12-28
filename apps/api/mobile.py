@@ -27,6 +27,7 @@ from django.views.decorators.csrf import csrf_exempt
 USER_MUTABLE_FIELDS = ["password", "first_name", "last_name"];
 PROFILE_MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","college_text","school_student","want_accomodation","age","city","barcode"];
 EVENT_MUTABLE_FIELDS = ["has_tdp","team_size_min","team_size_max","registration_starts","registration_ends"];
+ACCOM_MUTABLE_FIELDS = ["start_date","start_time","end_date","end_time","ref_no","gender","paid_by","user"];
 
 class NotificationViewSet(viewsets.ViewSet):
     """
@@ -725,14 +726,8 @@ class AccomViewSet(viewsets.ViewSet):
                 accom = Accom(user=User.objects.get(id=_data))
                 accom.paid_by = self_user
                 for key in people[i]:
-                    if key == "start_date":
-                        accom.start_date = people[i]["start_date"]
-                    elif key == "start_time":
-                        accom.start_time = people[i]["start_time"]
-                    elif key == "end_date":
-                        accom.end_date = people[i]["end_date"]
-                    elif key == "end_time":
-                        accom.end_time = people[i]["end_time"]     
+                    if key in ACCOM_MUTABLE_FIELDS:
+                        setattr( accom, key, people[i][key] )
                 accom.save()
         return Response(viewset_response( "done", people ))
 
