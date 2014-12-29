@@ -31,6 +31,7 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
 
 class ParticipantProfileSerializer(serializers.ModelSerializer):
+    email = serializers.BooleanField(source='user.email', required=False)    
     class Meta:
         model = UserProfile
 

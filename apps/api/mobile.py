@@ -229,6 +229,14 @@ class UserProfileViewSet(viewsets.ViewSet):
 
     def create(self, request):
         user = self.request.user
+        user_email = request.DATA.get('email', None)
+        created = None
+        if self.request.user.is_superuser and user_email:
+            temp = User.objects.get_or_create(email=user_email)
+            user = temp[0]
+            created = temp[1]
+            user.username = user_email[:30]
+            user.save()
         profile = UserProfile.objects.get_or_create( user=user )[0]
         try:
             for i in request.DATA:
@@ -252,8 +260,9 @@ class UserProfileViewSet(viewsets.ViewSet):
                 "message": "Invalid input data."
             }, status=status.HTTP_400_BAD_REQUEST);
         profile.save()
+        profile_id = profile.id
         user.save()
-        data = ParticipantProfileSerializer(profile).data
+        data = ParticipantProfileSerializer(UserProfile.objects.get(id=profile_id)).data
         data['first_name'] = user.first_name
         data['last_name'] = user.last_name
         return Response( viewset_response( "done", data ) )
