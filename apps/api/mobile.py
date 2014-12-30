@@ -230,13 +230,48 @@ class UserProfileViewSet(viewsets.ViewSet):
     def create(self, request):
         user = self.request.user
         user_email = request.DATA.get('email', None)
+        user_shid = request.DATA.get('id', None)
+        # user_create = request.DATA.get('create', None)
         created = None
-        if self.request.user.is_superuser and user_email:
+        if self.request.user.is_superuser and user_email and "create" in request.DATA:
             temp = User.objects.get_or_create(email=user_email)
             user = temp[0]
             created = temp[1]
             user.username = user_email[:30]
             user.save()
+        elif self.request.user.is_superuser and user_shid and "data" in request.DATA:
+            if user_shid == "":
+                return Response({
+                    "message": "Ths shaastra ID given is invalid."
+                }, status=status.HTTP_400_BAD_REQUEST);    
+            if ( user_shid[0].isdigit() ):
+                shid = user_shid
+            else:
+                shid = "15".join(user_shid.split("15")[1:])
+
+            try:
+                shid = int(shid)
+            except ValueError:
+                return Response({
+                    "message": "Ths shaastra ID given is invalid."
+                }, status=status.HTTP_400_BAD_REQUEST);    
+            try:
+                user = User.objects.get(id=shid)
+            except User.DoesNotExist:
+                return Response({
+                    "message": "We could not find any user with that shaastra id."
+                }, status=status.HTTP_400_BAD_REQUEST);    
+        elif self.request.user.is_superuser and user_email and "data" in request.DATA:
+            try:
+                user = User.objects.get(email=user_email)
+            except User.DoesNotExist:
+                return Response({
+                    "message": "We could not find any user with that email id."
+                }, status=status.HTTP_400_BAD_REQUEST)
+        elif self.request.user.is_superuser and "data" in request.DATA:
+            return Response({
+                "message": "Need a valid Email id or shaastra ID"
+            }, status=status.HTTP_400_BAD_REQUEST);    
         profile = UserProfile.objects.get_or_create( user=user )[0]
         try:
             for i in request.DATA:
