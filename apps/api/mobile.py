@@ -261,6 +261,10 @@ class UserProfileViewSet(viewsets.ViewSet):
                 return Response({
                     "message": "We could not find any user with that shaastra id."
                 }, status=status.HTTP_400_BAD_REQUEST);    
+            except User.DoesNotExist:
+                return Response({
+                    "message": "We could not find any user with that shaastra id."
+                }, status=status.HTTP_400_BAD_REQUEST);    
         elif self.request.user.is_superuser and user_email and "data" in request.DATA:
             try:
                 user = User.objects.get(email=user_email)
