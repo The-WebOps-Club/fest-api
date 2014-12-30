@@ -7,6 +7,7 @@ from apps.walls.models import Wall, Post, Comment
 import json
 import os
 from django.conf import settings
+import random
 r = lambda: random.randint(0,255)
 
 class Command(BaseCommand):
@@ -53,7 +54,7 @@ class Command(BaseCommand):
                     "color": color,
                     "abstract": "",
                     "tag": "TOPIC_"+sname.upper(),
-                    "original_id": "id-"+sname.upper,
+                    "original_id": "id-"+sname.lower(),
                     "order_in_category": j
                 } 
             )
