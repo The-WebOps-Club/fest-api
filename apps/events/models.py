@@ -26,7 +26,10 @@ from misc.utils import *
 from configs.settings import FEST_NAME
 import select2.models
 import select2.forms
-
+from django.core.management import call_command
+import os
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 EVENT_VENUES=settings.EVENT_VENUES
 
@@ -171,3 +174,11 @@ class EventSchedule(models.Model):
     venue            = models.CharField(max_length=100, choices=EVENT_VENUES)
     def __unicode__(self):
         return str(self.event)
+    
+
+@receiver(post_save, sender=EventSchedule)
+def generate_json(sender, **kwargs):
+    call_command('android_json')
+    call_command('collectstatic', interactive=False)
+    if settings.PERMISSION_COMMAND:
+        os.system('/home/saarango/git/fest-api/runscript')
