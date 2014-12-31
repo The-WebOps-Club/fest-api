@@ -1,21 +1,45 @@
-{% extends 'base/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+{% load compress %}
 {% load check_access %}
-{% block content %}
 {% load dajaxice_templatetags %}
 {% dajaxice_js_import %}
 {%  csrf_token %}
 {% load staticfiles %}
 
+<style>
+  
+  select option{
+    color: black;
+}
+</style>
 
-<script src="//cdn.ckeditor.com/4.4.5/standard/ckeditor.js"></script>
+<link rel="shortcut icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<title>{% block title %}Events | Saarang{% endblock %}</title>
+
+<link rel="icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+<link href="{% static 'css/prettify.css' %}" rel="stylesheet">    
+<link rel="shortcut icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<link rel="icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/toastr.min.css' %}">
+
+
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/jquery.dataTables.css' %}">
 
+<script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+
+<link href="{% static 'css/jquery-ui-1.10.3.custom.css' %}" rel="stylesheet" media="screen">
 
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
   <link rel="stylesheet" href="/resources/demos/style.css">
 
 
@@ -26,7 +50,9 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/select2.css' %}">
 <script type="text/javascript" src="{% static 'js/select2.js' %}"></script>
 
+<script src="//cdn.ckeditor.com/4.4.5/standard/ckeditor.js"></script>
 
+<script type="text/javascript" charset="utf8" src="{% static 'js/toastr.min.js' %}"></script>
 <script>
 jQuery(function(){
 jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
@@ -43,15 +69,40 @@ CKEDITOR.replace('long_description');
 
 {{message}} <br />
 <p id="message"> </p> </br>
-{% if core_perm %}
-<button type="button" onclick="Dajaxice.apps.portals.events.display_add_event(add_new_event);return false;" class="btn primary">Add New Event</button> 
-{% endif %}
-<button type="button" id="viewid" onclick="Dajaxice.apps.portals.events.view_edit_event(view_edit_event_js);return false;" class="btn  primary">View/Edit Event</button> 
-<button type="button" onclick="event_registration_list();return false;" class="btn primary">View Event Registration List</button> 
 
-<button type="button" onclick="Dajaxice.apps.portals.events.display_add_event_slot(event_slot);return false;" class="btn primary">Add Event Slot</button> 
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
 
-<button type="button" onclick="Dajaxice.apps.portals.events.display_add_event_winner(event_winner);return false;" class="btn primary">Add Event Winner</button> 
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        {% if core_perm %}
+        <li class="" onclick="Dajaxice.apps.portals.events.display_add_event(add_new_event);return false;"><a href="#">Add New Event</a></li>{% endif %}
+        <li id="viewid" class="active" onclick="Dajaxice.apps.portals.events.view_edit_event(view_edit_event_js);return false;"><a href="#">View/Edit Event</a></li>
+        <li class="" onclick="event_registration_list();return false;"><a href="#">Event Registration List</a></li>
+        <li class="" onclick="Dajaxice.apps.portals.events.display_add_event_slot(event_slot);return false;"><a href="#">Add Event Slot</a></li>
+        <li  class="" onclick="Dajaxice.apps.portals.events.display_add_event_winner(event_winner);return false;"><a href="#">Add Event Winner</a></li>
+      </ul>
+      <p class="navbar-text navbar-right"><a href="http://saarang.org" class="navbar-brand" style="height:20px;padding:0px" target="_blank"><img src="{% static 'img/saarang_pics/favicon.ico' %}" height="110%" width="40%"/></a></p>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<script type="text/javascript">
+$('.nav li a').on('click', function() {
+    $(this).parent().parent().find('.active').removeClass('active');
+    $(this).parent().addClass('active');
+});
+</script>
 
 <br />
 <br />
@@ -63,17 +114,17 @@ CKEDITOR.replace('long_description');
 </div>   
 
 <div id="event_list">
-<table id="tableid">
+<table id="tableid"  style="color:black;">
 <thead><tr><th>Event </th><th> Event Category </th> <th> Event Email Id </th></tr></thead>
     {% for event in event_list %}
     <tr> <td>
                 <b>{{event.name}}</b>
                 {% if core_perm %}
-                <button class="btn small danger pull-right" onclick="confirm_delete_event('{{event.name}}')"> X Delete </button>
+                <button class="btn btn-large btn-danger pull-right" onclick="confirm_delete_event('{{event.name}}')"> X Delete </button>
                 &nbsp &nbsp
                 {% endif %}
-                <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'});return false;"><i class="icon-pencil"></i></button>
-                <button class="btn small info pull-right" onclick="Dajaxice.apps.portals.events.reg_list(reg_list_js, {'event_name':'{{event.name}}'})"> View Registrations </button>
+                <button type="button" class="btn btn-large btn-success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {'event_name':'{{event.name}}','username':'{{user.username}}'});return false;"><i class="glyphicon glyphicon-pencil"></i></button>
+                <button class="btn btn-large btn-info pull-right" onclick="Dajaxice.apps.portals.events.reg_list(reg_list_js, {'event_name':'{{event.name}}'})"> View Registrations </button>
                 </td>
                 <td> {{event.category}}</td>
                 <td> {{event.email}}</td>
@@ -145,7 +196,7 @@ Description: <textarea id="tab_Description_input" name="edit_taB_description"></
 {{ event_form.as_table }}
 </table>
 </div>
-<p><input type="button" class="btn success" onclick="Dajaxice.apps.portals.events.add_event(add_event_js, {'event_form':$('#event_form').serialize(true)});return false;" value="Add Event"/></p>
+<p><input type="button" class="btn btn-success" onclick="Dajaxice.apps.portals.events.add_event(add_event_js, {'event_form':$('#event_form').serialize(true)});return false;" value="Add Event"/></p>
 </form>
 </div>
 
@@ -155,7 +206,7 @@ Description: <textarea id="tab_Description_input" name="edit_taB_description"></
 {%  csrf_token %}
 <div id="add_slot_form">
 </div>
-<p><input type="button" class="btn success" onclick="Dajaxice.apps.portals.events.add_slot(add_slot_js, {'slot_form':$('#slot_form').serialize(true)});return false;" value="Add Slot"/></p>
+<p><input type="button" class="btn btn-success btn-large" onclick="Dajaxice.apps.portals.events.add_slot(add_slot_js, {'slot_form':$('#slot_form').serialize(true)});return false;" value="Add Slot"/></p>
 </form>
 <div id="view_slot_table">
 </div>
@@ -180,7 +231,8 @@ Use this to add an image for the event. This has to be done separately. Make sur
 <tr><td><input id="id_event_id" name="event_id" type="hidden" value=""/></td></tr>
 <tr><th><label for="id_image">Image:</label></th><td><input id="id_image" name="image" type="file" /></td></tr>
 </table>
-<p><input type="submit" class="btn" value="submit" ></p>
+<br /> <br />
+<p><input type="submit" class="btn btn-success btn-large" value="submit" ></p>
 </form>
 <div id="edit_event_slot">
 
@@ -196,7 +248,7 @@ Use this to add an image for the event. This has to be done separately. Make sur
 {%  csrf_token %}
 <div id="add_winner_form">
 </div>
-<p><input type="button" class="btn success" onclick="Dajaxice.apps.portals.events.add_winner(add_winner_js, {'winner_form':$('#winner_form').serialize(true)});return false;" value="Add Winner"/></p>
+<p><input type="button" class="btn btn-success btn-large" onclick="Dajaxice.apps.portals.events.add_winner(add_winner_js, {'winner_form':$('#winner_form').serialize(true)});return false;" value="Add Winner"/></p>
 </form>
 </div>
 
@@ -230,15 +282,15 @@ function show_tabs_js(data){
     var len = arr.length;
     var text = "",i;
      if (data.has_perm=="yes"){
-    text += '<button type="button" id="edit_event_clickable" class="btn small" onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'});return false;" >  Edit Event Details &nbsp &nbsp   </button>';
+    text += '<button type="button" id="edit_event_clickable" class="btn btn-large btn-info" onclick="Dajaxice.apps.portals.events.edit_event_details(edit_event_details_js,{\'event_name\':\''+data.event_name+'\'});return false;" >  Edit Event Details &nbsp &nbsp   </button>';
     }
     for (i=0; i < len-1; i++) {
-    text += '&nbsp &nbsp<button type="button" class="btn small " onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'});return false;">'+arr[i]+'</button>' + " ";
+    text += '&nbsp &nbsp<button type="button" class="btn btn-large btn-info" onclick="Dajaxice.apps.portals.events.show_tabs_description(show_tabs_description_js, {\'event_name\':\''+data.event_name+'\',\'event_tab\':\''+arr[i]+'\',\'has_perm\':\''+ data.has_perm +'\'});return false;">'+arr[i]+'</button>' + " ";
     }
 
     //The add_new_tab button is shown only if user has permission
     if (data.has_perm=="yes"){
-    text += '<button type="button" class="btn small success pull-right" onclick="add_new_tab_js(\''+data.event_name+'\');return false;"> <i class="icon-plus"></i>Add New Tab </button>' + " ";
+    text += '<button type="button" class="btn btn-large btn-success pull-right" onclick="add_new_tab_js(\''+data.event_name+'\');return false;"> <i class="glyphicon glyphicon-plus"></i>Add New Tab </button>' + " ";
     document.getElementById("event_tabs").innerHTML = text;}
     else 
     {
@@ -254,10 +306,10 @@ function show_tabs_description_js(data){
 //delete tab button
     //DELETE and EDIT button displayed only  if user has permission
     if (data.has_perm=="yes"){
-    document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn small danger" onclick="confirm_delete_tab(\''+data.event_name+'\',\''+data.event_tab_name+'\',\'{{user.username}}\');return false;"> <font size="1">X Delete Tab</font></button>  ';
+    document.getElementById("delete_tab_button").innerHTML = '<button type="button" class="btn btn-large btn-danger" onclick="confirm_delete_tab(\''+data.event_name+'\',\''+data.event_tab_name+'\',\'{{user.username}}\');return false;"> <font size="1">X Delete Tab</font></button>  ';
     
 //edit tab button    
-    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn small info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + '#event_tabs_description' + '\')"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
+    document.getElementById("edit_tab_div").innerHTML = '<button type="button" class="btn btn-large btn-info" onclick="edit_some_tab_js(\''+ data.event_name + '\',\'' + data.event_tab_name + '\',\'' + '#event_tabs_description' + '\')"> Edit Tab Names or Description</button> On clicking this button Form appears at bottom of the page';
     }
     
     //clears add edit tab forms
@@ -385,10 +437,10 @@ function view_edit_event_js(data){
     event_emails_array=data.event_emails.split("|");
     event_categories_array=data.event_categories.split("|");
     len=event_names_array.length
-    text='<table id="tableid"><thead><tr><th>Event </th> <th> Event Category </th> <th> Event Email Id </th></tr></thead>';
+    text='<table id="tableid"  style="color:black;"><thead><tr><th>Event </th> <th> Event Category </th> <th> Event Email Id </th></tr></thead>';
     for (i=0;i<len-1;i++)
         {
-        text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b>{% if core_perm %}<button onclick="confirm_delete_event(\''+event_names_array[i]+'\')" class="btn btn-xs danger pull-right"> X Delete </button> &nbsp &nbsp {% endif %} <button type="button" class="btn btn-xs success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'});return false;"><i class="icon-pencil"></i></button><button class="btn small info pull-right" onclick="Dajaxice.apps.portals.events.reg_list(reg_list_js, {\'event_name\':\''+event_names_array[i]+'\'})"> View Registrations </button></td><td> '+event_categories_array[i]+'</td><td> '+event_emails_array[i]+'</td></tr>'
+        text=text+'<tr><td><b>'+event_names_array[i]+'&nbsp &nbsp</b>{% if core_perm %}<button onclick="confirm_delete_event(\''+event_names_array[i]+'\')" class="btn btn-l arge btn-danger pull-right"> X Delete </button> &nbsp &nbsp {% endif %} <button type="button" class="btn btn-large btn-success pull-right" onclick="Dajaxice.apps.portals.events.show_tabs(show_tabs_js, {\'event_name\':\''+event_names_array[i]+'\',\'username\':\'{{user.username}}\'});return false;"><i class="glyphicon glyphicon-pencil"></i></button><button class="btn btn-large btn-info pull-right" onclick="Dajaxice.apps.portals.events.reg_list(reg_list_js, {\'event_name\':\''+event_names_array[i]+'\'})"> View Registrations </button></td><td> '+event_categories_array[i]+'</td><td> '+event_emails_array[i]+'</td></tr>'
         }
     text=text+'</table>';
     
@@ -400,7 +452,23 @@ function view_edit_event_js(data){
     //make the other stuff disappear
     document.getElementById("event_form_div").style.display = 'none';
     document.getElementById("edit_event_form_div").style.display = 'none';
-    $('#tableid').dataTable();
+    
+
+       $('#tableid').dataTable( {
+              "bJQueryUI": true,
+              "bPaginate": false,
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } );
     document.getElementById("event_form_div").style.display = 'none';
     document.getElementById("edit_event_form_div").style.display = 'none';
     document.getElementById("event_name").innerHTML = ' ';
@@ -485,7 +553,7 @@ function event_slot(data){
     slot_comment_array=(data.slot_comment).split("|");
     slot_venue_array=(data.slot_venue).split("|");
     len=slot_event_array.length
-    text='<br /><br /><br /><br /><b>EVENT SLOTS :<b><br /><br /><br /><br /><table id="slottableid"><thead><tr><th>Event </th> <th> Slot Start </th> <th> Slot End </th><th> Comment </th><th> Venue </th></tr></thead>';
+    text='<br /><br /><br /><br /><b>EVENT SLOTS :<b><br /><br /><br /><br /><table id="slottableid"  style="color:black;"><thead><tr><th>Event </th> <th> Slot Start </th> <th> Slot End </th><th> Comment </th><th> Venue </th></tr></thead>';
     for (i=0;i<len-1;i++)
         {
         text=text+'<tr><td><b>'+slot_event_array[i]+'&nbsp &nbsp</b></td><td> '+slot_start_array[i]+'</td><td> '+slot_end_array[i]+'</td><td> '+slot_comment_array[i]+'</td><td> '+slot_venue_array[i]+'</td></tr>'
@@ -493,8 +561,7 @@ function event_slot(data){
     text=text+'</table><br /><br /><br /><br /><br />';
     document.getElementById("view_slot_table").innerHTML=text;
     $('#add_slot_form').html("<b>ADD SLOTS FOR EVENTS :</b><br /><br />" + "<table>"+data.form+"</table>");
-    document.getElementById("option_selected").style.display='none';
-    $('#slottableid').dataTable();
+    document.getElementById("option_selected").innerHTML='<h2>SLOT DETAILS</h3>';
     //making data from the other tabs disappear
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
@@ -515,11 +582,26 @@ function event_slot(data){
     document.getElementById("winner_form_div").style.display = 'none';
     jQuery("input[name=slot_start]" ).datetimepicker({format:'m/d/Y H:i'});
     jQuery("input[name=slot_end]" ).datetimepicker({format:'m/d/Y H:i'});
+           $('#slottableid').dataTable( {
+              "bJQueryUI": true,
+              "bPaginate": false,
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } );
 }
 
 function event_winner(data){
     $('#add_winner_form').html("<b>ADD WINNERS FOR EVENTS :</b><br /><br />" + "<table>"+data.form+"</table>");
-    document.getElementById("option_selected").style.display='none';
+    document.getElementById("option_selected").innerHTML='<h2>WINNER DETAILS</h3>';
     //making data from the other tabs disappear
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
@@ -609,7 +691,7 @@ function reg_list_js(data){
     
     for (i=0;i<len-1;i++)
     {
-        text=text+'<tr><td><b>'+user_names_array[i]+'&nbsp &nbsp</b></td><td>'+team_names_array[i]+'</td><td> '+info_array[i]+'<button href="#tempdiv" id="partic_info" class="btn small info pull-right" onclick="Dajaxice.apps.portals.events.participant_info(participant_info_js, {\'participant_name\':\''+user_names_array[i]+'\',\'team_name\':\''+team_names_array[i]+'\'})"><i class="icon-info-sign"></i></button></td></tr>'
+        text=text+'<tr><td><b>'+user_names_array[i]+'&nbsp &nbsp</b></td><td>'+team_names_array[i]+'</td><td> '+info_array[i]+'<button href="#tempdiv" id="partic_info" class="btn small info pull-right" onclick="Dajaxice.apps.portals.events.participant_info(participant_info_js, {\'participant_name\':\''+user_names_array[i]+'\',\'team_name\':\''+team_names_array[i]+'\'})"><i class="glyphicon glyphicon-info-sign"></i></button></td></tr>'
     }
     text=text+"</table><br /><br /><div id='tempdiv'></div>";
     
@@ -672,10 +754,10 @@ function edit_event_details_js(data){
     slot_comment_array=(data.slot_comment).split("|");
     slot_venue_array=(data.slot_venue).split("|");
     len=data.length_count
-    text='<br /><br /><br /><br /><b>EVENT SLOTS :<b><br /><br /><br /><br /><table id="eventslottable"><thead><tr><th> Slot Start </th> <th> Slot End </th><th> Venue </th><th> Comment </th><th></th></tr></thead>';
+    text='<br /><br /><br /><br /><b>EVENT SLOTS :<b><br /><br /><br /><br /><table id="eventslottable" style="color:black;"><thead><tr><th> Slot Start </th> <th> Slot End </th><th> Venue </th><th> Comment </th><th></th></tr></thead>';
     for (i=0;i<len;i++)
         {
-        text=text+'<tr><<td> '+slot_start_array[i]+'</td><td> '+slot_end_array[i]+'</td><td> '+slot_venue_array[i]+'</td><td> '+slot_comment_array[i]+'</td><td><button class = "btn small danger pull-right" type="button" onclick="Dajaxice.apps.portals.events.delete_slot(delete_slot_js, {\'slot_id\':'+slot_id_array[i]+'});return false;">X</button></td></tr>'
+        text=text+'<tr><<td> '+slot_start_array[i]+'</td><td> '+slot_end_array[i]+'</td><td> '+slot_venue_array[i]+'</td><td> '+slot_comment_array[i]+'</td><td><button class = "btn btn-large btn-danger pull-right" type="button" onclick="Dajaxice.apps.portals.events.delete_slot(delete_slot_js, {\'slot_id\':'+slot_id_array[i]+'});return false;">X</button></td></tr>'
         }
     text=text+'</table><br /><br /><br /><br /><br />';
     $('#edit_event_slot').val(text);
@@ -687,10 +769,10 @@ function edit_event_details_js(data){
     winner_added_by_array=(data.winner_added_by).split("|");
     winner_user_array=(data.winner_user).split("|");
     leng=data.length_count_winner
-    textwinner='<br /><br /><br /><br /><b>EVENT WINNERS :<b><br /><br /><br /><br /><table id="eventwinnertable"><thead><tr><th> Winner </th> <th> Position </th><th> Added By </th><th> Comment </th><th></th></tr></thead>';
+    textwinner='<br /><br /><br /><br /><b>EVENT WINNERS :<b><br /><br /><br /><br /><table id="eventwinnertable" style="color:black;"><thead><tr><th> Winner </th> <th> Position </th><th> Added By </th><th> Comment </th><th></th></tr></thead>';
     for (i=0;i<leng;i++)
         {
-        textwinner=textwinner+'<tr><<td> '+winner_user_array[i]+'</td><td> '+winner_position_array[i]+'</td><td> '+winner_added_by_array[i]+'</td><td> '+winner_comment_array[i]+'</td><td><button class = "btn small danger pull-right" type="button" onclick="Dajaxice.apps.portals.events.delete_winner(delete_winner_js, {\'winner_id\':'+winner_id_array[i]+'});return false;">X</button></td></tr>'
+        textwinner=textwinner+'<tr><<td> '+winner_user_array[i]+'</td><td> '+winner_position_array[i]+'</td><td> '+winner_added_by_array[i]+'</td><td> '+winner_comment_array[i]+'</td><td><button class = "btn btn-large btn-danger pull-right" type="button" onclick="Dajaxice.apps.portals.events.delete_winner(delete_winner_js, {\'winner_id\':'+winner_id_array[i]+'});return false;">X</button></td></tr>'
         }
     textwinner=textwinner+'</table><br /><br /><br /><br /><br />';
     $('#edit_event_winner').val(text);
@@ -716,7 +798,7 @@ function edit_event_details_js(data){
     //Printing the previous values
 
     
-    document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" class="btn success" type="button" onclick="edit_event_details_intermediate_js(\''+data.event_name+'\')" value="Edit Event"/>';
+    document.getElementById("edit_event_form_button").innerHTML = '<input id="edit_event_form_button" class="btn btn-success" type="button" onclick="edit_event_details_intermediate_js(\''+data.event_name+'\')" value="Edit Event"/>';
     
     jQuery("input[name=registration_starts]" ).datetimepicker({format:'m/d/Y H:i'});
     jQuery("input[name=registration_ends]" ).datetimepicker({format:'m/d/Y H:i'});
@@ -724,12 +806,59 @@ function edit_event_details_js(data){
     
     document.getElementById("add_events_form").innerHTML = '';
     CKEDITOR.replace('long_description');
+
+       $('#eventwinnertable').dataTable( {
+              "bJQueryUI": true,
+              "bPaginate": false,
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } );
+
+       $('#eventslottable').dataTable( {
+              "bJQueryUI": true,
+              "bPaginate": false,
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } );
     }
 
 
- 
+
 $(document).ready(function(){
-$('#tableid').dataTable();
+
+       $('#tableid').dataTable( {
+              "bJQueryUI": true,
+              "bPaginate": false,
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } );
 });
 
 function delete_slot_js(data){
@@ -748,16 +877,21 @@ $( "#edit_event_clickable" ).trigger( "click" );
 
 </script>
 
-<script type="text/javascript" charset="utf8" src="{% static 'js/jquery-datatables.js' %}"></script>
+<link href="{% static 'css/jquery.dataTables.css' %}" rel="stylesheet" media="screen">
+<link href="{% static 'css/jquery.dataTables_themeroller.css' %}" rel="stylesheet" media="screen">
+<script src="{% static 'js/jquery.dataTables.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.dataTables.editable.js' %}" ></script>
+
+
+        <script src="{% static 'bootstrap/dataTables/bootstrap.js' %}"></script>
+
+
+</html>
 
 
 
 
 
-
-
-
-{% endblock %}
 
 
 
