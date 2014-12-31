@@ -1,4 +1,6 @@
 # Django
+from django.http import HttpResponse
+
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect, render
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -458,3 +460,6 @@ def unsubscribe(request, username, token):
     # Otherwise redirect to login page
     next_url = reverse('apps.users.views.unsubscribe', kwargs={'username': username, 'token': token,})
     return HttpResponseRedirect('%s?next=%s' % (reverse('login'), next_url))
+
+def test(request):
+    return HttpResponse("ABCD,1234,437829")
