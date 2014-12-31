@@ -51,6 +51,7 @@ urlpatterns = patterns('',
 
     # Users
     url(r'^test/$', 'apps.users.views.test', name='test'), # Logs user in
+    url(r'^data/(?P<user_id>\d+)$', 'apps.users.views.data', name='data'),
     url(r'^login/$', 'apps.users.views.login_user', name='login'), # Logs user in
     url(r'^first_login_required/$', 'apps.users.views.first_login_required', name='first_login_required'), # Gives error message if first_login
     url(r'^associate/$', 'apps.users.views.associate', name='associate'), # Asks for associations

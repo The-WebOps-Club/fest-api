@@ -463,3 +463,18 @@ def unsubscribe(request, username, token):
 
 def test(request):
     return HttpResponse("ABCD,1234,437829")
+
+def data(request, user_id):
+    print user_id
+    if user_id[0] == 'S' or user_id[0] == 's':
+        user_id = "15".join(_id.split("15")[1:])
+    print user_id
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        return HttpResponse("Error : Shaastra ID is not a number")
+    try:
+        u=User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return HttpResponse("Error : Shaastra ID not found")
+    return HttpResponse("|".join([u.get_full_name(), u.profile.college_text, u.profile.mobile_number]))
