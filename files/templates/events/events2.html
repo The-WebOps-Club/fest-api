@@ -106,14 +106,12 @@ $('.nav li a').on('click', function() {
 
 <br />
 <br />
-<div id="option_selected">
+<center>
+<div class="panel panel-info">
+<div id="option_selected" class="panel-heading">
 <h2>VIEW/EDIT EVENTS</h2>
-<br />
-<br />
-
 </div>   
-
-<div id="event_list">
+<div id="event_list" class="panel-body">
 <table id="tableid"  style="color:black;">
 <thead><tr><th>Event </th><th> Event Category </th> <th> Event Email Id </th></tr></thead>
     {% for event in event_list %}
@@ -131,27 +129,17 @@ $('.nav li a').on('click', function() {
         {% endfor %}
 </table>
 </div>     
-
 <div id="event_name"></div>
 <div id="event_tabs"></div>
-<br>
 <h3 id="selected_event_tab"></h3>
 <p><div id="event_tabs_description" class="well"> </div></p>
-<br>
-<br>
-
 <!--DELETE TAB BUTTON-->
 <div id="delete_tab_button"></div> &nbsp
 
 <!--EDIT TAB BUTTON-->
 <div id="edit_tab_div"></div>
-
-
 <!--registration_tab -->
 <div id="registration_tab"> </div><br />
-
-
-
 <!--ADD NEW TAB FORM -->
 <div id="add_new_tab_form" style="display:none;">
 <h3> ADD TAB FORM </h3>
@@ -164,31 +152,21 @@ Description: <textarea name="tab_description_input" id="add_tab_textarea" rows="
 <input type="button" onclick="add_diff_tab_js('{{user.username}}')" value="Create Tab"/>
 </form>
 </div>
-
 <!--EDIT TAB FORM -->
-
 <div id="edit_tab_form" style="display:none;">
 <h3>EDIT TAB FORM</h3>
 <form id="edit_form" method="post" action="" >
 {%  csrf_token %}
-Tab Name: <input type="text" name="tab_Name" id="tab_Name_input" value=""><br>
+Tab Name: <input type="text" name="tab_Name" id="tab_Name_input" value=""><br />
 Description: <textarea id="tab_Description_input" name="edit_taB_description"></textarea>
 <input id="tab_description_hidden" type="hidden" name="tab_Description" value="">
-
 <input id="event_Name_edit_form_hidden" type="hidden" name="event_Name_edit_form" value="">
 <input id="event_tab_Name_edit_form_hidden" type="hidden" name="event_tab_Name_edit_form" value="">
 <input type="button" onclick="edit_tab_intermediate_js('{{user.username}}')" value="Edit Tab" >
 </form>
 </div>
-
-
-
-
-
-
 <!--ADD EVENT FORM -->
-
-<div id="event_form_div" style="display:none;">
+<div id="event_form_div" style="display:none;" class="panel-body">
 <form action="" method="post" id="event_form" accept-charset="utf-8" enctype="multipart/form-data">
 {%  csrf_token %}
 <div id="add_events_form">
@@ -199,8 +177,6 @@ Description: <textarea id="tab_Description_input" name="edit_taB_description"></
 <p><input type="button" class="btn btn-success" onclick="Dajaxice.apps.portals.events.add_event(add_event_js, {'event_form':$('#event_form').serialize(true)});return false;" value="Add Event"/></p>
 </form>
 </div>
-
-
 <div id="slot_form_div" style="display:none;">
 <form action="" method="post" id="slot_form" accept-charset="utf-8" enctype="multipart/form-data">
 {%  csrf_token %}
@@ -211,8 +187,6 @@ Description: <textarea id="tab_Description_input" name="edit_taB_description"></
 <div id="view_slot_table">
 </div>
 </div>
-
-
 <!--EDIT EVENT FORM use some inintialize in ajax.py to add initial values and then serialize the form before sending it-->
 <div id="edit_event_form_div" style="display:none;">
 <h3> EDIT EVENT FORM </h3> All fields left blank will keep the previous values
@@ -253,8 +227,8 @@ Use this to add an image for the event. This has to be done separately. Make sur
 <div id="add_winner_form_table">
 </div>
 </div>
-
-
+</div>
+</center>
 
 <!--JS FUNCTIONS -->
 <script>
@@ -449,7 +423,7 @@ function view_edit_event_js(data){
     document.getElementById("event_list").innerHTML = text
     
     
-    document.getElementById("option_selected").innerHTML = '<h2>VIEW/EDIT EVENTS</h2><br><br>';
+    document.getElementById("option_selected").innerHTML = '<h2>VIEW/EDIT EVENTS</h2>';
     
     //make the other stuff disappear
     document.getElementById("event_form_div").style.display = 'none';
@@ -488,7 +462,7 @@ function view_edit_event_js(data){
 
 function add_new_event(data){
    
-    document.getElementById("option_selected").innerHTML = '<h2>ADD NEW EVENT</h2>';
+    document.getElementById("option_selected").innerHTML = '<h2 class="panel-heading">ADD NEW EVENT</h2>';
 
     //part of the fix for the html editor
     document.getElementById("edit_event_form_dyn").innerHTML = ' ';
@@ -524,7 +498,7 @@ $("select[name=coords]").select2();
 
 function event_registration_list(){
     
-    document.getElementById("option_selected").innerHTML = '<h2>EVENT REGISTRATION LIST</h3>. <h3>Go to the View/Edit Events tab to check the events registration list</h3>';
+    document.getElementById("option_selected").innerHTML = '<h2 class="panel-heading">EVENT REGISTRATION LIST</h2>';
     //making data from the other tabs disappear
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
@@ -725,7 +699,7 @@ function reg_list_js(data){
     len=user_names_array.length;
     //text will be filled into the events_tab div
     
-    text='<table id="registrations_table"><thead><tr><th> User/Team Leader </th> <th> Team Name </th> <th> Extra Information </th></tr></thead>';
+    text='<table id="registrations_table" style="color:black;"><thead><tr><th> User/Team Leader </th> <th> Team Name </th> <th> Extra Information </th></tr></thead>';
     
     for (i=0;i<len-1;i++)
     {
@@ -734,7 +708,21 @@ function reg_list_js(data){
     text=text+"</table><br /><br /><div id='tempdiv'></div>";
     
     document.getElementById("event_tabs").innerHTML = text;
-    $('#registrations_table').dataTable();
+$('#registrations_table').dataTable( {
+              "bJQueryUI": true,
+              "bPaginate": false,
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } );
 }
     
     
@@ -772,12 +760,27 @@ function edit_event_details_intermediate_js(event_name){
 }
 
 function participant_info_js(data){
-    text='<b>MORE INFO ABOUT PARTICIPANTS </b>: <br /><br /><br />Number of Participants : ' + data.len + '<br /><br /><table><tr><th>Name</th><th>Email</th><th>Phone Number</th></tr>';
+    text='<b>MORE INFO ABOUT PARTICIPANTS </b>: <br /><br /><br />Number of Participants : ' + data.len + '<br /><br /><table id="moreinfo" style="color:black;"><thead><tr><th>Name</th><th>Email</th><th>Phone Number</th><th>College</th><th>City</th></tr></thead>';
     for(i=0;i<data.len;i++){
-    text+='<tr><td>'+data.inf[i]['name']+'</td><td>'+data.inf[i]['email']+'</td><td>'+data.inf[i]['number']+'</td></tr>'
+    text+='<tr><td>'+data.inf[i]['name']+'</td><td>'+data.inf[i]['email']+'</td><td>'+data.inf[i]['number']+'</td><td>'+data.inf[i]['college']+'</td><td>'+data.inf[i]['city']+'</td></tr>';
     }
-    text+='</table>'
+    text+='</table>';
     document.getElementById("tempdiv").innerHTML = text;
+    $('#moreinfo').dataTable( {
+              "bJQueryUI": true,
+              "bPaginate": false,
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } );
 }
 
 
