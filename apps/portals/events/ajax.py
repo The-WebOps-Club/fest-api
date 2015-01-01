@@ -323,8 +323,24 @@ def display_add_event_slot(request):
 @dajaxice_register
 def display_add_event_winner(request):
 	form = EventWinnerForm().as_table()
-	return json.dumps({'form':form})
+	winner_id=""
+	winner_position=""
+	winner_comment=""
+	winner_added_by=""
+	winner_user=""
+	winner_event=""
+	event_winners= EventWinner.objects.all()
+	for winner in event_winners:
+		winner_id=winner_id+str(winner.id)+"|"
+		winner_position=winner_position+(winner.position)+"|"
+		winner_comment=winner_comment+(winner.comment)+"|"
+		winner_added_by=winner_added_by+ str(winner.added_by) + "|" 
+		winner_user=winner_user + str(winner.user) + "|"
+		winner_event=winner_event + str(winner.event) + "|"
+	length_winner= len(event_winners)
+	return json.dumps({'form':form, 'winner_event':winner_event, 'winner_id':winner_id, 'winner_position':winner_position, 'winner_comment':winner_comment, 'winner_added_by':winner_added_by,'winner_user':winner_user, 'length_count_winner':length_winner})
 
+    
 @dajaxice_register    
 def add_slot(request,slot_form):
 	message="Your form has the following errors <br>"

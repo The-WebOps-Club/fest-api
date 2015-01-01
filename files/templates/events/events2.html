@@ -250,6 +250,8 @@ Use this to add an image for the event. This has to be done separately. Make sur
 </div>
 <p><input type="button" class="btn btn-success btn-large" onclick="Dajaxice.apps.portals.events.add_winner(add_winner_js, {'winner_form':$('#winner_form').serialize(true)});return false;" value="Add Winner"/></p>
 </form>
+<div id="add_winner_form_table">
+</div>
 </div>
 
 
@@ -597,12 +599,27 @@ function event_slot(data){
                   ]
               }
           } );
+           $("select[name=event]").select2();
 }
 
 function event_winner(data){
     $('#add_winner_form').html("<b>ADD WINNERS FOR EVENTS :</b><br /><br />" + "<table>"+data.form+"</table>");
     document.getElementById("option_selected").innerHTML='<h2>WINNER DETAILS</h3>';
     //making data from the other tabs disappear
+    winner_event_array=(data.winner_event).split("|");
+    winner_id_array=(data.winner_id).split("|");
+    winner_position_array=(data.winner_position).split("|");
+    winner_comment_array=(data.winner_comment).split("|");
+    winner_added_by_array=(data.winner_added_by).split("|");
+    winner_user_array=(data.winner_user).split("|");
+    leng=data.length_count_winner
+    textwinner='<br /><br /><br /><br /><b>EVENT WINNERS :<b><br /><br /><br /><br /><table id="eventwinnertable2" style="color:black;"><thead><tr><th> Event </th><th> Winner </th> <th> Position </th><th> Added By </th><th> Comment </th></tr></thead>';
+    for (i=0;i<leng;i++)
+        {
+        textwinner=textwinner+'<tr><td>'+winner_event_array[i]+'</td><td> '+winner_user_array[i]+'</td><td> '+winner_position_array[i]+'</td><td> '+winner_added_by_array[i]+'</td><td> '+winner_comment_array[i]+'</td></tr>'
+        }
+    textwinner=textwinner+'</table><br /><br /><br /><br /><br />';
+    document.getElementById("add_winner_form_table").innerHTML=textwinner;
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
     document.getElementById("registration_tab").innerHTML = ' '; 
@@ -620,6 +637,24 @@ function event_winner(data){
     document.getElementById("event_form_div").style.display = 'none';
     document.getElementById("winner_form_div").style.display = 'inline';
     document.getElementById("slot_form_div").style.display = 'none';
+    $("select[name=event]").select2();
+    $("select[name=user]").select2()
+    $('#eventwinnertable2').dataTable( {
+              "bJQueryUI": true,
+              "bPaginate": false,
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } );
+
 }
 
 function add_event_js(data){
@@ -772,11 +807,13 @@ function edit_event_details_js(data){
     textwinner='<br /><br /><br /><br /><b>EVENT WINNERS :<b><br /><br /><br /><br /><table id="eventwinnertable" style="color:black;"><thead><tr><th> Winner </th> <th> Position </th><th> Added By </th><th> Comment </th><th></th></tr></thead>';
     for (i=0;i<leng;i++)
         {
-        textwinner=textwinner+'<tr><<td> '+winner_user_array[i]+'</td><td> '+winner_position_array[i]+'</td><td> '+winner_added_by_array[i]+'</td><td> '+winner_comment_array[i]+'</td><td><button class = "btn btn-large btn-danger pull-right" type="button" onclick="Dajaxice.apps.portals.events.delete_winner(delete_winner_js, {\'winner_id\':'+winner_id_array[i]+'});return false;">X</button></td></tr>'
+        textwinner=textwinner+'<tr><td> '+winner_user_array[i]+'</td><td> '+winner_position_array[i]+'</td><td> '+winner_added_by_array[i]+'</td><td> '+winner_comment_array[i]+'</td><td><button class = "btn btn-large btn-danger pull-right" type="button" onclick="Dajaxice.apps.portals.events.delete_winner(delete_winner_js, {\'winner_id\':'+winner_id_array[i]+'});return false;">X</button></td></tr>'
         }
     textwinner=textwinner+'</table><br /><br /><br /><br /><br />';
     $('#edit_event_winner').val(text);
     document.getElementById("edit_event_winner").innerHTML = textwinner;
+   
+
 
     document.getElementById("edit_event_slot").innerHTML = text;
     console.log(slot_start_array)
@@ -838,7 +875,7 @@ function edit_event_details_js(data){
                   ]
               }
           } );
-    }
+    };
 
 
 
