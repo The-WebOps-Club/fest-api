@@ -16,3 +16,7 @@ admin.site.register(Dept)
 admin.site.register(Subdept)
 admin.site.register(Page)
 admin.site.register(Team)
+
+
+from misc.utils import export_as_xls
+admin.site.add_action(export_as_xls)

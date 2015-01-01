@@ -102,7 +102,7 @@ def home(request, team_id):
     if team.accomodation_status != 'confirmed':
         for member in members:
             if member.accomod_is_confirmed:
-                msg += member.email +', '
+                msg += str(member.email) +', '
         if msg:
             messages.warning(request, msg + ': These members already have accommodation \
                 confirmed in other team. Please remove them, or they will be automatically \
@@ -256,8 +256,6 @@ def user_save_team(request):
 
 def cancel_request(request, team_id):
     user = request.user.profile
-    if not request.session.get('current_team'):
-        return redirect('hospi_prehome')
     team = get_object_or_404(HospiTeam, pk=team_id)
     members = team.get_all_members()
     if team.accomodation_status == 'confirmed':
