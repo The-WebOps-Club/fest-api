@@ -171,3 +171,15 @@ class EventSchedule(models.Model):
     venue            = models.CharField(max_length=100, choices=EVENT_VENUES)
     def __unicode__(self):
         return str(self.event)
+
+class EventWinner(models.Model):
+    """
+        each slot for a winner
+    """
+    event            = models.ForeignKey(Event, related_name='event_winners')
+    position         = models.CharField(null=True, blank=True, max_length=100)
+    comment          = models.CharField(null=True, blank=True,max_length=200)
+    added_by         = models.ForeignKey(ERPProfile,related_name='winners_added')
+    user             = models.ForeignKey(UserProfile, related_name='event_won')
+    def __unicode__(self):
+        return str(str(self.event)+'-'+str(self.user)+'-'+str(self.position))
