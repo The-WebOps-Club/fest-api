@@ -8,6 +8,7 @@ class SponsImageUpload(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     uploaded_by = models.ForeignKey(User, related_name='image_uploaded_by')
     priority = models.FloatField(default=0.00, help_text='Rate in a scale of 00.00000000 to 99.99999999. Highest number will appear first.')
+    row_layout = models.IntegerField(default=4, help_text="1 for 1 in a row, 2 for 2 in a row etc, upto 4")
 
     class Meta:
         permissions = (
