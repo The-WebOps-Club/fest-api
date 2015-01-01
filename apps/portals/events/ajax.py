@@ -287,9 +287,11 @@ def participant_info(request,participant_name,team_name):
 		members=team.members.all()
 		for i in range(len(members)):
 			temp={}
-			temp['name']=str(members[i].username)
+			temp['name']=str(members[i].get_full_name())
 			temp['number']=members[i].profile.mobile_number
 			temp['email']=str(members[i].email)
+			temp['college']= str(members[i].profile.college_text)
+			temp['city']=str(members[i].profile.city)
 			data.append(temp)
 	except Exception, e:
 		temp={}
@@ -298,6 +300,8 @@ def participant_info(request,participant_name,team_name):
 		temp['name']=str(participant_name)
 		temp['number']=participant.profile.mobile_number
 		temp['email']=str(participant.email)
+		temp['college']= str(participant.profile.college_text)
+		temp['city']=str(participant.profile.city)
 		data.append(temp)
 	return json.dumps({'inf':data,'len':len(data),})	
 
