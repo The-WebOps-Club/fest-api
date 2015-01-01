@@ -613,10 +613,13 @@ function event_winner(data){
     winner_added_by_array=(data.winner_added_by).split("|");
     winner_user_array=(data.winner_user).split("|");
     leng=data.length_count_winner
+    var prefix_url = '{% url "apps.portals.events.views.generate_pdf_certificate" 0 %}'
+    url_array=prefix_url.split("0");
+
     textwinner='<br /><br /><br /><br /><b>EVENT WINNERS :<b><br /><br /><br /><br /><table id="eventwinnertable2" style="color:black;"><thead><tr><th> Event </th><th> Winner </th> <th> Position </th><th> Added By </th><th> Comment </th></tr></thead>';
     for (i=0;i<leng;i++)
         {
-        textwinner=textwinner+'<tr><td>'+winner_event_array[i]+'</td><td> '+winner_user_array[i]+'</td><td> '+winner_position_array[i]+'</td><td> '+winner_added_by_array[i]+'</td><td> '+winner_comment_array[i]+'</td></tr>'
+        textwinner=textwinner+'<tr><td>'+winner_event_array[i]+'</td><td> '+winner_user_array[i]+'</td><td> '+winner_position_array[i]+'</td><td> '+winner_added_by_array[i]+'</td><td> '+winner_comment_array[i]+'<a class = "btn btn-large btn-info pull-right" type="button" href=\"'+url_array[0]+winner_id_array[i]+url_array[1]+'\" target="_blank"><i class="glyphicon glyphicon-circle-arrow-down"></i>  Certificate </a></td></tr>'
         }
     textwinner=textwinner+'</table><br /><br /><br /><br /><br />';
     document.getElementById("add_winner_form_table").innerHTML=textwinner;
