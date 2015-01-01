@@ -267,15 +267,24 @@ def reg_list(request,event_name):
 	event_registrations=event_object.event_registered.all()
 	user_names=""
 	team_names=""
+	user_number=""
+	user_email=""
+	user_college=""
+	mem_count = ""
+
 	info=""
 	for reg in event_registrations:
-		user_names=user_names + reg.users_registered.username +" |"
+		user_names=user_names + reg.users_registered.get_full_name() +" |"
 		if reg.teams_registered==None:
 			team_names=team_names + "None |"
 		else:
 			team_names=team_names + reg.teams_registered.name +" |"
 		info=str(info) + str(reg.info) + " |"
-	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info})
+		user_email = user_email + str(reg.users_registered.email)  + "|"
+		user_number = user_number + str(reg.users_registered.profile.mobile_number) + "|"
+		user_college = user_college + str(reg.users_registered.profile.college_text) + "|"
+		mem_count = mem_count + str(reg.teams_registered.get_total_count()) + "|"
+	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info, 'user_number':user_number, 'user_email':user_email, 'user_college':user_college, 'mem_count':mem_count})
 
 @dajaxice_register    
 def participant_info(request,participant_name,team_name):
