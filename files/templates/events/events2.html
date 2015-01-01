@@ -615,7 +615,8 @@ function event_winner(data){
     document.getElementById("winner_form_div").style.display = 'inline';
     document.getElementById("slot_form_div").style.display = 'none';
     $("select[name=event]").select2();
-    $("select[name=user]").select2()
+    $("select[name=user]").select2();
+    $(".select2-container .select2-choice > .select2-chosen").css({"width":"135px"});
     $('#eventwinnertable2').dataTable( {
               "bJQueryUI": true,
               "bPaginate": false,
@@ -694,16 +695,20 @@ function reg_list_js(data){
     
     //filling the text variable
     user_names_array=data.user_names.split("|");
+    user_email_array=data.user_email.split("|");
+    user_number_array=data.user_number.split("|");
+    user_college_array=data.user_names.split("|");
     team_names_array=data.team_names.split("|");
+    members_count_array=data.mem_count.split("|")
     info_array=data.info.split("|");
     len=user_names_array.length;
     //text will be filled into the events_tab div
     
-    text='<table id="registrations_table" style="color:black;"><thead><tr><th> User/Team Leader </th> <th> Team Name </th> <th> Extra Information </th></tr></thead>';
+    text='<table id="registrations_table" style="color:black;"><thead><tr><th> User/Team Leader </th><th> Email </th><th> Number </th><th> College </th><th> Team Name </th> <th> Extra Information </th><th>No.</th></tr></thead>';
     
     for (i=0;i<len-1;i++)
     {
-        text=text+'<tr><td><b>'+user_names_array[i]+'&nbsp &nbsp</b></td><td>'+team_names_array[i]+'</td><td> '+info_array[i]+'<button href="#tempdiv" id="partic_info" class="btn small info pull-right" onclick="Dajaxice.apps.portals.events.participant_info(participant_info_js, {\'participant_name\':\''+user_names_array[i]+'\',\'team_name\':\''+team_names_array[i]+'\'})"><i class="glyphicon glyphicon-info-sign"></i></button></td></tr>'
+        text=text+'<tr><td><b>'+user_names_array[i]+'&nbsp &nbsp</b></td><td>'+user_email_array[i]+'</td><td>'+user_number_array[i]+'</td><td>'+user_college_array[i]+'</td><td>'+team_names_array[i]+'</td><td>'+info_array[i]+'</td><td> '+members_count_array[i]+'<button href="#tempdiv" id="partic_info" class="btn small info pull-right" onclick="Dajaxice.apps.portals.events.participant_info(participant_info_js, {\'participant_name\':\''+user_names_array[i]+'\',\'team_name\':\''+team_names_array[i]+'\'})"><i class="glyphicon glyphicon-info-sign"></i></button></td></tr>'
     }
     text=text+"</table><br /><br /><div id='tempdiv'></div>";
     
