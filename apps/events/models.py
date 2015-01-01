@@ -28,7 +28,7 @@ import select2.models
 import select2.forms
 from django.core.management import call_command
 import os
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 EVENT_VENUES=settings.EVENT_VENUES
@@ -178,7 +178,46 @@ class EventSchedule(models.Model):
 
 @receiver(post_save, sender=EventSchedule)
 def generate_json(sender, **kwargs):
+    print "android post save signal"
     call_command('android_json')
+    call_command('collectstatic', interactive=False)
+    if settings.PERMISSION_COMMAND:
+        os.system('/home/saarango/git/fest-api/runscript')
+
+@receiver(post_delete, sender=EventSchedule)
+def generate_json_delete(sender, **kwargs):
+    print "android postdelete signal"
+    call_command('android_json')
+    call_command('collectstatic', interactive=False)
+    if settings.PERMISSION_COMMAND:
+        os.system('/home/saarango/git/fest-api/runscript')
+class WebsiteUpdate(models.Model):
+    """
+        Update ticker on website
+    """
+    TYPE_CHOICES = (
+        ("info","info"),
+        ("success","success"),
+        ("warning","warning"),
+        ("error","error")
+    )
+    type = models.CharField(max_length=50,choices=TYPE_CHOICES)
+    title = models.CharField(max_length=100, blank=True, null=True)
+    text = models.TextField(max_length=2000, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.title
+@receiver(post_save, sender=WebsiteUpdate)
+def generate_json_update(sender, **kwargs):
+    print "Updates post save signal"
+    call_command('updates_json')
+    call_command('collectstatic', interactive=False)
+    if settings.PERMISSION_COMMAND:
+        os.system('/home/saarango/git/fest-api/runscript')
+@receiver(post_delete, sender=WebsiteUpdate)
+def generate_json_update_delete(sender, **kwargs):
+    print "updates post delete signal"
+    call_command('updates_json')
     call_command('collectstatic', interactive=False)
     if settings.PERMISSION_COMMAND:
         os.system('/home/saarango/git/fest-api/runscript')
