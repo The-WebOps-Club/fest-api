@@ -22,29 +22,15 @@ class UserProfileForm(forms.ModelForm):
 	class Meta:
 		model = UserProfile
 		fields = [
-			'gender', 
-			'dob', 
+			'gender',  
+			'age', 
 			'mobile_number',
 			'branch',
-			'college',
-			'college_roll',
-			'school_student',
+			'college_text',
 			'city',
 			'want_accomodation',
-			'saarang_id',
 			'desk_id',
-			'fb_id',
-			'college_id_hospi',
-			'accomod_is_confirmed',
 		]
-		
-		
-		
-	def init(self, *args, **kwargs):
-		super(UserProfileForm, self).__init__(*args, **kwargs)
-		self.fields['dob'].input_formats = settings.DATE_INPUT_FORMATS
-
-	# def clean_dob(self):
 		
 	def save(self, commit=True, *args, **kwargs):
 		instance = super(UserProfileForm, self).save(commit=False, *args, **kwargs)

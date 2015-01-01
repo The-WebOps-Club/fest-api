@@ -340,38 +340,62 @@ from apps.events.models import EventRegistration
 
 
 @dajaxice_register    
-def add_user(request,userform,userprofileform):
+def add_user(request,userform,userprofileform,user_id):
 	message="Your form has the following errors:\n"
 	user_form = UserForm(deserialize_form(userform))
 	user_profile_form = UserProfileForm(deserialize_form(userprofileform))
 	valid=0
-	
-	if (user_form.is_valid() and user_profile_form.is_valid()):
-		valid=1
-		user = user_form.save()
-		user.username=user.email
-		user.password=user.email
-		user.set_password(user.email)
-		user.save()
+	userid=int(user_id)
+	if userid==-1: #it is a new user 
+		if (user_form.is_valid() and user_profile_form.is_valid()):
+			valid=1
+			user = user_form.save()
+			user.username=user.email
+			user.password=user.email
+			user.set_password(user.email)
+			user.save()
 		
-		profile = user_profile_form.save(commit=False)
-		profile.user = user
-		profile.email=user.email
-		if profile.mobile_number:
-			profile.mobile=profile.mobile_number
-		if user.first_name:
-			profile.name=user.first_name
-			if user.last_name:
-				profile.name=user.first_name + " " + user.last_name
-		profile.save()
-		message="Successfully added User"
-	if valid==0:
-		for field in user_form:
-			for error in field.errors:
-				message=message+field.html_name+" : "+error+"\n"
-		for field in user_profile_form:
-			for error in field.errors:
-				message=message+field.html_name+" : "+error+"\n"
+			profile = user_profile_form.save(commit=False)
+			profile.user = user
+			profile.email=user.email
+			if profile.mobile_number:
+				profile.mobile=profile.mobile_number
+			if user.first_name:
+				profile.name=user.first_name
+				if user.last_name:
+					profile.name=user.first_name + " " + user.last_name
+			profile.save()
+			message="Successfully added User"
+		if valid==0:
+			for field in user_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
+			for field in user_profile_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
+	else: #old user
+		if (user_form.is_valid() and user_profile_form.is_valid()):
+			valid=1
+			user_object=User.objects.get(id=userid)
+			user_form = UserForm(deserialize_form(userform),instance=user_object)
+			user_profile_form = UserProfileForm(deserialize_form(userprofileform),instance=user_object.profile)
+			user = user_form.save()
+			user.username=user.email
+			user.password=user.email
+			user.set_password(user.email)
+			user.save()
+			profile = user_profile_form.save(commit=False)
+			if profile.age=='':
+				profile.age=0
+			user_profile_form.save()
+			message="Successfully edited User"
+		if valid==0:
+			for field in user_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
+			for field in user_profile_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
 	return json.dumps({'message': message})   
 	
 	

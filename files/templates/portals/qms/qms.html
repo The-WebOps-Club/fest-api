@@ -41,6 +41,35 @@
 
 <!-- Add User Div Container -->
 <div id="add_user_div">
+
+
+<!-- Edit User Div Container -->
+			<div id="edit_user_div">
+			<h2> EDIT EXISTING USER </h2>
+			<span id="alert-user2"></span>
+				<!-- Clear Form Button 
+						<div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user2').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class="btn danger">Clear form</a></div>	-->    
+				<br />
+				<br />
+
+				<!--Select User -->
+				 <input id='website_id' class="bigdrop input input-block-level" type='text' name='website_id' />
+
+				<!--Edit User Form 
+				<form id="edit_user_userform" accept-charset="utf-8">
+						{% csrf_token %}	
+						<div id="edit_user_userform_div"></div>
+				</form>			   
+				<form id="edit_user_userprofileform" accept-charset="utf-8">
+	
+						<div id="edit_user_userprofileform_div"></div>
+				</form>
+			<input type="button" value="Save" onclick=""/>-->	   
+			</div>
+			
+			
+			
+			
 <h2> ADD NEW USER </h2>
 <span id="alert-user"></span>
 	<!-- Clear Form Button -->
@@ -61,7 +90,12 @@
 		    {% csrf_token %}
 			{{userprofileform.as_p }}
 	</form>
-<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.add_user(add_user_js,{'userform':$('#add_user_userform').serialize(true),'userprofileform':$('#add_user_userprofileform').serialize(true)});"/>		   
+<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.add_user(add_user_js,{'userform':$('#add_user_userform').serialize(true),'userprofileform':$('#add_user_userprofileform').serialize(true),user_id:$('#hidden_id').text()});"/>	
+
+
+<div id="hidden_id" style="display:none">-1</div> 
+			
+	   
 </div>
 
 
@@ -70,33 +104,6 @@
 
 <!-- Add Team Div Container -->
 <div id="add_team_div" style="display:none">
-
-
-<!-- Edit User Div Container -->
-<div id="edit_user_div">
-<h2> EDIT EXISTING USER </h2>
-<span id="alert-user2"></span>
-	<!-- Clear Form Button 
-		    <div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user2').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class="btn danger">Clear form</a></div>	-->    
-	<br />
-	<br />
-
-	<!--Select User -->
-	 <input id='website_id' class="bigdrop input input-block-level" type='text' name='website_id' />
-
-	<!--Edit User Form 
-	<form id="edit_user_userform" accept-charset="utf-8">
-		    {% csrf_token %}	
-		    <div id="edit_user_userform_div"></div>
-	</form>			   
-	<form id="edit_user_userprofileform" accept-charset="utf-8">
-	
-			<div id="edit_user_userprofileform_div"></div>
-	</form>
-<input type="button" value="Save" onclick=""/>-->	   
-</div>
-
-
 <h2> ADD NEW TEAM </h2>
 <span id="alert-team"></span>
 	<!-- Clear Form Button -->
@@ -159,20 +166,14 @@ function clearForm()
         $('#id_first_name').val('')
         $('#id_last_name').val('')
         $('#id_email').val('')
-        $('#id_dob').val('')
         $('#id_mobile_number').val('')
-        $('#id_college').val('')
+        $('#id_college_text').val('')
         $('#id_gender').val('')
         $('#id_branch').val('')
-        $('#id_college_roll').val('')
-        $('#id_school_student').val('')
         $('#id_want_accomodation').val('')
         $('#id_city').val('')
-        $('#id_saarang_id').val('')
         $('#id_desk_id').val('')
-        $('#id_fb_id').val('')
-        $('#id_college_id_hospi').val('')
-        $('#id_accomod_is_confirmed').val('')
+        $('#id_age').val('')
 }
  
 function clearForm2()
@@ -230,47 +231,46 @@ function register_user_team_js(data)
 	clearForm3();
 } 
  
+ 
+ 
+ 
+ 
+
 //Select2 Function
 $(function(){
     function movieFormatResult(user) {
         var markup = "<table padding=3><tr>";
             markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
         
-        markup += "<td><div>" + user.name + "</div></td>";
+        markup += "<td><div>" + user.first_name + "</div></td>";
+        markup += "<td><div>" + user.last_name + "</div></td>";
         
-        markup += "<td><div>" + user.mobile + "</div>";
+        markup += "<td><div>" + user.mobile_number + "</div>";
         
             markup += "</td><td><div>" + user.email + "</div>";
          
         
         
         markup += "</td></tr></table>";
-         $(".select2-result-unselectable").addClass(".select2-result-selectable");
-        $(".select2-result-unselectable").removeClass(".select2-result-unselectable");
-       
+         
         return markup;
     }
 
     function movieFormatSelection(user) {
-    /*
-		$('#id_first_name').val('')
-        $('#id_last_name').val('')
-        $('#id_email').val('')
-        $('#id_dob').val('')
-        $('#id_mobile_number').val('')
-        $('#id_college').val('')
-        $('#id_gender').val('')
-        $('#id_branch').val('')
-        $('#id_college_roll').val('')
-        $('#id_school_student').val('')
-        $('#id_want_accomodation').val('')
-        $('#id_city').val('')
-        $('#id_saarang_id').val('')
-        $('#id_desk_id').val('')
-        $('#id_fb_id').val('')
-        $('#id_college_id_hospi').val('')
-        $('#id_accomod_is_confirmed').val('')
-        */return user.saarang_id;
+		$('#id_first_name').val(user.first_name)
+        $('#id_last_name').val(user.last_name)
+        $('#id_email').val(user.email)
+        $('#id_mobile_number').val(user.mobile_number)
+        $('#id_college_text').val(user.college_text)
+        $('#id_gender').val(user.gender)
+        $('#id_branch').val(user.branch)
+        $('#id_want_accomodation').val(user.want_accomodation)
+        $('#id_city').val(user.city)
+        $('#id_desk_id').val(user.desk_id)
+        $('#id_age').val(user.age)
+        //this line is used to return the 
+        $('#hidden_id').text(user.id)
+        return user.saarang_id;
     }
 
 $("#website_id").select2({
@@ -280,7 +280,6 @@ $("#website_id").select2({
         url: "{% url 'qms_id_search' %}",
         dataType: 'json',
         quietMillis: 100,
-        id: function(user){ return user.id; },
         multiple:false,
         data: function (term, page) { // page is the one-based page number tracked by Select2
             return {
@@ -303,9 +302,7 @@ $("#website_id").select2({
     dropdownCssClass: 'bigdrop', // apply css that makes the dropdown taller
     escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
 });
-		$(".select2-result-unselectable").addClass(".select2-result-selectable");
-        $(".select2-result-unselectable").removeClass(".select2-result-unselectable");
-        
+		
 }); 
  
  
