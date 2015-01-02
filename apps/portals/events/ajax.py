@@ -450,6 +450,8 @@ def add_user(request,userform,userprofileform,user_id):
 				profile.name=user.first_name
 				if user.last_name:
 					profile.name=user.first_name + " " + user.last_name
+			if profile.age=='':
+				profile.age=0
 			profile.save()
 			message="Successfully added User"
 		if valid==0:
@@ -487,16 +489,32 @@ def add_user(request,userform,userprofileform,user_id):
 	
 	
 @dajaxice_register    
-def add_team(request,teamform):
+def add_team(request,teamform,team_id):
 	message="Your form has the following errors:\n"
-	team_form = AddTeamForm(deserialize_form(teamform))
-	if team_form.is_valid():
-		team_form.save()
-		message="Successfully added Team"
+	team_id=int(team_id)
+	if team_id==-1:
+		team_form = AddTeamForm(deserialize_form(teamform))
+		if team_form.is_valid():
+			team_form.save()
+			message="Successfully added Team"
+		else:
+			for field in team_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
 	else:
-		for field in team_form:
-			for error in field.errors:
-				message=message+field.html_name+" : "+error+"\n"
+		team_object=Team.objects.get(id=team_id)
+		print team_object.name
+		team_form = AddTeamForm(deserialize_form(teamform),instance=team_object)
+		print team_form
+		if team_form.is_valid():
+			team_form.save()
+			message="Successfully edited Team"
+		else:
+			for field in team_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
+	 
+	
 	return json.dumps({'message': message}) 
 	
 	
@@ -518,8 +536,7 @@ def register_user_team(request,registerform):
 	
 @dajaxice_register    
 def fill_team_form(request,teamid):
-	message="Your form has the following errors:\n"
-	message=teamid
-	return json.dumps({'message': message}) 
+	team_object=Team.objects.get(id=teamid)
+	form = AddTeamForm(instance=team_object).as_table()
+	return json.dumps({'teamform':form,'id':teamid}) 
 
-a
