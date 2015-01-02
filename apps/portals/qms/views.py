@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 
 from apps.walls.models import Wall
-from apps.users.models import ERPProfile, Dept, Subdept, Page,UserProfile
+from apps.users.models import ERPProfile, Dept, Subdept, Page,UserProfile,Team
 from django.contrib.auth.models import User
 from misc.models import College
 from apps.events.models import EventRegistration
@@ -105,3 +105,25 @@ def id_search(request):
     	print user
     return HttpResponse(user_dict)
 '''
+
+
+#'members':team.members,
+
+@login_required
+def team_search(request):
+    data=request.GET.copy()
+    team_list=[]
+    selected_teams=[]
+    teams = Team.objects.filter(name__contains=data['q'])[:10]
+    teams2 = Team.objects.filter(name__contains=data['q'].upper())[:10]
+ 	
+    for t in teams:
+ 		selected_teams = selected_teams + [t]
+    for t in teams2:
+ 		selected_teams = selected_teams + [t]
+    selected_teams=set(selected_teams)
+ 	
+    for team in selected_teams:
+        team_list.append({"name":team.name,'id':team.id,'accomodation_status':team.accomodation_status})
+    team_dict = json.dumps(team_list)
+    return HttpResponse(team_dict)
