@@ -172,25 +172,44 @@ function clearForm()
         $('#id_email').val('')
         $('#id_mobile_number').val('')
         $('#id_college_text').val('')
-        $('#id_branch').val('--')
         $('#id_want_accomodation').val('')
         $('#id_city').val('')
         $('#id_age').val('')
+        
+        //this needs to be done to clear the select2  field
+        $("select[name=branch]").select2('destroy');
+        $('#id_branch').val('');
+        $("select[name=branch]").select2();
+        
 }
  
 function clearForm2()
 {
         $('#id_name').val('')
-        $('#id_members').val('')
         $('#id_accomodation_status').val('')
+        
+        $("select[name=members]").select2('destroy');
+        $('#id_members').val('');
+        $("select[name=members]").select2();
 }
 
 function clearForm3()
-{
-        $('#id_event').val('')
+{  
+        
+        $("select[name=event]").select2('destroy');
+		$("select[name=users_registered]").select2('destroy');
+		$("select[name=teams_registered]").select2('destroy');
+		
+		
+		$('#id_event').val('')
         $('#id_users_registered').val('')
         $('#id_info').val('')
         $('#id_teams_registered').val('')
+        
+        $("select[name=event]").select2();
+		$("select[name=users_registered]").select2();
+		$("select[name=teams_registered]").select2();
+        
 }
 
 //Top Level Tabs Javascript Functions
