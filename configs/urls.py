@@ -102,14 +102,19 @@ urlpatterns = patterns('',
     
     # events portal
     url(r'^portals/events/$','apps.portals.events.views.add_tabs', name='events_portal'),
-
+	#finance portal
     url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
-
+	#qms portal
+	url(r'^portals/qms/$','apps.portals.qms.views.qms_portal', name='qms_portal' ),
+	url(r'^search2/$', 'apps.portals.qms.views.id_search', name='qms_id_search'),
     # Participant - Login/registration
     url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
     url(r'^participant_login/$','apps.users.views.participant_login', name='participant_login'),
     url(r'^social_login/$','apps.users.views.social_login', name='social_login'),
     url(r'^logout_user/$','apps.users.views.logout_user', name='logout_user'), 
+
+    # Facebook
+    url(r'^fb/opc/$','apps.fb.views.opc', name='facebook_opc'), 
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE

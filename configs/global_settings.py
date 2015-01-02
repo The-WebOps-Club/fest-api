@@ -95,6 +95,7 @@ API_APPS = (
     'apps.search',
     'apps.blog',
     'apps.api',
+    'apps.fb',
 )
 INSTALLED_APPS =  DJANGO_APPS + THIRD_PARTY_APPS + API_APPS
 

@@ -1,5 +1,7 @@
 # For simple dajax(ice) functionalities
 from dajaxice.decorators import dajaxice_register
+#dajaxice stuff
+from dajaxice.utils import deserialize_form
 
 # For rendering templates
 from django.template import RequestContext
@@ -30,7 +32,12 @@ def hello(request):
     """
         Used for testing Dajaxice
     """
+
     #html_content = render_to_string("dash/task_tables/coord_you.html", query_dictionary, RequestContext(request))
     return json.dumps({'message': 'hello'})
 
-########## FOR ADMIN PORTAL #######################
+
+@dajaxice_register    
+def add_user(request):
+	return json.dumps({'message': 'message'})
+
