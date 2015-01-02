@@ -223,10 +223,7 @@ function register_user_team_js(data)
 } 
  
  
-function fill_team_form_js(data)
-{
-	alert(data.message);
-} 
+ 
  
  
 
@@ -321,8 +318,7 @@ $(function(){
     }
 
     function teamFormatSelection(team) {
-    	Dajaxice.apps.portals.events.fill_team_form(fill_team_form_js,{'teamid':team.id});
-    	//
+    	//Dajaxice.apps.portals.events.fill_team_form(fill_team_form_js,{'teamid':team.id});
         return team.name;
     }
 
