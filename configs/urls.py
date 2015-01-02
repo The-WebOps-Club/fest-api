@@ -179,7 +179,7 @@ urlpatterns = patterns('',
     # Had to do this
     # Include urls from hospi
     url(r'^hospi/', include('apps.hospi.urls')),
-
+    url(r'^certificate/(?P<winner_id>\d+)/$', 'apps.portals.events.views.generate_pdf_certificate', name='winner_certif'),
 
 )
 
