@@ -515,4 +515,11 @@ def register_user_team(request,registerform):
 				message=message+field.html_name+" : "+error+"\n"
 	return json.dumps({'message': message}) 	
 
+	
+@dajaxice_register    
+def fill_team_form(request,teamid):
+	message="Your form has the following errors:\n"
+	message=teamid
+	return json.dumps({'message': message}) 
 
+a
