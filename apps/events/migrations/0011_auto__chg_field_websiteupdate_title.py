@@ -8,22 +8,14 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'EventWinner'
-        db.create_table(u'events_eventwinner', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('event', self.gf('django.db.models.fields.related.ForeignKey')(related_name='event_winners', to=orm['events.Event'])),
-            ('position', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('comment', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('added_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='winners_added', to=orm['users.ERPProfile'])),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='event_won', to=orm['users.UserProfile'])),
-        ))
-        db.send_create_signal(u'events', ['EventWinner'])
 
+        # Changing field 'WebsiteUpdate.title'
+        db.alter_column(u'events_websiteupdate', 'title', self.gf('django.db.models.fields.CharField')(max_length=100, null=True))
 
     def backwards(self, orm):
-        # Deleting model 'EventWinner'
-        db.delete_table(u'events_eventwinner')
 
+        # Changing field 'WebsiteUpdate.title'
+        db.alter_column(u'events_websiteupdate', 'title', self.gf('django.db.models.fields.CharField')(default=' ', max_length=100))
 
     models = {
         u'auth.group': {
@@ -110,15 +102,6 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'events.eventwinner': {
-            'Meta': {'object_name': 'EventWinner'},
-            'added_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'winners_added'", 'to': u"orm['users.ERPProfile']"}),
-            'comment': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'event': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'event_winners'", 'to': u"orm['events.Event']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'position': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'event_won'", 'to': u"orm['users.UserProfile']"})
-        },
         u'events.tab': {
             'Meta': {'ordering': "['order']", 'object_name': 'Tab'},
             'content': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
@@ -128,12 +111,12 @@ class Migration(SchemaMigration):
             'is_visible': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'order': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
-        u'misc.college': {
-            'Meta': {'object_name': 'College'},
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
+        u'events.websiteupdate': {
+            'Meta': {'object_name': 'WebsiteUpdate'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
-            'state': ('django.db.models.fields.CharField', [], {'max_length': '40'})
+            'text': ('django.db.models.fields.TextField', [], {'max_length': '2000', 'null': 'True', 'blank': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'type': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
         u'users.dept': {
             'Meta': {'object_name': 'Dept'},
@@ -197,43 +180,6 @@ class Migration(SchemaMigration):
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'members': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'teams'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
-        },
-        u'users.userprofile': {
-            'Meta': {'object_name': 'UserProfile'},
-            'accomod_is_confirmed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'activate_status': ('django.db.models.fields.IntegerField', [], {'default': '2', 'null': 'True', 'blank': 'True'}),
-            'activation_key': ('django.db.models.fields.CharField', [], {'max_length': '40', 'null': 'True'}),
-            'age': ('django.db.models.fields.CharField', [], {'max_length': '2', 'null': 'True', 'blank': 'True'}),
-            'branch': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'college': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['misc.College']", 'null': 'True', 'blank': 'True'}),
-            'college_id_hospi': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'college_roll': ('django.db.models.fields.CharField', [], {'max_length': '40', 'null': 'True'}),
-            'college_text': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'date_created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'desk_id': ('django.db.models.fields.CharField', [], {'default': "'SA14D0000'", 'max_length': '20'}),
-            'dob': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'fb_id': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'fb_token': ('django.db.models.fields.TextField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
-            'friend_list': ('django.db.models.fields.TextField', [], {'max_length': '1000', 'null': 'True', 'blank': 'True'}),
-            'gender': ('django.db.models.fields.CharField', [], {'default': "'F'", 'max_length': '1'}),
-            'gender_hospi': ('django.db.models.fields.CharField', [], {'default': "'Male'", 'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'key_expires': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2014, 12, 18, 0, 0)'}),
-            'last_activity_date': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(1950, 1, 1, 0, 0)'}),
-            'last_activity_ip': ('django.db.models.fields.IPAddressField', [], {'default': "'0.0.0.0'", 'max_length': '15'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'mobile': ('django.db.models.fields.BigIntegerField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            'mobile_number': ('django.db.models.fields.CharField', [], {'max_length': '15', 'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '60', 'null': 'True', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128', 'null': 'True', 'blank': 'True'}),
-            'saarang_id': ('django.db.models.fields.CharField', [], {'max_length': '10', 'null': 'True', 'blank': 'True'}),
-            'school_student': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'send_mails': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': u"orm['auth.User']"}),
-            'want_accomodation': ('django.db.models.fields.BooleanField', [], {'default': 'False'})
         },
         u'walls.wall': {
             'Meta': {'object_name': 'Wall'},
