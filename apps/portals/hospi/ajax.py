@@ -10,7 +10,7 @@ from dajaxice.utils import deserialize_form
 from django.shortcuts import get_object_or_404
 from apps.hospi import utility as u
 from django.contrib import messages
-
+from django.conf import settings
 from post_office import mail
 
 @dajaxice_register
@@ -264,6 +264,15 @@ def update_status(request, stat, team_id):
                 users, template='confirm_accommodation.email',
                 context={'team':team,}
                 )
+
+            unsubscribe_link = "dasdasdasei8rwer9f898fasd89a"
+            mail.send(
+                sender = settings.DEFAULT_MAIN_FROM_EMAIL,
+                recipients = users,
+                template = 'hospitality_payment.email',
+                context = {'FEST_NAME': settings.FEST_NAME, 'SITE_URL': settings.SITE_URL, 'unsubscribe_link': unsubscribe_link},
+                headers = {'List-Unsubscribe': unsubscribe_link}
+            ) 
         else:
             mail.send(
                 users, template='status_update.email',

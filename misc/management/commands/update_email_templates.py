@@ -62,13 +62,13 @@ class Command(NoArgsCommand):
             new_template.subject = open(os.path.join(email_root_path, template).replace('.html','.subject'),'r').read()
             new_template.html_content = content
             soup = BeautifulSoup.BeautifulSoup(content)
-            for l in soup.findAll('a'):
-                if l.getString():
-                    l.setString(l.getString() + u'( ' + l['href'] + ' )')
-                else:
-                    l.setString(u'( ' + l['href'] + ' )')
-            for l in soup.findAll('li'):
-                l.setString(u'- ' + l.getString())
+            #for l in soup.findAll('a'):
+            #    if l.getString():
+            #        l.setString(l.getString() + u'( ' + l['href'] + ' )')
+            #    else:
+            #        l.setString(u'( ' + l['href'] + ' )')
+            #for l in soup.findAll('li'):
+            #    l.setString(u'- ' + l.getString())
             new_template.content = strip_tags(str(soup)) #<---- Note: We can do soup.prettify() here instead of str(soup)
             new_template.save()
             self.stdout.write('Adding %s' % template)
