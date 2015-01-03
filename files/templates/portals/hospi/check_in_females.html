@@ -1,5 +1,5 @@
 <h5>Select rooms</h5><hr/>
-<form class="form-horizontal" action="{% url 'hospi.views.check_in_females' %}" method="POST" >
+<form class="form-horizontal" action="{% url 'hospi_check_in_females' %}" method="POST" >
     {% csrf_token %}
 {% for female in females %}
   <div class="control-group">
@@ -17,7 +17,7 @@
 <div class="control-group">
     <label class="control-label" for="matress">Matresses</label>
     <div class="controls">
-      <input type="number" name="matress" placeholder="Number of matresses">
+      <input type="number" name="matress" value="0" placeholder="Number of matresses">
     </div>
 </div>
 <input type="hidden" name="team_id" value="{{ team.pk }}"/>

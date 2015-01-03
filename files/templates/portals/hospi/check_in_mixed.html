@@ -1,5 +1,5 @@
 <h5>Select rooms</h5><hr/>
-<form class="form-horizontal" action="{% url 'hospi.views.check_in_mixed' %}" method="POST" >
+<form class="form-horizontal" {% comment %}action="{% url 'hospi.views.check_in_mixed' %}"{% endcomment %} method="POST" >
     {% csrf_token %}
 {% for male in males %}
   <div class="control-group">

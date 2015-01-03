@@ -72,14 +72,14 @@ class HospiTeam(models.Model):
         return mem+1
 
     def get_male_count(self):
-        M=['male', 'Male']
+        M=['male', 'Male', 'm', 'M']
         mem = len(self.members.all().filter(gender='male'))
         if self.leader.gender in M:
             mem +=1
         return mem
 
     def get_female_count(self):
-        F=['female', 'Female']
+        F=['female', 'Female', 'f', 'F']
         mem = len(self.members.all().filter(gender='female'))
         if self.leader.gender in F:
             mem +=1
@@ -92,14 +92,14 @@ class HospiTeam(models.Model):
             return False
 
     def get_male_members(self):
-        M=['male', 'Male']
+        M=['male', 'Male', 'm', 'M']
         mem = list(self.members.filter(gender='male'))
         if self.leader.gender in M:
             mem.append(self.leader)
         return mem
 
     def get_female_members(self):
-        F=['female', 'Female']
+        F=['female', 'Female', 'f', 'F']
         mem = list(self.members.filter(gender='female'))
         if self.leader.gender in F:
             mem.append(self.leader)

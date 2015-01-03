@@ -273,6 +273,38 @@ def update_status(request, stat, team_id):
     return json.dumps({'stat':stat})
 
 @dajaxice_register
+def check_in(request, team_id):
+    '''Needs to add some validators'''
+    team = get_object_or_404(HospiTeam, pk=team_id)
+    if team.get_male_count() == 0 and team.get_female_count==0:
+        messages.error(request, 'Incomplete team profile')
+    if team.members.filter(email=team.leader.email):
+        team.members.remove(team.leader)
+    if team.get_female_count() and team.get_male_count():
+        #print 'Mixed Team'
+        males = team.get_male_members()
+        females = team.get_female_members()
+        male_rooms = Room.objects.filter(hostel__gender='male')
+        female_rooms = Room.objects.filter(hostel__gender='female')
+        html_content = render_to_string('portals/hospi/check_in_mixed.html', locals(), RequestContext(request))
+        return json.dumps({'html_content':html_content})
+    elif team.get_male_count():
+        #print 'Male Team'
+        males = team.get_male_members()
+        male_rooms = Room.objects.filter(hostel__gender='male')
+        html_content = render_to_string('portals/hospi/check_in_males.html', locals(), RequestContext(request))
+        return json.dumps({'html_content':html_content})
+    elif team.get_female_count():
+        #print 'Female Team'
+        females = team.get_female_members()
+        female_rooms = Room.objects.filter(hostel__gender='female')
+        html_content = render_to_string('portals/hospi/check_in_females.html', locals(), RequestContext(request))
+        return json.dumps({'html_content':html_content})
+    else:
+        html_content = "<div class='alert alert-danger'>Incomplete team profile</div>"
+        return json.dumps({'html_content':html_content})
+
+@dajaxice_register
 def registered_teams(request):
     html_content = render_to_string('portals/hospi/registered_teams.html', {}, RequestContext(request))
     return json.dumps({'html_content':html_content})

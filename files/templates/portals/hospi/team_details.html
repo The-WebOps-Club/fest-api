@@ -99,7 +99,7 @@ a.danger
         <td>{{ team.city }} - {{ team.leader.college }}</td>
         <td style="text-align:center;">{{ team.time_of_departure|title }} on {{ team.date_of_departure }} </td>
         <td style="text-align:center;">{% if team.accomodation_status == 'confirmed' and not team.checked_in and not team.checked_out %}
-<a {% comment %}href="{% url 'hospi.views.check_in_team' team.pk %}"{% endcomment %} data-target="#checkinModal" class="btn btn-success"><i class="icon-home"></i> Check-in</a>
+<a onclick="$('#checkinModal').modal('show');Dajaxice.apps.portals.hospi.check_in(check_in,{'team_id':{{team.pk}}});" class="btn btn-success"><i class="icon-home"></i> Check-in</a>
 {% elif team.accomodation_status == 'confirmed' and team.checked_in and not team.checked_out %}
 <a {% comment %}href="{% url 'hospi.views.check_out_team' team.pk %}"{% endcomment %} data-target="#checkoutModal" class="btn btn-danger require-alert"><i class="icon-home"></i> Check-out</a>
 {% endif %}</td>
@@ -186,17 +186,21 @@ Members highlighted in red indicates people who have accommodation confirmed alr
 </div>
 
 </center>
-  
-<div id="checkinModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="checkinModalLabel" aria-hidden="true">
-  <div class="modal-header">
-    <button type="button" class="close" onclick="$('#checkinModal').modal('hide');" aria-hidden="true">×</button>
-    <h3 id="checkinModalLabel">Check in team</h3>
-  </div>
-  <div class="modal-body">
-    <p>One fine body…</p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" onclick="$('#checkinModal').modal('hide');" aria-hidden="true">Close</button>
+
+<div class="modal fade" id="checkinModal" tabindex="-1" role="dialog" aria-labelledby="checkinModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 id="checkinModalLabel">Check in for Team: {{ team.name }}</h4>
+      </div>
+      <div id = "checkinModalBody" class="modal-body">
+        <p>Please Wait...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -211,6 +215,10 @@ Members highlighted in red indicates people who have accommodation confirmed alr
   function update_status(data){
     alert("Done");
     location.reload();
+  }
+  function check_in(data){
+    document.getElementById("checkinModalBody").innerHTML = data.html_content;
+    $('.room-select2').select2();
   }
 </script>
 
@@ -257,7 +265,7 @@ Members highlighted in red indicates people who have accommodation confirmed alr
 
 
 
-
+<!--
 <script type="text/javascript">
 $("a[data-target=#checkinModal]").click(function(event) {
     event.preventDefault();
@@ -268,6 +276,7 @@ $("a[data-target=#checkinModal]").click(function(event) {
     });
 });
 </script>
+-->
 {% if editable %}
 <script type="text/javascript">
       $('#myPopover').popover();
@@ -292,7 +301,7 @@ $("a[data-target=#checkinModal]").click(function(event) {
           <input id = "add_existing_user_button" type="button" name='submit' value='Add User' onclick="$(this).val('Please wait');" class='btn btn-info btn-block'>
         </form>
         <form class='form-horizontal' method='POST' id='new_member' action="{% url 'hospi_add_member' team.id %}">
-          <legend>new user</legend>
+          <legend>New User</legend>
             {% csrf_token %}
             {{ addUserForm.media }}
             {% if addUserForm.errors %}

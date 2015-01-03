@@ -643,7 +643,6 @@ def check_in_males(request):
     messages.success(request, team.team_sid + ' checked in successfully')
     return redirect('hospi_list_registered_teams')
 
-@login_required
 def check_in_females(request):
     data = request.POST.copy()
     team = get_object_or_404(HospiTeam, pk=data['team_id'])
@@ -657,7 +656,7 @@ def check_in_females(request):
     team.mattress_count=data['matress']
     team.save()
     messages.success(request, team.team_sid + ' checked in successfully')
-    return redirect('hospi_list_registered_teams')
+    return redirect('hospi_team_details', team.pk)
 
 @login_required
 def check_out_team(request, team_id):
