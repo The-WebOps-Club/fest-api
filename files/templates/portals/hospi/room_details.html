@@ -1,5 +1,5 @@
 {% for occupant in occupants %}
 <ul>
-    <li>{{forloop.counter }} - {{occupant.name}} - {{occupant.mobile}} - {{occupant.college}}</li>
+    <li>{{forloop.counter }} - {{occupant.user.get_full_name}} - {{occupant.mobile_number}} - {{occupant.college_text}}</li>
 </ul>
 {% endfor %}

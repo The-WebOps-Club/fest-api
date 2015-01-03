@@ -103,8 +103,8 @@ a.danger
 {% elif team.accomodation_status == 'confirmed' and team.checked_in and not team.checked_out %}
 <a {% comment %}href="{% url 'hospi.views.check_out_team' team.pk %}"{% endcomment %} data-target="#checkoutModal" class="btn btn-danger require-alert"><i class="icon-home"></i> Check-out</a>
 {% endif %}</td>
-<td><a disabled class='btn btn-info' target="_blank" {% comment %} href="{% url 'hospi.views.print_bill' team.pk %}" {% endcomment %} >Print bill</a></td>
-<td><a class='btn btn-info' target="_blank"  href="{% url 'apps.hospi.views.print_saar' team.pk %}" >Print SAAR</a></td>
+<td><a class='btn btn-info' target="_blank" {% comment %} href="{% url 'apps.hospi.views.print_bill' team.pk %}" {% endcomment %} >Print bill</a></td>
+<td><a disabled class='btn btn-info' target="_blank"  {% comment %}href="{% url 'apps.hospi.views.print_saar' team.pk %}"{% endcomment %} >Print SAAR</a></td>
     </tr>
 </table>
 <table class="table table-bordered" id="bill" >
@@ -126,7 +126,7 @@ a.danger
         <td style="text-align: right;padding-right: 5px;" ><b>{{ bill_data.cd|intcomma }} INR</b></td>
     </tr>
     <tr>
-      <td>{% if team.is_mixed  %}<a class="btn btn-warning" {% comment %}href="{% url 'hospi.views.split_team' team.pk %}"{% endcomment %}>Split team{% endif %}</td>
+      <td>{% if team.is_mixed  %}<a class="btn btn-warning" href="{% url 'hospi_split_team' team.pk %}">Split team{% endif %}</td>
         <td colspan=2 style="text-align: right;padding-right: 5px;" ><font size="6em"><b>Amount payable</b></font></td>
         <td style="text-align: right;padding-right: 5px;" ><font size="6em"><b>{{ bill_data.grand_total|intcomma }} INR</b></font></td>
     </tr>
@@ -288,7 +288,7 @@ $("a[data-target=#checkinModal]").click(function(event) {
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="adduserLabel">Change Accomodation Status</h4>
+        <h4 class="modal-title" id="adduserLabel">Add a New Member</h4>
       </div>
       <div class="modal-body">
         <form class='form-horizontal' {% comment %}action="{% url 'hospi.views.add_user_to_team' %}"{% endcomment %} method='POST' id='existing_member' >

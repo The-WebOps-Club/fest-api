@@ -282,11 +282,7 @@ def check_in(request, team_id):
         team.members.remove(team.leader)
     if team.get_female_count() and team.get_male_count():
         #print 'Mixed Team'
-        males = team.get_male_members()
-        females = team.get_female_members()
-        male_rooms = Room.objects.filter(hostel__gender='male')
-        female_rooms = Room.objects.filter(hostel__gender='female')
-        html_content = render_to_string('portals/hospi/check_in_mixed.html', locals(), RequestContext(request))
+        html_content = "<div class='alert alert-danger'>Split Team Before Check-in</div>"
         return json.dumps({'html_content':html_content})
     elif team.get_male_count():
         #print 'Male Team'

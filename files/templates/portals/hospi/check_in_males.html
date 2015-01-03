@@ -1,9 +1,9 @@
 <h5>Select rooms</h5><hr/>
-<form class="form-horizontal" {% comment %}action="{% url 'hospi.views.check_in_males' %}"{% endcomment %} method="POST" >
+<form class="form-horizontal" action="{% url 'hospi_check_in_males' %}" method="POST" >
     {% csrf_token %}
 {% for male in males %}
   <div class="control-group">
-    <label class="control-label" for="{{ male.saarang_id }}">{{ male.name }}</label>
+    <label class="control-label" for="{{ male.saarang_id }}">{{ male.user.get_full_name }}</label>
     <div class="controls">
       <select class='room-select2' name="{{ male.saarang_id }}" id="{{ male.saarang_id }}" placeholder="Select room to allot">
         {% for room in male_rooms %}
@@ -17,11 +17,11 @@
 <div class="control-group">
     <label class="control-label" for="matress">Matresses</label>
     <div class="controls">
-      <input type="number" name="matress" placeholder="Number of matresses">
+      <input type="number" name="matress" value="0" placeholder="Number of matresses">
     </div>
 </div>
 <input type="hidden" name="team_id" value="{{ team.pk }}"/>
 <div class="pull-right">
-<button type="submit" value="Check in!" class="btn btn-warning"></button>
+<button type="submit" class="btn btn-warning">Check in!</button>
 </div>
 </form>

@@ -325,7 +325,6 @@ def team_details(request, team_id):
 def print_saar(request, team_id):
     return u.generate_pdf(request, team_id)
 
-@login_required
 def split_team(request, team_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
     M=['male', 'Male', 'm','M']
@@ -365,7 +364,7 @@ def split_team(request, team_id):
         new_team.time_of_departure = team.time_of_departure
         new_team.save()
     messages.success(request, 'Team '+new_team.name+' created and ID is '+new_team.team_sid)
-    return redirect('hospi_list_registered_teams')
+    return redirect('hospi_team_details', team.pk)
 
 @login_required
 def update_status(request, team_id):
@@ -628,7 +627,6 @@ def check_in_mixed(request):
     messages.success(request, team.team_sid + ' checked in successfully')
     return redirect('hospi_list_registered_teams')
 
-@login_required
 def check_in_males(request):
     data = request.POST.copy()
     team = get_object_or_404(HospiTeam, pk=data['team_id'])
@@ -642,7 +640,7 @@ def check_in_males(request):
     team.mattress_count=data['matress']
     team.save()
     messages.success(request, team.team_sid + ' checked in successfully')
-    return redirect('hospi_list_registered_teams')
+    return redirect('hospi_team_details', team.pk)
 
 def check_in_females(request):
     data = request.POST.copy()
