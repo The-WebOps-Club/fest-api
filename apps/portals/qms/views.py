@@ -6,10 +6,10 @@ from apps.walls.models import Wall
 from apps.users.models import ERPProfile, Dept, Subdept, Page,UserProfile,Team
 from django.contrib.auth.models import User
 from misc.models import College
-from apps.events.models import EventRegistration
+from apps.events.models import EventRegistration,Event
 
 from apps.users.forms import LoginForm,UserForm
-from apps.portals.qms.forms import AddTeamForm,UserProfileForm,AddEventRegistrationForm
+from apps.portals.qms.forms import AddTeamForm,UserProfileForm,AddEventRegistrationForm,EventParticipationForm
 
 from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect
 from django.http import HttpResponse
@@ -52,7 +52,8 @@ def qms_portal(request):
     user_profile_form = UserProfileForm()
     teamform = AddTeamForm()
     registrationform=AddEventRegistrationForm()
-    to_return={'userform':user_form,'userprofileform':user_profile_form,'teamform':teamform,'registrationform':registrationform}
+    participationform=EventParticipationForm()
+    to_return={'userform':user_form,'userprofileform':user_profile_form,'teamform':teamform,'registrationform':registrationform,'participationform':participationform}
     return render(request, 'portals/qms/qms.html', to_return)
     
     
@@ -127,3 +128,28 @@ def team_search(request):
         team_list.append({"name":team.name,'id':team.id,'accomodation_status':team.accomodation_status})
     team_dict = json.dumps(team_list)
     return HttpResponse(team_dict)
+    
+    
+    
+    
+@login_required
+def event_search(request):
+    data=request.GET.copy()
+    event_list=[]
+    selected_events=[]
+    events = Event.objects.filter(name__contains=data['q'])[:10]
+    events2 = Event.objects.filter(name__contains=data['q'].upper())[:10]
+ 	
+    for t in events:
+ 		selected_events = selected_events + [t]
+    for t in events2:
+ 		selected_events = selected_events + [t]
+    selected_events=set(selected_events)
+ 	
+    for event in selected_events:
+        event_list.append({"name":event.name,'id':event.id})
+    event_dict = json.dumps(event_list)
+    return HttpResponse(event_dict)
+    
+    
+    

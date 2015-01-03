@@ -175,6 +175,14 @@ class EventSchedule(models.Model):
     def __unicode__(self):
         return str(self.event)
 
+
+class EventParticipation(models.Model):
+    event_for_participation = models.OneToOneField(Event, related_name='event_participated')
+    users_participated = models.ManyToManyField(UserProfile, related_name='user_participated',null=True, blank=True)
+    teams_participated = models.ManyToManyField(Team, related_name='team_participated',null=True, blank=True)
+    
+    
+    
 class EventWinner(models.Model):
     """
         each slot for a winner

@@ -38,9 +38,10 @@ $("select[name=branch]").select2();
 <h1>QMS Portal</h1>
 <!-- Top Level Tabs -->
 <p id="message"> </p> </br>
-<button type="button" onclick="add_user_tab()" class="btn primary">Add New User</button> 
-<button type="button" id="viewid" onclick="add_team_tab()" class="btn  primary">Add New Team</button> 
-<button type="button" onclick="register_tab()" class="btn primary">Register User Or Team</button> 
+<button type="button" onclick="add_user_tab()" class="btn primary">Add/Edit User</button> 
+<button type="button" id="viewid" onclick="add_team_tab()" class="btn  primary">Add/Edit Team</button> 
+<button type="button" onclick="register_tab()" class="btn primary">Register User Or Team</button>
+<button type="button" onclick="participation_tab()" class="btn primary">Participation Tab</button>  
 <br />
 <br />
 
@@ -120,7 +121,7 @@ $("select[name=branch]").select2();
 		</div>	
 		</form>		
 				   
-	<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.add_team(add_team_js,{'teamform':$('#add_team_form').serialize(true),team_id:$('#hidden_team_id').text()});"/>
+	<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.add_team(add_team_js,{'teamform':$('#add_team_form').serialize(true),'team_id':$('#hidden_team_id').text()});"/>
 		
 		<div id="hidden_team_id" style="display:none">-1</div>    
 </div>
@@ -157,6 +158,38 @@ $("select[name=branch]").select2();
 
 
 
+<!-- PARTICIPATION -->
+<div id="participation_div" style="display:none">
+<h2> USER OR TEAM PARTICIPATION </h2>
+<span id="alert-part"></span>
+	<!-- Clear Form Button -->
+		    <div class='pull-right'><a name='clear' onclick="clearForm4();$('#alert-part').html('<h3>Form Cleared<br>Proceed adding new participation</h3>').show();" class="btn danger">Clear form</a></div>   
+	<br />
+	<br />
+
+	<!--Add Participation Form -->
+	<br />
+	<input id='add_participation_input' class="bigdrop input input-block-level" type='text' name='add_participation_input' />   
+	<br />
+	<br />
+	<form id="participation_form" accept-charset="utf-8">
+	<div id="participation_subdiv">
+		    {% csrf_token %}
+			{{participationform.as_p }}
+	</div>
+	</form>			   
+<input type="button" value="Save" onclick="$('#id_event_for_participation').attr('disabled', false); Dajaxice.apps.portals.events.add_participation(add_participation_js,{'participationform':$('#participation_form').serialize(true),'particpation_objectid':$('#particpation_objectid_hidden').text()})"/>	
+	   
+	   <div id="particpation_objectid_hidden" style="display:none">-1</div>
+</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -176,6 +209,8 @@ function clearForm()
         $('#id_city').val('')
         $('#id_age').val('')
         
+        $('#hidden_id').text(-1);
+        
         //this needs to be done to clear the select2  field
         $("select[name=branch]").select2('destroy');
         $('#id_branch').val('');
@@ -187,6 +222,8 @@ function clearForm2()
 {
         $('#id_name').val('')
         $('#id_accomodation_status').val('')
+        
+        $('#hidden_team_id').text(-1);
         
         $("select[name=members]").select2('destroy');
         $('#id_members').val('');
@@ -212,12 +249,32 @@ function clearForm3()
         
 }
 
+function clearForm4()
+{  
+        
+        $("select[name=users_participated]").select2('destroy');
+		$("select[name=teams_participated]").select2('destroy');
+	
+		$('#id_event_for_participation').val('')
+        $('#id_users_participated').val('')
+        $('#id_teams_participated').val('')
+
+        
+        $("select[name=users_participated]").select2();
+		$("select[name=teams_participated]").select2();
+		
+		$('#particpation_objectid_hidden').text(-1);
+        
+}
+
+
 //Top Level Tabs Javascript Functions
 function add_user_tab()
 {
 	document.getElementById("add_user_div").style.display = 'inline';
 	document.getElementById("add_team_div").style.display = 'none';
 	document.getElementById("register_div").style.display = 'none';
+	document.getElementById("participation_div").style.display = 'none';
 	
 	$("select[name=branch]").select2();
 }
@@ -227,6 +284,7 @@ function add_team_tab()
 	document.getElementById("add_user_div").style.display = 'none';
 	document.getElementById("add_team_div").style.display = 'inline';
 	document.getElementById("register_div").style.display = 'none';
+	document.getElementById("participation_div").style.display = 'none';
 	
 	$("select[name=members]").select2();
 }
@@ -236,11 +294,26 @@ function register_tab()
 	document.getElementById("add_user_div").style.display = 'none';
 	document.getElementById("add_team_div").style.display = 'none';
 	document.getElementById("register_div").style.display = 'inline';
+	document.getElementById("participation_div").style.display = 'none';
 	
 	$("select[name=event]").select2();
 	$("select[name=users_registered]").select2();
 	$("select[name=teams_registered]").select2();
 }
+
+
+function participation_tab()
+{
+	document.getElementById("add_user_div").style.display = 'none';
+	document.getElementById("add_team_div").style.display = 'none';
+	document.getElementById("register_div").style.display = 'none';
+	document.getElementById("participation_div").style.display = 'inline';
+	
+	$("#id_event_for_participation").attr('disabled', true);
+	
+}
+
+
 
 //Dajaxice Js Functions   
 function add_user_js(data)
@@ -250,6 +323,7 @@ function add_user_js(data)
 	{
 		clearForm();
 	}
+	
 }   
   
 function add_team_js(data)
@@ -259,7 +333,7 @@ function add_team_js(data)
 	{
 		clearForm2();
 	}
-	$('#hidden_team_id').text(-1);
+	
 } 
 
 function register_user_team_js(data)
@@ -276,9 +350,27 @@ function fill_team_form_js(data)
 	 $("select[name=members]").select2();
 } 
  
+
+function add_participation_js(data)
+{
+	alert(data.message);
+	if (data.message[0]!='Y')
+	{
+		clearForm4();
+	}
+} 
  
- 
- 
+function fill_participation_form_js(data)
+{
+	 $('#participation_subdiv').html("<table>"+data.participationform+"</table>");
+	 $('#particpation_objectid_hidden').text(data.participation_objectid);
+	 
+	$("select[name=users_registered]").select2();
+	$("select[name=teams_registered]").select2();
+	$("#id_event_for_participation").attr('disabled', true);
+	
+	 
+}  
  
 
 //Select2 Functions
@@ -409,6 +501,60 @@ $("#edit_team_input").select2({
 }); 
  
 
+//3. FOR PARTICIPATION(select2)
+$(function(){
+    function eventFormatResult(event) {
+        var markup = "<table padding=3><tr>";
+            markup += "<td rowspan=3><i class='icon-star'></i></td><td rowspan=3><div style='padding-right:5px;'><b>" + event.name + "</b></div></td>";
+        
+        /*
+        markup += "<td><div>" + user.first_name + "</div></td>";
+        markup += "<td><div>" + user.last_name + "</div></td>";
+        markup += "<td><div>" + user.mobile_number + "</div>";        
+            markup += "</td><td><div>" + user.email + "</div>";*/
+         
+        markup += "</tr></table>";
+         
+        return markup;
+    }
 
+    function eventFormatSelection(event) {
+    	Dajaxice.apps.portals.events.fill_participation_form(fill_participation_form_js,{'eventid':event.id});
+        return event.name;
+    }
+
+$("#add_participation_input").select2({
+    placeholder: "Enter Event Name",
+    minimumInputLength: 1,
+    ajax: {
+        url: "{% url 'qms_event_search' %}",
+        dataType: 'json',
+        quietMillis: 100,
+        multiple:false,
+        data: function (term, page) { // page is the one-based page number tracked by Select2
+            return {
+                q: term, //search term
+                page_limit: 10, // page size
+                page: page, // page number
+                //apikey: "ju6z9mjyajq2djue3gbvv26t"
+            };
+        },
+        results: function (data, page) {
+            //var more = (page * 10) < data.total; // whether or not there are more results available
+
+            //console.log(data.movies)
+            // notice we return the value of more so Select2 knows if more results can be loaded
+            return {results: data};
+        }
+    },
+    formatResult: eventFormatResult, // omitted for brevity, see the source of this page
+    formatSelection: eventFormatSelection, // omitted for brevity, see the source of this page
+    dropdownCssClass: 'bigdrop', // apply css that makes the dropdown taller
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+});
+		
+}); 
+ 
+ 
 </script>
 {% endblock content %}

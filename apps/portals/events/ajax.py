@@ -420,9 +420,9 @@ def delete_winner(request,winner_id):
 #QMS PORTAL FUNCTIONS - IT IS HERE BECAUSE I CAN'T GET DAJAXICE FUNCTIONS TO WORK THERE. WILL SHIFT EVERYTHING THERE LATER         
 from apps.users.forms import LoginForm,UserForm
 from apps.users.models import Team
-from apps.portals.qms.forms import AddTeamForm,UserProfileForm,AddEventRegistrationForm
+from apps.portals.qms.forms import AddTeamForm,UserProfileForm,AddEventRegistrationForm,EventParticipationForm
 
-from apps.events.models import EventRegistration
+from apps.events.models import EventRegistration,EventParticipation
 
 
 @dajaxice_register    
@@ -539,4 +539,27 @@ def fill_team_form(request,teamid):
 	team_object=Team.objects.get(id=teamid)
 	form = AddTeamForm(instance=team_object).as_table()
 	return json.dumps({'teamform':form,'id':teamid}) 
+	
+	
+	
+	
+@dajaxice_register    
+def add_participation(request,participationform,particpation_objectid):
+	message="Your form has the following errors:\n"
+	participation_object=EventParticipation.objects.get(id=particpation_objectid)
+	participation_form = EventParticipationForm(deserialize_form(participationform),instance=participation_object)
+	if participation_form.is_valid():
+		participation_form.save()
+		message="Successfully added participation"
+	else:
+		for field in participation_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"\n"
+	return json.dumps({'message': message}) 
 
+
+@dajaxice_register    
+def fill_participation_form(request,eventid):
+	event_object=Event.objects.get(id=eventid)
+	form = EventParticipationForm(instance=event_object.event_participated).as_table()
+	return json.dumps({'id':eventid,'participationform':form,'participation_objectid':event_object.event_participated.id})
