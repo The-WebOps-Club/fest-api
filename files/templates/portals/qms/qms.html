@@ -162,8 +162,7 @@ $("select[name=branch]").select2();
 	<!--Add Team Form -->
 
 	<form id="registration_form" accept-charset="utf-8">
-		    {% csrf_token %}
-			{{registrationform.as_p }}
+		   <div id="reg_form_div"> </div>
 	</form>			   
 <input type="button" value="Save" onclick="$('#loading_div').attr('style', 'display: inline'); Dajaxice.apps.portals.events.register_user_team(register_user_team_js,{'registerform':$('#registration_form').serialize(true)})"/>		   
 </div>
@@ -313,9 +312,7 @@ function register_tab()
 	document.getElementById("register_div").style.display = 'inline';
 	document.getElementById("participation_div").style.display = 'none';
 	
-	$("select[name=event]").select2();
-	$("select[name=users_registered]").select2();
-	$("select[name=teams_registered]").select2();
+	Dajaxice.apps.portals.events.insert_reg_form(insert_reg_form_js);
 }
 
 
@@ -398,6 +395,18 @@ function fill_participation_form_js(data)
 	 $('#loading_div').attr('style', 'display: none');
 }  
  
+function insert_reg_form_js(data)
+{
+	$('#reg_form_div').html("<table>"+data.reg_form+"</table>");
+	
+	$("select[name=event]").select2();
+	$("select[name=users_registered]").select2();
+	$("select[name=teams_registered]").select2();
+	
+	$('#loading_div').attr('style', 'display: none');
+	
+} 
+
 
 //Select2 Functions
 //1. FOR USERS

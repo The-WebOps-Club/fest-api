@@ -563,3 +563,10 @@ def fill_participation_form(request,eventid):
 	event_object=Event.objects.get(id=eventid)
 	form = EventParticipationForm(instance=event_object.event_participated).as_table()
 	return json.dumps({'id':eventid,'participationform':form,'participation_objectid':event_object.event_participated.id})
+	
+	
+	
+@dajaxice_register    
+def insert_reg_form(request):
+	reg_form = AddEventRegistrationForm().as_table()
+	return json.dumps({'reg_form':reg_form})
