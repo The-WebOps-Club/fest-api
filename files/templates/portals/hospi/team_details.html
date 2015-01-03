@@ -103,8 +103,8 @@ a.danger
 {% elif team.accomodation_status == 'confirmed' and team.checked_in and not team.checked_out %}
 <a {% comment %}href="{% url 'hospi.views.check_out_team' team.pk %}"{% endcomment %} data-target="#checkoutModal" class="btn btn-danger require-alert"><i class="icon-home"></i> Check-out</a>
 {% endif %}</td>
-<td><a class='btn btn-info' target="_blank" {% comment %} href="{% url 'hospi.views.print_bill' team.pk %}" {% endcomment %} >Print bill</a></td>
-<td><a class='btn btn-info' target="_blank" {% comment %} href="{% url 'hospi.views.print_saar' team.pk %}" {% endcomment %}>Print SAAR</a></td>
+<td><a disabled class='btn btn-info' target="_blank" {% comment %} href="{% url 'hospi.views.print_bill' team.pk %}" {% endcomment %} >Print bill</a></td>
+<td><a class='btn btn-info' target="_blank"  href="{% url 'apps.hospi.views.print_saar' team.pk %}" >Print SAAR</a></td>
     </tr>
 </table>
 <table class="table table-bordered" id="bill" >
@@ -157,24 +157,24 @@ a.danger
       <td><a href="#">{{ team.leader.saarang_id }}</a></td>
       <td>{{ team.leader.desk_id }}</td>
       <td>{{ team.leader.gender|title }}</td>
-      <td>{{ team.leader.email }}</td>
-      <td>{{ team.leader.name }}</td>
-      <td>{{ team.leader.mobile }}</td>
-      <td>{{ team.leader.college_id }}</td>
-      <td>{{ team.leader.college }}</td>
+      <td>{{ team.leader.user.email }}</td>
+      <td>{{ team.leader.user.get_full_name }}</td>
+      <td>{{ team.leader.mobile_number }}</td>
+      <td>{{ team.leader.college_roll }}</td>
+      <td>{{ team.leader.college_text }}</td>
     </tr>
     {% for member in team.members.all %}
-    <tr id="{{member.id}}" {% if member.accomod_is_confirmed and team.accomodation_status != 'confirmed' %}class="error"{% endif %} >
+    <tr id="{{member.id}}" {% if member.accomod_is_confirmed and team.accomodation_status != 'confirmed' %}class="danger"{% endif %} >
       <td>{{ forloop.counter|add:1 }}</td>
-      <td><a class="table-action-deletelink btn btn-danger btn-mini" {% comment %}href="{% url 'hospi.views.del_member' team.id %}"{% endcomment %}><i class='icon-remove-circle icon-white'></i></a></td>
+      <td><a disabled class="table-action-deletelink btn btn-danger btn-xs" {% comment %}href="{% url 'hospi.views.del_member' team.id %}"{% endcomment %}>&times;</a></td>
       <td><a href="#">{{ member.saarang_id }}</a></td>
       <td>{{ member.desk_id }}</td>
       <td>{{ member.gender|title }}</td>
-      <td>{{ member.email }}</td>
-      <td>{{ member.name }}</td>
-      <td>{{ member.mobile }}</td>
-      <td>{{ member.college_id }}</td>
-      <td>{{ member.college }}</td>
+      <td>{{ member.user.email }}</td>
+      <td>{{ member.user.get_full_name }}</td>
+      <td>{{ member.mobile_number }}</td>
+      <td>{{ member.college_roll }}</td>
+      <td>{{ member.college_text }}</td>
     </tr>
     {% endfor %}
     </tbody>
@@ -184,7 +184,7 @@ a.danger
 
 Members highlighted in red indicates people who have accommodation confirmed already in other teams. They will be automatically removed upon confirmation of this team. (Leader has been pre-notified)
 </div>
-
+</div>
 </center>
 
 <div class="modal fade" id="checkinModal" tabindex="-1" role="dialog" aria-labelledby="checkinModalLabel" aria-hidden="true">
@@ -256,7 +256,7 @@ Members highlighted in red indicates people who have accommodation confirmed alr
         </div>
       </div>
       <div class="modal-footer">
-        <input type="Submit" id="change_status_save_button"class="btn btn-primary" onclick="$(this).val('Please wait');init_change_status({{team.pk}});"value="Save"/>
+        <input type="Submit" id="change_status_save_button"class="btn btn-primary" onclick="$(this).val('Please wait').attr('disabled','disabled');init_change_status({{team.pk}});"value="Save"/>
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -519,4 +519,3 @@ $("a[data-target=#checkinModal]").click(function(event) {
     location.reload();
   }
 </script>
-

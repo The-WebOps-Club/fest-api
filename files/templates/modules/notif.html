@@ -22,7 +22,8 @@
 	        {% endautoescape %}
 	    </div>
 	    <div class="notif_foot">
-	        {{ notification.timestamp|naturaltime }}
+	        {%comment%}{{ notification.timestamp|naturaltime }}{%endcomment%}
+	        {{ notification.timestamp }}
 	        <span class='if_unread'>
 	        	· 
 	        </span>

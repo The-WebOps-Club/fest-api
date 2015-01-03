@@ -11,6 +11,8 @@ from django.shortcuts import get_object_or_404
 from apps.hospi import utility as u
 from django.contrib import messages
 
+from post_office import mail
+
 @dajaxice_register
 def list_all_teams(request):
 	dept_list= ['hospi', 'webops']
@@ -238,7 +240,6 @@ def update_status(request, stat, team_id):
         team.members.remove(team.leader)
         messages.warning(request, 'For '+ team.name + ' : ' + team.team_sid +', Team leader found in members list also. Successfully removed!')
     if stat:
-        print stat
         if stat == 'confirmed':
             team.leader.accomod_is_confirmed = True
             team.leader.save()
@@ -256,20 +257,19 @@ def update_status(request, stat, team_id):
         messages.success(request, 'Status for '+team.name+' successfully updated to '+stat)
         emailsubject='Accommodation request '+stat+', Saarang 2015'
         users=[]
-        ''' Utture
         for user in team.get_all_members():
-            users.append(user.email)
+            users.append(user.user.email)
         if stat == 'confirmed':
             mail.send(
-                users, template='email/hospi/confirm_accommodation',
+                users, template='confirm_accommodation.email',
                 context={'team':team,}
                 )
         else:
             mail.send(
-                users, template='email/hospi/status_update',
+                users, template='status_update.email',
                 context={'status':stat, 'team':team,}
                 )
-		'''
+		
     return json.dumps({'stat':stat})
 
 @dajaxice_register

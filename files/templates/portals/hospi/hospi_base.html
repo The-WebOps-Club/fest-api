@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 {% load url from future %}
-{% load dajaxice_templatetags %}
-{% dajaxice_js_import %}
 {% load humanize %}
 <html lang="en">
 
@@ -32,8 +30,9 @@
     <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
     <!--<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js"></script>-->
 
-    <script type="text/javascript" src='{% static "js/dajaxice.core.js" %}'></script>
     
+{% load dajaxice_templatetags %}
+{% dajaxice_js_import %}
     <!--<script type="text/javascript" src='{% static "dajax/jquery.dajax.core.js" %}'></script>-->
     
 
@@ -162,7 +161,7 @@
       document.getElementById("add_hostel_room_tab").className = "";
       $('#hospitable').dataTable( {
               "bJQueryUI": true,
-              "sPaginationType": "full_numbers",
+              "bPaginate": false,
               "sDom": '<"H"Tfr>t<"F"ip>',
               "oTableTools": {
                   "aButtons": [

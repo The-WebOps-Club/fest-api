@@ -16,10 +16,7 @@
             <div class="span6"><center>
                 <h3>Accommodation portal</h3><hr/></center>
             </div>
-<<<<<<< Updated upstream
             <!-- <div class="pull-right"><a class="btn btn-danger" href="{% url 'apps.hospi.views.logout' %}" ><i class="icon-off icon-white"></i> Logout</a></div> -->
-=======
->>>>>>> Stashed changes
         </div>
 
         <div class="panel panel-warning">
@@ -186,4 +183,12 @@
 </p>
 
 </div>
+<script>
+window.onload = function() {
+    if(!window.location.hash) {
+        window.location = window.location + '#loaded';
+        window.location.reload();
+    }
+}
+</script>
 {% endblock content %}

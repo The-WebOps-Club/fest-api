@@ -19,9 +19,11 @@ from django.views.decorators.csrf import csrf_exempt
 from apps.users.models import UserProfile, Team
 from apps.hospi.forms import UserProfileForm
 from apps.events.models import EventRegistration
+from django.views.decorators.cache import never_cache
 ####################################################################
 # Mainsite Views
 
+@never_cache
 def prehome(request):
     if not request.user.is_authenticated():
         return render(request, 'portals/hospi/login.html', locals())
@@ -83,6 +85,7 @@ def details(request, team_id):
     request.session['current_team'] = team.pk
     return redirect('hospi_home', team_id=team.pk)
     
+@never_cache
 def home(request, team_id):
     user = request.user.profile
     if not user.profile_is_complete():
@@ -100,7 +103,7 @@ def home(request, team_id):
     if team.accomodation_status != 'confirmed':
         for member in members:
             if member.accomod_is_confirmed:
-                msg += member.email +', '
+                msg += str(member.email) +', '
         if msg:
             messages.warning(request, msg + ': These members already have accommodation \
                 confirmed in other team. Please remove them, or they will be automatically \
@@ -254,8 +257,6 @@ def user_save_team(request):
 
 def cancel_request(request, team_id):
     user = request.user.profile
-    if not request.session.get('current_team'):
-        return redirect('hospi_prehome')
     team = get_object_or_404(HospiTeam, pk=team_id)
     members = team.get_all_members()
     if team.accomodation_status == 'confirmed':

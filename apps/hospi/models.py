@@ -52,9 +52,9 @@ class HospiTeam(models.Model):
     accomodation_status = models.CharField(max_length=50, choices=ACCOMODATION_CHOICES, default='not_req')
     city = models.CharField(max_length=100, null=True, blank=True)
     date_of_arrival = models.DateField(blank=True, null=True, default='2015-01-07')
-    time_of_arrival = models.TimeField(blank=True,null=True, default='23:00:00')
+    time_of_arrival = models.TimeField(blank=True,null=True, default='10:00:00')
     date_of_departure =  models.DateField(blank=True, null=True, default='2015-01-12')
-    time_of_departure = models.TimeField(blank=True, null=True, default='10:00:00')
+    time_of_departure = models.TimeField(blank=True, null=True, default='09:00:00')
     checked_in = models.BooleanField(default=False)
     checked_out = models.BooleanField(default=False)
     mattress_count = models.IntegerField(default=0)
@@ -72,15 +72,15 @@ class HospiTeam(models.Model):
         return mem+1
 
     def get_male_count(self):
-        M=['male', 'Male', 'm', 'M']
-        mem = len(self.members.all().filter(gender='male'))
+        M=['male', 'Male', 'm','M']
+        mem = len(self.members.all().filter(gender__in=M))
         if self.leader.gender in M:
             mem +=1
         return mem
 
     def get_female_count(self):
-        F=['female', 'Female', 'f', 'F']
-        mem = len(self.members.all().filter(gender='female'))
+        F=['female', 'Female','f','F']
+        mem = len(self.members.all().filter(gender__in=F))
         if self.leader.gender in F:
             mem +=1
         return mem

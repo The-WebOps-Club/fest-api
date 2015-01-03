@@ -1,6 +1,8 @@
 # For simple dajax(ice) functionalities
 from django.utils import simplejson
 import json
+from pytz import timezone
+import unicodedata
 from dajaxice.decorators import dajaxice_register
 
 # For rendering templates
@@ -13,8 +15,11 @@ from django.conf import settings
 
 #models
 from django.contrib.auth.models import User
-from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
-from apps.events.models import EventTab, Event
+from apps.users.models import ERPProfile, UserProfile, Dept, Subdept, Team
+from apps.events.models import EventTab, Event, EventSchedule, EventWinner
+
+from apps.portals.events.forms import AddSlotForm, EventWinnerForm
+
 #dajaxice stuff
 from dajaxice.utils import deserialize_form
 
@@ -138,7 +143,43 @@ def edit_event_details(request,event_name):
 		image_source= str(event_object.event_image.url)
 	except Exception,e:
 		image_source=""
-	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'event_id':event_id,'image_source':image_source})
+	
+	slot_id=""
+	slot_start=""
+	slot_end=""
+	slot_comment=""
+	slot_venue=""
+
+	try:
+		event_slots= EventSchedule.objects.filter(event=event_object)
+		for slot in event_slots:
+			slot_id=slot_id+str(slot.id)+"|"
+			slot_start=slot_start+((slot.slot_start).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
+			slot_end=slot_end+((slot.slot_end).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
+			slot_comment=slot_comment+ str(slot.comment) + "|" 
+			slot_venue=slot_venue + str(slot.venue) + "|"
+		length= len(event_slots)
+	except Exception,e:
+		pass
+
+	winner_id=""
+	winner_position=""
+	winner_comment=""
+	winner_added_by=""
+	winner_user=""
+
+	try:
+		event_winners= EventWinner.objects.filter(event=event_object)
+		for winner in event_winners:
+			winner_id=winner_id+str(winner.id)+"|"
+			winner_position=winner_position+(winner.position)+"|"
+			winner_comment=winner_comment+(winner.comment)+"|"
+			winner_added_by=winner_added_by+ str(winner.added_by) + "|" 
+			winner_user=winner_user + str(winner.user) + "|"
+		length_winner= len(event_winners)
+	except Exception,e:
+		pass
+	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'event_id':event_id,'image_source':image_source, 'slot_id':slot_id, 'slot_venue':slot_venue, 'slot_comment':slot_comment, 'slot_start':slot_start,'slot_end':slot_end,'length_count':length, 'winner_id':winner_id, 'winner_position':winner_position, 'winner_comment':winner_comment, 'winner_added_by':winner_added_by,'winner_user':winner_user, 'length_count_winner':length_winner})
     
     
 @dajaxice_register
@@ -226,12 +267,145 @@ def reg_list(request,event_name):
 	event_registrations=event_object.event_registered.all()
 	user_names=""
 	team_names=""
+	user_number=""
+	user_email=""
+	user_college=""
+	mem_count = ""
+
 	info=""
 	for reg in event_registrations:
-		user_names=user_names + reg.users_registered.username +" |"
+		user_names=user_names + reg.users_registered.get_full_name() +" |"
 		if reg.teams_registered==None:
 			team_names=team_names + "None |"
 		else:
-			team_names=team_names + reg.teams_registered.name + " (" + str(reg.teams_registered.get_total_count())+") "+" |"
+			team_names=team_names + reg.teams_registered.name +" |"
 		info=str(info) + str(reg.info) + " |"
-	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info})
+		user_email = user_email + str(reg.users_registered.email)  + "|"
+		user_number = user_number + str(reg.users_registered.profile.mobile_number) + "|"
+		user_college = user_college + str(reg.users_registered.profile.college_text) + "|"
+		mem_count = mem_count + str(reg.teams_registered.get_total_count()) + "|"
+	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info, 'user_number':user_number, 'user_email':user_email, 'user_college':user_college, 'mem_count':mem_count})
+
+@dajaxice_register    
+def participant_info(request,participant_name,team_name):
+
+	try :
+		data=[]
+		temp={}		
+		team = Team.objects.get(name=team_name)
+		members=team.members.all()
+		for i in range(len(members)):
+			temp={}
+			temp['name']=str(members[i].get_full_name())
+			temp['number']=members[i].profile.mobile_number
+			temp['email']=str(members[i].email)
+			temp['college']= str(members[i].profile.college_text)
+			temp['city']=str(members[i].profile.city)
+			data.append(temp)
+	except Exception, e:
+		temp={}
+		data=[]
+		participant = User.objects.get(username=participant_name)
+		temp['name']=str(participant_name)
+		temp['number']=participant.profile.mobile_number
+		temp['email']=str(participant.email)
+		temp['college']= str(participant.profile.college_text)
+		temp['city']=str(participant.profile.city)
+		data.append(temp)
+	return json.dumps({'inf':data,'len':len(data),})	
+
+
+@dajaxice_register
+def display_add_event_slot(request):
+	form = AddSlotForm().as_table()
+	slot_event=""
+	slot_start=""
+	slot_end=""
+	slot_comment=""
+	slot_venue=""
+	slot_array = EventSchedule.objects.all()
+	for slot in slot_array:
+		slot_event=slot_event+slot.event.name+"|"
+		slot_start=slot_start+((slot.slot_start).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
+		slot_end=slot_end+((slot.slot_end).astimezone(timezone(settings.TIME_ZONE)).strftime('%c'))+"|"
+		slot_comment=slot_comment+ str(slot.comment) + "|" 
+		slot_venue=slot_venue + str(slot.venue) + "|"
+	return json.dumps({'form':form, 'slot_venue':slot_venue, 'slot_comment':slot_comment, 'slot_event': slot_event,'slot_start':slot_start,'slot_end':slot_end})
+
+@dajaxice_register
+def display_add_event_winner(request):
+	form = EventWinnerForm().as_table()
+	winner_id=""
+	winner_position=""
+	winner_comment=""
+	winner_added_by=""
+	winner_user=""
+	winner_event=""
+	event_winners= EventWinner.objects.all()
+	for winner in event_winners:
+		winner_id=winner_id+str(winner.id)+"|"
+		winner_position=winner_position+(winner.position)+"|"
+		winner_comment=winner_comment+(winner.comment)+"|"
+		winner_added_by=winner_added_by+ str(winner.added_by) + "|" 
+		winner_user=winner_user + str(winner.user) + "|"
+		winner_event=winner_event + str(winner.event) + "|"
+	length_winner= len(event_winners)
+	return json.dumps({'form':form, 'winner_event':winner_event, 'winner_id':winner_id, 'winner_position':winner_position, 'winner_comment':winner_comment, 'winner_added_by':winner_added_by,'winner_user':winner_user, 'length_count_winner':length_winner})
+
+    
+@dajaxice_register    
+def add_slot(request,slot_form):
+	message="Your form has the following errors <br>"
+	slot_form = AddSlotForm(deserialize_form(slot_form))
+	if slot_form.is_valid():
+		slot_form.save()
+		message="successfully added event"
+	else:
+		for field in slot_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"<br>"
+
+	return json.dumps({'message': message})		
+
+@dajaxice_register    
+def delete_slot(request,slot_id):
+	message="successfully Deleted slot"
+	try:
+		slot=EventSchedule.objects.get(id=int(slot_id))
+		slot.delete()
+	except Exception, e:
+		message="no such slot exists"
+	return json.dumps({'message': message})
+
+
+@dajaxice_register    
+def add_winner(request,winner_form):
+	message="Your form has the following errors <br>"
+	f = dict(deserialize_form(winner_form).iterlists())
+	winner_form = EventWinnerForm((deserialize_form(winner_form)))
+	obj = EventWinner()
+	print 'here it is ' + str(int(f['event'][0]))
+	obj.event = (Event.objects.get(id=int(f['event'][0])))
+	obj.position = str(f['position'][0])
+	obj.comment = str(f['comment'][0])
+	obj.added_by = request.user.erp_profile
+	obj.user = (UserProfile.objects.get(id=int(f['user'][0])))
+	if winner_form.is_valid():
+		obj.save()
+		message="successfully added winner"
+	else:
+		for field in winner_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"<br>"
+
+	return json.dumps({'message': message})	
+
+@dajaxice_register    
+def delete_winner(request,winner_id):
+	message="successfully Deleted winner"
+	try:
+		winner=EventWinner.objects.get(id=int(winner_id))
+		winner.delete()
+	except Exception, e:
+		message="no such winner exists"
+	return json.dumps({'message': message})
