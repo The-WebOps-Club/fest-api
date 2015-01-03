@@ -309,6 +309,8 @@ function participation_tab()
 	document.getElementById("register_div").style.display = 'none';
 	document.getElementById("participation_div").style.display = 'inline';
 	
+	$("select[name=users_participated]").select2();
+	$("select[name=teams_participated]").select2();
 	$("#id_event_for_participation").attr('disabled', true);
 	
 }
@@ -365,8 +367,8 @@ function fill_participation_form_js(data)
 	 $('#participation_subdiv').html("<table>"+data.participationform+"</table>");
 	 $('#particpation_objectid_hidden').text(data.participation_objectid);
 	 
-	$("select[name=users_registered]").select2();
-	$("select[name=teams_registered]").select2();
+	$("select[name=users_participated]").select2();
+	$("select[name=teams_participated]").select2();
 	$("#id_event_for_participation").attr('disabled', true);
 	
 	 
