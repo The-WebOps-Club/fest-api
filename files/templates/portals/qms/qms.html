@@ -22,7 +22,7 @@
 <!--css styling-->
 <style>
 .select2-container{
- width:550px;   
+ width:500px;   
 }
 
 </style>
@@ -181,6 +181,7 @@ $("select[name=branch]").select2();
 <input type="button" value="Save" onclick="$('#id_event_for_participation').attr('disabled', false); Dajaxice.apps.portals.events.add_participation(add_participation_js,{'participationform':$('#participation_form').serialize(true),'particpation_objectid':$('#particpation_objectid_hidden').text()})"/>	
 	   
 	   <div id="particpation_objectid_hidden" style="display:none">-1</div>
+	   <h3><div id="participation_count"></div></h3>
 </div>
 
 
@@ -258,6 +259,7 @@ function clearForm4()
 		$('#id_event_for_participation').val('')
         $('#id_users_participated').val('')
         $('#id_teams_participated').val('')
+        $('#add_participation_input').val('')
 
         
         $("select[name=users_participated]").select2();
@@ -521,6 +523,7 @@ $(function(){
     }
 
     function eventFormatSelection(event) {
+    	document.getElementById("participation_count").innerHTML = 'No. of Users Participated: ' + event.participant_count + '<br> No of Teams Participated: ' + event.team_count;
     	Dajaxice.apps.portals.events.fill_participation_form(fill_participation_form_js,{'eventid':event.id});
         return event.name;
     }

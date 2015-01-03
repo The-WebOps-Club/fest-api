@@ -146,8 +146,11 @@ def event_search(request):
  		selected_events = selected_events + [t]
     selected_events=set(selected_events)
  	
+ 	
     for event in selected_events:
-        event_list.append({"name":event.name,'id':event.id})
+    	participant_count=len(event.event_participated.users_participated.all())
+    	team_count=len(event.event_participated.teams_participated.all())
+        event_list.append({"name":event.name,'id':event.id,'participant_count':participant_count,'team_count':team_count})
     event_dict = json.dumps(event_list)
     return HttpResponse(event_dict)
     
