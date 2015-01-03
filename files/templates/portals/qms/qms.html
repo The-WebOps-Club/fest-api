@@ -25,6 +25,17 @@
  width:500px;   
 }
 
+#loading_div
+{
+position:absolute;
+width:60%;
+height:100%;
+opacity: 0.4;
+text-align:center;
+background-color:black;
+color:red;
+font-size:100px;
+}
 </style>
 
 <!--the simple select2 things-->
@@ -33,6 +44,10 @@ jQuery(function(){
 $("select[name=branch]").select2();
 });
 </script>
+
+
+<!-- Loading Div -->
+<div id="loading_div" z-index="100" style="display:none" > <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>Loading</div>
 
 
 <h1>QMS Portal</h1>
@@ -78,7 +93,7 @@ $("select[name=branch]").select2();
 		    {% csrf_token %}
 			{{userprofileform.as_p }}
 	</form>
-<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.add_user(add_user_js,{'userform':$('#add_user_userform').serialize(true),'userprofileform':$('#add_user_userprofileform').serialize(true),'user_id':$('#hidden_id').text()});"/>	
+<input type="button" value="Save" onclick="$('#loading_div').attr('style', 'display: inline');Dajaxice.apps.portals.events.add_user(add_user_js,{'userform':$('#add_user_userform').serialize(true),'userprofileform':$('#add_user_userprofileform').serialize(true),'user_id':$('#hidden_id').text()});"/>	
 
 
 <div id="hidden_id" style="display:none">-1</div> 
@@ -121,7 +136,7 @@ $("select[name=branch]").select2();
 		</div>	
 		</form>		
 				   
-	<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.add_team(add_team_js,{'teamform':$('#add_team_form').serialize(true),'team_id':$('#hidden_team_id').text()});"/>
+	<input type="button" value="Save" onclick="$('#loading_div').attr('style', 'display: inline'); Dajaxice.apps.portals.events.add_team(add_team_js,{'teamform':$('#add_team_form').serialize(true),'team_id':$('#hidden_team_id').text()});"/>
 		
 		<div id="hidden_team_id" style="display:none">-1</div>    
 </div>
@@ -150,7 +165,7 @@ $("select[name=branch]").select2();
 		    {% csrf_token %}
 			{{registrationform.as_p }}
 	</form>			   
-<input type="button" value="Save" onclick="Dajaxice.apps.portals.events.register_user_team(register_user_team_js,{'registerform':$('#registration_form').serialize(true)})"/>		   
+<input type="button" value="Save" onclick="$('#loading_div').attr('style', 'display: inline'); Dajaxice.apps.portals.events.register_user_team(register_user_team_js,{'registerform':$('#registration_form').serialize(true)})"/>		   
 </div>
 
 
@@ -178,7 +193,7 @@ $("select[name=branch]").select2();
 			{{participationform.as_p }}
 	</div>
 	</form>			   
-<input type="button" value="Save" onclick="$('#id_event_for_participation').attr('disabled', false); Dajaxice.apps.portals.events.add_participation(add_participation_js,{'participationform':$('#participation_form').serialize(true),'particpation_objectid':$('#particpation_objectid_hidden').text()})"/>	
+<input type="button" value="Save" onclick="$('#loading_div').attr('style', 'display: inline'); $('#id_event_for_participation').attr('disabled', false); Dajaxice.apps.portals.events.add_participation(add_participation_js,{'participationform':$('#participation_form').serialize(true),'particpation_objectid':$('#particpation_objectid_hidden').text()})"/>	
 	   
 	   <div id="particpation_objectid_hidden" style="display:none">-1</div>
 	   <h3><div id="participation_count"></div></h3>
@@ -327,7 +342,7 @@ function add_user_js(data)
 	{
 		clearForm();
 	}
-	
+	$('#loading_div').attr('style', 'display: none');
 }   
   
 function add_team_js(data)
@@ -337,6 +352,7 @@ function add_team_js(data)
 	{
 		clearForm2();
 	}
+	$('#loading_div').attr('style', 'display: none');
 	
 } 
 
@@ -344,6 +360,7 @@ function register_user_team_js(data)
 {
 	alert(data.message);
 	clearForm3();
+	$('#loading_div').attr('style', 'display: none');
 } 
 
 function fill_team_form_js(data)
@@ -352,6 +369,8 @@ function fill_team_form_js(data)
 	 $('#hidden_team_id').text(data.id);
 	 
 	 $("select[name=members]").select2();
+	 
+	 $('#loading_div').attr('style', 'display: none');
 } 
  
 
@@ -361,7 +380,9 @@ function add_participation_js(data)
 	if (data.message[0]!='Y')
 	{
 		clearForm4();
+		
 	}
+	$('#loading_div').attr('style', 'display: none');
 } 
  
 function fill_participation_form_js(data)
@@ -373,7 +394,8 @@ function fill_participation_form_js(data)
 	$("select[name=teams_participated]").select2();
 	$("#id_event_for_participation").attr('disabled', true);
 	
-	 
+	
+	 $('#loading_div').attr('style', 'display: none');
 }  
  
 
@@ -468,6 +490,7 @@ $(function(){
     }
 
     function teamFormatSelection(team) {
+		$('#loading_div').attr('style', 'display: inline');
     	Dajaxice.apps.portals.events.fill_team_form(fill_team_form_js,{'teamid':team.id});
         return team.name;
     }
@@ -524,6 +547,7 @@ $(function(){
 
     function eventFormatSelection(event) {
     	document.getElementById("participation_count").innerHTML = 'No. of Users Participated: ' + event.participant_count + '<br> No of Teams Participated: ' + event.team_count;
+    	$('#loading_div').attr('style', 'display: inline');
     	Dajaxice.apps.portals.events.fill_participation_form(fill_participation_form_js,{'eventid':event.id});
         return event.name;
     }
