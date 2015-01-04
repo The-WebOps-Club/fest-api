@@ -1,14 +1,48 @@
-{% extends 'base/base.html' %}
+<!--EXTRA STUFF ADDED FROM EVENT2.HTML-->
+
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+{% load compress %}
 {% load check_access %}
-{% block content %}
 {% load dajaxice_templatetags %}
 {% dajaxice_js_import %}
 {%  csrf_token %}
 {% load staticfiles %}
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<style>
+  
+  select option{
+    color: black;
+}
+</style>
+
+<link rel="shortcut icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<title>{% block title %}QMS PORTAL | Saarang{% endblock %}</title>
+
+<link rel="icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+<link href="{% static 'css/prettify.css' %}" rel="stylesheet">    
+<link rel="shortcut icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<link rel="icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+
+<link href="{% static 'css/jquery-ui-1.10.3.custom.css' %}" rel="stylesheet" media="screen">
+
+
+
+  <link rel="stylesheet" href="/resources/demos/style.css">
+
+<script src="{% static 'bootstrap/dataTables/bootstrap.js' %}"></script>
+
+
+
+<!--orignal stuff-->
 
 
 
@@ -17,6 +51,11 @@
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/select2.css' %}">
 <script type="text/javascript" src="{% static 'js/select2.js' %}"></script>
+
+
+
+
+
 
 
 <!--css styling-->
@@ -33,9 +72,18 @@ height:100%;
 opacity: 0.4;
 text-align:center;
 background-color:black;
-color:red;
+color:white;
 font-size:100px;
 }
+
+#overall_div
+{
+margin-left:50px;
+margin-top:30px;
+margin-bottom:30px;
+}
+
+
 </style>
 
 <!--the simple select2 things-->
@@ -44,21 +92,55 @@ jQuery(function(){
 $("select[name=branch]").select2();
 });
 </script>
+<div id="overall_div">
+
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        
+<!-- Top Level Tabs -->
+<li type="button" onclick="add_user_tab()" class="btn primary">Add/Edit User</li> 
+<li type="button" id="viewid" onclick="add_team_tab()" class="btn  primary">Add/Edit Team</li> 
+<li type="button" onclick="register_tab()" class="btn primary">Register User Or Team</li>
+<li type="button" onclick="participation_tab()" class="btn primary">Participation Tab</li>           
+          
+     </ul>
+      <p class="navbar-text navbar-right"><a href="http://saarang.org" class="navbar-brand" style="height:20px;padding:0px" target="_blank"><img src="{% static 'img/saarang_pics/favicon.ico' %}" height="110%" width="40%"/></a></p>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<script type="text/javascript">
+
+</script>
+
+
+
+
+
 
 
 <!-- Loading Div -->
-<div id="loading_div" z-index="100" style="display:none" > <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>Loading</div>
+<div id="loading_div" z-index="100" style="display:none" > <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><span z-index="200" class="btn btn-success">Loading</span></div>
 
 
+<br /><br /><br />
 <h1>QMS Portal</h1>
-<!-- Top Level Tabs -->
-<p id="message"> </p> </br>
-<button type="button" onclick="add_user_tab()" class="btn primary">Add/Edit User</button> 
-<button type="button" id="viewid" onclick="add_team_tab()" class="btn  primary">Add/Edit Team</button> 
-<button type="button" onclick="register_tab()" class="btn primary">Register User Or Team</button>
-<button type="button" onclick="participation_tab()" class="btn primary">Participation Tab</button>  
-<br />
-<br />
+
+
 
 <!-- User Div Container -->
 <div id="add_user_div">
@@ -71,17 +153,16 @@ $("select[name=branch]").select2();
 				 <input id='website_id' class="bigdrop input input-block-level" type='text' name='website_id' />   
 		</div>
 		<br />
-		<br />
+
 		
 <!-- Edit User Div Container -->
 <h2 id="new_user_heading"> USER DETAILS </h2>
 <span id="alert-user"></span>
-		    <div class='pull-right'><a name='clear' onclick="clearForm();$('#alert-user').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" class="btn danger">Clear form</a></div>
-		    
+		    <div class="btn btn-danger btn-large" ><a name='clear' onclick="clearForm();$('#alert-user').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" >Clear form</a></div>
 		    
 	<br />
 	<br />
-
+	
 	<!--Add User Form -->
 
 	<form id="add_user_userform" accept-charset="utf-8">
@@ -121,7 +202,7 @@ $("select[name=branch]").select2();
 			
 	<h2> TEAM DETAILS </h2>
 	<span id="alert-team"></span>
-				<div class='pull-right'><a name='clear' onclick="clearForm2();$('#alert-team').html('<h3>Form Cleared<br>Proceed adding new team</h3>').show();" class="btn danger">Clear form</a></div>   
+				<div><a name='clear' onclick="clearForm2();$('#alert-team').html('<h3>Form Cleared<br>Proceed adding new team</h3>').show();" class="btn btn-danger">Clear form</a></div>   
 		<br />
 		<br />
 		
@@ -155,7 +236,7 @@ $("select[name=branch]").select2();
 <h2> REGISTER USER OR TEAM </h2>
 <span id="alert-reg"></span>
 	<!-- Clear Form Button -->
-		    <div class='pull-right'><a name='clear' onclick="clearForm3();$('#alert-reg').html('<h3>Form Cleared<br>Proceed adding new registration</h3>').show();" class="btn danger">Clear form</a></div>   
+		    <div><a name='clear' onclick="clearForm3();$('#alert-reg').html('<h3>Form Cleared<br>Proceed adding new registration</h3>').show();" class="btn btn-danger">Clear form</a></div>   
 	<br />
 	<br />
 
@@ -177,7 +258,7 @@ $("select[name=branch]").select2();
 <h2> USER OR TEAM PARTICIPATION </h2>
 <span id="alert-part"></span>
 	<!-- Clear Form Button -->
-		    <div class='pull-right'><a name='clear' onclick="clearForm4();$('#alert-part').html('<h3>Form Cleared<br>Proceed adding new participation</h3>').show();" class="btn danger">Clear form</a></div>   
+		    <div><a name='clear' onclick="clearForm4();$('#alert-part').html('<h3>Form Cleared<br>Proceed adding new participation</h3>').show();" class="btn btn-danger">Clear form</a></div>   
 	<br />
 	<br />
 
@@ -202,8 +283,7 @@ $("select[name=branch]").select2();
 
 
 
-
-
+</div>
 
 
 
@@ -242,6 +322,10 @@ function clearForm2()
         $("select[name=members]").select2('destroy');
         $('#id_members').val('');
         $("select[name=members]").select2();
+        
+        $("select[name=accomodation_status]").select2('destroy');
+        $('#id_accomodation_status').val('');
+        $("select[name=accomodation_status]").select2();
 }
 
 function clearForm3()
@@ -302,6 +386,7 @@ function add_team_tab()
 	document.getElementById("participation_div").style.display = 'none';
 	
 	$("select[name=members]").select2();
+	$("select[name=accomodation_status]").select2();
 }
 
 function register_tab()
@@ -365,6 +450,7 @@ function fill_team_form_js(data)
 	 $('#hidden_team_id').text(data.id);
 	 
 	 $("select[name=members]").select2();
+	 $("select[name=accomodation_status]").select2();
 	 
 	 $('#loading_div').attr('style', 'display: none');
 } 
@@ -592,5 +678,10 @@ $("#add_participation_input").select2({
 }); 
  
  
+$('li').on('click', function() {
+    $(this).parent().find('.active').removeClass('active');
+    $(this).addClass('active');
+});
+
 </script>
-{% endblock content %}
+</html>
