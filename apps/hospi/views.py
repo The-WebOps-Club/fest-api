@@ -11,13 +11,13 @@ import random, string, json
 from random import *
 from models import Hostel, Room, HospiTeam, Allotment, HospiLog
 from apps.events.models import Team, EventRegistration, Event
-from forms import HostelForm, RoomForm, HospiTeamForm
+from django.contrib.auth.models import User
+from forms import HostelForm, RoomForm, HospiTeamForm, UserProfileForm
 #from apps.events.forms import AddTeamForm
 from post_office import mail
 import datetime
 from django.views.decorators.csrf import csrf_exempt
 from apps.users.models import UserProfile, Team
-from apps.hospi.forms import UserProfileForm
 from apps.events.models import EventRegistration
 from django.views.decorators.cache import never_cache
 ####################################################################
@@ -690,7 +690,6 @@ def check_out_team(request, team_id):
     messages.success(request, team.team_sid + ' checked out successfully')
     return redirect('hospi_list_registered_teams')
 
-@login_required
 def print_bill(request, team_id):
     return u.checkout_bill(request, team_id)
     
@@ -703,21 +702,31 @@ def update_member(request):
     user.save()
     return HttpResponse(data['value'])
 
-@login_required
 def add_member(request,team_id):
     team = HospiTeam.objects.get(pk=team_id)
     if request.method == 'POST':
-        userform =UserProfileForm(request.POST)
+        form =UserProfileForm(request.POST)
         print request.POST
-        if userform.is_valid():
-            user = userform.save()
-            user.saarang_id = uid(user.pk)
+        if form.is_valid():
+            user = User()
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            user.username = user.email
             characters = string.ascii_letters + string.punctuation  + string.digits
             password =  "".join(choice(characters) for x in range(randint(8, 16)))
             user.password = password
-            user.activate_status = 2
             user.save()
-            team.members.add(user)
+            userp = UserProfile()
+            userp.user = user
+            userp.dob = form.cleaned_data['dob']
+            userp.gender = form.cleaned_data['gender']
+            userp.mobile_number = form.cleaned_data['mobile_number']
+            userp.branch = form.cleaned_data['branch']
+            userp.college_text = form.cleaned_data['college_text']
+            userp.college_roll = form.cleaned_data['college_roll']
+            userp.save()
+            team.members.add(userp)
             team.save()
             '''mail.send(
                 [user.email], template='email/main/activate_confirm',
@@ -764,7 +773,7 @@ def add_user_to_team(request):
     data = request.POST.copy()
     try:
         team = get_object_or_404(HospiTeam, pk=int(data['team_id']))
-        user = get_object_or_404(SaarangUser, pk=int(data['website_id']))
+        user = get_object_or_404(UserProfile, pk=int(data['website_id']))
         team.members.add(user)
         team.save()
         messages.success(request, 'User added successfully')

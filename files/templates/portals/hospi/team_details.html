@@ -291,7 +291,7 @@ $("a[data-target=#checkinModal]").click(function(event) {
         <h4 class="modal-title" id="adduserLabel">Add a New Member</h4>
       </div>
       <div class="modal-body">
-        <form class='form-horizontal' {% comment %}action="{% url 'hospi.views.add_user_to_team' %}"{% endcomment %} method='POST' id='existing_member' >
+        <form class='form-horizontal' {% comment %}action="{% url 'apps.hospi.views.add_user_to_team' %}"{% endcomment %} method='POST' id='existing_member' >
         {% csrf_token %}
         <div class="control-group website_id">
           <input id='website_id' class='input input-block-level' type='text' name='website_id' />
@@ -329,7 +329,7 @@ $("a[data-target=#checkinModal]").click(function(event) {
                 {{ field }}
             {% endfor %}
             <input type="hidden" name="team_id" value="{{team.pk}}" />
-            <input id="add_new_user_button" type="button" class='btn btn-success btn-block' onclick="$(this).val('Please wait');" value='Save and Add to Team' name='submit'>
+            <button id="add_new_user_button" type="submit" class='btn btn-success btn-block' onclick="$(this).val('Please wait');" name='submit'>Save and Add to Team</button>
         </form>
       </div>
       <div class="modal-footer">
