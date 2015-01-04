@@ -26,7 +26,6 @@ class UserProfileForm(forms.ModelForm):
 			'branch',
 			'college_text',
 			'city',
-			'want_accomodation',
 			'desk_id',
 		]
 		

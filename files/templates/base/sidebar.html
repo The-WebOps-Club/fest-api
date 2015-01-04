@@ -118,6 +118,13 @@
                             <i class='icon-crown'></i> Spons Portal
                         </a>
             </li>
+            
+                  <li class="{% if current_page == 'portal_qms' %}active{% endif %}">
+                        <a href='{% url "qms_portal" %}'>
+                            <i class='icon-crown'></i> QMS Portal
+                        </a>
+            </li>
+            
 				</ul>
             <!-- <ul class='group_link vertical'>
                 <li><a href='#'>
