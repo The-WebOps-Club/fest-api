@@ -10,7 +10,7 @@ from dajaxice.utils import deserialize_form
 from django.shortcuts import get_object_or_404
 from apps.hospi import utility as u
 from django.contrib import messages
-
+from apps.users.models import UserProfile
 from post_office import mail
 
 @dajaxice_register
@@ -299,6 +299,23 @@ def check_in(request, team_id):
     else:
         html_content = "<div class='alert alert-danger'>Incomplete team profile</div>"
         return json.dumps({'html_content':html_content})
+
+@dajaxice_register
+def del_member(request, team_id, member_id):
+    user = get_object_or_404(UserProfile, pk=member_id)
+    message = "Do you want to remove " + str(user.user.get_full_name()) + " ?"
+    return json.dumps({'message':message, 'team_id':team_id, 'member_id':member_id})
+
+@dajaxice_register
+def delete_member(request, team_id, member_id):
+    team = HospiTeam.objects.get(pk=team_id)
+    data = request.POST.copy()
+    user = get_object_or_404(UserProfile, pk=member_id)
+    message = "Successfully removed " + str(user.user.get_full_name())
+    team.members.remove(user)
+    user.save()
+    team.save()
+    return json.dumps({'message':message})
 
 @dajaxice_register
 def registered_teams(request):

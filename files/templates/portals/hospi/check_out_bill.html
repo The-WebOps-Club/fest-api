@@ -81,13 +81,13 @@
         <tr>
             <td>City</td>
             <td>{{ team.city }}</td>
-            <td>Leader</td><td >{{ leader.name }}</td>
+            <td>Leader</td><td >{{ leader.user.get_full_name }}</td>
         </tr>
         <tr>
-            <td >Mobile</td><td >{{ leader.mobile }}</td><td rowspan=2>College</td><td rowspan=2>{{ leader.college }}</td>
+            <td >Mobile</td><td >{{ leader.mobile_number }}</td><td rowspan=2>College</td><td rowspan=2>{{ leader.college }}</td>
         </tr>
         <tr>
-            <td >Email</td><td >{{ leader.email }}</td>
+            <td >Email</td><td >{{ leader.user.email }}</td>
         </tr>
 </table>
 <table >
@@ -133,7 +133,7 @@
 </tr>
 <tr>
     <td text-align="right">{{team.leader.name}} (Team leader)</td>
-    <td text-align="right">{{user.first_name}} (Hospitality co-ordinator)</td>
+    <td text-align="right">{{user.user.first_name}} (Hospitality co-ordinator)</td>
 </tr>
 </table>
 <br/>
@@ -158,10 +158,10 @@
             <td>Leader</td><td >{{ leader.name }}</td>
         </tr>
         <tr>
-            <td >Mobile</td><td >{{ leader.mobile }}</td><td rowspan=2>College</td><td rowspan=2>{{ leader.college }}</td>
+            <td >Mobile</td><td >{{ leader.mobile_number }}</td><td rowspan=2>College</td><td rowspan=2>{{ leader.college_text }}</td>
         </tr>
         <tr>
-            <td >Email</td><td >{{ leader.email }}</td>
+            <td >Email</td><td >{{ leader.user.email }}</td>
         </tr>
 </table>
 <table >
@@ -206,8 +206,8 @@
     <td>(Sign)</td>
 </tr>
 <tr>
-    <td text-align="right">{{team.leader.name}} (Team leader)</td>
-    <td text-align="right">{{user.first_name}} (Hospitality co-ordinator)</td>
+    <td text-align="right">{{team.leader.user.get_full_name}} (Team leader)</td>
+    <td text-align="right">{{user.user.first_name}} (Hospitality co-ordinator)</td>
 </tr>
 </table>
 </body>

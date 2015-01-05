@@ -739,32 +739,37 @@ def add_member(request,team_id):
 
 @csrf_exempt
 @login_required
-def del_member(request, team_id):
+def del_member(request, team_id, member_id):
     team = HospiTeam.objects.get(pk=team_id)
     data = request.POST.copy()
-    user = get_object_or_404(SaarangUser, pk=int(data['id']))
+    user = get_object_or_404(UserProfile, pk=member_id)
     team.members.remove(user)
     user.save()
     team.save()
-    return HttpResponse('ok')
+    return redirect('hospi_team_details', team.pk)
 
-@csrf_exempt
-@login_required
-def website_id_search(request):
+def id_search(request):
     data=request.GET.copy()
     user_list = []
+    selected_users=[]
     users_id = UserProfile.objects.filter(saarang_id__contains=data['q'].upper())[:10]
-    users_email = UserProfile.objects.filter(email__contains=data['q'].lower())[:10]
+    users_email = UserProfile.objects.filter(user__email__contains=data['q'].lower())[:10]
     users_name = UserProfile.objects.filter(name__contains=data['q'])[:10]
-    users_mobile = UserProfile.objects.filter(mobile__contains=data['q'])[:10]
+    users_mobile = UserProfile.objects.filter(mobile_number__contains=data['q'])[:10]
+    
+    
     for user in users_id:
-        user_list.append({"id":user.id,'sid':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile })
+        selected_users=selected_users+[user]
     for user in users_email:
-        user_list.append({"id":user.id,'sid':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile })
+        selected_users=selected_users+[user]
     for user in users_name:
-        user_list.append({"id":user.id,'sid':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile })
+        selected_users=selected_users+[user]
     for user in users_mobile:
-        user_list.append({"id":user.id,'sid':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile })
+        selected_users=selected_users+[user]
+    selected_users=set(selected_users)
+    
+    for user in selected_users:
+        user_list.append({"desk_id":user.desk_id,'id':user.user.id,'saarang_id':user.saarang_id, 'email':user.user.email, 'first_name':user.user.first_name,'last_name':user.user.last_name, 'mobile_number':user.mobile_number, 'city':user.city,  'branch':user.branch, 'college_text':user.college_text, 'age':user.age, 'want_accomodation':user.want_accomodation, 'gender':user.gender.capitalize() })
     user_dict = json.dumps(user_list)
     return HttpResponse(user_dict)
 
@@ -772,6 +777,8 @@ def website_id_search(request):
 def add_user_to_team(request):
     data = request.POST.copy()
     try:
+        print int(data['team_id'])
+        print int(data['website_id'])
         team = get_object_or_404(HospiTeam, pk=int(data['team_id']))
         user = get_object_or_404(UserProfile, pk=int(data['website_id']))
         team.members.add(user)

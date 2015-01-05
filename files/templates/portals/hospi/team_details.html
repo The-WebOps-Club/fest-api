@@ -8,7 +8,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>{% block title %}Hospitality | Saarang{% endblock %}</title>
+    <title>{% block title %}{{team.name}}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
@@ -96,14 +96,14 @@ a.danger
 </td>
       </tr>
         <tr>
-        <td>{{ team.city }} - {{ team.leader.college }}</td>
+        <td>{{ team.city }} - {{ team.leader.college_text }}</td>
         <td style="text-align:center;">{{ team.time_of_departure|title }} on {{ team.date_of_departure }} </td>
         <td style="text-align:center;">{% if team.accomodation_status == 'confirmed' and not team.checked_in and not team.checked_out %}
 <a onclick="$('#checkinModal').modal('show');Dajaxice.apps.portals.hospi.check_in(check_in,{'team_id':{{team.pk}}});" class="btn btn-success"><i class="icon-home"></i> Check-in</a>
 {% elif team.accomodation_status == 'confirmed' and team.checked_in and not team.checked_out %}
 <a {% comment %}href="{% url 'hospi.views.check_out_team' team.pk %}"{% endcomment %} data-target="#checkoutModal" class="btn btn-danger require-alert"><i class="icon-home"></i> Check-out</a>
 {% endif %}</td>
-<td><a class='btn btn-info' target="_blank" {% comment %} href="{% url 'apps.hospi.views.print_bill' team.pk %}" {% endcomment %} >Print bill</a></td>
+<td><a class='btn btn-info' target="_blank" {% comment %}href="{% url 'apps.hospi.views.print_bill' team.pk %}"{% endcomment %} >Print bill</a></td>
 <td><a disabled class='btn btn-info' target="_blank"  {% comment %}href="{% url 'apps.hospi.views.print_saar' team.pk %}"{% endcomment %} >Print SAAR</a></td>
     </tr>
 </table>
@@ -166,7 +166,7 @@ a.danger
     {% for member in team.members.all %}
     <tr id="{{member.id}}" {% if member.accomod_is_confirmed and team.accomodation_status != 'confirmed' %}class="danger"{% endif %} >
       <td>{{ forloop.counter|add:1 }}</td>
-      <td><a disabled class="table-action-deletelink btn btn-danger btn-xs" {% comment %}href="{% url 'hospi.views.del_member' team.id %}"{% endcomment %}>&times;</a></td>
+      <td><a class="table-action-deletelink btn btn-danger btn-xs" href="#" onclick="Dajaxice.apps.portals.hospi.del_member(del_member,{'team_id':{{team.pk}}, 'member_id':{{member.pk}}});">&times;</a></td>
       <td><a href="#">{{ member.saarang_id }}</a></td>
       <td>{{ member.desk_id }}</td>
       <td>{{ member.gender|title }}</td>
@@ -219,6 +219,15 @@ Members highlighted in red indicates people who have accommodation confirmed alr
   function check_in(data){
     document.getElementById("checkinModalBody").innerHTML = data.html_content;
     $('.room-select2').select2();
+  }
+  function del_member(data){
+  	if (confirm(data.message) == true) {
+        Dajaxice.apps.portals.hospi.delete_member(delete_member,{'team_id':data.team_id, 'member_id':data.member_id});
+      }
+  }
+  function delete_member(data){
+  	alert(data.message);
+  	location.reload();
   }
 </script>
 
@@ -291,14 +300,14 @@ $("a[data-target=#checkinModal]").click(function(event) {
         <h4 class="modal-title" id="adduserLabel">Add a New Member</h4>
       </div>
       <div class="modal-body">
-        <form class='form-horizontal' {% comment %}action="{% url 'apps.hospi.views.add_user_to_team' %}"{% endcomment %} method='POST' id='existing_member' >
+        <form class='form-horizontal' action="{% url 'apps.hospi.views.add_user_to_team' %}" method='POST' id='existing_member' >
         {% csrf_token %}
         <div class="control-group website_id">
-          <input id='website_id' class='input input-block-level' type='text' name='website_id' />
+          <input id = "website_id" class='input input-block-level' name='website_id' />
         </div>
         <div id="user_info"></div>
-          <input type="hidden" name="team_id" value="{{team.pk}}" />
-          <input id = "add_existing_user_button" type="button" name='submit' value='Add User' onclick="$(this).val('Please wait');" class='btn btn-info btn-block'>
+          <input  type="hidden" name="team_id" value="{{team.pk}}" />
+          <button id = "add_existing_user_button" type="submit" name='submit'  onclick="$(this).val('Please wait');" class='btn btn-info btn-block'>Add User</button>
         </form>
         <form class='form-horizontal' method='POST' id='new_member' action="{% url 'hospi_add_member' team.id %}">
           <legend>New User</legend>
@@ -344,6 +353,71 @@ $("a[data-target=#checkinModal]").click(function(event) {
 
 
 <script type="text/javascript">
+//Select2 Functions
+//1. FOR USERS
+$(function(){
+    function movieFormatResult(user) {
+        var markup = "<table padding=3><tr>";
+            markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
+        
+        markup += "<td><div>" + user.first_name + "</div></td>";
+        markup += "<td><div>" + user.last_name + "</div></td>";
+        
+        markup += "<td><div>" + user.mobile_number + "</div>";
+        
+            markup += "</td><td><div>" + user.email + "</div>";
+         
+        
+        
+        markup += "</td></tr></table>";
+         
+        return markup;
+    }
+    function movieFormatSelection(user) {
+		$('#id_first_name').val(user.first_name)
+        $('#id_last_name').val(user.last_name)
+        $('#id_email').val(user.email)
+        $('#id_mobile_number').val(user.mobile_number)
+        $('#id_college_text').val(user.college_text)
+        $('#id_gender').val(user.gender)
+        $('#id_branch').val(user.branch)
+        $('#id_city').val(user.city)
+        $('#id_desk_id').val(user.desk_id)
+        $('#id_age').val(user.age)
+        $('#hidden_id').text(user.id)
+        return user.saarang_id
+    }
+$("#website_id").select2({
+    placeholder: "Enter any one of existing user's saarang id, name, mobile, email",
+    minimumInputLength: 1,
+    ajax: {
+        url: "{% url 'hospi_website_id_search' %}",
+        dataType: 'json',
+        quietMillis: 100,
+        multiple:false,
+        data: function (term, page) { // page is the one-based page number tracked by Select2
+            return {
+                q: term, //search term
+                page_limit: 10, // page size
+                page: page, // page number
+                //apikey: "ju6z9mjyajq2djue3gbvv26t"
+            };
+        },
+        results: function (data, page) {
+            //var more = (page * 10) < data.total; // whether or not there are more results available
+            //console.log(data.movies)
+            // notice we return the value of more so Select2 knows if more results can be loaded
+            return {results: data};
+        }
+    },
+    formatResult: movieFormatResult, // omitted for brevity, see the source of this page
+    formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
+    dropdownAutoWidth : true,
+    dropdownCssClass: 'bigdrop', // apply css that makes the dropdown taller
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+});
+		
+});
 // var flag= true;
 // $(document).ready(function() {
 //   event.preventDefault();
