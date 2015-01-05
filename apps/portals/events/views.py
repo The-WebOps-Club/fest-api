@@ -75,7 +75,7 @@ def generate_pdf_certificate(request, winner_id):
     template = get_template('events/certif.html')
     html  = template.render(Context(data))
     file = open(os.path.join(settings.MEDIA_ROOT, 'CERTIF_'+winner_id+'.pdf'), "w+b")
-    pisaStatus = pisa.CreatePDF(html, dest=file, link_callback = link_callback)
+    pisaStatus = pisa.CreatePDF(html, dest=file,  link_callback = link_callback)
     # Return PDF document through a Django HTTP response
     file.seek(0)
     pdf = file.read()

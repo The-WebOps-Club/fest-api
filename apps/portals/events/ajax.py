@@ -351,7 +351,15 @@ def display_add_event_winner(request):
 		winner_user=winner_user + str(winner.user) + "|"
 		winner_event=winner_event + str(winner.event) + "|"
 	length_winner= len(event_winners)
-	return json.dumps({'form':form, 'winner_event':winner_event, 'winner_id':winner_id, 'winner_position':winner_position, 'winner_comment':winner_comment, 'winner_added_by':winner_added_by,'winner_user':winner_user, 'length_count_winner':length_winner})
+
+	teams = Team.objects.all()
+	team_name = ""
+	team_id = ""
+	length_team= len(teams)
+	for team in teams:
+		team_name=team_name+str(team.name)+"|"
+		team_id=team_id+str(team.id)+"|"
+	return json.dumps({'form':form, 'winner_event':winner_event, 'winner_id':winner_id, 'winner_position':winner_position, 'winner_comment':winner_comment, 'winner_added_by':winner_added_by,'winner_user':winner_user, 'length_count_winner':length_winner, 'team_name':team_name, 'team_id':team_id, 'leng_team':length_team})
 
     
 @dajaxice_register    
@@ -381,25 +389,50 @@ def delete_slot(request,slot_id):
 
 @dajaxice_register    
 def add_winner(request,winner_form):
-	message="Your form has the following errors <br>"
 	f = dict(deserialize_form(winner_form).iterlists())
-	winner_form = EventWinnerForm((deserialize_form(winner_form)))
-	obj = EventWinner()
-	print 'here it is ' + str(int(f['event'][0]))
-	obj.event = (Event.objects.get(id=int(f['event'][0])))
-	obj.position = str(f['position'][0])
-	obj.comment = str(f['comment'][0])
-	obj.added_by = request.user.erp_profile
-	obj.user = (UserProfile.objects.get(id=int(f['user'][0])))
-	if winner_form.is_valid():
-		obj.save()
-		message="successfully added winner"
+	if(str(f['team_id'][0]) == ''):
+		message="Your form has the following errors <br>"	
+		winner_form = EventWinnerForm((deserialize_form(winner_form)))
+		obj = EventWinner()
+		if winner_form.is_valid():
+			obj.event = Event.objects.get(id=int(f['event'][0]))
+			obj.position = str(f['position'][0])
+			obj.comment = str(f['comment'][0])
+			obj.added_by = request.user.erp_profile
+			obj.user = (UserProfile.objects.get(id=int(f['user'][0])))
+			obj.save()
+			message="successfully added winner"
+		else:
+			for field in winner_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"<br>"
+		return json.dumps({'message': message})
 	else:
-		for field in winner_form:
-			for error in field.errors:
-				message=message+field.html_name+" : "+error+"<br>"
+		message="Your form has the following errors <br>"	
+		error=''
+		obj = EventWinner()
+		if(str(f['event'][0])==''):
+			error="event: This field is required."
+		elif (f['position'][0]==''):
+			error="position:This field is required."
+		else:
+			pass
+		if(error==''):
+			team = Team.objects.get(id=int(f['team_id'][0]))
+			print 'here it is :' + str(team.members.all())
+			for memb in team.members.all():
+				obj = EventWinner()
+				obj.event = Event.objects.get(id=int(f['event'][0]))
+				obj.position = str(f['position'][0])
+				obj.comment = str(f['comment'][0])
+				obj.added_by = request.user.erp_profile
+				obj.user = memb.profile
+				obj.save()
+			message="successfully added winner"			
+		else:
+			message=message+error+"<br>"
 
-	return json.dumps({'message': message})	
+		return json.dumps({'message': message})	
 
 @dajaxice_register    
 def delete_winner(request,winner_id):

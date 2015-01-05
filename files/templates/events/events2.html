@@ -222,6 +222,7 @@ Use this to add an image for the event. This has to be done separately. Make sur
 {%  csrf_token %}
 <div id="add_winner_form">
 </div>
+<div id="winner_team_div"></div>
 <p><input type="button" class="btn btn-success btn-large" onclick="Dajaxice.apps.portals.events.add_winner(add_winner_js, {'winner_form':$('#winner_form').serialize(true)});return false;" value="Add Winner"/></p>
 </form>
 <div id="add_winner_form_table">
@@ -577,7 +578,18 @@ function event_slot(data){
 }
 
 function event_winner(data){
-    $('#add_winner_form').html("<b>ADD WINNERS FOR EVENTS :</b><br /><br />" + "<table>"+data.form+"</table>");
+
+    var textselect='<select name="team_id"><option value="">---------</option>';
+    var leng_team = data.leng_team
+    winner_team_name=(data.team_name).split("|");
+    winner_team_id=(data.team_id).split("|");
+
+    for (i=0;i<leng_team;i++)
+        {
+        textselect=textselect+'<option value=\"'+winner_team_id[i]+'\"">'+ winner_team_name[i] + '</option>'
+        }
+    textselect=textselect+'</select>'
+    $('#add_winner_form').html("<b>ADD WINNERS FOR EVENTS :</b><br /><br />" + "<table>"+data.form+"<tr><td>Team :</td><td>"+textselect+"</td></table>");
     document.getElementById("option_selected").innerHTML='<h2>WINNER DETAILS</h3>';
     //making data from the other tabs disappear
     winner_event_array=(data.winner_event).split("|");
@@ -616,6 +628,7 @@ function event_winner(data){
     document.getElementById("slot_form_div").style.display = 'none';
     $("select[name=event]").select2();
     $("select[name=user]").select2();
+    $("select[name=team_id]").select2();
     $(".select2-container .select2-choice > .select2-chosen").css({"width":"135px"});
     $('#eventwinnertable2').dataTable( {
               "bJQueryUI": true,
