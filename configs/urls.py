@@ -39,7 +39,7 @@ router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
 router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
 router.register(r'contacts',mobile.ContactsViewSet, base_name="contacts")
 router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
-router.register(r'profile_post',mobile.UserProfilePostViewSet,base_name="profile")
+router.register(r'profile_post',mobile.UserProfilePostViewSet,base_name="profile_post")
 router.register(r'teams',mobile.TeamViewSet,base_name="teams")
 router.register(r'blogs',mobile.BlogFeedViewSet,base_name="blogs")
 router.register(r'events',mobile.EventViewSet,base_name="events")
@@ -47,7 +47,7 @@ router.register(r'user_events',mobile.RegistrationViewSet,base_name="events_regi
 router.register(r'display_events',mobile.EventDisplayViewset,base_name="events_display")
 router.register(r'display_spons',mobile.SponsImageViewset,base_name="spons_display")
 router.register(r'edit_profile',mobile.UserProfileEditViewSet,base_name="edit_profile")
-
+router.register(r'users',mobile.UserViewSet,base_name="users")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
@@ -176,7 +176,10 @@ urlpatterns = patterns('',
     # Had to do this
     # Include urls from hospi
     url(r'^hospi/', include('apps.hospi.urls')),
+
     url(r'^certificate/(?P<winner_id>\d+)/$', 'apps.portals.events.views.generate_pdf_certificate', name='winner_certif'),
+
+    url(r'^schedule/$', 'apps.portals.events.views.generate_schedule', name='events_schedule'),
 
 )
 

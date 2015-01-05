@@ -283,7 +283,8 @@ def reg_list(request,event_name):
 		user_email = user_email + str(reg.users_registered.email)  + "|"
 		user_number = user_number + str(reg.users_registered.profile.mobile_number) + "|"
 		user_college = user_college + str(reg.users_registered.profile.college_text) + "|"
-		mem_count = mem_count + str(reg.teams_registered.get_total_count()) + "|"
+                if reg.teams_registered:
+		    mem_count = mem_count + str(reg.teams_registered.get_total_count()) + "|"
 	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info, 'user_number':user_number, 'user_email':user_email, 'user_college':user_college, 'mem_count':mem_count})
 
 @dajaxice_register    

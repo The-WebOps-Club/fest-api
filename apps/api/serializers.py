@@ -8,6 +8,16 @@ from apps.walls.models import Wall, Post, Comment
 from apps.blog.models import Category
 from apps.events.models import EventRegistration
 from apps.spons.models import SponsImageUpload
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    want_accomodation = serializers.BooleanField(source='profile.want_accomodation', required=False)
+    mobile_number = serializers.CharField(source='profile.mobile_number', required=False)
+    college_text = serializers.CharField(source='profile.college_text', required=False)
+    class Meta:
+        model = User
+        # fields = ('id', 'first_name', 'last_name', 'email', 'password')
+        exclude = ("password", "user_permissions", "username", "last_login", "is_staff", "is_superuser", "is_active", "groups", "date_joined")
+
 class UserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = User
