@@ -102,9 +102,13 @@ urlpatterns = patterns('',
     
     # events portal
     url(r'^portals/events/$','apps.portals.events.views.add_tabs', name='events_portal'),
-
+	#finance portal
     url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
-
+	#qms portal
+	url(r'^portals/qms/$','apps.portals.qms.views.qms_portal', name='qms_portal' ),
+	url(r'^search2/$', 'apps.portals.qms.views.id_search', name='qms_id_search'),
+	url(r'^search3/$', 'apps.portals.qms.views.team_search', name='qms_team_search'),
+	url(r'^search4/$', 'apps.portals.qms.views.event_search', name='qms_event_search'),
     # Participant - Login/registration
     url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
     url(r'^participant_login/$','apps.users.views.participant_login', name='participant_login'),

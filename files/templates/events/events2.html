@@ -90,7 +90,7 @@ CKEDITOR.replace('long_description');
         <li id="viewid" class="active" onclick="Dajaxice.apps.portals.events.view_edit_event(view_edit_event_js);return false;"><a href="#">View/Edit Event</a></li>
         <li class="" onclick="event_registration_list();return false;"><a href="#">Event Registration List</a></li>
         <li class="" onclick="Dajaxice.apps.portals.events.display_add_event_slot(event_slot);return false;"><a href="#">Add Event Slot</a></li>
-        <li  class="" onclick="Dajaxice.apps.portals.events.display_add_event_winner(event_winner);return false;"><a href="#">Add Event Winner</a></li>
+        <li  class="" onclick="Dajaxice.apps.portals.events.display_add_event_winner(event_winner);return false;"><a href="#" id="add_event_winner_button">Add Event Winner</a></li>
       </ul>
       <p class="navbar-text navbar-right"><a href="http://saarang.org" class="navbar-brand" style="height:20px;padding:0px" target="_blank"><img src="{% static 'img/saarang_pics/favicon.ico' %}" height="110%" width="40%"/></a></p>
     </div><!-- /.navbar-collapse -->
@@ -253,7 +253,7 @@ function show_tabs_js(data){
     document.getElementById("event_list").innerHTML = ' ';
     document.getElementById("option_selected").innerHTML = ' ';
     document.getElementById("edit_event_form_div").style.display = 'none';
-
+    document.getElementById("winner_form_div").style.display = 'none';
     var arr = data.tabs_names_list.split(","); 
     var len = arr.length;
     var text = "",i;
@@ -593,9 +593,9 @@ function event_winner(data){
     textwinner='<br /><br /><br /><br /><b>EVENT WINNERS :<b><br /><br /><br /><br /><table id="eventwinnertable2" style="color:black;"><thead><tr><th> Event </th><th> Winner </th> <th> Position </th><th> Added By </th><th> Comment </th></tr></thead>';
     for (i=0;i<leng;i++)
         {
-        textwinner=textwinner+'<tr><td>'+winner_event_array[i]+'</td><td> '+winner_user_array[i]+'</td><td> '+winner_position_array[i]+'</td><td> '+winner_added_by_array[i]+'</td><td> '+winner_comment_array[i]+'<a class = "btn btn-large btn-info pull-right" type="button" href=\"'+url_array[0]+winner_id_array[i]+url_array[1]+'\" target="_blank"><i class="glyphicon glyphicon-circle-arrow-down"></i>  Certificate </a></td></tr>'
+        textwinner=textwinner+'<tr><td>'+winner_event_array[i]+'</td><td> '+winner_user_array[i]+'</td><td> '+winner_position_array[i]+'</td><td> '+winner_added_by_array[i]+'</td><td> '+winner_comment_array[i]+'<button class = "btn btn-large btn-danger pull-right" type="button" onclick="confirm_delete_winner('+winner_id_array[i]+');return false;">X</button><a class = "btn btn-large btn-info pull-right" type="button" href=\"'+url_array[0]+winner_id_array[i]+url_array[1]+'\" target="_blank"><i class="glyphicon glyphicon-circle-arrow-down"></i>  Certificate </a></td></tr>'
         }
-    textwinner=textwinner+'</table><br /><br /><br /><br /><br />';
+    textwinner=textwinner+'</table><br /><br /><a class = "btn btn-large btn-warning pull-right" type="button" href=\"'+url_array[0]+"0"+url_array[1]+'\" target="_blank"><i class="glyphicon glyphicon-circle-arrow-down"></i>   PRINT ALL   </a><br /><br /><br />';
     document.getElementById("add_winner_form_table").innerHTML=textwinner;
     document.getElementById("edit_tab_form").style.display='none';
     document.getElementById("add_new_tab_form").style.display = 'none';
@@ -750,6 +750,17 @@ function confirm_delete_event(event_name){
        Dajaxice.apps.portals.events.delete_event(delete_event_js,{'event_name':event_name});
  
     }
+}
+
+function confirm_delete_winner(winner_id){
+        if (confirm("Are you sure you want to delete this entry?") ==true) {
+    //alert(event_name);
+        Dajaxice.apps.portals.events.delete_winner(delete_winner_js, {'winner_id':winner_id});
+        $('#add_event_winner_button').trigger( "click" );
+
+    
+    }
+
 }
 
 function delete_event_js(data){
