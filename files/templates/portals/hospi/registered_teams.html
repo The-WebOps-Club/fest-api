@@ -12,9 +12,12 @@
       <th><span class="badge badge-info"><i class="icon-home icon-white"></i> I/O</span></th>
       <th>ID</th>
       <th>Name</th>
-      <th>Leader</th>
+      <th>Check in</th>
+      <th>Check out</th>
       <th>Mobile</th>
       <th>No.</th>
+      <th>M</th>
+      <th>F</th>
       <th>Status</th>
     </tr>
   </thead>
@@ -24,9 +27,12 @@
       <td><span class="badge badge-{% if team.checked_in and not team.checked_out %}success{% elif team.checked_in and team.checked_out %}danger{% elif not team.checked_in and not team_checked_out %}inverse{% endif %}"><i class="icon-home icon-white"></i>{% if team.checked_in and not team.checked_out %} IN{% elif team.checked_in and team.checked_out %} OUT {% elif not team.checked_in and not team_checked_out %} ?{% endif %} </span></td>
       <td style="color:black">{{ team.team_sid }}</td>
       <td style="color:black">{{ team.name }}</td>
-      <td style="color:black">{{ team.leader.user.get_full_name }}</td>
+      <td style="color:black">{{ team.date_of_arrival }} {{team.time_of_arrival}}</td>
+      <td style="color:black">{{ team.date_of_departure }} {{team.time_of_departure}}</td>
       <td style="color:black">{{ team.leader.mobile_number }}</td>
       <td style="color:black">{{ team.get_total_count }}</td>
+      <td style="color:black">{{ team.get_male_count }}</td>
+      <td style="color:black">{{ team.get_female_count }}</td>
       <td>
         {% if team.accomodation_status == 'requested' %}
         <span class="label label-info">Pending</span>
