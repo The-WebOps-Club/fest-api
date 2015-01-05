@@ -9,11 +9,15 @@
 {% dajaxice_js_import %}
 {%  csrf_token %}
 {% load staticfiles %}
-
+{% load bootstrap3 %}
 <style>
   
   select option{
     color: black;
+}
+
+.form-control{
+margin-bottom:10px;
 }
 </style>
 
@@ -150,7 +154,7 @@ $("select[name=branch]").select2();
 			<div id="edit_user_div">
 			<h2> EDIT EXISTING USER </h2>   
 				
-				 <input id='website_id' class="bigdrop input input-block-level" type='text' name='website_id' />   
+				 <input id='website_id' class="bigdrop input input-block-level" type='text' name='website_id' value="SA150"/>   
 		</div>
 		<br />
 
@@ -165,18 +169,18 @@ $("select[name=branch]").select2();
 	
 	<!--Add User Form -->
 
-	<form id="add_user_userform" accept-charset="utf-8">
+	<form class="form" id="add_user_userform" accept-charset="utf-8">
 		    {% csrf_token %}
-			{{userform.as_p }}
-			{{userform.hidden_fields.as_p }}	
+			{% bootstrap_form userform layout='horizontal' %}	
 	</form>			   
-	<form id="add_user_userprofileform" accept-charset="utf-8">
+	<form class="form" id="add_user_userprofileform" accept-charset="utf-8">
 		    {% csrf_token %}
-			{{userprofileform.as_p }}
-	</form>
-<input type="button" value="Save" onclick="$('#loading_div').attr('style', 'display: inline');Dajaxice.apps.portals.events.add_user(add_user_js,{'userform':$('#add_user_userform').serialize(true),'userprofileform':$('#add_user_userprofileform').serialize(true),'user_id':$('#hidden_id').text()});"/>	
-
-
+			{% bootstrap_form userprofileform layout='horizontal' %}
+	
+	{% buttons %}
+<input type="button" class="btn btn-success" value="Save" onclick="$('#loading_div').attr('style', 'display: inline');Dajaxice.apps.portals.events.add_user(add_user_js,{'userform':$('#add_user_userform').serialize(true),'userprofileform':$('#add_user_userprofileform').serialize(true),'user_id':$('#hidden_id').text()});"/>	
+{% endbuttons %}
+</form>
 <div id="hidden_id" style="display:none">-1</div> 
 			
 	   
@@ -532,7 +536,7 @@ $(function(){
 
 $("#website_id").select2({
     placeholder: "Enter existing user's saarang id, name, mobile, email",
-    minimumInputLength: 1,
+    minimumInputLength: 9,
     ajax: {
         url: "{% url 'qms_id_search' %}",
         dataType: 'json',
