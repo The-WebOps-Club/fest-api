@@ -218,9 +218,60 @@
     }
     function add_team(data){
       document.getElementById("addteamModalBody").innerHTML = data.html_content;
-      $("#multiselect1").select2();
-      $("#multiselect").select2();
       $('#addteamModal').modal('show')
+      function movieFormatResult(user) {
+        var markup = "<table padding=3><tr>";
+            markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div class='movie-title' style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
+        
+        markup += "<td><div>" + user.first_name + " " + user.last_name + "</div>";
+        markup += "</td></tr><tr><td><div>" + user.mobile_number + "</div>";
+            markup += "</td></tr><tr><td><div>" + user.email + "</div>";
+        markup += "</td></tr></table>"
+        return markup;
+    }
+    function movieFormatSelection(user) {
+    $('#id_first_name').val(user.first_name)
+        $('#id_last_name').val(user.last_name)
+        $('#id_email').val(user.email)
+        $('#id_mobile_number').val(user.mobile_number)
+        $('#id_college_text').val(user.college_text)
+        $('#id_gender').val(user.gender)
+        $('#id_branch').val(user.branch)
+        $('#id_city').val(user.city)
+        $('#id_desk_id').val(user.desk_id)
+        $('#id_age').val(user.age)
+        $('#hidden_id').text(user.id)
+        return user.saarang_id
+    }
+    $("#room_website_id").select2({
+      placeholder: "Enter existing user's saarang id",
+      minimumInputLength: 9,
+      ajax: {
+        url: "{% url 'hospi_website_id_search' %}",
+        dataType: 'json',
+        quietMillis: 100,
+        multiple:false,
+        data: function (term, page) { // page is the one-based page number tracked by Select2
+          return {
+            q: term, //search term
+            page_limit: 10, // page size
+            page: page, // page number
+            //apikey: "ju6z9mjyajq2djue3gbvv26t"
+          };
+        },
+        results: function (data, page) {
+          //var more = (page * 10) < data.total; // whether or not there are more results available
+          //console.log(data.movies)
+          // notice we return the value of more so Select2 knows if more results can be loaded
+          return {results: data};
+        }
+      },
+      formatResult: movieFormatResult, // omitted for brevity, see the source of this page
+      formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
+      dropdownAutoWidth : true,
+      dropdownCssClass: 'bigdrop', // apply css that makes the dropdown taller
+      escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+    });
     }
     function room_details(data){
       document.getElementById("roomModalBody").innerHTML = data.html_content;

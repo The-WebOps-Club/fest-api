@@ -87,7 +87,7 @@ a.danger
         <td>{{ team.team_sid }}</td>
         <td style="text-align:center;">{{ team.time_of_arrival|title }} on {{ team.date_of_arrival }} -to- </td>
         {% if team.accomodation_status != 'not_req' %}
-        <td style="text-align:center;"><a href="#" role="button" class="btn btn-danger" onclick="$('#addAccomodationModal').modal('show');$(this).val('Please wait');$('#change_status_save_button').html('Save Changes');">Change Date/time</a></td>
+        <td style="text-align:center;"><a href="#" role="button" class="btn btn-danger" onclick="$('#addAccomodationModal').modal('show');$(this).html('Please wait');$('#change_status_save_button').val('Save Changes');">Change Date/time</a></td>
         {% endif %}
         <td style="text-align:center;">
 {% if editable %}
