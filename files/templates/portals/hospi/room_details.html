@@ -1,5 +1,13 @@
 {% for occupant in occupants %}
 <ul>
-    <li>{{forloop.counter }} - {{occupant.user.get_full_name}} - {{occupant.mobile_number}} - {{occupant.college_text}}</li>
+    
+    <li><a class="table-action-deletelink btn btn-danger btn-xs" href="#" onclick="if (confirm('Are you sure?') == true) {
+        Dajaxice.apps.portals.hospi.del_member_from_room(del_member_from_room,{'room_id':{{room.pk}}, 'user_id':{{occupant.pk}}});}"
+      }>&times;</a>{{forloop.counter }} - {{occupant.user.get_full_name}} - {{occupant.mobile_number}} - {{occupant.college_text}}</li>
 </ul>
 {% endfor %}
+<div class="control-group website_id">
+	<input id = "room_website_id" class='input input-block-level'/>
+</div>
+<div id="user_info"></div>
+<button id = "add_existing_user_button" type="submit" name='submit'  onclick="$(this).val('Please wait');Dajaxice.apps.portals.hospi.add_member_to_room(add_member_to_room,{'room_id':{{room.pk}}, 'user_id':$('#room_website_id').val()});" class='btn btn-info btn-block'>Add User to Room</button>

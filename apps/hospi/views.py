@@ -657,7 +657,6 @@ def check_in_females(request):
     messages.success(request, team.team_sid + ' checked in successfully')
     return redirect('hospi_team_details', team.pk)
 
-@login_required
 def check_out_team(request, team_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
     members = team.members.all()
@@ -688,7 +687,7 @@ def check_out_team(request, team_id):
     team.checked_out = True
     team.save()
     messages.success(request, team.team_sid + ' checked out successfully')
-    return redirect('hospi_list_registered_teams')
+    return redirect('hospi_team_details', team.pk)
 
 def print_bill(request, team_id):
     return u.checkout_bill(request, team_id)
@@ -697,9 +696,15 @@ def print_bill(request, team_id):
 @login_required
 def update_member(request):
     data = request.POST.copy()
-    user = get_object_or_404(SaarangUser, pk=int(data['id']))
-    setattr(user, data['columnName'], data['value'])
+    user = get_object_or_404(UserProfile, pk=int(data['id']))
+    if '.' in data['columnName'] and data['columnName'].split('.')[0] == 'user':
+        user = user.user
+        print data['columnName'], data['value']
+        setattr(user, data['columnName'].split('.')[1], data['value'])
+    else:
+        setattr(user, data['columnName'], data['value'])
     user.save()
+    print user
     return HttpResponse(data['value'])
 
 def add_member(request,team_id):
@@ -752,19 +757,9 @@ def id_search(request):
     data=request.GET.copy()
     user_list = []
     selected_users=[]
-    users_id = UserProfile.objects.filter(saarang_id__contains=data['q'].upper())[:10]
-    users_email = UserProfile.objects.filter(user__email__contains=data['q'].lower())[:10]
-    users_name = UserProfile.objects.filter(name__contains=data['q'])[:10]
-    users_mobile = UserProfile.objects.filter(mobile_number__contains=data['q'])[:10]
-    
+    users_id = UserProfile.objects.filter(saarang_id=data['q'].upper())
     
     for user in users_id:
-        selected_users=selected_users+[user]
-    for user in users_email:
-        selected_users=selected_users+[user]
-    for user in users_name:
-        selected_users=selected_users+[user]
-    for user in users_mobile:
         selected_users=selected_users+[user]
     selected_users=set(selected_users)
     
@@ -780,8 +775,8 @@ def add_user_to_team(request):
         print int(data['team_id'])
         print int(data['website_id'])
         team = get_object_or_404(HospiTeam, pk=int(data['team_id']))
-        user = get_object_or_404(UserProfile, pk=int(data['website_id']))
-        team.members.add(user)
+        user = get_object_or_404(User, pk=int(data['website_id']))
+        team.members.add(user.profile)
         team.save()
         messages.success(request, 'User added successfully')
     except:
@@ -792,3 +787,6 @@ def add_user_to_team(request):
 def delete_room(request, room_id):
     room = Room.objects.get(pk=room_id)
     return HttpResponse('Under construction')
+
+
+

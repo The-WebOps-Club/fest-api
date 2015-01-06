@@ -37,9 +37,9 @@ urlpatterns = patterns('',
     # url(r'^admin/check_in_mixed/$', 'hospi.views.check_in_mixed', name='hospi_check_in_mixed'),
     url(r'^admin/check_in_males/$', 'apps.hospi.views.check_in_males', name='hospi_check_in_males'),
     url(r'^admin/check_in_females/$', 'apps.hospi.views.check_in_females', name='hospi_check_in_females'),
-    # url(r'^admin/check_out/(?P<team_id>\d+)/$', 'hospi.views.check_out_team', name='hospi_check_out_team'),
+    url(r'^admin/check_out/(?P<team_id>\d+)/$', 'apps.hospi.views.check_out_team', name='hospi_check_out_team'),
 
-    # url(r'^admin/update_member/$', 'hospi.views.update_member', name='hospi_update_member'),
+    url(r'^admin/update_member/$', 'apps.hospi.views.update_member', name='hospi_update_member'),
     url(r'^admin/add_member/(?P<team_id>\d+)/$', 'apps.hospi.views.add_member', name='hospi_add_member'),
     url(r'^admin/del_member/(?P<team_id>\d+)/(?P<member_id>\d+)/$', 'apps.hospi.views.del_member', name='hospi_del_member'),
 

@@ -2,6 +2,7 @@
 from django.template import RequestContext
 from django.template.loader import render_to_string
 import json
+from django.contrib.auth.models import User
 from apps.users.forms import UserProfileForm
 from apps.hospi.models import HospiTeam, Hostel, Room, Allotment, HospiLog
 from apps.hospi.forms import HostelForm, RoomForm, HospiTeamForm
@@ -316,6 +317,30 @@ def delete_member(request, team_id, member_id):
     user.save()
     team.save()
     return json.dumps({'message':message})
+
+@dajaxice_register
+def del_member_from_room(request, room_id, user_id):
+    try:
+        room = Room.objects.get(pk=room_id)
+        user = get_object_or_404(UserProfile, pk=user_id)
+        room.occupants.remove(user)
+        room.save()
+        message = "Success"
+    except:
+        message = "Error"
+    return json.dumps({'message':message, 'room_id':room_id})
+
+@dajaxice_register
+def add_member_to_room(request, room_id, user_id):
+    try:
+        room = Room.objects.get(pk=room_id)
+        user = get_object_or_404(User, pk=user_id)
+        room.occupants.add(user.profile)
+        room.save()
+        message = "Success"
+    except Exception, e:
+        message = "Error"+e.message
+    return json.dumps({'message':message, 'room_id':room_id})
 
 @dajaxice_register
 def registered_teams(request):
