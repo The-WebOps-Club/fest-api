@@ -336,7 +336,7 @@ class UserProfile(models.Model): # The corresponding auth user
         return True
 
     def __unicode__(self):
-        return self.user.first_name
+        return self.user.email + "  " + str(self.saarang_id)
 
 
 class ERPProfile(models.Model):

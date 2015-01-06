@@ -29,7 +29,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import permissions
 
 USER_MUTABLE_FIELDS = ["password", "first_name", "last_name"];
-PROFILE_MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","college_text","school_student","want_accomodation","age","city"];
+PROFILE_MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","college_text","school_student","want_accomodation","age","city", "desk_id"];
 EVENT_MUTABLE_FIELDS = ["has_tdp","team_size_min","team_size_max","registration_starts","registration_ends"];
 
 class NotificationViewSet(viewsets.ViewSet):
@@ -238,6 +238,8 @@ class UserProfileViewSet(viewsets.ViewSet):
     def create(self, request):
         user = self.request.user
         profile = UserProfile.objects.get_or_create( user=user )[0]
+        print request.DATA
+        print request.POST
         try:
             for i in request.DATA:
                 print i
@@ -248,9 +250,9 @@ class UserProfileViewSet(viewsets.ViewSet):
                 elif i in USER_MUTABLE_FIELDS and i != '':
                     setattr( user, i, request.POST[i] )
                     # print i
-        except:
+        except Exception, e:
             return Response({
-                "message": "Invalid input data."
+                "message": "Invalid input data."+str(e.message)
             }, status=status.HTTP_400_BAD_REQUEST);
         profile.save()
         user.save()
@@ -270,18 +272,42 @@ class UserProfilePostViewSet(viewsets.ViewSet):
 
 class UserViewSet(viewsets.ViewSet):
     def list(self, request):
-        return Response(viewset_response("done", UserSerializer(self.request.user).data))
+        user = self.request.user
+        user_id = request.GET.get('id', None)
+        try:
+            if self.request.user.is_superuser and user_id:
+                user = User.objects.get(id=user_id)
+                print "User id found ! ", user.id
+            else:
+                user_email = request.GET.get('email', None)
+                if self.request.user.is_superuser and user_email:
+                    user = User.objects.get(email=user_email)
+                    # print "User email found ! ", user.email
+        except user.DoesNotExist:
+            return Response({
+                "message": "We could not find any user with that info."
+            }, status=status.HTTP_400_BAD_REQUEST);
+        except:
+            return Response({
+                "message": "Theres some error ! Contact webops team !"
+            }, status=status.HTTP_400_BAD_REQUEST);
+        user_data = UserInfoSerializer(user).data
+        user_data['token'] = Token.objects.get_or_create(user=user)[0].key
+        return Response(viewset_response("done", user_data))
 
     def create(self, request):
         user = self.request.user
         try:
             for i in request.POST:
                 if i in USER_MUTABLE_FIELDS:
-                    setattr( user, i, request.POST[i] )
+                    if i == "password":
+                        user.set_password(request.POST[i])
+                    else:
+                        setattr( user, i, request.POST[i] )
         except:
             return Response("Invalid input data.",[]);
         user.save()
-        return Response( viewset_response( "done", UserSerializer(user).data ) )
+        return Response( viewset_response( "done", UserInfoSerializer(user).data ) )
 
 class TeamViewSet(viewsets.ViewSet):
     def  list(self, request):

@@ -30,10 +30,6 @@ def hello(request):
     return json.dumps({'message': 'aslkfhas'})
 
 
-
-
-
-
 @dajaxice_register
 def show_tabs(request,event_name,username):
     event_object=Event.objects.get(name=event_name)
@@ -180,6 +176,7 @@ def edit_event_details(request,event_name):
 	except Exception,e:
 		pass
 	return json.dumps({'form':form, 'message': 'message','event_name':event_name,'event_id':event_id,'image_source':image_source, 'slot_id':slot_id, 'slot_venue':slot_venue, 'slot_comment':slot_comment, 'slot_start':slot_start,'slot_end':slot_end,'length_count':length, 'winner_id':winner_id, 'winner_position':winner_position, 'winner_comment':winner_comment, 'winner_added_by':winner_added_by,'winner_user':winner_user, 'length_count_winner':length_winner})
+
     
     
 @dajaxice_register
@@ -252,6 +249,7 @@ def view_edit_event(request):
 	return json.dumps({'event_names': event_names,'event_emails':event_emails,'event_categories':event_categories})
 	
 
+
 @dajaxice_register    
 def delete_event(request,event_name):
 	event_object=Event.objects.get(name=event_name)
@@ -283,7 +281,8 @@ def reg_list(request,event_name):
 		user_email = user_email + str(reg.users_registered.email)  + "|"
 		user_number = user_number + str(reg.users_registered.profile.mobile_number) + "|"
 		user_college = user_college + str(reg.users_registered.profile.college_text) + "|"
-		mem_count = mem_count + str(reg.teams_registered.get_total_count()) + "|"
+                if reg.teams_registered:
+		    mem_count = mem_count + str(reg.teams_registered.get_total_count()) + "|"
 	return json.dumps({'event_name':event_name,'user_names':user_names,'team_names':team_names,'info':info, 'user_number':user_number, 'user_email':user_email, 'user_college':user_college, 'mem_count':mem_count})
 
 @dajaxice_register    
@@ -378,6 +377,7 @@ def delete_slot(request,slot_id):
 	return json.dumps({'message': message})
 
 
+
 @dajaxice_register    
 def add_winner(request,winner_form):
 	message="Your form has the following errors <br>"
@@ -409,3 +409,165 @@ def delete_winner(request,winner_id):
 	except Exception, e:
 		message="no such winner exists"
 	return json.dumps({'message': message})
+
+
+
+
+
+
+
+
+
+#QMS PORTAL FUNCTIONS - IT IS HERE BECAUSE I CAN'T GET DAJAXICE FUNCTIONS TO WORK THERE. WILL SHIFT EVERYTHING THERE LATER         
+from apps.users.forms import LoginForm,UserForm
+from apps.users.models import Team
+from apps.portals.qms.forms import AddTeamForm,UserProfileForm,AddEventRegistrationForm,EventParticipationForm
+
+from apps.events.models import EventRegistration,EventParticipation
+
+
+@dajaxice_register    
+def add_user(request,userform,userprofileform,user_id):
+	message="Your form has the following errors:\n"
+	user_form = UserForm(deserialize_form(userform))
+	user_profile_form = UserProfileForm(deserialize_form(userprofileform))
+	valid=0
+	userid=int(user_id)
+	if userid==-1: #it is a new user 
+		if (user_form.is_valid() and user_profile_form.is_valid()):
+			valid=1
+			user = user_form.save()
+			user.username=user.email
+			user.password=user.email
+			user.set_password(user.email)
+			user.save()
+		
+			profile = user_profile_form.save(commit=False)
+			profile.user = user
+			profile.email=user.email
+			if profile.mobile_number:
+				profile.mobile=profile.mobile_number
+			if user.first_name:
+				profile.name=user.first_name
+				if user.last_name:
+					profile.name=user.first_name + " " + user.last_name
+			if profile.age=='':
+				profile.age=0
+			profile.save()
+			message="Successfully added User"
+		if valid==0:
+			for field in user_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
+			for field in user_profile_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
+	else: #old user
+		if (user_form.is_valid() and user_profile_form.is_valid()):
+			valid=1
+			user_object=User.objects.get(id=userid)
+			user_form = UserForm(deserialize_form(userform),instance=user_object)
+			user_profile_form = UserProfileForm(deserialize_form(userprofileform),instance=user_object.profile)
+			user = user_form.save()
+			user.username=user.email
+			user.password=user.email
+			user.set_password(user.email)
+			user.save()
+			profile = user_profile_form.save(commit=False)
+			if profile.age=='':
+				profile.age=0
+			user_profile_form.save()
+			message="Successfully edited User"
+		if valid==0:
+			for field in user_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
+			for field in user_profile_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
+	return json.dumps({'message': message})   
+	
+	
+	
+@dajaxice_register    
+def add_team(request,teamform,team_id):
+	message="Your form has the following errors:\n"
+	team_id=int(team_id)
+	if team_id==-1:
+		team_form = AddTeamForm(deserialize_form(teamform))
+		if team_form.is_valid():
+			team_form.save()
+			message="Successfully added Team"
+		else:
+			for field in team_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
+	else:
+		team_object=Team.objects.get(id=team_id)
+		print team_object.name
+		team_form = AddTeamForm(deserialize_form(teamform),instance=team_object)
+		print team_form
+		if team_form.is_valid():
+			team_form.save()
+			message="Successfully edited Team"
+		else:
+			for field in team_form:
+				for error in field.errors:
+					message=message+field.html_name+" : "+error+"\n"
+	 
+	
+	return json.dumps({'message': message}) 
+	
+	
+	
+	
+@dajaxice_register    
+def register_user_team(request,registerform):
+	message="Your form has the following errors:\n"
+	register_form = AddEventRegistrationForm(deserialize_form(registerform))
+	if register_form.is_valid():
+		register_form.save()
+		message="Successfully added registration"
+	else:
+		for field in register_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"\n"
+	return json.dumps({'message': message}) 	
+
+	
+@dajaxice_register    
+def fill_team_form(request,teamid):
+	team_object=Team.objects.get(id=teamid)
+	form = AddTeamForm(instance=team_object).as_table()
+	return json.dumps({'teamform':form,'id':teamid}) 
+	
+	
+	
+	
+@dajaxice_register    
+def add_participation(request,participationform,particpation_objectid):
+	message="Your form has the following errors:\n"
+	participation_object=EventParticipation.objects.get(id=particpation_objectid)
+	participation_form = EventParticipationForm(deserialize_form(participationform),instance=participation_object)
+	if participation_form.is_valid():
+		participation_form.save()
+		message="Successfully added participation"
+	else:
+		for field in participation_form:
+			for error in field.errors:
+				message=message+field.html_name+" : "+error+"\n"
+	return json.dumps({'message': message}) 
+
+
+@dajaxice_register    
+def fill_participation_form(request,eventid):
+	event_object=Event.objects.get(id=eventid)
+	form = EventParticipationForm(instance=event_object.event_participated).as_table()
+	return json.dumps({'id':eventid,'participationform':form,'participation_objectid':event_object.event_participated.id})
+	
+	
+	
+@dajaxice_register    
+def insert_reg_form(request):
+	reg_form = AddEventRegistrationForm().as_table()
+	return json.dumps({'reg_form':reg_form})

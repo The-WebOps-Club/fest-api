@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 # Misc
 from django.templatetags.static import static
 # Python
-import os
+import os, datetime
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.shortcuts import render
@@ -26,7 +26,10 @@ from apps.users.models import ERPProfile, UserProfile, Dept, Subdept
 from apps.events.models import Event, EventTab
 from django.contrib.auth.decorators import login_required
 from apps.portals.events.forms import AddEventForm, ImageEventForm
-from apps.events.models import Event, EventWinner
+from apps.events.models import Event, EventWinner, EventSchedule
+
+from apps.hospi.utility import render_pdf
+
 @login_required
 def add_tabs( request ):
     message=""
@@ -72,20 +75,32 @@ def generate_pdf_certificate(request, winner_id):
     else:
         winners = EventWinner.objects.filter(id=winner_id)
     data={"winners":winners}
-    template = get_template('events/certif.html')
-    html  = template.render(Context(data))
-    file = open(os.path.join(settings.MEDIA_ROOT, 'CERTIF_'+winner_id+'.pdf'), "w+b")
-    pisaStatus = pisa.CreatePDF(html, dest=file,
-            link_callback = link_callback)
+    return render_pdf(request, data, 'events/certif.html', 'CERTIF_'+winner_id+'.pdf')
 
-    # Return PDF document through a Django HTTP response
-    file.seek(0)
-    pdf = file.read()
-    file.close()            # Don't forget to close the file handle
-    response =  HttpResponse(pdf, mimetype='application/pdf')
-    # response['Content-Disposition'] = "attachment; filename='SAAR_"+team.team_sid+"_Saarang2014.pdf'"
-    return response
+def time_fn(val):
+    val = int(str(val).lstrip('0'))
+    return (((val+20)*2)/100)-18
+
+@login_required
+def generate_schedule(request):
+    sched = EventSchedule.objects.order_by('slot_start')
+    schedule = []
+    for slot in sched:
+        info={
+            'slot': slot,
+            'time':[0 for x in range(19)]
+        }
+        start_num = time_fn((slot.slot_start+datetime.timedelta(hours=5,minutes=30)).strftime('%H%M'))
+        end_num = time_fn((slot.slot_end+datetime.timedelta(hours=5,minutes=30)).strftime('%H%M'))
+        for i in range(19):
+            if i>=start_num and i<=end_num:
+                info['time'][i] = 1
+        print info
+        schedule.append(info)
+    data = {
+        'data':schedule
+    }
+    return render_pdf(request, data,'events/schedule.html','Schedule_Saarang2015.pdf')
     
-
 
 

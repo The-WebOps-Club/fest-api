@@ -151,3 +151,21 @@ def checkout_bill(request, team_id):
     # response['Content-Disposition'] = "attachment; filename='Bill_"+team.team_sid+"_Saarang2014.pdf'"
     return response
 
+def render_pdf(request, dataset, template_name, pdf_name):
+    data = dataset 
+    # Render html content through html template with context
+    template = get_template(template_name)
+    html  = template.render(Context(data))
+
+    # Write PDF to file
+    file = open(os.path.join(settings.MEDIA_ROOT, pdf_name), "w+b")
+    pisaStatus = pisa.CreatePDF(html, dest=file,
+            link_callback = link_callback)
+
+    # Return PDF document through a Django HTTP response
+    file.seek(0)
+    pdf = file.read()
+    file.close()            # Don't forget to close the file handle
+    response =  HttpResponse(pdf, mimetype='application/pdf')
+    # response['Content-Disposition'] = "attachment; filename='Bill_"+team.team_sid+"_Saarang2014.pdf'"
+    return response

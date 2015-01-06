@@ -72,6 +72,7 @@ THIRD_PARTY_APPS = (
     'exportdata', # used to generate csv files from models
 
     'select2',
+    'bootstrap3',
 
     # Mobile and Mainsite API
     'rest_framework',
@@ -627,3 +628,4 @@ EVENT_CATEGORIES = ()
 
 DEFAULT_MAIN_FROM_EMAIL = ''
 
+APP_ENGINE_ADMIN_KEY = ''
