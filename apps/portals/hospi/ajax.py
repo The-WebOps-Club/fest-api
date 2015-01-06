@@ -201,18 +201,25 @@ def add_team(request):
         }
     html_content = render_to_string('portals/hospi/add_team.html', to_return , RequestContext(request))
     return json.dumps({'html_content':html_content})
+
 def auto_id(team_id):
     base = 'SA2015A'
     num = "{0:0>3d}".format(team_id)
     sid = base + num
     return sid
+
 @dajaxice_register
 def adding_team(request,form_add_team, user_id):
-
-    teamform=HospiTeamForm(deserialize_form(form_add_team))
+    teamform = deserialize_form(form_add_team)
     new_team = HospiTeam()
+    print teamform['name']
+    print teamform['city']
+    print teamform['accomodation_status']
+
     message = ""
-    new_team.leader = get_object_or_404(UserProfile, pk=user_id)
+    user = User.objects.get(pk=int(user_id))
+    new_team.leader  = user.profile
+    #new_team.leader = get_object_or_404(UserProfile, pk=user_id)
     new_team.name = teamform['name']
     new_team.accomodation_status = teamform['accomodation_status']
     new_team.city = teamform['city']
@@ -221,10 +228,9 @@ def adding_team(request,form_add_team, user_id):
     new_team.date_of_departure = teamform['date_of_departure']
     new_team.time_of_departure = teamform['time_of_departure']
     new_team.team_sid = 'SA2015A'
-    saved_team = new_team.save()
-    saved_team.team_sid = auto_id(saved_team.id)
-    saved_team.save()
-
+    new_team.save()
+    new_team.team_sid = auto_id(new_team.id)
+    new_team.save()
     # if teamform.is_valid():
     #     teamform.leader = user_id
 
