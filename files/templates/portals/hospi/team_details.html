@@ -87,7 +87,7 @@ a.danger
         <td>{{ team.team_sid }}</td>
         <td style="text-align:center;">{{ team.time_of_arrival|title }} on {{ team.date_of_arrival }} -to- </td>
         {% if team.accomodation_status != 'not_req' %}
-        <td style="text-align:center;"><a href="#" role="button" class="btn btn-danger" onclick="$('#addAccomodationModal').modal('show');$(this).val('Please wait');$('#change_status_save_button').val('Save Changes');">Change Date/time</a></td>
+        <td style="text-align:center;"><a href="#" role="button" class="btn btn-danger" onclick="$('#addAccomodationModal').modal('show');$(this).val('Please wait');$('#change_status_save_button').html('Save Changes');">Change Date/time</a></td>
         {% endif %}
         <td style="text-align:center;">
 {% if editable %}
@@ -112,11 +112,11 @@ a.danger
         <td>{{ team.city }} - {{ team.leader.college_text }}</td>
         <td style="text-align:center;">{{ team.time_of_departure|title }} on {{ team.date_of_departure }} </td>
         <td style="text-align:center;">{% if team.accomodation_status == 'confirmed' and not team.checked_in and not team.checked_out %}
-<a onclick="$('#checkinModal').modal('show');Dajaxice.apps.portals.hospi.check_in(check_in,{'team_id':{{team.pk}}});" class="btn btn-success"><i class="icon-home"></i> Check-in</a>
+<a id="checkin" onclick="$(this).val('Please wait');$('#checkinModal').modal('show');Dajaxice.apps.portals.hospi.check_in(check_in,{'team_id':{{team.pk}}});" class="btn btn-success"><i class="icon-home"></i> Check-in</a>
 {% elif team.accomodation_status == 'confirmed' and team.checked_in and not team.checked_out %}
 <a href="{% url 'apps.hospi.views.check_out_team' team.pk %}" data-target="#checkoutModal" class="btn btn-danger require-alert"><i class="icon-home"></i> Check-out</a>
 {% endif %}</td>
-<td><a class='btn btn-info' target="_blank" {% comment %}href="{% url 'apps.hospi.views.print_bill' team.pk %}"{% endcomment %} >Print bill</a></td>
+<td><a class='btn btn-info' target="_blank" {% comment %}href="{% url 'apps.hospi.views.print_bill' team.pk %}"{% endcomment %} onclick="$(this).val('Please wait');">Print bill</a></td>
 <td><a disabled class='btn btn-info' target="_blank"  {% comment %}href="{% url 'apps.hospi.views.print_saar' team.pk %}"{% endcomment %} >Print SAAR</a></td>
     </tr>
 </table>
@@ -151,7 +151,7 @@ a.danger
 <div class="panel panel-info">
 <div class="panel-heading">Total {{ team.get_total_count }} members. ( {{ team.get_male_count }} males and {{ team.get_female_count }} females )</div>
 <div class="panel-body">
-<div class="buttonPlaceholder pull-right"><button id='btnAddNewRow' class='btn btn-primary' onclick="$('#adduserModal').modal('show');">Add new member</button></div>
+<div class="buttonPlaceholder pull-right"><button id='btnAddNewRow' class='btn btn-primary' onclick="$('#adduserModal').modal('show');$(this).val('Please wait');">Add new member</button></div>
 <table id="member_data" class="member_data table table-borderless">
   <thead>
     <th>N</th>
@@ -210,14 +210,14 @@ Members highlighted in red indicates people who have accommodation confirmed alr
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" onclick="$('#checkin').val('Check-in');" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 id="checkinModalLabel">Check in for Team: {{ team.name }}</h4>
       </div>
       <div id = "checkinModalBody" class="modal-body">
         <p>Please Wait...</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" onclick="$('#checkin').val('Check-in');" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
