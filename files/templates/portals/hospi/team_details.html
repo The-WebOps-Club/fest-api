@@ -116,8 +116,8 @@ a.danger
 {% elif team.accomodation_status == 'confirmed' and team.checked_in and not team.checked_out %}
 <a href="{% url 'apps.hospi.views.check_out_team' team.pk %}" data-target="#checkoutModal" class="btn btn-danger require-alert"><i class="icon-home"></i> Check-out</a>
 {% endif %}</td>
-<td><a class='btn btn-info' target="_blank" {% comment %}href="{% url 'apps.hospi.views.print_bill' team.pk %}"{% endcomment %} onclick="$(this).val('Please wait');">Print bill</a></td>
-<td><a disabled class='btn btn-info' target="_blank"  {% comment %}href="{% url 'apps.hospi.views.print_saar' team.pk %}"{% endcomment %} >Print SAAR</a></td>
+<td><a class='btn btn-info' target="_blank" href="{% url 'apps.hospi.views.print_bill' team.pk %}" onclick="$(this).val('Please wait');">Print bill</a></td>
+<td><a class='btn btn-info' target="_blank" href="{% url 'apps.hospi.views.print_saar' team.pk %}" >Print SAAR</a></td>
     </tr>
 </table>
 <table class="table table-bordered" id="bill" >
