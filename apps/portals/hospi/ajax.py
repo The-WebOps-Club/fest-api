@@ -2,6 +2,7 @@
 from django.template import RequestContext
 from django.template.loader import render_to_string
 import json
+from django.contrib.auth.models import User
 from apps.users.forms import UserProfileForm
 from apps.hospi.models import HospiTeam, Hostel, Room, Allotment, HospiLog
 from apps.hospi.forms import HostelForm, RoomForm, HospiTeamForm
@@ -11,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from apps.hospi import utility as u
 from django.contrib import messages
 from django.conf import settings
+from apps.users.models import UserProfile
 from post_office import mail
 
 @dajaxice_register
@@ -199,17 +201,42 @@ def add_team(request):
         }
     html_content = render_to_string('portals/hospi/add_team.html', to_return , RequestContext(request))
     return json.dumps({'html_content':html_content})
-
+def auto_id(team_id):
+    base = 'SA2015A'
+    num = "{0:0>3d}".format(team_id)
+    sid = base + num
+    return sid
 @dajaxice_register
-def adding_team(request,form_add_team):			#By Balaji
+def adding_team(request,form_add_team, user_id):
 
     teamform=HospiTeamForm(deserialize_form(form_add_team))
+    new_team = HospiTeam()
     message = ""
-    if teamform.is_valid():
-        teamform.save()
-        message = "Successfully added"
-    else:
-        message = "Some error occured. Please fill the form again. If problem persists, contact webops Team."
+    new_team.leader = get_object_or_404(UserProfile, pk=user_id)
+    new_team.name = teamform['name']
+    new_team.accomodation_status = teamform['accomodation_status']
+    new_team.city = teamform['city']
+    new_team.date_of_arrival = teamform['date_of_arrival']
+    new_team.time_of_arrival = teamform['time_of_arrival']
+    new_team.date_of_departure = teamform['date_of_departure']
+    new_team.time_of_departure = teamform['time_of_departure']
+    new_team.team_sid = 'SA2015A'
+    saved_team = new_team.save()
+    saved_team.team_sid = auto_id(saved_team.id)
+    saved_team.save()
+
+    # if teamform.is_valid():
+    #     teamform.leader = user_id
+
+    #     team = teamform.save()
+    #     #team.leader = user_id
+    #     team.save()
+    #     message = "Successfully added"
+    # else:
+    message=''
+    #     for i in teamform.errors:
+    #         message+=i
+        #message = teamform.errors  #"Some error occured. Please fill the form again. If problem persists, contact webops Team."
 
     return json.dumps({'message':message})
 
@@ -280,6 +307,75 @@ def update_status(request, stat, team_id):
                 )
 		
     return json.dumps({'stat':stat})
+
+@dajaxice_register
+def check_in(request, team_id):
+    '''Needs to add some validators'''
+    team = get_object_or_404(HospiTeam, pk=team_id)
+    if team.get_male_count() == 0 and team.get_female_count==0:
+        messages.error(request, 'Incomplete team profile')
+    if team.members.filter(email=team.leader.email):
+        team.members.remove(team.leader)
+    if team.get_female_count() and team.get_male_count():
+        #print 'Mixed Team'
+        html_content = "<div class='alert alert-danger'>Split Team Before Check-in</div>"
+        return json.dumps({'html_content':html_content})
+    elif team.get_male_count():
+        #print 'Male Team'
+        males = team.get_male_members()
+        male_rooms = Room.objects.filter(hostel__gender='male')
+        html_content = render_to_string('portals/hospi/check_in_males.html', locals(), RequestContext(request))
+        return json.dumps({'html_content':html_content})
+    elif team.get_female_count():
+        #print 'Female Team'
+        females = team.get_female_members()
+        female_rooms = Room.objects.filter(hostel__gender='female')
+        html_content = render_to_string('portals/hospi/check_in_females.html', locals(), RequestContext(request))
+        return json.dumps({'html_content':html_content})
+    else:
+        html_content = "<div class='alert alert-danger'>Incomplete team profile</div>"
+        return json.dumps({'html_content':html_content})
+
+@dajaxice_register
+def del_member(request, team_id, member_id):
+    user = get_object_or_404(UserProfile, pk=member_id)
+    message = "Do you want to remove " + str(user.user.get_full_name()) + " ?"
+    return json.dumps({'message':message, 'team_id':team_id, 'member_id':member_id})
+
+@dajaxice_register
+def delete_member(request, team_id, member_id):
+    team = HospiTeam.objects.get(pk=team_id)
+    data = request.POST.copy()
+    user = get_object_or_404(UserProfile, pk=member_id)
+    message = "Successfully removed " + str(user.user.get_full_name())
+    team.members.remove(user)
+    user.save()
+    team.save()
+    return json.dumps({'message':message})
+
+@dajaxice_register
+def del_member_from_room(request, room_id, user_id):
+    try:
+        room = Room.objects.get(pk=room_id)
+        user = get_object_or_404(UserProfile, pk=user_id)
+        room.occupants.remove(user)
+        room.save()
+        message = "Success"
+    except:
+        message = "Error"
+    return json.dumps({'message':message, 'room_id':room_id})
+
+@dajaxice_register
+def add_member_to_room(request, room_id, user_id):
+    try:
+        room = Room.objects.get(pk=room_id)
+        user = get_object_or_404(User, pk=user_id)
+        room.occupants.add(user.profile)
+        room.save()
+        message = "Success"
+    except Exception, e:
+        message = "Error"+e.message
+    return json.dumps({'message':message, 'room_id':room_id})
 
 @dajaxice_register
 def registered_teams(request):
