@@ -219,10 +219,9 @@
     function add_team(data){
       document.getElementById("addteamModalBody").innerHTML = data.html_content;
       $('#addteamModal').modal('show')
-      function movieFormatResult(user) {
+    function movieFormatResult(user) {
         var markup = "<table padding=3><tr>";
-            markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div class='movie-title' style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
-        
+        markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div class='movie-title' style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
         markup += "<td><div>" + user.first_name + " " + user.last_name + "</div>";
         markup += "</td></tr><tr><td><div>" + user.mobile_number + "</div>";
             markup += "</td></tr><tr><td><div>" + user.email + "</div>";
