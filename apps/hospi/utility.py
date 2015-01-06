@@ -133,6 +133,7 @@ def checkout_bill(request, team_id):
         'members':members,
         'bill_data':bill_data,
         'rooms':rooms,
+        'user':request.user,
     }
     # Render html content through html template with context
     template = get_template('portals/hospi/check_out_bill.html')
