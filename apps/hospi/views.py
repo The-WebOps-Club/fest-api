@@ -11,7 +11,8 @@ import random, string, json
 from random import *
 from models import Hostel, Room, HospiTeam, Allotment, HospiLog
 from apps.events.models import Team, EventRegistration, Event
-from forms import HostelForm, RoomForm, HospiTeamForm
+from django.contrib.auth.models import User
+from forms import HostelForm, RoomForm, HospiTeamForm, UserProfileForm
 #from apps.events.forms import AddTeamForm
 from post_office import mail
 import datetime
@@ -314,6 +315,7 @@ def team_details(request, team_id):
     to_return = {
         'leader':leader,
         'bill_data':bill_data,
+        'addUserForm':UserProfileForm(),
         'editable':editable,
         'team':team,
     }
@@ -323,7 +325,6 @@ def team_details(request, team_id):
 def print_saar(request, team_id):
     return u.generate_pdf(request, team_id)
 
-@login_required
 def split_team(request, team_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
     M=['male', 'Male', 'm','M']
@@ -363,7 +364,7 @@ def split_team(request, team_id):
         new_team.time_of_departure = team.time_of_departure
         new_team.save()
     messages.success(request, 'Team '+new_team.name+' created and ID is '+new_team.team_sid)
-    return redirect('hospi_list_registered_teams')
+    return redirect('hospi_team_details', team.pk)
 
 @login_required
 def update_status(request, team_id):
@@ -626,7 +627,6 @@ def check_in_mixed(request):
     messages.success(request, team.team_sid + ' checked in successfully')
     return redirect('hospi_list_registered_teams')
 
-@login_required
 def check_in_males(request):
     data = request.POST.copy()
     team = get_object_or_404(HospiTeam, pk=data['team_id'])
@@ -640,9 +640,8 @@ def check_in_males(request):
     team.mattress_count=data['matress']
     team.save()
     messages.success(request, team.team_sid + ' checked in successfully')
-    return redirect('hospi_list_registered_teams')
+    return redirect('hospi_team_details', team.pk)
 
-@login_required
 def check_in_females(request):
     data = request.POST.copy()
     team = get_object_or_404(HospiTeam, pk=data['team_id'])
@@ -656,9 +655,8 @@ def check_in_females(request):
     team.mattress_count=data['matress']
     team.save()
     messages.success(request, team.team_sid + ' checked in successfully')
-    return redirect('hospi_list_registered_teams')
+    return redirect('hospi_team_details', team.pk)
 
-@login_required
 def check_out_team(request, team_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
     members = team.members.all()
@@ -689,9 +687,8 @@ def check_out_team(request, team_id):
     team.checked_out = True
     team.save()
     messages.success(request, team.team_sid + ' checked out successfully')
-    return redirect('hospi_list_registered_teams')
+    return redirect('hospi_team_details', team.pk)
 
-@login_required
 def print_bill(request, team_id):
     return u.checkout_bill(request, team_id)
     
@@ -699,31 +696,47 @@ def print_bill(request, team_id):
 @login_required
 def update_member(request):
     data = request.POST.copy()
-    user = get_object_or_404(SaarangUser, pk=int(data['id']))
-    setattr(user, data['columnName'], data['value'])
+    user = get_object_or_404(UserProfile, pk=int(data['id']))
+    if '.' in data['columnName'] and data['columnName'].split('.')[0] == 'user':
+        user = user.user
+        print data['columnName'], data['value']
+        setattr(user, data['columnName'].split('.')[1], data['value'])
+    else:
+        setattr(user, data['columnName'], data['value'])
     user.save()
+    print user
     return HttpResponse(data['value'])
 
-@login_required
 def add_member(request,team_id):
     team = HospiTeam.objects.get(pk=team_id)
     if request.method == 'POST':
-        userform =SaarangUserForm(request.POST)
+        form =UserProfileForm(request.POST)
         print request.POST
-        if userform.is_valid():
-            user = userform.save()
-            user.saarang_id = uid(user.pk)
+        if form.is_valid():
+            user = User()
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
+            user.email = form.cleaned_data['email']
+            user.username = user.email
             characters = string.ascii_letters + string.punctuation  + string.digits
             password =  "".join(choice(characters) for x in range(randint(8, 16)))
             user.password = password
-            user.activate_status = 2
             user.save()
-            team.members.add(user)
+            userp = UserProfile()
+            userp.user = user
+            userp.dob = form.cleaned_data['dob']
+            userp.gender = form.cleaned_data['gender']
+            userp.mobile_number = form.cleaned_data['mobile_number']
+            userp.branch = form.cleaned_data['branch']
+            userp.college_text = form.cleaned_data['college_text']
+            userp.college_roll = form.cleaned_data['college_roll']
+            userp.save()
+            team.members.add(userp)
             team.save()
-            mail.send(
+            '''mail.send(
                 [user.email], template='email/main/activate_confirm',
                 context={'saarang_id':user.saarang_id, 'password':user.password}
-            )
+            )'''
             messages.success(request, 'User added successfully')
         else:
             print "Invalid"
@@ -731,32 +744,27 @@ def add_member(request,team_id):
 
 @csrf_exempt
 @login_required
-def del_member(request, team_id):
+def del_member(request, team_id, member_id):
     team = HospiTeam.objects.get(pk=team_id)
     data = request.POST.copy()
-    user = get_object_or_404(SaarangUser, pk=int(data['id']))
+    user = get_object_or_404(UserProfile, pk=member_id)
     team.members.remove(user)
     user.save()
     team.save()
-    return HttpResponse('ok')
+    return redirect('hospi_team_details', team.pk)
 
-@csrf_exempt
-@login_required
-def website_id_search(request):
+def id_search(request):
     data=request.GET.copy()
     user_list = []
-    users_id = SaarangUser.objects.filter(saarang_id__contains=data['q'].upper())[:10]
-    users_email = SaarangUser.objects.filter(email__contains=data['q'].lower())[:10]
-    users_name = SaarangUser.objects.filter(name__contains=data['q'])[:10]
-    users_mobile = SaarangUser.objects.filter(mobile__contains=data['q'])[:10]
+    selected_users=[]
+    users_id = UserProfile.objects.filter(saarang_id=data['q'].upper())
+    
     for user in users_id:
-        user_list.append({"id":user.id,'sid':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile })
-    for user in users_email:
-        user_list.append({"id":user.id,'sid':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile })
-    for user in users_name:
-        user_list.append({"id":user.id,'sid':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile })
-    for user in users_mobile:
-        user_list.append({"id":user.id,'sid':user.saarang_id, 'email':user.email, 'name':user.name, 'mobile':user.mobile })
+        selected_users=selected_users+[user]
+    selected_users=set(selected_users)
+    
+    for user in selected_users:
+        user_list.append({"desk_id":user.desk_id,'id':user.user.id,'saarang_id':user.saarang_id, 'email':user.user.email, 'first_name':user.user.first_name,'last_name':user.user.last_name, 'mobile_number':user.mobile_number, 'city':user.city,  'branch':user.branch, 'college_text':user.college_text, 'age':user.age, 'want_accomodation':user.want_accomodation, 'gender':user.gender.capitalize() })
     user_dict = json.dumps(user_list)
     return HttpResponse(user_dict)
 
@@ -764,9 +772,11 @@ def website_id_search(request):
 def add_user_to_team(request):
     data = request.POST.copy()
     try:
+        print int(data['team_id'])
+        print int(data['website_id'])
         team = get_object_or_404(HospiTeam, pk=int(data['team_id']))
-        user = get_object_or_404(SaarangUser, pk=int(data['website_id']))
-        team.members.add(user)
+        user = get_object_or_404(User, pk=int(data['website_id']))
+        team.members.add(user.profile)
         team.save()
         messages.success(request, 'User added successfully')
     except:
@@ -777,3 +787,6 @@ def add_user_to_team(request):
 def delete_room(request, room_id):
     room = Room.objects.get(pk=room_id)
     return HttpResponse('Under construction')
+
+
+

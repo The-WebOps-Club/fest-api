@@ -238,17 +238,6 @@ class UserProfile(models.Model): # The corresponding auth user
     college_id_hospi = models.CharField(max_length=50, blank = True, null=True)
     fb_token = models.TextField(max_length=1000, blank = True, null=True)
     password = models.CharField(max_length=128, blank = True, null=True)
-    GENDER_CHOICES_2 = (
-        ('Male', 'Male'),
-        ('Female', 'Female'),
-    )
-    ACTIVATION_CHOICES = (
-        (0,'Activation email sent'),
-        (1,'Activated'),
-        (2,'Profile completed'),
-    )
-    gender_hospi = models.CharField(max_length=10, choices=GENDER_CHOICES_2,default='Male', blank = True, null=True) #Used for Hospi Portal
-    activate_status = models.IntegerField(choices = ACTIVATION_CHOICES, default=2, blank=True, null=True)
     accomod_is_confirmed = models.BooleanField(default=False)
 
     objects = CheckActiveManager()

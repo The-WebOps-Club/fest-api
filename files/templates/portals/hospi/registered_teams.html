@@ -5,7 +5,7 @@
   margin-left: -600px;
 }
 </style>
-<legend>Teams registered <div class="pull-right"><a data-target="#addteamModal" href="#" onclick="Dajaxice.apps.portals.hospi.add_team(add_team)" class="btn btn-info" >Add new team</a></div></legend>
+<legend>Teams registered <div class="pull-right"><button id = "" onclick="$(this).html('Please wait');Dajaxice.apps.portals.hospi.add_team(add_team);" class="btn btn-info" >Add new team</button></div></legend>
 <table id="hospitable">
   <thead>
     <tr>
@@ -28,12 +28,12 @@
       <td style="color:black">{{ team.leader.mobile_number }}</td>
       <td style="color:black">{{ team.get_total_count }}</td>
       <td>
-        {% if team.accomodation_status == 'requested' %}
+        {% if team.accomodation_status == 'not_req' %}
+        <span class="label label-primary">Not required</span>
+        {% elif team.accomodation_status == 'requested' %}
         <span class="label label-info">Pending</span>
         {% elif team.accomodation_status == 'confirmed' %}
         <span class="label label-success">Confirmed</span>
-        {% elif team.accomodation_status == 'not_req' %}
-        <span class="label" style="color:black">Not required</span>
         {% elif team.accomodation_status == 'waitlisted' %}
         <span class="label label-warning">Waitlisted</span>
         {% elif team.accomodation_status == 'rejected' %}
