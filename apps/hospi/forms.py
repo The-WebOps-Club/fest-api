@@ -24,7 +24,7 @@ class UserProfileForm(forms.Form):
     first_name         = forms.CharField(max_length=30)
     last_name          = forms.CharField(max_length=30)
     email              = forms.EmailField(max_length=100)
-    dob                = forms.DateField(label=u'Date of Birth', input_formats=['%d/%m/%Y', '%d-%m-%Y', '%d %b, %Y', '%B %d, %Y'], required=False, widget=forms.DateInput(format = '%d %b, %Y'))
+    age                = models.CharField(max_length=2)
     gender             = forms.ChoiceField(choices=GENDER_CHOICES)
     mobile_number      = forms.CharField(max_length=15, help_text='Please enter your current mobile number')
     branch             = forms.ChoiceField(choices=BRANCH_CHOICES, help_text='Your branch of study')
