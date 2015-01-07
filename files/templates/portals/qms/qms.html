@@ -515,7 +515,11 @@ $(function(){
         $('#id_mobile_number').val(user.mobile_number)
         $('#id_college_text').val(user.college_text)
         $('#id_gender').val(user.gender)
+       
+        $("select[name=branch]").select2('destroy');
         $('#id_branch').val(user.branch)
+        $("select[name=branch]").select2();
+               
         $('#id_city').val(user.city)
         $('#id_desk_id').val(user.desk_id)
         $('#id_age').val(user.age)
