@@ -628,6 +628,7 @@ def check_in_mixed(request):
     return redirect('hospi_list_registered_teams')
 
 def check_in_males(request):
+    room_history = ""
     data = request.POST.copy()
     team = get_object_or_404(HospiTeam, pk=data['team_id'])
     males = team.get_male_members()
@@ -635,14 +636,16 @@ def check_in_males(request):
         room = get_object_or_404(Room, pk=data[male.saarang_id])
         room.occupants.add(male)
         room.save()
-        HospiLog.objects.create(created_by=request.user, user=male, room=room)
+        room_history += room.hostel.name + '(' + room.name +')\n' 
     team.checked_in = True
+    team.room_history = room_history
     team.mattress_count=data['matress']
     team.save()
     messages.success(request, team.team_sid + ' checked in successfully')
     return redirect('hospi_team_details', team.pk)
 
 def check_in_females(request):
+    room_history = ""
     data = request.POST.copy()
     team = get_object_or_404(HospiTeam, pk=data['team_id'])
     females = team.get_female_members()
@@ -650,8 +653,9 @@ def check_in_females(request):
         room = get_object_or_404(Room, pk=data[female.saarang_id])
         room.occupants.add(female)
         room.save()
-        HospiLog.objects.create(created_by=request.user, user=female, room=room)
+        room_history += room.hostel.name + '(' + room.name +')\n' 
     team.checked_in = True
+    team.room_history = room_history
     team.mattress_count=data['matress']
     team.save()
     messages.success(request, team.team_sid + ' checked in successfully')
@@ -659,35 +663,42 @@ def check_in_females(request):
 
 def check_out_team(request, team_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
-    members = team.members.all()
-    try:
-        room = team.leader.room_occupant.all()[0]
-        room.occupants.remove(team.leader)
-        room.save()
-        log_entry = HospiLog.objects.get(user=team.leader)
-        log_entry.checked_out = True
-        log_entry.checkout_time = datetime.datetime.now()
-        log_entry.checked_out_by = request.user
-        log_entry.save()
-    except:
-        return u.checkout_bill(request, team_id)
+    members = team.get_all_members()
     for member in members:
-        try:
-            room = member.room_occupant.all()[0]
+        rooms = member.room_occupant.all()
+        for room in rooms:
             room.occupants.remove(member)
             room.save()
-            log_entry = HospiLog.objects.get(user=member)
-            log_entry.checked_out = True
-            print log_entry
-            log_entry.checkout_time = datetime.datetime.now()
-            log_entry.checked_out_by = request.user
-            log_entry.save()
-        except Exception, e:
-            return u.checkout_bill(request, team_id)
+                 
     team.checked_out = True
     team.save()
     messages.success(request, team.team_sid + ' checked out successfully')
-    return redirect('hospi_team_details', team.pk)
+    return u.checkout_bill(request,team_id)
+    #try:
+    #    room = team.leader.room_occupant.all()[0]
+    #    room.occupants.remove(team.leader)
+    #    room.save()
+    #    log_entry = HospiLog.objects.get(user=team.leader)
+    #    log_entry.checked_out = True
+    #    log_entry.checkout_time = datetime.datetime.now()
+    #    log_entry.checked_out_by = request.user
+    #    log_entry.save()
+    #except:
+    #    return u.checkout_bill(request, team_id)
+    #for member in members:
+    #    try:
+    #        room = member.room_occupant.all()[0]
+    #        room.occupants.remove(member)
+    #        room.save()
+    #        log_entry = HospiLog.objects.get(user=member)
+    #        log_entry.checked_out = True
+    #        print log_entry
+    #        log_entry.checkout_time = datetime.datetime.now()
+    #        log_entry.checked_out_by = request.user
+    #        log_entry.save()
+    #    except Exception, e:
+    #        return u.checkout_bill(request, team_id)
+    #return redirect('hospi_team_details', team.pk)
 
 def print_bill(request, team_id):
     return u.checkout_bill(request, team_id)
@@ -712,34 +723,37 @@ def add_member(request,team_id):
     if request.method == 'POST':
         form =UserProfileForm(request.POST)
         print request.POST
-        if form.is_valid():
-            user = User()
-            user.first_name = form.cleaned_data['first_name']
-            user.last_name = form.cleaned_data['last_name']
-            user.email = form.cleaned_data['email']
-            user.username = user.email
-            characters = string.ascii_letters + string.punctuation  + string.digits
-            password =  "".join(choice(characters) for x in range(randint(8, 16)))
-            user.password = password
-            user.save()
-            userp = UserProfile()
-            userp.user = user
-            userp.dob = form.cleaned_data['dob']
-            userp.gender = form.cleaned_data['gender']
-            userp.mobile_number = form.cleaned_data['mobile_number']
-            userp.branch = form.cleaned_data['branch']
-            userp.college_text = form.cleaned_data['college_text']
-            userp.college_roll = form.cleaned_data['college_roll']
-            userp.save()
-            team.members.add(userp)
-            team.save()
-            '''mail.send(
-                [user.email], template='email/main/activate_confirm',
-                context={'saarang_id':user.saarang_id, 'password':user.password}
-            )'''
-            messages.success(request, 'User added successfully')
-        else:
-            print "Invalid"
+        try:
+            if form.is_valid():
+                user = User()
+                user.first_name = form.cleaned_data['first_name']
+                user.last_name = form.cleaned_data['last_name']
+                user.email = form.cleaned_data['email']
+                user.username = user.email
+                characters = string.ascii_letters + string.punctuation  + string.digits
+                password =  "".join(choice(characters) for x in range(randint(8, 16)))
+                user.password = password
+                user.save()
+                userp = UserProfile()
+                userp.user = user
+                userp.age = form.cleaned_data['age']
+                userp.gender = form.cleaned_data['gender']
+                userp.mobile_number = form.cleaned_data['mobile_number']
+                userp.branch = form.cleaned_data['branch']
+                userp.college_text = form.cleaned_data['college_text']
+                userp.college_roll = form.cleaned_data['college_roll']
+                userp.save()
+                team.members.add(userp)
+                team.save()
+                '''mail.send(
+                    [user.email], template='email/main/activate_confirm',
+                    context={'saarang_id':user.saarang_id, 'password':user.password}
+                )'''
+                messages.success(request, 'User added successfully')
+            else:
+                print "Invalid"
+        except Exception, e:
+            return HttpResponse("User is already registered on Saarang Website. Use Add existing user, and search by email")
     return redirect('hospi_team_details', team.pk)
 
 @csrf_exempt
@@ -758,11 +772,13 @@ def id_search(request):
     user_list = []
     selected_users=[]
     users_id = UserProfile.objects.filter(saarang_id=data['q'].upper())
-    
+    users_email = UserProfile.objects.filter(user__email__icontains=data['q'])[:10]
     for user in users_id:
         selected_users=selected_users+[user]
-    selected_users=set(selected_users)
-    
+    for user in users_email:
+        selected_users=selected_users+[user]
+    selected_users=list(set(selected_users))
+
     for user in selected_users:
         user_list.append({"desk_id":user.desk_id,'id':user.user.id,'saarang_id':user.saarang_id, 'email':user.user.email, 'first_name':user.user.first_name,'last_name':user.user.last_name, 'mobile_number':user.mobile_number, 'city':user.city,  'branch':user.branch, 'college_text':user.college_text, 'age':user.age, 'want_accomodation':user.want_accomodation, 'gender':user.gender.capitalize() })
     user_dict = json.dumps(user_list)

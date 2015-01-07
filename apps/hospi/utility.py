@@ -120,7 +120,7 @@ def generate_pdf(request, team_id):
 def checkout_bill(request, team_id):
     team = get_object_or_404(HospiTeam, pk=team_id)
     leader = team.leader
-    members = team.members.all().order_by('gender')
+    members = team.get_all_members()
     bill_data = bill(team.date_of_arrival, team.time_of_arrival, team.date_of_departure, team.time_of_departure, team.get_total_count())
     rooms=[]
     for member in members:

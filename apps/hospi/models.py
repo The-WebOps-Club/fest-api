@@ -59,6 +59,8 @@ class HospiTeam(models.Model):
     checked_out = models.BooleanField(default=False)
     mattress_count = models.IntegerField(default=0)
     mattress_returned = models.BooleanField(default=False)
+    
+    room_history = models.TextField(max_length=1000, null=True, blank=True)
 
     def __unicode__(self):
         try:

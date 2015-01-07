@@ -239,7 +239,7 @@ def adding_team(request,form_add_team, user_id):
     #     team.save()
     #     message = "Successfully added"
     # else:
-    message=''
+    message='Successfully added team. Please wait till page refreshes automatically'
     #     for i in teamform.errors:
     #         message+=i
         #message = teamform.errors  #"Some error occured. Please fill the form again. If problem persists, contact webops Team."

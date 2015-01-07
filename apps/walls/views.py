@@ -22,6 +22,8 @@ from annoying.functions import get_object_or_None
 # Python
 import os
 import notifications
+from django.views.decorators.csrf import csrf_exempt
+from post_office import mail
 
 @login_required
 def wall (request, wall_id=None, post_id=None):
@@ -160,6 +162,7 @@ def email_test(request):
     }
     return render_to_response('notification.html', local_context, context_instance= global_context(request))
 # For testing API
+@csrf_exempt
 def api_test(request):
     print "==========================================="
     print "====      POST:"
@@ -167,4 +170,20 @@ def api_test(request):
     print "====      GET :"
     print request.GET
     print "==========================================="
-    return HttpResponse("Success")
+    
+    text= "===========================================\n"
+    text+= "====      POST:\n"
+    for i in request.POST:
+        text+= i+': ' + str(request.POST[i])+' | \n'
+    text+= "\n====      GET :\n"
+    for i in request.GET:
+        text+= i+ ' : ' + str(request.GET[i])+' | \n'
+    text+= "\n===========================================\n"
+    mail.send(
+        'muhammedshahid.k@gmail.com', # List of email addresses also accepted
+        'noreply@saarang.org',
+        subject='API TEST',
+        message=text,
+        html_message=text,
+    )
+    return HttpResponse("Success\n"+text)

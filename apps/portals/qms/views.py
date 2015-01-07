@@ -62,12 +62,22 @@ def id_search(request):
     data=request.GET.copy()
     user_list = []
     selected_users=[]
-    users_id = UserProfile.objects.filter(saarang_id__contains=data['q'].upper())[:10]
-  
+    users_id = UserProfile.objects.filter(saarang_id__icontains=data['q'])[:10]
+    users_email = UserProfile.objects.filter(user__email__icontains=data['q'])[:10]
+    users_first_name = UserProfile.objects.filter(user__first_name__icontains=data['q'])[:10]
+    users_last_name = UserProfile.objects.filter(user__last_name__contains=data['q'])[:10]
+     
     
     for user in users_id:
         selected_users=selected_users+[user]
        
+    for user in users_email:
+        selected_users=selected_users+[user]
+    for user in users_first_name:
+        selected_users=selected_users+[user]
+    for user in users_last_name:
+        selected_users=selected_users+[user]
+    selected_users = list(set(selected_users))
     for user in selected_users:
         user_list.append({"desk_id":user.desk_id,'id':user.user.id,'saarang_id':user.saarang_id, 'email':user.user.email, 'first_name':user.user.first_name,'last_name':user.user.last_name, 'mobile_number':user.mobile_number, 'city':user.city,  'branch':user.branch, 'college_text':user.college_text, 'age':user.age, 'want_accomodation':user.want_accomodation, 'gender':user.gender.capitalize() })
     user_dict = json.dumps(user_list)

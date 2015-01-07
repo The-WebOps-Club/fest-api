@@ -27,6 +27,7 @@
   
     <link href="{% static 'bootstrap/dataTables/bootstrap.css' %}">
 
+    <style>select{color:black;}</style>
     <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
     <!--<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js"></script>-->
 
@@ -243,7 +244,7 @@
         return user.saarang_id
     }
     $("#room_website_id").select2({
-      placeholder: "Enter existing user's saarang id",
+      placeholder: "Enter team leader's Saarang ID",
       minimumInputLength: 9,
       ajax: {
         url: "{% url 'hospi_website_id_search' %}",

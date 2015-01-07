@@ -20,7 +20,7 @@
     <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/select2.css' %}" rel="stylesheet">
     <link href="{% static 'bootstrap/dataTables/bootstrap.css' %}">
-
+    <style>select{color:black;}</style>
 </head>
 <body>
 <script src="{% static 'js/jquery.dataTables.js' %}"></script>
@@ -328,10 +328,11 @@ $("a[data-target=#checkinModal]").click(function(event) {
         </div>
         <div id="user_info"></div>
           <input  type="hidden" name="team_id" value="{{team.pk}}" />
-          <button id = "add_existing_user_button" type="submit" name='submit'  onclick="$(this).val('Please wait');" class='btn btn-info btn-block'>Add User</button>
+          <button id = "add_existing_user_button" type="submit" name='submit'  onclick="$(this).val('Please wait');" class='btn btn-info btn-block'>Add existing user</button>
         </form>
+        <br/><br/><hr/>
         <form class='form-horizontal' method='POST' id='new_member' action="{% url 'hospi_add_member' team.id %}">
-          <legend>New User</legend>
+          <legend>New User (for those who are not registered at saarang website)</legend>
             {% csrf_token %}
             {{ addUserForm.media }}
             {% if addUserForm.errors %}
@@ -359,7 +360,7 @@ $("a[data-target=#checkinModal]").click(function(event) {
                 {{ field }}
             {% endfor %}
             <input type="hidden" name="team_id" value="{{team.pk}}" />
-            <button id="add_new_user_button" type="submit" class='btn btn-success btn-block' onclick="$(this).val('Please wait');" name='submit'>Save and Add to Team</button>
+            <button id="add_new_user_button" type="submit" class='btn btn-success btn-block' onclick="$(this).val('Please wait');" name='submit'>Save new user and Add to Team</button>
         </form>
       </div>
       <div class="modal-footer">
@@ -389,22 +390,11 @@ $(function(){
         return markup;
     }
     function movieFormatSelection(user) {
-		$('#id_first_name').val(user.first_name)
-        $('#id_last_name').val(user.last_name)
-        $('#id_email').val(user.email)
-        $('#id_mobile_number').val(user.mobile_number)
-        $('#id_college_text').val(user.college_text)
-        $('#id_gender').val(user.gender)
-        $('#id_branch').val(user.branch)
-        $('#id_city').val(user.city)
-        $('#id_desk_id').val(user.desk_id)
-        $('#id_age').val(user.age)
-        $('#hidden_id').text(user.id)
         return user.saarang_id
     }
 $("#website_id").select2({
-    placeholder: "Enter existing user's saarang id",
-    minimumInputLength: 9,
+    placeholder: "Enter existing user's saarang id or email",
+    minimumInputLength: 5,
     ajax: {
         url: "{% url 'hospi_website_id_search' %}",
         dataType: 'json',
@@ -458,8 +448,9 @@ $('#member_data').dataTable( {
          {
            type: 'select',
            submit:'Ok',
-           data: "{ 'male': 'Male', 'female':'Female' }"
+           data: "{ 'M': 'M', 'F':'F' }"
          },
+         {},
          {},
          {},
          {},

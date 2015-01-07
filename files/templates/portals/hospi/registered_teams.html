@@ -74,14 +74,14 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" onclick="$('add_a_team_button').html('Add new Team');"data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" onclick="$('#add_a_team_button').html('Add new Team');" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <h4 class="modal-title" id="myModalLabel">Add a New Team</h4>
       </div>
       <div id = "addteamModalBody" class="modal-body">
       </div>
       <div class="modal-footer">
         <input type="button" id="add_team_save_button"class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.adding_team(adding_team,{'form_add_team':$('#form_add_team').serialize(true),'user_id':$('#room_website_id').val()});$(this).val('Please wait');" value="Save"/>
-        <button type="button" class="btn btn-default" onclick="$('add_a_team_button').html('Add new Team');"data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" onclick="$('#add_a_team_button').html('Add new Team');"data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

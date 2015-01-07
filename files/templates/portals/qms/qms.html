@@ -492,18 +492,12 @@ function insert_reg_form_js(data)
 $(function(){
     function movieFormatResult(user) {
         var markup = "<table padding=3><tr>";
-            markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
+            markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div class='movie-title' style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
         
-        markup += "<td><div>" + user.first_name + "</div></td>";
-        markup += "<td><div>" + user.last_name + "</div></td>";
-        
-        markup += "<td><div>" + user.mobile_number + "</div>";
-        
-            markup += "</td><td><div>" + user.email + "</div>";
-         
-        
-        
-        markup += "</td></tr></table>";
+        markup += "<td><div>" + user.first_name + " " + user.last_name + "</div>";
+        markup += "</td></tr><tr><td><div>" + user.mobile_number + "</div>";
+            markup += "</td></tr><tr><td><div>" + user.email + "</div>";
+        markup += "</td></tr></table>"
          
         return markup;
     }
@@ -526,7 +520,7 @@ $(function(){
 
 $("#website_id").select2({
     placeholder: "Enter existing user's saarang id, name, mobile, email",
-    minimumInputLength: 9,
+    minimumInputLength: 5,
     ajax: {
         url: "{% url 'qms_id_search' %}",
         dataType: 'json',
