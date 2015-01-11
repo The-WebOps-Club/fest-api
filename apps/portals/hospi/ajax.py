@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.conf import settings
 from apps.users.models import UserProfile
 from post_office import mail
+import datetime as dt
 
 @dajaxice_register
 def list_all_teams(request):
@@ -383,7 +384,41 @@ def add_member_to_room(request, room_id, user_id):
         message = "Error"+e.message
     return json.dumps({'message':message, 'room_id':room_id})
 
+
+def days(in_date, in_time, out_date, out_time):
+    l1 = dt.datetime(2015, 1, 7, 10, 0)
+    u1 = dt.datetime(2015, 1, 8, 17, 0)
+    l2 = dt.datetime(2015, 1, 8, 5, 0)
+    u2 = dt.datetime(2015, 1, 9, 17, 0)
+    l3 = dt.datetime(2015, 1, 9, 5, 0)
+    u3 = dt.datetime(2015, 1, 10, 17, 0)
+    l4 = dt.datetime(2015, 1, 10, 5, 0)
+    u4 = dt.datetime(2015, 1, 11, 17, 0)
+    l5 = dt.datetime(2015, 1, 11, 5, 0)
+    u5 = dt.datetime(2015, 1, 12, 9, 0)
+    
+    span = [[l1,u1],[l2,u2],[l3,u3],[l4,u4],[l5,u5]]
+
+    in_stamp = dt.datetime.combine(in_date, in_time)
+    out_stamp = dt.datetime.combine(out_date, out_time)
+
+    for i in xrange(0,5):
+        if (in_stamp >= span[i][0] and in_stamp <= span[i][1] and in_stamp<span[i+1][0] ):
+            for j in xrange(i,5):
+                if out_stamp >= span[j][0] and out_stamp <= span[j][1]:
+                    return j-i+1
+    return 0
+
 @dajaxice_register
-def registered_teams(request):
-    html_content = render_to_string('portals/hospi/registered_teams.html', {}, RequestContext(request))
+def ohm(request):
+    teams = HospiTeam.objects.all()
+    data = []
+    for team in teams:
+        dos = days(team.date_of_arrival,team.time_of_arrival,team.date_of_departure,team.time_of_departure)
+        ohm = team.get_total_count()*dos*50
+        data.append({'team':team, 'ohm':ohm, 'dos':dos})
+    to_return = {
+        'data':data,
+    }
+    html_content = render_to_string('portals/hospi/ohm.html', to_return, RequestContext(request))
     return json.dumps({'html_content':html_content})
