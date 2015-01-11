@@ -131,8 +131,8 @@ $("select[name=branch]").select2();
 <div id="loading_div" z-index="100" style="display:none" > <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><span z-index="200" class="btn btn-success">Loading</span></div>
 
 
-<br /><br /><br />
-<h1>QMS Portal</h1>
+<br /><br />
+<h3>QMS Portal</h3>
 
 
 
@@ -142,15 +142,14 @@ $("select[name=branch]").select2();
 
 		<!-- Edit User Div Container -->
 			<div id="edit_user_div">
-			<h2> EDIT EXISTING USER </h2>   
+			<h4> EDIT EXISTING USER </h4>   
 				
 				 <input id='website_id' class="bigdrop input input-block-level" type='text' name='website_id' value="SA150"/>   
 		</div>
-		<br />
 
 		
 <!-- Edit User Div Container -->
-<h2 id="new_user_heading"> USER DETAILS </h2>
+<h4 id="new_user_heading"> USER DETAILS </h4>
 <span id="alert-user"></span>
 		    <div class="btn btn-danger btn-large" ><a name='clear' onclick="clearForm();$('#alert-user').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" >Clear form</a></div>
 		    
@@ -495,7 +494,7 @@ $(function(){
             markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div class='movie-title' style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
         
         markup += "<td><div>" + user.first_name + " " + user.last_name + "</div>";
-        markup += "</td></tr><tr><td><div>" + user.mobile_number + "</div>";
+        markup += "</td></tr><tr><td><div>" + user.mobile_number +' <b>BARCODE: '+user.desk_id+ "</b></div>";
             markup += "</td></tr><tr><td><div>" + user.email + "</div>";
         markup += "</td></tr></table>"
          

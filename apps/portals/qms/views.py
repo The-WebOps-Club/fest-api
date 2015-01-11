@@ -64,18 +64,14 @@ def id_search(request):
     selected_users=[]
     users_id = UserProfile.objects.filter(saarang_id__icontains=data['q'])[:10]
     users_email = UserProfile.objects.filter(user__email__icontains=data['q'])[:10]
-    users_first_name = UserProfile.objects.filter(user__first_name__icontains=data['q'])[:10]
-    users_last_name = UserProfile.objects.filter(user__last_name__contains=data['q'])[:10]
-     
+    users_desk_id = UserProfile.objects.filter(desk_id__icontains=data['q'])[:10]
     
     for user in users_id:
         selected_users=selected_users+[user]
        
     for user in users_email:
         selected_users=selected_users+[user]
-    for user in users_first_name:
-        selected_users=selected_users+[user]
-    for user in users_last_name:
+    for user in users_desk_id:
         selected_users=selected_users+[user]
     selected_users = list(set(selected_users))
     for user in selected_users:
