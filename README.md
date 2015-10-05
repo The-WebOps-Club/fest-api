@@ -17,7 +17,7 @@ An API implementation for Saarang Shaastra like fests, including ERP and Mainsit
 		```
 	- Create a virtual env
 		- Go into the folder of the git repository and use `virtualenv --no-site-packages venv`
-		- If you do not know what git repository means read [this](http://rogerdudler.github.io/git-guide/) for a begginer crash course
+		- If you do not know what git repository means read [this](http://rogerdudler.github.io/git-guide/) for a beginner crash course
 		- If you do not know what python-virtualenv means read [this](http://www.pythonforbeginners.com/basics/python-virtualenv-usage)
 	- Install configs/requirements.txt
 		- use 
