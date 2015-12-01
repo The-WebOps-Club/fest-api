@@ -67,7 +67,6 @@
         <li id = "accomodation_statistics_tab" class="" onclick="Dajaxice.apps.portals.hospi.accomodation_statistics(accomodation_statistics);"><a href="#">Accomodation Statistics</a></li>
         <li id = "add_hostel_room_tab" class="" onclick="Dajaxice.apps.portals.hospi.add_hostel_room(add_hostel_room);"><a href="#">Add a Hostel/Room</a></li>
         <li id = "room_map_tab" class="" onclick="Dajaxice.apps.portals.hospi.room_map(room_map);"><a href="#">Room Map</a></li>
-        <li id = "ohm_tab" class="" onclick="Dajaxice.apps.portals.hospi.ohm(ohm);"><a href="#">OHM</a></li>
       </ul>
       <p class="navbar-text navbar-right"><a href="http://saarang.org" class="navbar-brand" style="height:20px;padding:0px" target="_blank"><img src="{% static 'img/saarang_pics/favicon.ico' %}" height="110%" width="40%"/></a></p>
     </div><!-- /.navbar-collapse -->
@@ -115,7 +114,6 @@
       </div>
       </div>
       <div id="room_map"></div>
-      <div id="ohm" ></div>
     </div>
   </div>
 </div>
@@ -162,7 +160,6 @@
       document.getElementById("add_hostel_room_tab").className = "";
       document.getElementById("room_map_tab").className = "";
       document.getElementById("add_hostel_room_tab").className = "";
-      document.getElementById("ohm").innerHTML = "";
       $('#hospitable').dataTable( {
               "bJQueryUI": true,
               "bPaginate": false,
@@ -189,7 +186,6 @@
       document.getElementById("add_hostel_room_tab").className = "";
       document.getElementById("room_map_tab").className = "";
       document.getElementById("add_hostel_room_tab").className = "";
-      document.getElementById("ohm").innerHTML = "";
     }
     function add_hostel_room(data){//By Balaji
       document.getElementById("list_all_teams").innerHTML = "";
@@ -201,7 +197,6 @@
       document.getElementById("add_hostel_room_tab").className = "";
       document.getElementById("room_map_tab").className = "";
       document.getElementById("add_hostel_room_tab").className = "active";
-      document.getElementById("ohm").innerHTML = "";
     }
     function room_map(data){//By Balaji
       document.getElementById("list_all_teams").innerHTML = "";
@@ -213,34 +208,6 @@
       document.getElementById("add_hostel_room_tab").className = "";
       document.getElementById("room_map_tab").className = "active";
       document.getElementById("add_hostel_room_tab").className = "";
-      document.getElementById("ohm").innerHTML = "";
-    }
-    function ohm(data){
-      document.getElementById("list_all_teams").innerHTML = "";
-      document.getElementById("accomodation_statistics").innerHTML = "";
-      document.getElementById("add_hostel_room").innerHTML = "";
-      document.getElementById("room_map").innerHTML = "";
-      document.getElementById("list_all_teams_tab").className = "";
-      document.getElementById("ohm_tab").className = "active";
-      document.getElementById("add_hostel_room_tab").className = "";
-      document.getElementById("room_map_tab").className = "";
-      document.getElementById("add_hostel_room_tab").className = "";
-      document.getElementById("ohm").innerHTML = data.html_content;
-      $('#ohmtable').dataTable( {
-              "bJQueryUI": true,
-              "bPaginate": false,
-              "sDom": '<"H"Tfr>t<"F"ip>',
-              "oTableTools": {
-                  "aButtons": [
-                      "copy", "csv", "xls", "pdf",
-                      {
-                          "sExtends":    "collection",
-                          "sButtonText": "Save",
-                          "aButtons":    [ "csv", "xls", "pdf" ]
-                      }
-                  ]
-              }
-          } );
     }
     function add_hostel(data){
       alert(data.message);
