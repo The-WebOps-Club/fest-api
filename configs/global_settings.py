@@ -455,12 +455,12 @@ SOCIAL_AUTH_FACEBOOK_SCOPE              = [
     #'friends_work_history', # friends extended profile scope
     
     #'read_friendlists', 'read_insights', 'read_requests',
-    'user_online_presence', #'friends_online_presence', 
+    #'user_online_presence', #'friends_online_presence', 
 
     # Extended Permissions scope
     
     #'create_event', 'manage_friendlists', 'manage_notifications', 
-    'publish_actions', 'publish_stream', # Extended permissions publish
+    'publish_actions', #'publish_stream', # Extended permissions publish
 ]
 SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = SOCIAL_AUTH_FACEBOOK_SCOPE
     # Twitter
