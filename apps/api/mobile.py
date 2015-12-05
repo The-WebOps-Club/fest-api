@@ -21,7 +21,7 @@ from apps.users.models import UserProfile, Team
 from apps.blog.models import Category, Feed
 from apps.events.models import EventRegistration
 from apps.spons.models import SponsImageUpload
-
+from apps.api.models import BandHuntTrack, BandHuntVote
 from annoying.functions import get_object_or_None
 from django.views.decorators.csrf import csrf_exempt
 
@@ -645,3 +645,21 @@ class UserProfileEditViewSet(viewsets.ViewSet):
         profile.save()
 
         return Response({'message':"Successfully changed."})
+
+class BandHuntViewSet(viewsets.ViewSet):
+    def list(self, request):
+        tracks = BandHuntTrack.objects.all()
+        data = BandHuntTrackSerializer(tracks).data
+        return Response(viewset_response("done", data))
+
+    def create(self,request):
+        track_id = request.DATA.get('track_id')
+        user = self.request.user
+        votes_by_user = BandHuntVote.objects.filter(user=user) 
+        if votes_by_user:
+            return Response({
+                "error": "User has already voted"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        track = BandHuntTrack.objects.get(pk=int(track_id))
+        new_vote = BandHuntVote.objects.create(user=user, track=track)
+        return Response(viewset_response("done", "Done!"))

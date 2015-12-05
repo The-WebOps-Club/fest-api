@@ -6,6 +6,8 @@ import datetime
 from django.conf import settings
 import requests
 import json
+from django.contrib.auth.models import User
+
 class PushNotification(models.Model):
     expiry = models.DateTimeField(default=datetime.datetime(2015,01,13,23,59), help_text="Expiry date for the message")
     title = models.CharField(max_length=100, help_text="Title for the message")
@@ -63,3 +65,21 @@ def send_notification(sender, **kwargs):
         print r.status_code
         notif.satus = resp
         notif.save()
+
+
+class BandHuntTrack(models.Model):
+    name = models.CharField(max_length=100, help_text="Name of the track")
+    url = models.TextField(max_length=2000, blank=True, null=True, help_text="URL of the track")
+    embed_code = models.TextField(max_length=2000, blank=True, null=True, help_text="Embed code for the track")
+    track_id = models.CharField(max_length=100, blank=True, null=True, help_text="Track ID")
+    
+    def __unicode__(self):
+        return self.name
+
+class BandHuntVote(models.Model):
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User)
+    track = models.ForeignKey(BandHuntTrack)
+    
+def __unicode__(self):
+    return str(self.track.name) + ' by ' +  str(self.user.first_name)

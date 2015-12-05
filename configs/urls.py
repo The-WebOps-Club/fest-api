@@ -48,6 +48,7 @@ router.register(r'display_events',mobile.EventDisplayViewset,base_name="events_d
 router.register(r'display_spons',mobile.SponsImageViewset,base_name="spons_display")
 router.register(r'edit_profile',mobile.UserProfileEditViewSet,base_name="edit_profile")
 router.register(r'users',mobile.UserViewSet,base_name="users")
+router.register(r'bandhunt',mobile.BandHuntViewSet,base_name="bandhunt")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------

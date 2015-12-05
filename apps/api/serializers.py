@@ -9,6 +9,8 @@ from apps.blog.models import Category
 from apps.events.models import EventRegistration
 from apps.spons.models import SponsImageUpload
 
+from apps.api.models import BandHuntTrack, BandHuntVote
+
 class UserInfoSerializer(serializers.ModelSerializer):
     want_accomodation = serializers.BooleanField(source='profile.want_accomodation', required=False)
     mobile_number = serializers.CharField(source='profile.mobile_number', required=False)
@@ -84,6 +86,10 @@ class SponsImageUploadSerializer(serializers.ModelSerializer):
 class UserProfileEditSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ERPProfile
+class BandHuntTrackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =BandHuntTrack
+
 #class NotificatioSerializer(serializers.Serializer):
 #    id = serializers.IntegerField()
 #    actor = serializers.CharField()
