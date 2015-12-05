@@ -5,12 +5,13 @@ import datetime as dt
 
 def cd(n):
     '''Returns caution deposit'''
+    deposit = 300
     if n%2 == 0:
-        return 500*(n/2)
+        return deposit*(n/2)
     elif n%2 == 1:
-        return 500*((n+1)/2)
+        return deposit*((n+1)/2)
 def days(in_date, in_time, out_date, out_time):
-    l1 = dt.datetime(2015, 1, 7, 10, 0)
+    l1 = dt.datetime(2015, 1, 6, 10, 0)
     u1 = dt.datetime(2015, 1, 8, 17, 0)
     l2 = dt.datetime(2015, 1, 8, 5, 0)
     u2 = dt.datetime(2015, 1, 9, 17, 0)
