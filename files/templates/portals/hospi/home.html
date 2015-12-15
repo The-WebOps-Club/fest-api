@@ -2,7 +2,7 @@
 {% load url from future %}
 {% load staticfiles %}
 {% load humanize %}
-{% block title %}Hospitality | Saarang 2015{% endblock %}
+{% block title %}Hospitality | Saarang 2016{% endblock %}
 
 {% block content %}
 <center>
@@ -146,7 +146,7 @@
         </tr>
     </table>
     <p>
-        Accommodation will be provided only from 10 AM on 7th January to 9AM on 12th January. Also check-in will only be possible from 12 midnight to 5 PM. 
+        Accommodation will be provided only from 9 AM on 6th January to 9AM on 11th January. Also check-in will only be possible from 12 midnight to 5 PM. 
     </p>
 </p>
 </div></div>
@@ -189,9 +189,9 @@
         <li>
 Accommodation Charges per person = Rs. 300 for each day.
 </li>
-<li>1 Day is from 5 AM to 5 PM</li>
-<li>Caution deposit: Rs. 500 for two persons.</li> 
-<li>Refer for more details: <a href="{% static 'docs/Pricing_System_Saarang2015.pdf' %}" target="_blank" >Pricing document.</a></li> 
+<li>1 Day is from 9 AM to 9 AM on next day</li>
+<li>Caution deposit: Rs. 300 per head.</li> 
+<li>Refer for more details: <a href="{% static 'docs/Pricing_System_Saarang2016.pdf' %}" target="_blank" >Pricing document.</a></li> 
 </ul>
     </div>
 </p>
@@ -310,22 +310,22 @@ Accommodation Charges per person = Rs. 300 for each day.
             <table id="mytable" class="table table-borderless">
                 <tr> 
                     <th>Required from:</th>
-                    <td><input type='date' class="form-control" name="arr_date" value="{{ team.date_of_arrival|date:"Y-m-d" }}" min="2015-01-07" max="2015-01-12" >
+                    <td><input type='date' class="form-control" name="arr_date" value="{{ team.date_of_arrival|date:"Y-m-d" }}" min="2016-01-06" max="2016-01-11" >
                     <td><input type='time' class="form-control" name="arr_time" value="{{ team.time_of_arrival|date:"H:i:s" }}" min="00:00:00" max="17:00:00">
                 </tr>
                 <tr> 
                     <th>to</th>
-                    <td><input type='date' class="form-control" name="dep_date" value="{{ team.date_of_departure|date:"Y-m-d" }}" min="2015-01-08" max="2015-01-12">
+                    <td><input type='date' class="form-control" name="dep_date" value="{{ team.date_of_departure|date:"Y-m-d" }}" min="2016-01-07" max="2016-01-11">
                     <td><input type='time' class="form-control" name="dep_time" value="{{ team.time_of_departure|date:"H:i:s" }}" min="00:00:00" max="17:00:00">
                 </tr>
                     <input type='hidden' name="updating" value="all"/>
 
             </table> <br/>
             <div class="alert alert-danger">
-            <center><b>Check in time:</b><br/></center> 10:00 hrs on 7th Jan 2015 to 17:00 hrs on 8th Jan 2015<br/>
-            00:00 hrs to 17:00 hrs on 9th, 10th and 11th Jan 2015<br/>
-            <center><b>Check out time:</b><br/></center> 00:00 hrs to 17:00 hrs on 8th, 9th, 10th, 11th Jan 2015<br/>
-            00:00 hrs to 09:00 hrs on 12th Jan 2015
+            <center><b>Check in time:</b><br/></center> 09:00 hrs on 6th Jan 2016 to 17:00 hrs on 6th Jan 2016<br/>
+            00:00 hrs to 17:00 hrs on 8th, 9th and 10th Jan 2016<br/>
+            <center><b>Check out time:</b><br/></center> 00:00 hrs to 17:00 hrs on 7th, 8th, 9th, 10th Jan 2016<br/>
+            00:00 hrs to 09:00 hrs on 11th Jan 2016
             </div>
         </div>
             <div class="modal-footer">

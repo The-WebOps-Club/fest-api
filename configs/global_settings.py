@@ -460,7 +460,7 @@ SOCIAL_AUTH_FACEBOOK_SCOPE              = [
     # Extended Permissions scope
     
     #'create_event', 'manage_friendlists', 'manage_notifications', 
-    'publish_actions', #'publish_stream', # Extended permissions publish
+    #'publish_actions', #'publish_stream', # Extended permissions publish
 ]
 SOCIAL_AUTH_FACEBOOK_EXTENDED_PERMISSIONS = SOCIAL_AUTH_FACEBOOK_SCOPE
     # Twitter

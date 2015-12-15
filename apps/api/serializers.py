@@ -89,6 +89,7 @@ class UserProfileEditSerializer(serializers.ModelSerializer):
 class BandHuntTrackSerializer(serializers.ModelSerializer):
     class Meta:
         model =BandHuntTrack
+        #fields = ("id", "name", "track_id")
 
 #class NotificatioSerializer(serializers.Serializer):
 #    id = serializers.IntegerField()

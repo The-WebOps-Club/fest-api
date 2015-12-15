@@ -16,7 +16,7 @@ from requests import request, HTTPError
 from misc.utils import *
 from social.pipeline.partial import partial
 # Python
-
+import datetime
 @partial
 def require_email(strategy, details, user=None, is_new=False, *args, **kwargs):
     if user and user.email:
@@ -53,5 +53,6 @@ def check_existing_user(strategy, details, response, uid, user=None, *args, **kw
 def send_welcome_email(user, details, is_new=False, new_association=False, **kwargs):
     print "is new ========================== ", is_new
     print "new association ================= ", new_association
-    if is_new:
+    print user.last_login
+    if is_new or user.last_login < datetime.datetime(2015, 12, 10, 0, 0):
         send_registration_mail(user)

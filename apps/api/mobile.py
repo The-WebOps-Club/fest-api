@@ -647,6 +647,7 @@ class UserProfileEditViewSet(viewsets.ViewSet):
         return Response({'message':"Successfully changed."})
 
 class BandHuntViewSet(viewsets.ViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     def list(self, request):
         tracks = BandHuntTrack.objects.all()
         data = BandHuntTrackSerializer(tracks).data

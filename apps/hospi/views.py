@@ -395,7 +395,7 @@ def update_status(request, team_id):
         team.accomodation_status = stat
         team.save()
         messages.success(request, 'Status for '+team.name+' successfully updated to '+stat)
-        emailsubject='Accommodation request '+stat+', Saarang 2015'
+        emailsubject='Accommodation request '+stat+', Saarang 2016'
         users=[]
         for user in team.get_all_members():
             users.append(user.email)
@@ -549,7 +549,7 @@ def list_all_teams(request):
     return render(request, 'hospi/list_all_teams.html', to_return)    
 
 def auto_id(team_id):
-    base = 'SA2015A'
+    base = 'SA2016A'
     num = "{0:0>3d}".format(team_id)
     sid = base + num
     return sid

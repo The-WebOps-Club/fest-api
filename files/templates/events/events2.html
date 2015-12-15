@@ -116,7 +116,7 @@ $('.nav li a').on('click', function() {
 <thead><tr><th>Event </th><th> Event Category </th> <th> Event Email Id </th></tr></thead>
     {% for event in event_list %}
     <tr> <td>
-                <b>{{event.name}}</b>
+                /
                 {% if core_perm %}
                 <button class="btn btn-large btn-danger pull-right" onclick="confirm_delete_event('{{event.name}}')"> X Delete </button>
                 &nbsp &nbsp
@@ -940,7 +940,9 @@ $( "#edit_event_clickable" ).trigger( "click" );
 <link href="{% static 'css/jquery.dataTables_themeroller.css' %}" rel="stylesheet" media="screen">
 <script src="{% static 'js/jquery.dataTables.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.dataTables.editable.js' %}" ></script>
+<script src="{% static 'js/TableTools.js' %}"></script>
 
+<script type="text/javascript" src="{% static 'js/tabletools/ZeroClipboard.js' %}" ></script>
 
         <script src="{% static 'bootstrap/dataTables/bootstrap.js' %}"></script>
 
