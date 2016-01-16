@@ -1,14 +1,17 @@
 # Django
-from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect, render
-from django.contrib.auth import authenticate, login
+from django.shortcuts import get_object_or_404, render_to_response, redirect, HttpResponseRedirect, render, HttpResponse
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.templatetags.static import static
+from django.utils.http import int_to_base36, base36_to_int
 # Apps
 from misc.utils import *  #Import miscellaneous functions
 from misc import strings
 from misc.constants import HOSTEL_CHOICES, BRANCH_CHOICES
+from apps.users.utils import send_email_validation_mail, send_registration_mail
+from apps.users.token import default_token_generator as pset
 # Decorators
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
@@ -75,7 +78,6 @@ def login_user(request):
             # Checks for username and password
             username = login_form.cleaned_data["username"][:30] # As django truncates username field upto 30 chars
             password = login_form.cleaned_data["password"]
-
             # Authenticates user against database
             user = authenticate(username=username, password=password)
             # if user is None:
@@ -304,7 +306,7 @@ def identity(request, role_type=None, role_id=None):
 @permission_classes((AllowAny, ))
 def participant_registration(request):
     serialized = UserSerializer(data = request.DATA)
-    if serialized.is_valid():
+    if serialized.init_data['email']:
         user = get_object_or_None(User, username=serialized.init_data['email'])
         if user:
             return Response({
@@ -320,10 +322,19 @@ def participant_registration(request):
             user.last_name = serialized.init_data['last_name']
             user.is_active = True
             user.save()
+            profile = UserProfile.objects.get_or_create(user=user)[0]
+            profile.save()
             token = Token.objects.get_or_create(user=user)[0]
             user = authenticate(username=serialized.init_data['email'], password=serialized.init_data['password'])
             login(request, user)
-            data = serialized.data
+            old_data = serialized.init_data
+            
+            data = {
+                'email': serialized.init_data['email'],
+                'last_name':serialized.init_data['last_name'],
+                'first_name':serialized.init_data['first_name'],
+                'password':serialized.init_data['password']
+            }
             data['token'] = token.key
             data['user_id'] = user.id
             return Response(data, status=status.HTTP_201_CREATED)
@@ -348,9 +359,14 @@ def participant_login(request):
 
     user = get_object_or_None(User, username=email)
     if user == None:
-        return Response({
-            "email": ["This email address doesn't have an account."]
-        }, status=status.HTTP_400_BAD_REQUEST)
+        userprofile=get_object_or_None(UserProfile, saarang_id=email)
+        if user==None:
+            return Response({
+                "email": ["This email address doesn't have an account."]
+            }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            user=userprofile.user
+            email=user.email
 
     # Authenticates user against database
     user = authenticate(username=email, password=password)
@@ -421,3 +437,27 @@ def unsubscribe(request, username, token):
     # Otherwise redirect to login page
     next_url = reverse('apps.users.views.unsubscribe', kwargs={'username': username, 'token': token,})
     return HttpResponseRedirect('%s?next=%s' % (reverse('login'), next_url))
+
+def validate_email(request, uidb36, token):
+    #TODO: Need to put definite messages
+    assert uidb36 is not None and token is not None
+    try:
+        uid_int = base36_to_int(uidb36)
+        user = User.objects.get(pk=uid_int)
+    except:
+        user = None
+
+    if user is not None and pset.check_token(user, token):
+        user.profile.is_active = True
+        user.save()
+        send_registration_mail(user)
+    else:
+        return HttpResponse("ERROR")
+    return HttpResponseRedirect(settings.MAIN_SITE+'2016/main')
+
+@csrf_exempt
+@api_view(['GET'])
+@permission_classes((AllowAny, ))
+def logout_user(request):
+    logout(request)
+    return HttpResponseRedirect(settings.MAIN_SITE)

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+{% load url from future %}
+{% load staticfiles %}
+{% load humanize %}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>SAAR | {{team.team_sid }} | Saarang 2016</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Saarang Advance Accommodation Registration">
+    <meta name="author" content="Web Operations Saarang 2016">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+    <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/x-icon">
+
+    <style type="text/css">
+    @page {
+        size: a4 portrait;
+        margin: 1cm;
+    }
+    .page-break{
+        page-break-after: always;
+    }
+    table
+    {
+        border-collapse:collapse;
+        width: 100%;
+        table-layout: fixed;
+    }
+    th, td
+    {
+        border: thin solid #a4a4a4;
+        padding-left: 5px;
+        vertical-align: center;
+    }
+    tr
+    {
+        height:10px;
+        padding-top: 4px;
+    }
+    th
+    {
+        background-color: #dfdfdf;
+    }
+    #bill td
+    {
+        text-align: center;
+    }
+    .currency
+    {
+        text-align: right;
+        padding-right: 5px;
+    }
+    .currency_header
+    {
+        text-align: center;
+        width: 20%;
+    }
+    </style>
+</head>
+
+<body  style="font-family:helvetica">
+<center>
+       <img src="{% static 'img/header.jpg' %}"/>
+   </center>
+       <table >
+        <tr><th colspan=3>
+            <h3>Team Details</h3></th>
+        </tr>
+        <tr>
+            <td width="60%">Name</td><td >{{ team.name }}</td>
+            <td rowspan=5 width=50% >
+                <pdf:barcode value="{{ team.team_sid }}" type="code128" humanreadable="1" align="middle"/></p>
+            </td>
+        </tr>
+        <tr>
+            <td >Team Saarang ID</td>
+            <td >{{ team.team_sid }}</td>
+        </tr>
+        <tr>
+            <td>City</td>
+            <td>{{ team.city }}</td>
+        </tr>
+        <tr>
+            <td >No. of team members (including leader)</td><td >{{ team.get_total_count }}</td>
+        </tr>
+        <tr>
+            <td >Accomodation Request</td><td >
+            <span class="label label-success"><strong style="color:green">CONFIRMED</strong></span>
+        </td>
+    </tr>
+</table>
+
+<table >
+
+    <tr><th colspan=2><h3>Team Leader</h3></th> </tr>
+    <tr>
+        <td width=40%>Name</td><td >{{ leader.user.get_full_name }}</td>
+    </tr>
+    <tr>
+        <td >Saarang ID</td><td >{{ leader.saarang_id }}</td>
+    </tr>
+    <tr>
+        <td >Email</td><td >{{ leader.user.email }}</td>
+    </tr>
+    <tr>
+        <td >Mobile</td><td >{{ leader.mobile_number }}</td>
+    </tr>
+    <tr>
+        <td >College</td><td >{{ leader.college_text }}</td>
+    </tr>
+</table>
+
+<table >
+    <tr><th colspan=2><h3>Accommodation details</h3></th> </tr>
+
+    <tr>
+        <td width=40%>From</td><td >{{ team.time_of_arrival|title }} on {{ team.date_of_arrival }}</td>
+    </tr>
+    <tr>
+        <td >To</td><td >{{ team.time_of_departure|title }} on {{ team.date_of_departure }}</td>
+    </tr>
+</table>
+
+
+<table>
+    <tr><th colspan=6><h3>Team Members</h3></th> </tr>
+
+    {% for member in members %}
+    <tr id="memberRow">
+        <td style="width: 3%; text-align:center;  padding-left:1px">{{ forloop.counter }}</td>
+        <td style="width: 12%; text-align:center; padding-left:1px">{{ member.saarang_id }}</td>
+        <td style="width: 32%;">{{ member.user.get_full_name }}</td>
+        <td style="width: 35%;">{{ member.user.email }}</td>
+
+        <td style="width: 8%; text-align:center; padding-left:0px;">{{ member.gender|title }}</td>
+        <td style="width: 10%;">{{ member.mobile_number }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<table id="bill" >
+    <tr><th colspan=4><h3>Billing details</h3></th> </tr>
+
+    <tr>
+        <td>Days of stay</td>
+        <td>No. of members</td>
+        <td>Amount/team member</td>
+        <td class="currency_header" ><b>Total</b></td>
+    </tr>
+    <tr>
+        <td>{{ bill_data.days }}</td>
+        <td>{{ team.get_total_count }}</td>
+        <td>{{ bill_data.amt_head|intcomma }} INR</td>
+        <td style="text-align: right;padding-right: 5px;" ><b>{{ bill_data.total|intcomma }} INR</b></td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align: right;padding-right: 5px;" ><b>Caution Deposit</b></td>
+        <td style="text-align: right;padding-right: 5px;" ><b>{{ bill_data.cd|intcomma }} INR</b></td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align: right;padding-right: 5px;" ><font size="1.3em"><b>Amount payable</b></font></td>
+        <td style="text-align: right;padding-right: 5px;" ><font size="1.5em"><b>{{ bill_data.grand_total|intcomma }} INR</b></font></td>
+    </tr>
+
+</table><br/>
+<div>
+    <pdf:nextpage /> 
+</div> 
+<p align="center"><b><u>TERMS AND CONDITIONS - ACCOMMODATION - SAARANG 2016</u></b></p>
+<p align="center">(To be signed by team leader and submitted at the Control Room at the time of check-in)</p>
+<ul>
+<li >Accommodation Charges per person = Rs. 300 per day for all the 5 days</li></ul><ul ><li >Caution deposit: Rs. 300 per person</li><li >Accommodation is strictly provided only for students and not for any other person accompanying with student, if it is the case then such persons should make their own arrangements.        </li><li >Participants need to carry SAAR and photocopy of their college ID cards along with the original Bonafide certificate from college is necessary to avail accommodation.        </li><li >The process of Checking in will be done at Control rooms located in the hostel zone. So, participants are requested to come to the Control rooms as soon as they come to IIT Campus. The exact location of the control rooms will be intimated later.</li><li >Accommodation will be provided only from 9 AM on 6th January to 9AM on 11th January.</li></ul><p class="c3 c17">(A participant can stay for the days he/she registered for. Any cases of overstay within the above time period will attract additional payment of 300 INR per day.)</p><ul ><li >We will provide you with mattresses. But participants are requested to get their own locks &amp; keys for the rooms that they will be allotted during Saarang. (Note: You may have to share rooms with other participants. So plan accordingly upon reaching).</li><li >Girls are not allowed in boys’ hostels and vice versa.</li><li >Control room is open from midnight (12 AM) to 5PM every day, i.e. for 17 hours per day.</li><li >It will remain closed from 5PM to 12AM due to Professional Shows.</li><li >The control room will close at 9 AM on 11th January. All the formalities of checking out have to be done before that.</li><li >If any delay is made in checking out, caution deposit will not be refunded.</li><li >Refund of caution deposit is subject to terms and conditions (like condition of the room, condition of mattresses while checking out) along with the return of receipt provided at the time of check in.</li><li >Participants would necessarily need to share accommodation. Single rooms will not be provided to any participant.</li><li >Valuable items should not be kept along with the luggage in the room. Saarang 2016 will not be responsible for any loss or damage of property. Please secure your belongings and put your details on the same.</li><li >Please make entries in the register kept with the hostel security whenever you move in and out of the room.</li><li >Possession and consumption of alcohol and narcotics in any form is strictly prohibited. If reported, the participant status of the person will be ipso facto null and void and the case will be severely dealt with.</li></ul><ul ><li >Smoking is prohibited in the campus.</li><li >Outstation participants are not allowed to use the sports equipment of the hostels. If any usage or damage is reported, the cost of the equipment will be collected.</li><li >Participants will not be allowed to occupy the rooms they have been allotted beyond the date for which they have registered.</li><li >Please keep the rooms and hostel area clean.</li><li >Saarang 2016, Office of Hostel management or IIT Madras is not responsible for any injuries or accidents caused during your stay. </li></ul>
+
+<p align="center"><b><u>DECLARATION</u></b></p>
+<p>I and my team members agree to abide by the Terms and Conditions of Saarang 2016. Failing to do so will result in my accommodation being cancelled.</p>
+<br/>
+<p align="right">(Signature)<br/>{{team.leader.user.get_full_name}}<br/>Team Leader<br/>Team: {{team.name}}</p>
+
+
+<center>-- Wishing you a pleasant, comfortable stay and a Great Journey of a Lifetime at IIT Madras. Hospitality Team, Saarang 2016 --</center>
+<br/>
+<br/>
+<br/>
+<br/>
+<center>
+       <img src="{% static 'img/footer.jpg' %}"/>
+   </center>
+</body>

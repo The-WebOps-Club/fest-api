@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response, redirect, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
 from django.core.files.base import ContentFile
 # Apps
+from apps.users.utils import send_email_validation_mail, send_registration_mail
 # Decorators
 # Models
 from django.contrib.auth.models import User
@@ -15,7 +16,7 @@ from requests import request, HTTPError
 from misc.utils import *
 from social.pipeline.partial import partial
 # Python
-
+import datetime
 @partial
 def require_email(strategy, details, user=None, is_new=False, *args, **kwargs):
     if user and user.email:
@@ -47,3 +48,11 @@ def check_existing_user(strategy, details, response, uid, user=None, *args, **kw
     return user
 #    return redirect('apps.users.views.first_login_required')
 
+# Send Confirmation email
+
+def send_welcome_email(user, details, is_new=False, new_association=False, **kwargs):
+    print "is new ========================== ", is_new
+    print "new association ================= ", new_association
+    print user.last_login
+    if is_new or user.last_login < datetime.datetime(2015, 12, 10, 0, 0):
+        send_registration_mail(user)

@@ -35,6 +35,7 @@ class UserForm(forms.ModelForm):
 			last_name:  The last_name of the user from django.contrib.auth.models.User
 			email:  	The last_name of the user from django.contrib.auth.models.User
 	"""
+	email=forms.EmailField(required=True)
 	class Meta:
 		model = User
 		fields = [
@@ -49,6 +50,12 @@ class UserForm(forms.ModelForm):
 		if commit:
 			instance.save()
 		return instance
+		def clean_email(self):
+			email = self.cleaned_data.get('email')
+		  	username = self.cleaned_data.get('username')
+		   	if email and User.objects.filter(email=email):
+				raise forms.ValidationError(u'Email addresses must be unique.')
+			return email
 
 class UserProfileForm(forms.ModelForm):
 	"""

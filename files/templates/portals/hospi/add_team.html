@@ -1,0 +1,33 @@
+<div class="alert alert-info">
+<input id = "room_website_id" class='input input-block-level'/>
+<form id = "form_add_team" class="form-horizontal" {% comment %}action="{% url 'hospi.views.save_team' %}"{% endcomment %} method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+        {% csrf_token %}
+        {{ form.media }}
+        {% if form.errors %}
+            <div class="alert alert-error">
+                <ul>
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        {% for field in form.visible_fields %}
+            <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+            <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                <div class="controls"> {{ field }}
+                    {% if field.errors %}
+                        <span class="help-inline">
+                            {{ field.errors.as_text }}
+                        </span>
+                    {% endif %} 
+                </div>
+            </div>
+
+        {% endfor %}
+        {% for field in form.hidden_fields %}
+            {{ field }}
+        {% endfor %}
+
+    </form>
+</div>

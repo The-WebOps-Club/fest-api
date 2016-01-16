@@ -1,0 +1,66 @@
+
+<form id = "form_add_hostel" class="form-horizontal well"  {% if hostelform.is_multipart %}enctype="multipart/form-data"{% endif %}>
+        <legend>Add hostel</legend>
+        {% csrf_token %}
+        {{ hostelform.media }}
+        {% if hostelform.errors %}
+            <div class="alert alert-error">
+                <ul>
+                    {% for error in hostelform.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        {% for field in hostelform.visible_fields %}
+            <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+            <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                <div class="controls"> {{ field }}
+                    {% if field.errors %}
+                        <span class="help-inline">
+                            {{ field.errors.as_text }}
+                        </span>
+                    {% endif %} 
+                </div>
+            </div>
+        {% endfor %}
+        {% for field in hostelform.hidden_fields %}
+            {{ field }}
+        {% endfor %}
+        <br>
+        <div> <input type="button" class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.add_hostel(add_hostel,{'form_add_hostel':$('#form_add_hostel').serialize(true)});$(this).val('Please wait');"value="Save"/> 
+        </div>
+</form>
+
+<form id = "form_add_room" class="form-horizontal well" {% if roomform.is_multipart %}enctype="multipart/form-data"{% endif %}>
+        <legend>Add room</legend>
+        {% csrf_token %}
+        {{ roomform.media }}
+        {% if roomform.errors %}
+            <div class="alert alert-error">
+                <ul>
+                    {% for error in roomform.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        {% for field in roomform.visible_fields %}
+            <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+            <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                <div class="controls"> {{ field }}
+                    {% if field.errors %}
+                        <span class="help-inline">
+                            {{ field.errors.as_text }}
+                        </span>
+                    {% endif %} 
+                </div>
+            </div>
+        {% endfor %}
+        {% for field in roomform.hidden_fields %}
+            {{ field }}
+        {% endfor %}
+        <br>
+        <div> <input type="button" class="btn btn-primary" onclick="Dajaxice.apps.portals.hospi.add_room(add_room,{'form_add_room':$('#form_add_room').serialize(true)});$(this).val('Please wait');" value="Save"/> 
+        </div>
+</form>

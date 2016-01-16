@@ -37,10 +37,18 @@ router.register(r'walls',mobile.WallsViewSet, base_name="walls")
 router.register(r'posts',mobile.PostsViewSet, base_name="posts")
 router.register(r'comments',mobile.CommentsViewSet, base_name="comments")
 router.register(r'gcm',gcm.GCMViewSet, base_name="gcm")
+router.register(r'contacts',mobile.ContactsViewSet, base_name="contacts")
 router.register(r'profile',mobile.UserProfileViewSet,base_name="profile")
+router.register(r'profile_post',mobile.UserProfilePostViewSet,base_name="profile_post")
 router.register(r'teams',mobile.TeamViewSet,base_name="teams")
 router.register(r'blogs',mobile.BlogFeedViewSet,base_name="blogs")
 router.register(r'events',mobile.EventViewSet,base_name="events")
+router.register(r'user_events',mobile.RegistrationViewSet,base_name="events_regis")
+router.register(r'display_events',mobile.EventDisplayViewset,base_name="events_display")
+router.register(r'display_spons',mobile.SponsImageViewset,base_name="spons_display")
+router.register(r'edit_profile',mobile.UserProfileEditViewSet,base_name="edit_profile")
+router.register(r'users',mobile.UserViewSet,base_name="users")
+router.register(r'bandhunt',mobile.BandHuntViewSet,base_name="bandhunt")
 
 urlpatterns = patterns('',
     # ------------------------------------------------------------------
@@ -58,14 +66,16 @@ urlpatterns = patterns('',
     url(r'^identity$', 'apps.users.views.identity', name='identity'),
     # Email unsubscribe
     url(r'^unsubscribe/(?P<username>[\w.@+-]+)/(?P<token>[\w.:\-_=]+)/$', 'apps.users.views.unsubscribe'),
+    # Email Validation
+    url(r'^validate/(?P<uidb36>[0-9A-Za-z]{1,13})-(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', 'apps.users.views.validate_email', name='validate_email'), 
     # Home
     url(r'^newsfeed/$', 'apps.home.views.newsfeed', name='newsfeed'), # Shows newsfeed for a user
     url(r'^contacts/$', 'apps.home.views.contacts', name='contacts'), # Shows contact page
 
     # Notification
-	url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page
-
-	# Walls
+    url(r'^notification/read/(?P<notif_id>\w+)$', 'apps.home.views.read_notification', name='read_notification'), # makes the given notification read and redirects to the page
+    
+    # Walls
     url(r'^wall/(?P<wall_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall/(?P<wall_id>\d+)/(?P<post_id>\d+)$', 'apps.walls.views.wall', name='wall'),
     url(r'^wall$', 'apps.walls.views.wall', name='wall'),
@@ -87,16 +97,27 @@ urlpatterns = patterns('',
     #url(r'^setup/$', 'misc.views.setup', name='setup'),
 
     url(r'^portals/admin/$','apps.portals.general.views.admin_portal', name='admin_portal' ),
+    url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
+    url(r'^portals/hospi/$','apps.portals.hospi.views.hospi_portal', name='hospi_portal' ),
+    
     
     # events portal
     url(r'^portals/events/$','apps.portals.events.views.add_tabs', name='events_portal'),
-
+	#finance portal
     url(r'^portals/finance/$','apps.portals.finance.views.finance_portal', name='finance_portal' ),
-
+	#qms portal
+	url(r'^portals/qms/$','apps.portals.qms.views.qms_portal', name='qms_portal' ),
+	url(r'^search2/$', 'apps.portals.qms.views.id_search', name='qms_id_search'),
+	url(r'^search3/$', 'apps.portals.qms.views.team_search', name='qms_team_search'),
+	url(r'^search4/$', 'apps.portals.qms.views.event_search', name='qms_event_search'),
     # Participant - Login/registration
     url(r'^participant_registration/$','apps.users.views.participant_registration', name='participant_registration'),
     url(r'^participant_login/$','apps.users.views.participant_login', name='participant_login'),
     url(r'^social_login/$','apps.users.views.social_login', name='social_login'),
+    url(r'^logout_user/$','apps.users.views.logout_user', name='logout_user'), 
+
+    # Facebook
+    url(r'^fb/opc/$','apps.fb.views.opc', name='facebook_opc'), 
 
     # ------------------------------------------------------------------
     # DJANGO APPS - FOR EXTERNAL USE
@@ -117,6 +138,8 @@ urlpatterns = patterns('',
     # ------------------------------------------------------------------
     # THIRD PARTY APPS
     # Dajaxice
+   	 url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
+    
     url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
 
     # Notifications
@@ -137,6 +160,8 @@ urlpatterns = patterns('',
 
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.STATIC_ROOT}),
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root': settings.MEDIA_ROOT}),
 
     # API
     url(r'^api-web-auth/', include('rest_framework.urls', namespace='rest_framework')),
@@ -146,6 +171,20 @@ urlpatterns = patterns('',
 
     # Mobile SDK Auth
     url(r'^api-mobile-auth/(?P<backend>[^/]+)/?$','apps.api.utils.mobile_auth'),
+
+    # Spons
+    url(r'^add_logo/$', 'apps.portals.spons.views.add_logo', name='spons_portal'),
+    url(r'^delete_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.delete_logo', name='spons_delete_logo'),
+    url(r'^edit_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.edit_logo', name='spons_edit_logo'),
+    url(r'^save_logo/(?P<logo_id>\d+)/$', 'apps.portals.spons.views.save_logo', name='spons_save_logo'),
+
+    # Had to do this
+    # Include urls from hospi
+    url(r'^hospi/', include('apps.hospi.urls')),
+
+    url(r'^certificate/(?P<winner_id>\d+)/$', 'apps.portals.events.views.generate_pdf_certificate', name='winner_certif'),
+
+    url(r'^schedule/$', 'apps.portals.events.views.generate_schedule', name='events_schedule'),
 
 )
 

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load url from future %}
+{% load dajaxice_templatetags %}
+{% dajaxice_js_import %}
+{% load humanize %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{{team.name}}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+    <script src="{% static 'js/select2.js' %}"></script>
+    <link href="{% static 'css/jquery.dataTables.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/jquery.dataTables_themeroller.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/TableTools2.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/TableTools_JUI.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/select2.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap/dataTables/bootstrap.css' %}">
+    <style>select{color:black;}</style>
+</head>
+<body>
+<script src="{% static 'js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'js/TableTools.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.jeditable.js' %}" ></script>
+<script type="text/javascript" src="{% static 'js/jquery.dataTables.editable.js' %}" ></script>
+<script type="text/javascript" src="{% static 'js/tabletools/ZeroClipboard.js' %}" ></script>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 col-md-12">
+<center>
+
+<style type="text/css">
+/* borderless table */
+.table.table-borderless td, .table.table-borderless th {
+    border: 0 !important;
+}
+.table.table-borderless {
+    margin-bottom: 0px;
+}
+.popover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1010;
+  display: none;
+  max-width: 600px;
+  padding: 1px;
+  text-align: left;
+  white-space: normal;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+     -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+}
+table.dataTable tr.row_selected
+{
+  background-color: #B0BED9;
+}
+a.danger
+{
+  color: #F00;
+}
+</style>
+<br>
+
+<div class="panel panel-{% if team.accomodation_status == 'confirmed' and not team.checked_in %}success{% elif team.checked_in and not team.checked_out %}info{% elif team.checked_in and team.checked_out %}warning{% else %}danger{% endif %}">
+
+<div class="panel-heading">{{team.name}}</div>
+<div class="panel-body">
+
+<table id="team_details" class="table table-borderless">
+    <tr>
+        <td rowspan=2><strong><h1>{{team.name}}</h1></strong></td>
+        <td>{{ team.team_sid }}</td>
+        <td style="text-align:center;">{{ team.time_of_arrival|title }} on {{ team.date_of_arrival }} -to- </td>
+        {% if team.accomodation_status != 'not_req' %}
+        <td style="text-align:center;"><a href="#" role="button" class="btn btn-danger" onclick="$('#addAccomodationModal').modal('show');$(this).html('Please wait');$('#change_status_save_button').val('Save Changes');">Change Date/time</a></td>
+        {% endif %}
+        <td style="text-align:center;">
+{% if editable %}
+  <!--<a type="button" id="myPopover" onclick="$('#myPopover').popover();" class="btn btn-default" data-toggle="popover" data-html="true" data-placement="bottom" data-content="<form><label class='radio inline control-label'><input type='radio' name='status' value='not_req'><span class='label label-primary'>Not required</span></label><label class='radio inline'><input type='radio' name='status' value='requested'><span class='label label-info'>Pending</span></label><label class='radio inline'><input type='radio' name='status' value='confirmed'><span class='label label-success'>Confirm</span></label><label class='radio inline control-label'><input type='radio' name='status' value='waitlisted'><span class='label label-warning'>Waitlist</span></label><label class='radio inline control-label'><input type='radio' name='status' value='rejected'><span class='label label-danger'>Reject</span></label><hr/>Status once changed to Confirm or Reject cannot be reverted back<input type='button' onclick='Dajaxice.apps.portals.hospi.update_status(update_status,{'team_id':{{team.pk}}});'class='btn btn-small' value='Update '></input></form>" data-original-title="Update status" title="">-->
+  <a class="btn" role="button" onclick="$('#changestatusModal').modal('show');" href="#">{% endif %}
+    {% if team.accomodation_status == 'requested' %}
+      <div class="btn btn-info">Pending for approval</div>
+    {% elif team.accomodation_status == 'confirmed' %}
+      <div class="btn btn-success">Confirmed</div>
+    {% elif team.accomodation_status == 'not_req' %}
+      <div class="btn btn-primary">Not required</div>
+    {% elif team.accomodation_status == 'waitlisted' %}
+      <div class="btn btn-warning">Waitlisted</div>
+    {% elif team.accomodation_status == 'rejected' %}
+      <div class="btn btn-danger">Rejected</div>   
+    {% endif %}
+{% if editable %} 
+  </a>{% endif %}
+</td>
+      </tr>
+        <tr>
+        <td>{{ team.city }} - {{ team.leader.college_text }}</td>
+        <td style="text-align:center;">{{ team.time_of_departure|title }} on {{ team.date_of_departure }} </td>
+        <td style="text-align:center;">{% if team.accomodation_status == 'confirmed' and not team.checked_in and not team.checked_out %}
+<a id="checkin" onclick="$(this).val('Please wait');$('#checkinModal').modal('show');Dajaxice.apps.portals.hospi.check_in(check_in,{'team_id':{{team.pk}}});" class="btn btn-success"><i class="icon-home"></i> Check-in</a>
+{% elif team.accomodation_status == 'confirmed' and team.checked_in and not team.checked_out %}
+<a href="{% url 'apps.hospi.views.check_out_team' team.pk %}" data-target="#checkoutModal" class="btn btn-danger require-alert"><i class="icon-home"></i> Check-out</a>
+{% endif %}</td>
+
+<td><a class='btn btn-info' target="_blank" href="{% url 'apps.hospi.views.print_bill' team.pk %}" onclick="$(this).val('Please wait');">Print bill</a></td>
+<td><a class='btn btn-info' target="_blank" href="{% url 'apps.hospi.views.print_saar' team.pk %}" >Print SAAR</a></td>
+    </tr>
+</table>
+<table class="table table-bordered" id="bill" >
+    <tr><th colspan=4>Billing details</th> </tr>
+    <tr>
+        <td>Days of stay</td>
+        <td>No. of members</td>
+        <td>Amount per team member</td>
+        <td class="currency_header" ><b>Total</b></td>
+    </tr>
+    <tr>
+        <td>{{ bill_data.days }}</td>
+        <td>{{ team.get_total_count }}</td>
+        <td>{{ bill_data.amt_head|intcomma }} INR</td>
+        <td style="text-align: right;padding-right: 5px;" ><b>{{ bill_data.total|intcomma }} INR</b></td>
+    </tr>
+    <tr>
+        <td colspan=3 style="text-align: right;padding-right: 5px;" ><b>Caution Deposit</b></td>
+        <td style="text-align: right;padding-right: 5px;" ><b>{{ bill_data.cd|intcomma }} INR</b></td>
+    </tr>
+    <tr>
+      <td>{% if team.is_mixed  %}<a class="btn btn-warning" href="{% url 'hospi_split_team' team.pk %}">Split team{% endif %}</td>
+        <td colspan=2 style="text-align: right;padding-right: 5px;" ><font size="6em"><b>Amount payable</b></font></td>
+        <td style="text-align: right;padding-right: 5px;" ><font size="6em"><b>{{ bill_data.grand_total|intcomma }} INR</b></font></td>
+    </tr>
+
+</table>
+</div>
+</div>
+
+<div class="panel panel-info">
+<div class="panel-heading">Total {{ team.get_total_count }} members. ( {{ team.get_male_count }} males and {{ team.get_female_count }} females )</div>
+<div class="panel-body">
+<div class="buttonPlaceholder pull-right"><button id='btnAddNewRow' class='btn btn-primary' onclick="$('#adduserModal').modal('show');$(this).val('Please wait');">Add new member</button></div>
+<table id="member_data" class="member_data table table-borderless">
+  <thead>
+    <th>N</th>
+    <th>D?</th>
+    <th>saarang_id</th>
+    <th>desk_id</th>
+    <th id='gender'>gender</th>
+    <th id='email'>user.email</th>
+    <th id='name'>user.first_name</th>
+    <th id='name'>user.last_name</th>
+    <th id='mobile'>mobile_number</th>
+    <th id='college_id'>college_roll</th>
+    <th id='college'>college_text</th>
+  </thead>
+  <tbody>
+    <tr id="{{team.leader.id}}" {% if team.leader.accomod_is_confirmed and team.accomodation_status != 'confirmed' %}bgcolor="red"{% endif %} >
+      <td style="color:black">1</td>
+      <td></td>
+      <td><a href="#">{{ team.leader.saarang_id }}</a></td>
+      <td style="color:black">{{ team.leader.desk_id }}</td>
+      <td style="color:black">{{ team.leader.gender|title }}</td>
+      <td style="color:black">{{ team.leader.user.email }}</td>
+      <td style="color:black">{{ team.leader.user.first_name }}</td>
+      <td style="color:black">{{ team.leader.user.last_name }}</td>
+      <td style="color:black">{{ team.leader.mobile_number }}</td>
+      <td style="color:black">{{ team.leader.college_roll }}</td>
+      <td style="color:black">{{ team.leader.college_text }}</td>
+    </tr>
+    {% for member in team.members.all %}
+    <tr id="{{member.id}}" {% if member.accomod_is_confirmed and team.accomodation_status != 'confirmed' %}class="danger"{% endif %} >
+      <td style="color:black">{{ forloop.counter|add:1 }}</td>
+      <td><a class="table-action-deletelink btn btn-danger btn-xs" href="#" onclick="Dajaxice.apps.portals.hospi.del_member(del_member,{'team_id':{{team.pk}}, 'member_id':{{member.pk}}});">&times;</a></td>
+      <td ><a href="#">{{ member.saarang_id }}</a></td>
+      <td style="color:black">{{ member.desk_id }}</td>
+      <td style="color:black">{{ member.gender|title }}</td>
+      <td style="color:black">{{ member.user.email }}</td>
+      <td style="color:black">{{ member.user.first_name }}</td>
+      <td style="color:black">{{ member.user.last_name }}</td>
+      <td style="color:black">{{ member.mobile_number }}</td>
+      <td style="color:black">{{ member.college_roll }}</td>
+      <td style="color:black">{{ member.college_text }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<!--<div class="add_delete_toolbar"></div>-->
+<hr/>
+
+Members highlighted in red indicates people who have accommodation confirmed already in other teams. They will be automatically removed upon confirmation of this team. (Leader has been pre-notified)
+</div>
+</div>
+</div>
+</center>
+
+<div class="modal fade" id="checkinModal" tabindex="-1" role="dialog" aria-labelledby="checkinModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" onclick="$('#checkin').val('Check-in');" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 id="checkinModalLabel">Check in for Team: {{ team.name }}</h4>
+      </div>
+      <div id = "checkinModalBody" class="modal-body">
+        <p>Please Wait...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" onclick="$('#checkin').val('Check-in');" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  function init_change_status(team_id){
+    stat = document.querySelector('input[name="stat"]:checked').value;
+    //alert("Selected: "+stat);
+
+    Dajaxice.apps.portals.hospi.update_status(update_status, {'stat':stat, 'team_id':team_id});
+  }
+  function update_status(data){
+    alert("Done");
+    location.reload();
+  }
+  function check_in(data){
+    document.getElementById("checkinModalBody").innerHTML = data.html_content;
+    $('.room-select2').select2();
+  }
+  function del_member(data){
+  	if (confirm(data.message) == true) {
+        Dajaxice.apps.portals.hospi.delete_member(delete_member,{'team_id':data.team_id, 'member_id':data.member_id});
+      }
+  }
+  function delete_member(data){
+  	alert(data.message);
+  	location.reload();
+  }
+</script>
+
+
+<div class="modal fade" id="changestatusModal" tabindex="-1" role="dialog" aria-labelledby="changestatusModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="changestatusLabel">Change Accomodation Status</h4>
+      </div>
+      <div id = "changestatusModalBody" class="modal-body">
+        <div style="padding-left:2em">
+          <form name="changestatusform" onsubmit="">
+            <label class='radio inline control-label'>
+            <input type='radio' name='stat' value='not_req'>
+              <span class='label label-primary'>Not required</span>
+            </label>
+            <label class='radio inline'>
+              <input type='radio' name='stat' value='requested'>
+              <span class='label label-info'>Pending</span>
+            </label><label class='radio inline'>
+              <input type='radio' name='stat' value='confirmed'>
+              <span class='label label-success'>Confirm</span>
+            </label>
+            <label class='radio inline control-label'>
+              <input type='radio' name='stat' value='waitlisted'>
+              <span class='label label-warning'>Waitlist</span>
+            </label>
+            <label class='radio inline control-label'>
+              <input type='radio' name='stat' value='rejected'>
+              <span class='label label-danger'>Reject</span>
+            </label>
+            <p>Status once changed to Confirm or Reject cannot be reverted back</p>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="Submit" id="change_status_save_button"class="btn btn-primary" onclick="$(this).val('Please wait').attr('disabled','disabled');init_change_status({{team.pk}});"value="Save"/>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!--
+<script type="text/javascript">
+$("a[data-target=#checkinModal]").click(function(event) {
+    event.preventDefault();
+    var target = $(this).attr("href");
+    $("#checkinModal .modal-body").load(target, function() {
+         $("#checkinModal").modal("show");
+         $('.room-select2').select2();
+    });
+});
+</script>
+-->
+{% if editable %}
+<script type="text/javascript">
+      $('#myPopover').popover();
+</script> 
+{% endif %}
+
+<div class="modal fade" id="adduserModal" tabindex="-1" role="dialog" aria-labelledby="adduserModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="adduserLabel">Add a New Member</h4>
+      </div>
+      <div class="modal-body">
+        <form class='form-horizontal' action="{% url 'apps.hospi.views.add_user_to_team' %}" method='POST' id='existing_member' >
+        {% csrf_token %}
+        <div class="control-group website_id">
+          <input id = "website_id" type = "text" class='input input-block-level' name='website_id' />
+        </div>
+        <div id="user_info"></div>
+          <input  type="hidden" name="team_id" value="{{team.pk}}" />
+          <button id = "add_existing_user_button" type="submit" name='submit'  onclick="$(this).val('Please wait');" class='btn btn-info btn-block'>Add existing user</button>
+        </form>
+        <br/><br/><hr/>
+        <form class='form-horizontal' method='POST' id='new_member' action="{% url 'hospi_add_member' team.id %}">
+          <legend>New User (for those who are not registered at saarang website)</legend>
+            {% csrf_token %}
+            {{ addUserForm.media }}
+            {% if addUserForm.errors %}
+            <div class="alert alert-error">
+              <ul>
+                {% for error in addUserForm.non_field_errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+            {% for field in addUserForm.visible_fields %}
+            <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+            <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+              <div class="controls"> {{ field }}
+                {% if field.errors %}
+                <span class="help-inline">
+                  {{ field.errors.as_text }}
+                </span>
+                {% endif %} 
+              </div>
+            </div>
+            {% endfor %}
+            {% for field in addUserForm.hidden_fields %}
+                {{ field }}
+            {% endfor %}
+            <input type="hidden" name="team_id" value="{{team.pk}}" />
+            <button id="add_new_user_button" type="submit" class='btn btn-success btn-block' onclick="$(this).val('Please wait');" name='submit'>Save new user and Add to Team</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script type="text/javascript">
+//Select2 Functions
+//1. FOR USERS
+
+$(function(){
+    function movieFormatResult(user) {
+        var markup = "<table padding=3><tr>";
+            markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div class='movie-title' style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
+        
+        markup += "<td><div>" + user.first_name + " " + user.last_name + "</div>";
+        markup += "</td></tr><tr><td><div>" + user.mobile_number + "</div>";
+            markup += "</td></tr><tr><td><div>" + user.email + "</div>";
+        markup += "</td></tr></table>"
+        return markup;
+    }
+    function movieFormatSelection(user) {
+        return user.saarang_id
+    }
+$("#website_id").select2({
+    placeholder: "Enter existing user's saarang id or email",
+    minimumInputLength: 5,
+    ajax: {
+        url: "{% url 'hospi_website_id_search' %}",
+        dataType: 'json',
+        quietMillis: 100,
+        multiple:false,
+        data: function (term, page) { // page is the one-based page number tracked by Select2
+            return {
+                q: term, //search term
+                page_limit: 10, // page size
+                page: page, // page number
+                //apikey: "ju6z9mjyajq2djue3gbvv26t"
+            };
+        },
+        results: function (data, page) {
+            //var more = (page * 10) < data.total; // whether or not there are more results available
+            //console.log(data.movies)
+            // notice we return the value of more so Select2 knows if more results can be loaded
+            return {results: data};
+        }
+    },
+    formatResult: movieFormatResult, // omitted for brevity, see the source of this page
+    formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
+    dropdownAutoWidth : true,
+    dropdownCssClass: 'bigdrop', // apply css that makes the dropdown taller
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+});
+var flag = true;
+$('#member_data').dataTable( {
+              "bJQueryUI": true,
+              "bPaginate": false,
+              "sDom": '<"H"Tfr>t<"F"ip>',
+              "oTableTools": {
+                  "aButtons": [
+                      "copy", "csv", "xls", "pdf",
+                      {
+                          "sExtends":    "collection",
+                          "sButtonText": "Save",
+                          "aButtons":    [ "csv", "xls", "pdf" ]
+                      }
+                  ]
+              }
+          } ).makeEditable({
+       sUpdateURL: "{% url 'apps.hospi.views.update_member' %}",
+       {% comment %}//sAddURL: "{% url 'hospi.views.add_member' team.id %}",{% endcomment %}
+       {% comment %}sDeleteURL: "{% url 'hospi.views.del_member' team.id %}",{% endcomment %}
+       "aoColumns":[
+         null,
+         null,
+         null,
+         {},
+         {
+           type: 'select',
+           submit:'Ok',
+           data: "{ 'M': 'M', 'F':'F' }"
+         },
+         {},
+         {},
+         {},
+         {},
+         {},
+         {}
+       ]
+     }
+   );
+   flag=false;
+ $('#start,.jumbotron').hide();
+ $('.span9').removeClass('span9').addClass('span12');
+});
+
+</script>
+<script type="text/javascript">
+
+</script>
+
+
+<div class="modal fade" id="addAccomodationModal" tabindex="-1" role="dialog" aria-labelledby="addAccomodationLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 id="addAccomodationLabel">Change accomodation details for team: {{ team.name }}</h4>
+      </div>
+      <div id = "addAccomodationModalBody" class="modal-body">
+          <form action="{% url 'hospi_portal_add_accomodation' team.pk %}" method="post" id="change_time_form">
+
+            {% csrf_token %}
+            <table id="mytable" class="table table-borderless">
+                <tr>
+                    <th>City:</th>
+                    <td><input type="text" name="city" {% if not team.city %}placeholder="Enter your city"{% else %}value="{{ team.city }}"{% endif %} /> </td>
+                </tr>
+                <tr> 
+                    <th>Required from:</th>
+                    <td><input type='date' name="arr_date" value="{{ team.date_of_arrival|date:"Y-m-d" }}" min="2016-01-06" max="2016-01-11" >
+                    <td><input type='time' name="arr_time" value="{{ team.time_of_arrival|date:"H:i:s" }}" min="00:00:00" max="23:59:59">
+                </tr>
+                <tr> 
+                    <th>to</th>
+                    <td><input type='date' name="dep_date" value="{{ team.date_of_departure|date:"Y-m-d" }}" min="2016-01-06" max="2016-01-11">
+                    <td><input type='time' name="dep_time" value="{{ team.time_of_departure|date:"H:i:s" }}" min="00:00:00" max="23:59:59">
+                </tr>
+                <tr>
+                  <th>Mattress</th>
+                  <td><input type='number' name='mattress_count' value="{{ team.mattress_count }}" ></td>
+                </tr>
+                    <input type='hidden' name="updating" value="control_room"/>
+
+            </table>
+        
+      </div>
+      <div class="modal-footer">
+        <input type="Submit" id="change_status_save_button"class="btn btn-primary" onclick="$(this).val('Please wait');"value="Save Changes"/>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function submit_change_time(){
+    document.getElementById("change_time_form").submit();
+    alert("Done");
+    location.reload();
+  }
+</script>

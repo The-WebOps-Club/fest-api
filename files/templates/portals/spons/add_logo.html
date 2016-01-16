@@ -1,0 +1,137 @@
+{% extends 'base/base.html' %}
+{% block content %}
+{%  csrf_token %}
+
+{% block title %}Spons | ERP Saarang{% endblock %}
+{% load staticfiles %}
+
+
+<script type="text/javascript" src="{% static 'js/erp-bootstrap-modal.js' %}"></script>
+
+<div class="">
+    <form class="form-horizontal" action="" method="POST" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+        <legend>Spons</legend>
+        <h3> Instructions:</h3>
+        <ul>
+            <li>
+        The Title:  The title of the sponsor. Eg: Title Sponsor, Online Media Partner, etc.
+        </li>
+            <li>
+        The Sponsor Link :  A link to the sponsor's webpage.  Clicking on the logo on the spons page will take you here.
+        </li>
+            <li>
+        Logo :  A jpg or a png of the sponsor logo.  Please do not try to upload pdfs.
+        </li>
+            <li>
+        Priority : The basis of the ordering system.  Higher numbers will be added on top. The decimal system is so that if you want to add a logo between two others, giving it a number between the other two is easier. 
+        </li>
+        </ul>
+            {% csrf_token %}
+        {{ form.media }}
+        {% if form.errors %}
+            <div class="alert alert-error">
+                <ul>
+                    {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        {% for field in form.visible_fields %}
+            <div class="control-group {{ field.html_name }} {% if field.errors %}error{% endif %}">
+            <label class="control-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                <div class="controls"> {{ field }}
+                    <br/>
+                    <span class="help">
+                        {{ field.help_text }}
+                    </span>
+                    {% if field.errors %}
+                        <span class="help-inline">
+                            {{ field.errors.as_text }}
+                        </span>
+                    {% endif %} 
+                </div>
+            </div>
+        {% endfor %}
+        {% for field in form.hidden_fields %}
+            {{ field }}
+        {% endfor %}
+        <br/>
+        <input class="btn primary large" type="submit" value="Submit"/> {% block extra_buttons %} {% endblock extra_buttons %}
+    </form>
+    <hr>
+    <legend>Logos previously uploaded (In order):</legend>
+    {% if list %}
+        <ul class='thumbnails'>
+            {% for image in list %}
+            <li >
+                <div class='well' width= '400px'>
+                <div class=''>
+                    <img style="height: 125px; width:225px; margin:10px 10px;" src="{{ MEDIA_URL }}{{ image.logo }}" />
+                </div>
+                <div >
+                        <h4 style="color:#CC3232;">{{ image.title }}</h4>
+                        <p>
+                            <table>
+                                <tr>
+                                    <td>Sponsor link:</td>
+                                    <td><a href="{{image.sponsor_link}}">{{image.sponsor_link}}</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Uploaded at:</td>
+                                    <td>{{image.timestamp}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Uploaded by:</td>
+                                    <td>{{image.uploaded_by.first_name}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Priority:</td>
+                                    <td>{{image.priority}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Row Layout:</td>
+                                    <td>{{image.row_layout}}</td>
+                                </tr>
+                            </table>
+                        </p>
+                        <p>
+                            <a class='btn success large' data-target="#editLogoModal" href="{% url 'apps.portals.spons.views.edit_logo' image.pk %}"> Edit </a>
+                            <a href="{% url 'apps.portals.spons.views.delete_logo' image.pk %}" onclick="return confirm('Do you want to Delete this logo?');" class="btn danger large"> Delete </a>
+                        </p>
+                </div>
+                </div>
+            </li>
+            {% endfor %}
+        </div>
+    {% else %}
+    <div class="alert alert-error">There are no logos to display</div>
+    {% endif %}
+</div>
+
+<div id="editLogoModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="editLogoModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="editLogoModalLabel">Edit Logo</h3>
+  </div>
+  <div class="modal-body">
+    <p>Loading…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+$("a[data-target=#editLogoModal]").click(function(event) {
+  event.preventDefault();
+  var target = $(this).attr("href");
+  $("#editLogoModal .modal-body").load(target, function() {
+   $("#editLogoModal").modal("show");
+ });
+});
+</script>
+
+
+{% endblock %}

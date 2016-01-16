@@ -1,0 +1,678 @@
+<!--EXTRA STUFF ADDED FROM EVENT2.HTML-->
+
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+{% load compress %}
+{% load check_access %}
+{% load dajaxice_templatetags %}
+{% dajaxice_js_import %}
+{%  csrf_token %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+<style>
+  
+  select option{
+    color: black;
+}
+
+.form-control{
+margin-bottom:10px;
+}
+</style>
+
+<link rel="shortcut icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<title>{% block title %}QMS PORTAL | Saarang{% endblock %}</title>
+
+<link rel="icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+<link href="{% static 'css/prettify.css' %}" rel="stylesheet">    
+<link rel="shortcut icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<link rel="icon" href="{% static 'img/saarang_pics/favicon.ico' %}" type="image/x-icon">
+
+<script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+
+<link href="{% static 'css/jquery-ui-1.10.3.custom.css' %}" rel="stylesheet" media="screen">
+
+
+
+
+<!--orignal stuff-->
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/select2.css' %}">
+<script type="text/javascript" src="{% static 'js/select2.js' %}"></script>
+
+
+
+
+
+
+
+<!--css styling-->
+<style>
+.select2-container{
+ width:500px;   
+}
+
+#loading_div
+{
+position:absolute;
+width:60%;
+height:100%;
+opacity: 0.4;
+text-align:center;
+background-color:black;
+color:white;
+font-size:100px;
+}
+
+#overall_div
+{
+margin-left:50px;
+margin-top:30px;
+margin-bottom:30px;
+}
+
+
+</style>
+
+<!--the simple select2 things-->
+<script>
+jQuery(function(){
+$("select[name=branch]").select2();
+});
+</script>
+<div id="overall_div">
+
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        
+<!-- Top Level Tabs -->
+<li type="button" onclick="add_user_tab()" class="btn primary">Add/Edit User</li> 
+<li type="button" id="viewid" onclick="add_team_tab()" class="btn  primary">Add/Edit Team</li> 
+<li type="button" onclick="register_tab()" class="btn primary">Register User Or Team</li>
+<li type="button" onclick="participation_tab()" class="btn primary">Participation Tab</li>           
+          
+     </ul>
+      <p class="navbar-text navbar-right"><a href="http://saarang.org" class="navbar-brand" style="height:20px;padding:0px" target="_blank"><img src="{% static 'img/saarang_pics/favicon.ico' %}" height="110%" width="40%"/></a></p>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+<script type="text/javascript">
+
+</script>
+
+
+
+
+
+
+
+<!-- Loading Div -->
+<div id="loading_div" z-index="100" style="display:none" > <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><span z-index="200" class="btn btn-success">Loading</span></div>
+
+
+<br /><br />
+<h3>QMS Portal</h3>
+
+
+
+<!-- User Div Container -->
+<div id="add_user_div">
+
+
+		<!-- Edit User Div Container -->
+			<div id="edit_user_div">
+			<h4> EDIT EXISTING USER </h4>   
+				
+				 <input id='website_id' class="bigdrop input input-block-level" type='text' name='website_id' value="SA150"/>   
+		</div>
+
+		
+<!-- Edit User Div Container -->
+<h4 id="new_user_heading"> USER DETAILS </h4>
+<span id="alert-user"></span>
+		    <div class="btn btn-danger btn-large" ><a name='clear' onclick="clearForm();$('#alert-user').html('<h3>Form Cleared<br>Proceed adding new user</h3>').show();" >Clear form</a></div>
+		    
+	<br />
+	<br />
+	
+	<!--Add User Form -->
+
+	<form class="form" id="add_user_userform" accept-charset="utf-8">
+		    {% csrf_token %}
+			{% bootstrap_form userform layout='horizontal' %}	
+	</form>			   
+	<form class="form" id="add_user_userprofileform" accept-charset="utf-8">
+		    {% csrf_token %}
+			{% bootstrap_form userprofileform layout='horizontal' %}
+	
+	{% buttons %}
+<input type="button" class="btn btn-success" value="Save" onclick="$('#loading_div').attr('style', 'display: inline');Dajaxice.apps.portals.events.add_user(add_user_js,{'userform':$('#add_user_userform').serialize(true),'userprofileform':$('#add_user_userprofileform').serialize(true),'user_id':$('#hidden_id').text()});"/>	
+{% endbuttons %}
+</form>
+<div id="hidden_id" style="display:none">-1</div> 
+			
+	   
+</div>
+
+
+
+
+
+<!-- Team Div Container -->
+<div id="add_team_div" style="display:none">
+
+
+		<!-- Edit User Div Container -->
+			<div id="edit_team_div">
+			<h2 id="new_team_heading"> EDIT EXISTING TEAM </h2>  
+				
+				 <input id='edit_team_input' class="bigdrop input input-block-level" type='text' name='edit_team_input' />   
+			</div>
+			<br />
+			<br />
+		
+			
+	<h2> TEAM DETAILS </h2>
+	<span id="alert-team"></span>
+				<div><a name='clear' onclick="clearForm2();$('#alert-team').html('<h3>Form Cleared<br>Proceed adding new team</h3>').show();" class="btn btn-danger">Clear form</a></div>   
+		<br />
+		<br />
+		
+		
+		<!--Add Team Form -->
+
+		<form id="add_team_form" accept-charset="utf-8">
+		<div id="add_new_team_subdiv">
+				{% csrf_token %}
+				{{teamform.as_p }}
+				{{teamform.hidden_fields.as_p }}
+		</div>	
+		</form>		
+				   
+	<input type="button" value="Save" onclick="$('#loading_div').attr('style', 'display: inline'); Dajaxice.apps.portals.events.add_team(add_team_js,{'teamform':$('#add_team_form').serialize(true),'team_id':$('#hidden_team_id').text()});"/>
+		
+		<div id="hidden_team_id" style="display:none">-1</div>    
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- REGISTER USER/TEAM -->
+<div id="register_div" style="display:none">
+<h2> REGISTER USER OR TEAM </h2>
+<span id="alert-reg"></span>
+	<!-- Clear Form Button -->
+		    <div><a name='clear' onclick="clearForm3();$('#alert-reg').html('<h3>Form Cleared<br>Proceed adding new registration</h3>').show();" class="btn btn-danger">Clear form</a></div>   
+	<br />
+	<br />
+
+	<!--Add Team Form -->
+
+	<form id="registration_form" accept-charset="utf-8">
+		   <div id="reg_form_div"> </div>
+	</form>			   
+<input type="button" value="Save" onclick="$('#loading_div').attr('style', 'display: inline'); Dajaxice.apps.portals.events.register_user_team(register_user_team_js,{'registerform':$('#registration_form').serialize(true)})"/>		   
+</div>
+
+
+
+
+
+
+<!-- PARTICIPATION -->
+<div id="participation_div" style="display:none">
+<h2> USER OR TEAM PARTICIPATION </h2>
+<span id="alert-part"></span>
+	<!-- Clear Form Button -->
+		    <div><a name='clear' onclick="clearForm4();$('#alert-part').html('<h3>Form Cleared<br>Proceed adding new participation</h3>').show();" class="btn btn-danger">Clear form</a></div>   
+	<br />
+	<br />
+
+	<!--Add Participation Form -->
+	<br />
+	<input id='add_participation_input' class="bigdrop input input-block-level" type='text' name='add_participation_input' />   
+	<br />
+	<br />
+	<form id="participation_form" accept-charset="utf-8">
+	<div id="participation_subdiv">
+		    {% csrf_token %}
+			{{participationform.as_p }}
+	</div>
+	</form>			   
+<input type="button" value="Save" onclick="$('#loading_div').attr('style', 'display: inline'); $('#id_event_for_participation').attr('disabled', false); Dajaxice.apps.portals.events.add_participation(add_participation_js,{'participationform':$('#participation_form').serialize(true),'particpation_objectid':$('#particpation_objectid_hidden').text()})"/>	
+	   
+	   <div id="particpation_objectid_hidden" style="display:none">-1</div>
+	   <h3><div id="participation_count"></div></h3>
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+<!-- Javascript functions-->
+<script type="text/javascript">
+//CLEAR FORM
+function clearForm()
+{
+        $('#id_first_name').val('')
+        $('#id_last_name').val('')
+        $('#id_email').val('')
+        $('#id_mobile_number').val('')
+        $('#id_college_text').val('')
+        $('#id_city').val('')
+        $('#id_age').val('')
+        
+        $('#hidden_id').text(-1);
+        
+        //this needs to be done to clear the select2  field
+        $("select[name=branch]").select2('destroy');
+        $('#id_branch').val('');
+        $("select[name=branch]").select2();
+        
+}
+ 
+function clearForm2()
+{
+        $('#id_name').val('')
+        $('#id_accomodation_status').val('')
+        
+        $('#hidden_team_id').text(-1);
+        
+        $("select[name=members]").select2('destroy');
+        $('#id_members').val('');
+        $("select[name=members]").select2();
+        
+        $("select[name=accomodation_status]").select2('destroy');
+        $('#id_accomodation_status').val('');
+        $("select[name=accomodation_status]").select2();
+}
+
+function clearForm3()
+{  
+        
+        $("select[name=event]").select2('destroy');
+		$("select[name=users_registered]").select2('destroy');
+		$("select[name=teams_registered]").select2('destroy');
+		
+		
+		$('#id_event').val('')
+        $('#id_users_registered').val('')
+        $('#id_info').val('')
+        $('#id_teams_registered').val('')
+        
+        $("select[name=event]").select2();
+		$("select[name=users_registered]").select2();
+		$("select[name=teams_registered]").select2();
+        
+}
+
+function clearForm4()
+{  
+        
+        $("select[name=users_participated]").select2('destroy');
+		$("select[name=teams_participated]").select2('destroy');
+	
+		$('#id_event_for_participation').val('')
+        $('#id_users_participated').val('')
+        $('#id_teams_participated').val('')
+        $('#add_participation_input').val('')
+
+        
+        $("select[name=users_participated]").select2();
+		$("select[name=teams_participated]").select2();
+		
+		$('#particpation_objectid_hidden').text(-1);
+        
+}
+
+
+//Top Level Tabs Javascript Functions
+function add_user_tab()
+{
+	document.getElementById("add_user_div").style.display = 'inline';
+	document.getElementById("add_team_div").style.display = 'none';
+	document.getElementById("register_div").style.display = 'none';
+	document.getElementById("participation_div").style.display = 'none';
+	
+	$("select[name=branch]").select2();
+}
+
+function add_team_tab()
+{
+	document.getElementById("add_user_div").style.display = 'none';
+	document.getElementById("add_team_div").style.display = 'inline';
+	document.getElementById("register_div").style.display = 'none';
+	document.getElementById("participation_div").style.display = 'none';
+	
+	$("select[name=members]").select2();
+	$("select[name=accomodation_status]").select2();
+}
+
+function register_tab()
+{
+	document.getElementById("add_user_div").style.display = 'none';
+	document.getElementById("add_team_div").style.display = 'none';
+	document.getElementById("register_div").style.display = 'inline';
+	document.getElementById("participation_div").style.display = 'none';
+	
+	Dajaxice.apps.portals.events.insert_reg_form(insert_reg_form_js);
+}
+
+
+function participation_tab()
+{
+	document.getElementById("add_user_div").style.display = 'none';
+	document.getElementById("add_team_div").style.display = 'none';
+	document.getElementById("register_div").style.display = 'none';
+	document.getElementById("participation_div").style.display = 'inline';
+	
+	$("select[name=users_participated]").select2();
+	$("select[name=teams_participated]").select2();
+	$("#id_event_for_participation").attr('disabled', true);
+	
+}
+
+
+
+//Dajaxice Js Functions   
+function add_user_js(data)
+{
+	alert(data.message);
+	if (data.message[0]!='Y')
+	{
+		clearForm();
+	}
+	$('#loading_div').attr('style', 'display: none');
+}   
+  
+function add_team_js(data)
+{
+	alert(data.message);
+	if (data.message[0]!='Y')
+	{
+		clearForm2();
+	}
+	$('#loading_div').attr('style', 'display: none');
+	
+} 
+
+function register_user_team_js(data)
+{
+	alert(data.message);
+	clearForm3();
+	$('#loading_div').attr('style', 'display: none');
+} 
+
+function fill_team_form_js(data)
+{
+	 $('#add_new_team_subdiv').html("<table>"+data.teamform+"</table>");
+	 $('#hidden_team_id').text(data.id);
+	 
+	 $("select[name=members]").select2();
+	 $("select[name=accomodation_status]").select2();
+	 
+	 $('#loading_div').attr('style', 'display: none');
+} 
+ 
+
+function add_participation_js(data)
+{
+	alert(data.message);
+	if (data.message[0]!='Y')
+	{
+		clearForm4();
+		
+	}
+	$('#loading_div').attr('style', 'display: none');
+} 
+ 
+function fill_participation_form_js(data)
+{
+	 $('#participation_subdiv').html("<table>"+data.participationform+"</table>");
+	 $('#particpation_objectid_hidden').text(data.participation_objectid);
+	 
+	$("select[name=users_participated]").select2();
+	$("select[name=teams_participated]").select2();
+	$("#id_event_for_participation").attr('disabled', true);
+	
+	
+	 $('#loading_div').attr('style', 'display: none');
+}  
+ 
+function insert_reg_form_js(data)
+{
+	$('#reg_form_div').html("<table>"+data.reg_form+"</table>");
+	
+	$("select[name=event]").select2();
+	$("select[name=users_registered]").select2();
+	$("select[name=teams_registered]").select2();
+	
+	$('#loading_div').attr('style', 'display: none');
+	
+} 
+
+
+//Select2 Functions
+//1. FOR USERS
+$(function(){
+    function movieFormatResult(user) {
+        var markup = "<table padding=3><tr>";
+            markup += "<td rowspan=3><i class='icon-user'></i></td><td rowspan=3><div class='movie-title' style='padding-right:5px;'><b>" + user.saarang_id + "</b></div></td>";
+        
+        markup += "<td><div>" + user.first_name + " " + user.last_name + "</div>";
+        markup += "</td></tr><tr><td><div>" + user.mobile_number +' <b>BARCODE: '+user.desk_id+ "</b></div>";
+            markup += "</td></tr><tr><td><div>" + user.email + "</div>";
+        markup += "</td></tr></table>"
+         
+        return markup;
+    }
+
+    function movieFormatSelection(user) {
+		$('#id_first_name').val(user.first_name)
+        $('#id_last_name').val(user.last_name)
+        $('#id_email').val(user.email)
+        $('#id_mobile_number').val(user.mobile_number)
+        $('#id_college_text').val(user.college_text)
+        $('#id_gender').val(user.gender)
+       
+        $("select[name=branch]").select2('destroy');
+        $('#id_branch').val(user.branch)
+        $("select[name=branch]").select2();
+               
+        $('#id_city').val(user.city)
+        $('#id_desk_id').val(user.desk_id)
+        $('#id_age').val(user.age)
+        //this line is used to return the 
+        $('#hidden_id').text(user.id)
+        return user.saarang_id;
+    }
+
+$("#website_id").select2({
+    placeholder: "Enter existing user's saarang id, name, mobile, email",
+    minimumInputLength: 5,
+    ajax: {
+        url: "{% url 'qms_id_search' %}",
+        dataType: 'json',
+        quietMillis: 100,
+        multiple:false,
+        data: function (term, page) { // page is the one-based page number tracked by Select2
+            return {
+                q: term, //search term
+                page_limit: 10, // page size
+                page: page, // page number
+                //apikey: "ju6z9mjyajq2djue3gbvv26t"
+            };
+        },
+        results: function (data, page) {
+            //var more = (page * 10) < data.total; // whether or not there are more results available
+
+            //console.log(data.movies)
+            // notice we return the value of more so Select2 knows if more results can be loaded
+            return {results: data};
+        }
+    },
+    formatResult: movieFormatResult, // omitted for brevity, see the source of this page
+    formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
+    dropdownCssClass: 'bigdrop', // apply css that makes the dropdown taller
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+});
+		
+}); 
+ 
+ 
+ 
+ 
+//2. FOR TEAMS(select2)
+$(function(){
+    function teamFormatResult(team) {
+        var markup = "<table padding=3><tr>";
+            markup += "<td rowspan=3><i class='icon-star'></i></td><td rowspan=3><div style='padding-right:5px;'><b>" + team.name + "</b></div></td>";
+        
+        /*
+        markup += "<td><div>" + user.first_name + "</div></td>";
+        markup += "<td><div>" + user.last_name + "</div></td>";
+        markup += "<td><div>" + user.mobile_number + "</div>";        
+            markup += "</td><td><div>" + user.email + "</div>";*/
+         
+        markup += "</tr></table>";
+         
+        return markup;
+    }
+
+    function teamFormatSelection(team) {
+		$('#loading_div').attr('style', 'display: inline');
+    	Dajaxice.apps.portals.events.fill_team_form(fill_team_form_js,{'teamid':team.id});
+        return team.name;
+    }
+
+$("#edit_team_input").select2({
+    placeholder: "Enter existing team's name",
+    minimumInputLength: 1,
+    ajax: {
+        url: "{% url 'qms_team_search' %}",
+        dataType: 'json',
+        quietMillis: 100,
+        multiple:false,
+        data: function (term, page) { // page is the one-based page number tracked by Select2
+            return {
+                q: term, //search term
+                page_limit: 10, // page size
+                page: page, // page number
+                //apikey: "ju6z9mjyajq2djue3gbvv26t"
+            };
+        },
+        results: function (data, page) {
+            //var more = (page * 10) < data.total; // whether or not there are more results available
+
+            //console.log(data.movies)
+            // notice we return the value of more so Select2 knows if more results can be loaded
+            return {results: data};
+        }
+    },
+    formatResult: teamFormatResult, // omitted for brevity, see the source of this page
+    formatSelection: teamFormatSelection, // omitted for brevity, see the source of this page
+    dropdownCssClass: 'bigdrop', // apply css that makes the dropdown taller
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+});
+		
+}); 
+ 
+
+//3. FOR PARTICIPATION(select2)
+$(function(){
+    function eventFormatResult(event) {
+        var markup = "<table padding=3><tr>";
+            markup += "<td rowspan=3><i class='icon-star'></i></td><td rowspan=3><div style='padding-right:5px;'><b>" + event.name + "</b></div></td>";
+        
+        /*
+        markup += "<td><div>" + user.first_name + "</div></td>";
+        markup += "<td><div>" + user.last_name + "</div></td>";
+        markup += "<td><div>" + user.mobile_number + "</div>";        
+            markup += "</td><td><div>" + user.email + "</div>";*/
+         
+        markup += "</tr></table>";
+         
+        return markup;
+    }
+
+    function eventFormatSelection(event) {
+    	document.getElementById("participation_count").innerHTML = 'No. of Users Participated: ' + event.participant_count + '<br> No of Teams Participated: ' + event.team_count;
+    	$('#loading_div').attr('style', 'display: inline');
+    	Dajaxice.apps.portals.events.fill_participation_form(fill_participation_form_js,{'eventid':event.id});
+        return event.name;
+    }
+
+$("#add_participation_input").select2({
+    placeholder: "Enter Event Name",
+    minimumInputLength: 1,
+    ajax: {
+        url: "{% url 'qms_event_search' %}",
+        dataType: 'json',
+        quietMillis: 100,
+        multiple:false,
+        data: function (term, page) { // page is the one-based page number tracked by Select2
+            return {
+                q: term, //search term
+                page_limit: 10, // page size
+                page: page, // page number
+                //apikey: "ju6z9mjyajq2djue3gbvv26t"
+            };
+        },
+        results: function (data, page) {
+            //var more = (page * 10) < data.total; // whether or not there are more results available
+
+            //console.log(data.movies)
+            // notice we return the value of more so Select2 knows if more results can be loaded
+            return {results: data};
+        }
+    },
+    formatResult: eventFormatResult, // omitted for brevity, see the source of this page
+    formatSelection: eventFormatSelection, // omitted for brevity, see the source of this page
+    dropdownCssClass: 'bigdrop', // apply css that makes the dropdown taller
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+});
+		
+}); 
+ 
+ 
+$('li').on('click', function() {
+    $(this).parent().find('.active').removeClass('active');
+    $(this).addClass('active');
+});
+
+</script>
+</html>

@@ -22,6 +22,10 @@ from annoying.functions import get_object_or_None
 # Python
 import os
 import notifications
+from django.views.decorators.csrf import csrf_exempt
+from post_office import mail
+
+from apps.events.models import EventFeedback
 
 @login_required
 def wall (request, wall_id=None, post_id=None):
@@ -160,11 +164,27 @@ def email_test(request):
     }
     return render_to_response('notification.html', local_context, context_instance= global_context(request))
 # For testing API
+@csrf_exempt
 def api_test(request):
-    print "==========================================="
-    print "====      POST:"
-    print request.POST
-    print "====      GET :"
+    feedback = EventFeedback(q1=request.GET['q1'], q2=request.GET['q2'],q3=request.GET['q3'],q4=request.GET['q4'],q5=request.GET['q5'],event=request.GET['objectid'])
+    feedback.save()
+
     print request.GET
     print "==========================================="
-    return HttpResponse("Success")
+    
+    text= "===========================================\n"
+    text+= "====      POST:\n"
+    for i in request.POST:
+        text+= i+': ' + str(request.POST[i])+' | \n'
+    text+= "\n====      GET :\n"
+    for i in request.GET:
+        text+= i+ ' : ' + str(request.GET[i])+' | \n'
+    text+= "\n===========================================\n"
+    mail.send(
+        ['muhammedshahid.k@gmail.com', 'event_feedback@saarang.org'], # List of email addresses also accepted
+        'noreply@saarang.org',
+        subject='API TEST',
+        message=text + str(feedback.id),
+        html_message=text,
+    )
+    return HttpResponse("Success\n"+text)

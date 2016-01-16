@@ -34,7 +34,7 @@ class Command(BaseCommand):
     """
     help = 'Automatically adds required entries into the database. esp Departments and Walls for them.'
 
-    def handle(self, arg=None, commit=False, **options):
+    def handle(self, arg=None, commit=True, **options):
         # Department specific users
         
         if arg :
@@ -129,7 +129,7 @@ class Command(BaseCommand):
                         if i == "" or not i:
                             continue
                         try:
-                            dept = Dept.objects.get(name__iexact = i)
+                            dept = Subdept.objects.get(name__iexact = i)
                             if commit :
                                 temp_erp_profile.coord_relations.add(dept)
                         except Dept.DoesNotExist:

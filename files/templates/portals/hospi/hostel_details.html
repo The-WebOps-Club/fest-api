@@ -1,0 +1,71 @@
+<div class="row-fluid well">
+    {% for room in rooms %}
+        {% if forloop.counter0|divisibleby:4 %}
+            <div class="row-fluid">
+        {% endif %}
+            <a class="span3" data-target="#roomModal" href ="#">
+            <div class="wrapper alert {% if room.get_occupants_count %}alert-danger{% else %}alert-success{%endif%}">
+            {% if room.get_occupants_count %}
+            {% else %}
+            <button class="btn btn-danger btn-xs"onclick="Dajaxice.apps.portals.hospi.confirm_delete_room(confirm_delete_room,{'room_id':{{room.pk}}});" >Delete Room</button>
+            {% endif %}
+                <div class="inner" onclick="Dajaxice.apps.portals.hospi.room_details(room_details,{'room_id':{{room.pk}}});">
+                        <p>
+                            <strong>{{ room.name }}</strong>
+                        </p>
+                        <p>
+                            {{ room.capacity }} max
+                        </p>
+                        <p>
+                            now {{ room.get_occupants_count }}
+                        </p>
+                        
+                </div>
+            </div>
+            </a>
+            
+        {% if forloop.counter|divisibleby:4 %}
+            </div>
+        {% endif %}
+
+    {% endfor %}
+
+
+</div>
+<div class="modal fade" id="roomModal" tabindex="-1" role="dialog" aria-labelledby="roomModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" onclick="closeRoomModal()" ><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Room Details</h4>
+      </div>
+      <div id = "roomModalBody" class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" onclick="closeRoomModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--
+<div id="roomModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="roomModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" onclick="$('#roomModal').modal('hide');" aria-hidden="true">×</button>
+    <h3 id="roomModalLabel">Room details</h3>
+  </div>
+  <div class="modal-body">
+    <p>One fine body…</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" onclick="$('#roomModal').modal('hide');" aria-hidden="true">Close</button>
+  </div>
+</div>
+-->
+<script type="text/javascript">
+var open_modal = function(elem) {
+    var target = $(elem).attr("href").slice(1);
+    $("#roomModal .modal-body").load(target, function() {
+         $("#roomModal").modal("show");
+    });
+}
+</script>

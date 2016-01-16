@@ -1,0 +1,27 @@
+<h5>Select rooms</h5><hr/>
+<form class="form-horizontal" action="{% url 'hospi_check_in_males' %}" method="POST" >
+    {% csrf_token %}
+{% for male in males %}
+  <div class="control-group">
+    <label class="control-label" for="{{ male.saarang_id }}">{{ male.user.get_full_name }}</label>
+    <div class="controls">
+      <select class='room-select2' name="{{ male.saarang_id }}" id="{{ male.saarang_id }}" placeholder="Select room to allot">
+        {% for room in male_rooms %}
+                <option value="{{ room.pk }}">{% if room.get_occupants_count >= room.capacity %}(FULL){% endif %}{{ room.name }} in {{ room.hostel.name }} ({{ room.get_occupants_count }} of {{ room.capacity }} max) </option>   
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+{% endfor %}
+<hr/>
+<div class="control-group">
+    <label class="control-label" for="matress">Matresses</label>
+    <div class="controls">
+      <input type="number" name="matress" value="0" placeholder="Number of matresses">
+    </div>
+</div>
+<input type="hidden" name="team_id" value="{{ team.pk }}"/>
+<div class="pull-right">
+<button type="submit" class="btn btn-warning">Check in!</button>
+</div>
+</form>

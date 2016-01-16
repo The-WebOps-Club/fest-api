@@ -1,0 +1,35 @@
+{% load url from future %}
+{% load staticfiles %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>EventsSchedule | Saarang 2015</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Event Schedule">
+        <meta name="author" content="Web Operations Saarang 2015">
+        <style type="text/css">
+            @page {
+                size: a4 landscape;
+                margin: 1cm;
+            }
+        </style>
+    </head>
+    <body>
+        <table border=1>
+            <tbody>
+                {% for slot in data %}
+                    <tr style="height:30px;">
+                        <td>{{slot.slot.event.category}}</td>
+                        <td>{{slot.slot.event.name}} - {{slot.comment}}</td>
+                        <td>{{slot.slot.venue}}</td>
+                        {% for val in slot.time  %}
+                            <td style="background-color:{%if val%}green{%else%}white{%endif%}"></td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>

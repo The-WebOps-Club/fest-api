@@ -24,22 +24,17 @@ from apps.users.models import User,UserProfile,Team,ERPProfile
 from misc.utils import *
 # Python
 from configs.settings import FEST_NAME
+import select2.models
+import select2.forms
+from django.core.management import call_command
+import os
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+
+EVENT_VENUES=settings.EVENT_VENUES
 
 if FEST_NAME=='Saarang':
-	EVENT_CATEGORIES = (
-		('Word Games', 'Word Games'),
-		('Classical Arts', 'Classical Arts'),
-		('LecDems', 'LecDems'),
-		('Music', 'Music'),
-		('Thespian', 'Thespian'),
-		('Writing', 'Writing'),
-		('Speaking', 'Speaking'),
-		('Choreo', 'Choreo'),
-		('Design & Media', 'Design & Media'),
-		('Informals', 'Informals'),
-		('Quizzing', 'Quizzing'),
-		('Fine Arts', 'Fine Arts'),
-	)
+	EVENT_CATEGORIES = settings.EVENT_CATEGORIES
 else:
 	EVENT_CATEGORIES = (
 		('Aerofest', 'Aerofest'),
@@ -59,9 +54,9 @@ else:
 	)
 
 EVENT_TYPE = (
-    ('Audience', 'Audience'),
-    ('Participant', 'Participant'),
-    ('None','None'),
+    ('online', 'Online Registration'),
+    ('onspot', 'On-spot Registration'),
+    ('noreg','No Registration'),
 )
     
 class Event(models.Model):
@@ -92,8 +87,13 @@ class Event(models.Model):
 	# List of registered participants
     users_registered = models.ManyToManyField(User, blank=True, null=True,related_name='events_registered')
     teams_registered = models.ManyToManyField(Team, blank=True, null=True,related_name='events_registered')
-    
-    coords = select2.fields.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
+    #added by Akshay/Arun
+    coords = models.ManyToManyField(ERPProfile, null=True, blank=True, related_name='coord_events')
+    long_description=models.TextField(blank = True, null=True)
+    google_form=models.URLField(blank=True, null=True)
+    event_image=models.ImageField(blank=True, null=True, upload_to='events')
+    extra_info = models.BooleanField(blank=True, default=False)
+
     # Extra mainsite information
     is_visible = models.BooleanField(default=True) # On the mainsite
     
@@ -149,3 +149,103 @@ class EventTab(models.Model):
 
     def __unicode__(self):
         return self.name
+
+class EventRegistration(models.Model):
+    """
+        Each participant will have several fields 
+    """
+    event            = models.ForeignKey(Event, related_name='event_registered')
+    users_registered = models.ForeignKey(User, related_name='user_eventregis')
+    info             = models.TextField(null=True, blank=True)
+    timestamp        = models.DateTimeField(auto_now_add=True)
+    teams_registered = models.ForeignKey(Team, blank=True, null=True,related_name='user_team')
+    
+    def __unicode__(self):
+        return str(self.users_registered) +' - '+ str(self.event)
+
+class EventSchedule(models.Model):
+    """
+        each slot for an event will have a fields
+    """
+    event            = models.ForeignKey(Event, related_name='event_slot')
+    slot_start       = models.DateTimeField(null=True, blank=True)
+    slot_end         = models.DateTimeField(null=True, blank=True)
+    comment          = models.TextField(null=True, blank=True)
+    venue            = models.CharField(max_length=100, choices=EVENT_VENUES)
+    def __unicode__(self):
+        return str(self.event)
+
+
+class EventParticipation(models.Model):
+    event_for_participation = models.OneToOneField(Event, related_name='event_participated')
+    users_participated = models.ManyToManyField(UserProfile, related_name='user_participated',null=True, blank=True)
+    teams_participated = models.ManyToManyField(Team, related_name='team_participated',null=True, blank=True)
+    
+    
+    
+class EventWinner(models.Model):
+    """
+        each slot for a winner
+    """
+    event            = models.ForeignKey(Event, related_name='event_winners')
+    position         = models.CharField(null=True, blank=True, max_length=100)
+    comment          = models.CharField(null=True, blank=True,max_length=200)
+    added_by         = models.ForeignKey(ERPProfile,related_name='winners_added')
+    user             = models.ForeignKey(UserProfile, related_name='event_won')
+    def __unicode__(self):
+        return str(str(self.event)+'-'+str(self.user)+'-'+str(self.position))
+    
+
+@receiver(post_save, sender=EventSchedule)
+def generate_json(sender, **kwargs):
+    print "android post save signal"
+    call_command('android_json')
+    call_command('collectstatic', interactive=False)
+    if settings.PERMISSION_COMMAND:
+        os.system('/home/saarango/git/fest-api/runscript')
+
+@receiver(post_delete, sender=EventSchedule)
+def generate_json_delete(sender, **kwargs):
+    print "android postdelete signal"
+    call_command('android_json')
+    call_command('collectstatic', interactive=False)
+    if settings.PERMISSION_COMMAND:
+        os.system('/home/saarango/git/fest-api/runscript')
+class WebsiteUpdate(models.Model):
+    """
+        Update ticker on website
+    """
+    TYPE_CHOICES = (
+        ("info","info"),
+        ("success","success"),
+        ("warning","warning"),
+        ("error","error")
+    )
+    type = models.CharField(max_length=50,choices=TYPE_CHOICES)
+    title = models.CharField(max_length=100, blank=True, null=True)
+    text = models.TextField(max_length=2000, blank=True, null=True)
+
+    def __unicode__(self):
+        return self.title
+@receiver(post_save, sender=WebsiteUpdate)
+def generate_json_update(sender, **kwargs):
+    print "Updates post save signal"
+    call_command('updates_json')
+    call_command('collectstatic', interactive=False)
+    if settings.PERMISSION_COMMAND:
+        os.system('/home/saarango/git/fest-api/runscript')
+@receiver(post_delete, sender=WebsiteUpdate)
+def generate_json_update_delete(sender, **kwargs):
+    print "updates post delete signal"
+    call_command('updates_json')
+    call_command('collectstatic', interactive=False)
+    if settings.PERMISSION_COMMAND:
+        os.system('/home/saarango/git/fest-api/runscript')
+
+class EventFeedback(models.Model):
+    q1 = models.CharField(max_length=10, blank=True, null=True)
+    q2 = models.CharField(max_length=10, blank=True, null=True)
+    q3 = models.CharField(max_length=10, blank=True, null=True)
+    q4 = models.CharField(max_length=10, blank=True, null=True)
+    q5 = models.CharField(max_length=10, blank=True, null=True)
+    event = models.CharField(max_length=50, blank=True, null=True)

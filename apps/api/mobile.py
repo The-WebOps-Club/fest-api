@@ -1,7 +1,9 @@
+import os
 import HTMLParser
 import urllib
 import os
 from django.utils.html import strip_tags
+import json
 from django.conf import settings
 from rest_framework import viewsets
 from rest_framework import status
@@ -17,14 +19,17 @@ from apps.walls.ajax import create_post,create_comment
 from apps.api.utils import *
 from apps.users.models import UserProfile, Team
 from apps.blog.models import Category, Feed
-
+from apps.events.models import EventRegistration
+from apps.spons.models import SponsImageUpload
+from apps.api.models import BandHuntTrack, BandHuntVote
 from annoying.functions import get_object_or_None
 from django.views.decorators.csrf import csrf_exempt
 
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework import permissions
 
 USER_MUTABLE_FIELDS = ["password", "first_name", "last_name"];
-PROFILE_MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","college_text","school_student","want_accomodation","age","city"];
+PROFILE_MUTABLE_FIELDS = ["college_roll","gender","dob","mobile_number","branch","college","college_text","school_student","want_accomodation","age","city", "desk_id"];
 EVENT_MUTABLE_FIELDS = ["has_tdp","team_size_min","team_size_max","registration_starts","registration_ends"];
 
 class NotificationViewSet(viewsets.ViewSet):
@@ -92,7 +97,6 @@ class WallsViewSet(viewsets.ViewSet):
     """
     Return walls of an user
     """
-
     def list(self,request):
         message = ''
         data = []
@@ -117,7 +121,6 @@ class PostsViewSet(viewsets.ViewSet):
         wall_id=request.QUERY_PARAMS.get('wall_id')
         offset=request.QUERY_PARAMS.get('offset')
         limit=request.QUERY_PARAMS.get('limit')
-
         if not wall_id:
             message='please enter wall id'
             return Response(viewset_response(message,data))
@@ -186,7 +189,6 @@ class CommentsViewSet(viewsets.ViewSet):
             postserializer.data["comments"][j]["description"] = HTMLParser.HTMLParser().unescape(strip_tags(postserializer.data["comments"][j]["description"].strip()))
         data=postserializer.data
         return Response(viewset_response(message,data))
-
         #if not comments:
         #   message='no comments to be displayed'
         #   return Response(viewset_response(message,data))
@@ -214,7 +216,15 @@ class CommentsViewSet(viewsets.ViewSet):
             return Response(viewset_response(message,data))
         else:
             message='an error has occured while trying to comment'
-            return Response(message,data)
+            return Response(viewset_response(message,data))
+
+PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),'../..'))
+class ContactsViewSet(viewsets.ViewSet):
+    def list(self,request):
+        message=''
+        data=open(os.path.join(PROJECT_PATH, "files", "static","json","user_structure.json")).read()
+        data=json.loads(data)
+        return Response(viewset_response(message,data))
 
 class UserProfileViewSet(viewsets.ViewSet):
     def list(self, request):
@@ -228,6 +238,8 @@ class UserProfileViewSet(viewsets.ViewSet):
     def create(self, request):
         user = self.request.user
         profile = UserProfile.objects.get_or_create( user=user )[0]
+        print request.DATA
+        print request.POST
         try:
             for i in request.DATA:
                 print i
@@ -238,9 +250,9 @@ class UserProfileViewSet(viewsets.ViewSet):
                 elif i in USER_MUTABLE_FIELDS and i != '':
                     setattr( user, i, request.POST[i] )
                     # print i
-        except:
+        except Exception, e:
             return Response({
-                "message": "Invalid input data."
+                "message": "Invalid input data."+str(e.message)
             }, status=status.HTTP_400_BAD_REQUEST);
         profile.save()
         user.save()
@@ -249,20 +261,57 @@ class UserProfileViewSet(viewsets.ViewSet):
         data['last_name'] = user.last_name
         return Response( viewset_response( "done", data ) )
 
+class UserProfilePostViewSet(viewsets.ViewSet):
+    def create(self, request):
+        user = self.request.user
+        data = ParticipantProfileSerializer(UserProfile.objects.get_or_create( user = self.request.user )[0]).data
+        data['first_name'] = user.first_name
+        data['last_name'] = user.last_name
+        data['user_id'] = user.id
+        return Response(viewset_response("done", data))
+
 class UserViewSet(viewsets.ViewSet):
     def list(self, request):
-        return Response(viewset_response("done", UserSerializer(self.request.user).data))
+        user = self.request.user
+        user_id = request.GET.get('id', None)
+        try:
+            if self.request.user.is_superuser and user_id:
+                user = User.objects.get(id=user_id)
+                print "User id found ! ", user.id
+            else:
+                user_email = request.GET.get('email', None)
+                if self.request.user.is_superuser and user_email:
+                    user = User.objects.get(email=user_email)
+                    # print "User email found ! ", user.email
+                user_desk_id = request.GET.get('desk_id', None)
+                if self.request.user.is_superuser and user_desk_id:
+                    user = UserProfile.objects.get(desk_id=user_desk_id).user
+                    # print "User email found ! ", user.email
+        except user.DoesNotExist:
+            return Response({
+                "message": "We could not find any user with that info."
+            }, status=status.HTTP_400_BAD_REQUEST);
+        except:
+            return Response({
+                "message": "Theres some error ! Contact webops team !"
+            }, status=status.HTTP_400_BAD_REQUEST);
+        user_data = UserInfoSerializer(user).data
+        user_data['token'] = Token.objects.get_or_create(user=user)[0].key
+        return Response(viewset_response("done", user_data))
 
     def create(self, request):
         user = self.request.user
         try:
             for i in request.POST:
                 if i in USER_MUTABLE_FIELDS:
-                    setattr( user, i, request.POST[i] )
+                    if i == "password":
+                        user.set_password(request.POST[i])
+                    else:
+                        setattr( user, i, request.POST[i] )
         except:
             return Response("Invalid input data.",[]);
         user.save()
-        return Response( viewset_response( "done", UserSerializer(user).data ) )
+        return Response( viewset_response( "done", UserInfoSerializer(user).data ) )
 
 class TeamViewSet(viewsets.ViewSet):
     def  list(self, request):
@@ -272,6 +321,7 @@ class TeamViewSet(viewsets.ViewSet):
         return Response(viewset_response("done", teams_data))
 
     def create(self, request):
+        print request.DATA
         user = self.request.user
         action = request.DATA.get('action', 'edit')
         if action == "delete":
@@ -304,7 +354,7 @@ class TeamViewSet(viewsets.ViewSet):
                     }, status=status.HTTP_400_BAD_REQUEST)
 
             team.name = request.DATA['name']
-            member_list_data = request.DATA.getlist('member[]', [])
+            member_list_data = request.DATA['members']
 
             if len(member_list_data) == 0 :
                 return Response({
@@ -312,14 +362,14 @@ class TeamViewSet(viewsets.ViewSet):
                 }, status=status.HTTP_400_BAD_REQUEST)
             for i in member_list_data:
                 try:
-                    i = int(i)
+                    i = int(i[4:])
                 except ValueError:
                     i = -1 # Didnt wanna type the error message again -_-
                 try:
                     member_list.add(User.objects.get(id=i))
                 except User.DoesNotExist:
                     return Response({
-                        "member": "The members you have given seem to be invalid. Check the Shaastra IDs again"
+                        "member": "The members you have given seem to be invalid. Check the Saarang IDs again"
                     }, status=status.HTTP_400_BAD_REQUEST)
             member_list = list(member_list)
 
@@ -331,7 +381,7 @@ class TeamViewSet(viewsets.ViewSet):
             return Response( viewset_response( "done", data ) )
         else:
             return Response({
-                "error": "An error occured ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
+                "error": "An error occured ! Please contact webops team at : <a href='mailto:webops@saarang.org'>webops@saarang.org</a>"
             }, status=status.HTTP_400_BAD_REQUEST)
 
 # API methods for Blog App
@@ -405,7 +455,7 @@ class EventViewSet(viewsets.ViewSet):
 
         if not event:
             return Response({
-                "error": "Cannot find this event ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
+                "error": "Cannot find this event ! Please contact webops team at : <a href='mailto:webops@saarang.org'>webops@saarang.org</a>"
             }, status=status.HTTP_400_BAD_REQUEST)
 
         if action == "register":
@@ -479,5 +529,142 @@ class EventViewSet(viewsets.ViewSet):
                 return Response( viewset_response( "done", data ) )
         else:
             return Response({
-                "error": "An error occured ! Please contact webops team at : <a href='mailto:webops@shaastra.org'>webops@shaastra.org</a>"
+                "error": "An error occured ! Please contact webops team at : <a href='mailto:webops@saarang.org'>webops@saarang.org</a>"
             }, status=status.HTTP_400_BAD_REQUEST)
+
+class RegistrationViewSet(viewsets.ViewSet):
+        def list(self, request):
+            user = request.user
+            registered_events = EventRegistration.objects.filter(users_registered=user)
+            if not registered_events :
+                return Response({
+                    "error": "You have not registered in any event."
+                }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(viewset_response('success',EventRegistrationSerializer(registered_events,many=True).data))
+
+        def create(self,request):
+            user=request.user
+            event_id = request.DATA.get('event_id', None)
+            name = request.DATA.get('name', None)
+            event=None
+            action = request.DATA.get("action",None)
+            if action == "delete":
+                id =request.DATA.get('id',None)
+                temp = EventRegistration.objects.get(id=int(id))
+                temp.delete()
+                return Response(viewset_response("done", {"msg":"success"}))
+            if event_id:
+                event = get_object_or_None(Event, id=event_id)
+            elif name:
+                event = get_object_or_None(Event, name=name)
+
+            if not event:
+                return Response({
+                    "error": "Cannot find this event ! Please contact webops team at : <a href='mailto:webops@saarang.org'>webops@saarang.org</a>"
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        
+            if event.is_team_event:
+                # Take team info
+                team_name = request.DATA.get('team', None)
+                if not team_name :
+                    return Response({
+                        "error": "You need to enter a team name."
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                team = get_object_or_None(Team, name=team_name)
+                if not team:
+                    return Response({
+                        "error": "There exists no such team. You need to create the team first !"
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                if not team in user.teams.all():
+                    return Response({
+                        "error": "You are not a member of this team ! Ask the members to add you first."
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                if request.FILES.get('tdp', None) and event.has_tdp:
+                    f = request.FILES.get('tdp')
+                    fname = os.path.join(settings.MEDIA_ROOT, "tdp", event.name, str(user.id) + "_" + user.first_name + "_" + user.last_name, f.name)
+                    handle_uploaded_file(f, fname)                
+                if request.DATA.get("action", None):
+                    if request.DATA["action"] == "edit":
+                        temp = EventRegistration.objects.get(id=int(request.DATA["id"]))
+                else:
+                    temp = EventRegistration(event=event, users_registered=user, teams_registered= team)
+                temp.save()
+                if request.DATA.get("extra_info",None):
+                    temp.info = request.DATA["extra_info"]
+                    temp.save()
+                data = EventSerializer(event).data
+                return Response( viewset_response( "done", data ) )
+            else:
+                if request.FILES.get('tdp', None) and event.has_tdp:
+                    f = request.FILES.get('tdp')
+                    fname = os.path.join(settings.MEDIA_ROOT, "tdp", event.name, str(user.id) + "_" + user.first_name + "_" + user.last_name, f.name)
+                    handle_uploaded_file(f, fname)                
+                data = EventSerializer(event).data
+                temp = EventRegistration(event=event, users_registered=user)
+                temp.save()
+                if request.DATA.get("extra_info",None):
+                    temp.info = request.DATA["extra_info"]
+                    temp.save()
+                return Response( viewset_response( "done", data ) )
+
+class EventDisplayViewset(viewsets.ViewSet):
+
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    def list(self, request):
+        event=Event.objects.all()
+        data=EventDisplaySerializer(event).data
+        return Response(viewset_response( "done", data ))
+class SponsImageViewset(viewsets.ViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    def list(self,request):
+        spons = SponsImageUpload.objects.all()
+        data = SponsImageUploadSerializer(spons).data
+        return Response(viewset_response( "done", data ))
+class UserProfileEditViewSet(viewsets.ViewSet):
+    """
+        first_name
+        last_name
+        gender
+        age
+        college_text
+        roll_number
+        branch
+        city
+        mobile_number
+    """
+    def create(self, request):
+        user = self.request.user
+        profile = UserProfile.objects.get_or_create( user=user )[0]
+        user.first_name = request.DATA.get('first_name', user.first_name)
+        user.last_name = request.DATA.get('last_name', user.last_name)
+        profile.gender = request.DATA.get('gender', profile.gender)
+        profile.age = request.DATA.get('age', profile.age)
+        profile.college_text = request.DATA.get('college_text', profile.college_text)
+        profile.college_roll = request.DATA.get('college_roll', profile.college_roll)
+        profile.branch = request.DATA.get('branch', profile.branch)
+        profile.city = request.DATA.get('city', profile.city)
+        profile.mobile_number = request.DATA.get('mobile_number', profile.mobile_number)
+        user.save()
+        profile.save()
+
+        return Response({'message':"Successfully changed."})
+
+class BandHuntViewSet(viewsets.ViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    def list(self, request):
+        tracks = BandHuntTrack.objects.all()
+        data = BandHuntTrackSerializer(tracks).data
+        return Response(viewset_response("done", data))
+
+    def create(self,request):
+        track_id = request.DATA.get('track_id')
+        user = self.request.user
+        votes_by_user = BandHuntVote.objects.filter(user=user) 
+        if votes_by_user:
+            return Response({
+                "error": "User has already voted"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        track = BandHuntTrack.objects.get(pk=int(track_id))
+        new_vote = BandHuntVote.objects.create(user=user, track=track)
+        return Response(viewset_response("done", "Done!"))

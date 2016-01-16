@@ -134,7 +134,7 @@ class Migration(SchemaMigration):
         u'events.event': {
             'Meta': {'object_name': 'Event'},
             'category': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'coords': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'coord_events'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['users.ERPProfile']"}),
+            'coords': ('select2.fields.ManyToManyField', [], {'related_name': "'coord_events'", 'to': u"orm['users.ERPProfile']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True', 'search_field': 'None'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'event_type': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'google_group': ('django.db.models.fields.EmailField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
