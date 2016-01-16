@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import EventTab, Event, EventRegistration, EventSchedule, EventWinner, WebsiteUpdate,EventParticipation
+from models import EventTab, Event, EventRegistration, EventSchedule, EventWinner, WebsiteUpdate,EventParticipation, EventFeedback
 
 class EventTabAdmin(admin.ModelAdmin):
     list_display=('pk','event','name' )
@@ -26,3 +26,7 @@ class WebsiteUpdateAdmin(admin.ModelAdmin):
 admin.site.register(WebsiteUpdate, WebsiteUpdateAdmin)
 
 admin.site.register(EventParticipation)
+
+class EventFeedbackAdmin(admin.ModelAdmin):
+    list_display=('pk','event','q1','q2','q3','q4','q5')
+admin.site.register(EventFeedback, EventFeedbackAdmin)

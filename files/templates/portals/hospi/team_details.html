@@ -488,12 +488,12 @@ $('#member_data').dataTable( {
                 </tr>
                 <tr> 
                     <th>Required from:</th>
-                    <td><input type='date' name="arr_date" value="{{ team.date_of_arrival|date:"Y-m-d" }}" min="2015-01-07" max="2015-01-11" >
+                    <td><input type='date' name="arr_date" value="{{ team.date_of_arrival|date:"Y-m-d" }}" min="2016-01-06" max="2016-01-11" >
                     <td><input type='time' name="arr_time" value="{{ team.time_of_arrival|date:"H:i:s" }}" min="00:00:00" max="23:59:59">
                 </tr>
                 <tr> 
                     <th>to</th>
-                    <td><input type='date' name="dep_date" value="{{ team.date_of_departure|date:"Y-m-d" }}" min="2015-01-08" max="2015-01-12">
+                    <td><input type='date' name="dep_date" value="{{ team.date_of_departure|date:"Y-m-d" }}" min="2016-01-06" max="2016-01-11">
                     <td><input type='time' name="dep_time" value="{{ team.time_of_departure|date:"H:i:s" }}" min="00:00:00" max="23:59:59">
                 </tr>
                 <tr>

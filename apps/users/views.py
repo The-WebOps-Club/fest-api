@@ -453,7 +453,7 @@ def validate_email(request, uidb36, token):
         send_registration_mail(user)
     else:
         return HttpResponse("ERROR")
-    return HttpResponseRedirect(settings.MAIN_SITE+'2015/main')
+    return HttpResponseRedirect(settings.MAIN_SITE+'2016/main')
 
 @csrf_exempt
 @api_view(['GET'])

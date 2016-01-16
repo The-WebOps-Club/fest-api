@@ -28,6 +28,7 @@ def home (request, *args, **kwargs):
          - Redirects to newsfeed if logged in
          - Redirects to login page if not logged in
     """
+    return HttpResponse('Go to another link directly<br/> <a href="portals/events">Events portal</a><br/><a href="portals/hospi">Hospi Portal</a>')
     user = request.user
     
     if settings.SOCIAL_AUTH_FORCE_FB and user.social_auth.filter(provider="facebook").count() == 0:
@@ -42,6 +43,7 @@ def home (request, *args, **kwargs):
 
 @login_required
 def newsfeed(request): 
+    return HttpResponse('Not allowed')
     user = request.user
     notifications_list = query_newsfeed(user, page=1)
     

@@ -241,3 +241,11 @@ def generate_json_update_delete(sender, **kwargs):
     call_command('collectstatic', interactive=False)
     if settings.PERMISSION_COMMAND:
         os.system('/home/saarango/git/fest-api/runscript')
+
+class EventFeedback(models.Model):
+    q1 = models.CharField(max_length=10, blank=True, null=True)
+    q2 = models.CharField(max_length=10, blank=True, null=True)
+    q3 = models.CharField(max_length=10, blank=True, null=True)
+    q4 = models.CharField(max_length=10, blank=True, null=True)
+    q5 = models.CharField(max_length=10, blank=True, null=True)
+    event = models.CharField(max_length=50, blank=True, null=True)

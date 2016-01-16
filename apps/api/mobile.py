@@ -283,6 +283,10 @@ class UserViewSet(viewsets.ViewSet):
                 if self.request.user.is_superuser and user_email:
                     user = User.objects.get(email=user_email)
                     # print "User email found ! ", user.email
+                user_desk_id = request.GET.get('desk_id', None)
+                if self.request.user.is_superuser and user_desk_id:
+                    user = UserProfile.objects.get(desk_id=user_desk_id).user
+                    # print "User email found ! ", user.email
         except user.DoesNotExist:
             return Response({
                 "message": "We could not find any user with that info."

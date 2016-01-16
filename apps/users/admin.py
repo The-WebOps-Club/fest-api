@@ -7,7 +7,7 @@ def full_name(obj):
 full_name.short_description = 'Name'
 
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display=('saarang_id',full_name,'user','gender','age','mobile_number','college_text','city')
+    list_display=('saarang_id', 'desk_id', full_name,'user','gender','age','mobile_number','college_text','city')
     search_fields=['name','email','mobile_number']
 
 admin.site.register(UserProfile, UserProfileAdmin)
