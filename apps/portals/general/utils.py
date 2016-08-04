@@ -70,7 +70,7 @@ def share_calendar( calendar, entity, calendar_id = None ):
 			'type': 'user',
 			'value': entity.email,
 		    },
-		    'role': 'writer'
+		    'role': 'owner'
 		}
 		print calendar_id.split('@')[0]
 		created_rule = calendar.service.acl().insert(calendarId=calendar_id, body=rule).execute()
