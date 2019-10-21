@@ -2,7 +2,7 @@ BeautifulSoup==3.2.1
 Django==1.6.5
 South==0.8.4
 #Twisted==14.0.0
-Werkzeug==0.9.4
+Werkzeug==0.15.3
 argparse==1.2.1
 django-annoying==0.8.0
 django-appconf==0.6
@@ -40,7 +40,7 @@ BeautifulSoup==3.2.1
 Django==1.6.5
 MySQL-python==1.2.5
 South==0.8.4
-Werkzeug==0.9.4
+Werkzeug==0.15.3
 argparse==1.2.1
 django-access-tokens==0.9.2
 django-annoying==0.8.0
