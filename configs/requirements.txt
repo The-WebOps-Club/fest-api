@@ -29,7 +29,7 @@ pysolr==3.2.0
 python-openid==2.2.5
 python-ptrace==0.7
 python-social-auth==0.1.24
-requests==2.3.0
+requests==2.20.0
 requests-oauthlib==0.4.0
 six==1.6.1
 sqlparse==0.1.11
@@ -71,7 +71,7 @@ python-memcached==1.53
 python-openid==2.2.5
 python-ptrace==0.7
 python-social-auth==0.1.24
-requests==2.3.0
+requests==2.20.0
 requests-oauthlib==0.4.0
 six==1.6.1
 sqlparse==0.1.11
