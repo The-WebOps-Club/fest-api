@@ -33,7 +33,7 @@ requests==2.3.0
 requests-oauthlib==0.4.0
 six==1.6.1
 sqlparse==0.1.11
-urllib3==1.8.2
+urllib3==1.24.2
 wsgiref==0.1.2
 zope.interface==4.1.1
 BeautifulSoup==3.2.1
@@ -75,7 +75,7 @@ requests==2.3.0
 requests-oauthlib==0.4.0
 six==1.6.1
 sqlparse==0.1.11
-urllib3==1.8.2
+urllib3==1.24.2
 wsgiref==0.1.2
 xlrd==0.9.3
 zope.interface==4.1.1
